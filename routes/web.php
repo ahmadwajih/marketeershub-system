@@ -19,3 +19,19 @@ Route::get('/', function () {
 Route::get('export', 'UserController@export')->name('export');
 Route::get('importExportView', 'UserController@importExportView');
 Route::post('import', 'UserController@import')->name('import');
+
+// Web Routes
+
+// Dashboard Routes
+
+Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dashboard.'], function(){
+    Route::get('login', 'AuthController@loginForm')->name('login.form');
+    Route::post('login', 'AuthController@login')->name('login');
+    Route::middleware(['web'])->group(function (){
+        Route::get('index', 'DashboardController@index')->name('index');
+
+
+        Route::post('logout', 'AuthController@logout')->name('logout');
+    });
+});
+

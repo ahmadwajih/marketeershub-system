@@ -10,19 +10,19 @@ class Role extends Model
     use HasFactory;
 
     public function users(){
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class);
     }
 
-    public function permissions(){
-        return $this->belongsTo(Permission::class);
+    public function abilities(){
+        return $this->belongsToMany(Ability::class);
     }
 
-    public function allowTo($permission){
-        return $this->permissions()->save($permission);
+    public function allowTo($ability){
+        return $this->abilities()->save($ability);
     }
 
-    public function disallowTo($permission)
+    public function disallowTo($ability)
     {
-        return $this->permissions()->detach($permission);
+        return $this->abilities()->detach($ability);
     }
 }

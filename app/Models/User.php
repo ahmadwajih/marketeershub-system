@@ -52,8 +52,9 @@ class User extends Authenticatable
         return $this->roles()->save($role);
     }
 
-    public function permissions()
+    public function abilities()
     {
-        return $this->roles->map->permissions->flatten()->pluck('name')->unique();
+        return $this->roles->map->abilities->flatten()->pluck('name')->unique();
     }
+
 }
