@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
-use App\Models\Country;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,26 +14,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_users');
-        if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent']);
-            return response()->json($users);
+        if($request->ajax()){
+            $roles = getModelData('Role', $request);
+            return response()->json($roles);
         }
-        return view('dashboard.users.index');
-    }
-    
-    /**
-     * return list of cities based on country id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getCitiesBasedOnCountryAjax(Request $request)
-    {
-        // $this->authorize('view_cities') ?: abort(401);
-        if ($request->ajax()){
-            $cities = City::where('country_id', $request->countryId)->get();
-            return view('dashboard.users.cities', ['cities' => $cities]);
-        }
+
+        return view('dashboard.roles.index');
     }
 
     /**
@@ -45,9 +29,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('dashboard.users.create',[
-            'countries' => Country::all()
-        ]);
+        //
     }
 
     /**

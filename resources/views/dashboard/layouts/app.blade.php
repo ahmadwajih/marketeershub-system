@@ -3,7 +3,7 @@
 	<!--begin::Head-->
 	<head><base href="">
 		<meta charset="utf-8" />
-		<title>@yield('title') - {{ getGeneralSetting()->meta_title }}</title>
+		<title>@yield('title') - MarketeersHub </title>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -26,8 +26,8 @@
 		<!--begin::Layout Themes(used by all pages)-->
 		<link href="{{ asset('dashboard') }}/css/themes/layout/header/base/light.css" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('dashboard') }}/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('dashboard') }}/css/themes/layout/brand/light.css" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('dashboard') }}/css/themes/layout/aside/light.css" rel="stylesheet" type="text/css" />
   
 		<!--end::Layout Themes-->
 		<link rel="shortcut icon" href="{{ asset('dashboard') }}/media/logos/favicon.ico" />
@@ -47,8 +47,8 @@
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 			<!--begin::Logo-->
-			<a href="{{route('admin.home')}}">
-                <img src="{{ Storage::url(getGeneralSetting()->logo)}}?d=<?php echo time()?>" alt="Logo" />
+			<a href="{{route('dashboard.index')}}">
+                <img src="{{ asset('dashboard') }}/images/logo.png?d=<?php echo time()?>" alt="Logo" />
 			</a>
 			<!--end::Logo-->
 			<!--begin::Toolbar-->
@@ -102,7 +102,7 @@
                                 <!--begin::Info-->
                                 <div class="d-flex align-items-center flex-wrap mr-2">
                                     <!--begin::Page Title-->
-                                    <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">لوحه التحكم</h5>
+                                    <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">{{ __('Dashboard') }}</h5>
                                     <!--end::Page Title-->
                                 </div>
                                 <!--end::Info-->
@@ -121,7 +121,7 @@
 							<!--begin::Copyright-->
 							<div class="text-dark order-2 order-md-1">
 								<span class=" font-weight-bold mr-2"> © 2021</span>
-								<a href="#" target="_blank" class="text-dark-75 text-hover-primary"><b>Shoppn</b></a>
+								<a href="#" target="_blank" class="text-dark-75 text-hover-primary"><b>MarketeersHub</b></a>
 							</div>
 							<!--end::Copyright-->
 						</div>
@@ -161,17 +161,6 @@
 			var trashRestoreUrl = '/admin/trashed/restore/';
 		</script>
         @stack('scripts')
-		<!-- Hotjar Tracking Code for shoppn.io -->
-		<script>
-			(function(h,o,t,j,a,r){
-				h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-				h._hjSettings={hjid:2562464,hjsv:6};
-				a=o.getElementsByTagName('head')[0];
-				r=o.createElement('script');r.async=1;
-				r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-				a.appendChild(r);
-			})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-		</script>
 	</body>
 	<!--end::Body -->
 </html>

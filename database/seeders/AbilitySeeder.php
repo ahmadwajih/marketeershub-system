@@ -19,7 +19,7 @@ class AbilitySeeder extends Seeder
             'countries',
             'cites',
             'users',
-            'roler',
+            'roles',
             'advertisers',
             'offers',
             'coupons',

@@ -30,6 +30,8 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['male','female','other'])->default('male');
             $table->enum('team', ['admin','media_buying', 'influencer', 'affiliate'])->default('affiliate');
             $table->enum('position', ['super_admin','head', 'account_manager', 'publisher'])->default('publisher');
+            $table->enum('status', ['active','pending', 'closed'])->default('pending');
+            $table->string('category')->nullable();
             // Connection Information
             $table->string('email')->unique();
             $table->string('phone');

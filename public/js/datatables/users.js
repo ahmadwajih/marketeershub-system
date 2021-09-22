@@ -53,17 +53,17 @@ var KTDatatableRemoteAjaxDemo = function() {
                 afterTemplate: function (row, data, index) {
                     row.find('.delete-item').on('click', function () {
                         swal.fire({
-                            text: "هـل أنـت متـأكد مـن حـذف هـذا العنـصر ؟ ",
-                            confirmButtonText: "نعــم, أمسح !",
+                            text: "Are you sure you want to delete this item?",
+                            confirmButtonText: "Yes, Delete!",
                             icon: "warning",
                             confirmButtonClass: "btn font-weight-bold btn-danger",
                             showCancelButton: true,
-                            cancelButtonText: "لا , ألغي",
+                            cancelButtonText: "No, Cancel",
                             cancelButtonClass: "btn font-weight-bold btn-primary"
                         }).then(function (result) {
                             if (result.value) {
                                 swal.fire({
-                                    title: "تحميل ...",
+                                    title: "Loading ...",
                                     onOpen: function () {
                                         swal.showLoading();
                                     }
@@ -76,9 +76,9 @@ var KTDatatableRemoteAjaxDemo = function() {
                                         if (err.hasOwnProperty('responseJSON')) {
                                             if (err.responseJSON.hasOwnProperty('message')) {
                                                 swal.fire({
-                                                    title: "حطـأ !",
+                                                    title: "Error !",
                                                     text: err.responseJSON.message,
-                                                    confirmButtonText: "موافق",
+                                                    confirmButtonText: "Ok",
                                                     icon: "error",
                                                     confirmButtonClass: "btn font-weight-bold btn-primary",
                                                 });
@@ -88,82 +88,11 @@ var KTDatatableRemoteAjaxDemo = function() {
                                     }
                                 }).done(function (res) {
                                     swal.fire({
-                                        text: "تم الحذف بنجاح",
+                                        text: "Deleted successfully ",
                                         confirmButtonText: "موافق",
                                         icon: "success",
                                         confirmButtonClass: "btn font-weight-bold btn-primary",
                                     });
-                                    datatable.reload();
-                                });
-                            }
-                        });
-                    });
-
-                    row.find('.renewal').on('click', function () {
-                        Swal.fire({
-                            title: 'برجاء ادخال عدد الشهور',
-                            input: 'number',
-                            inputAttributes: {
-                              autocapitalize: 'off',
-                              id : 'months',
-                              min: 1,
-                              step: 1,
-                              value : 1
-                            },
-                            inputValue : 1,
-                            showCancelButton: true,
-                            confirmButtonText: 'تأكيد',
-                            cancelButtonText: "لا , ألغي",
-                            showLoaderOnConfirm: true,
-                            allowOutsideClick: () => !Swal.isLoading()
-                          }).then(function (result) {
-                              var months = $('#months').val();
-                            if (result.value) {
-                                swal.fire({
-                                    title: "تحميل ...",
-                                    onOpen: function () {
-                                        swal.showLoading();
-                                    }
-                                });
-                                $.ajax({
-                                    method: 'post',
-                                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                                    url: '/admin/renewals',
-                                    data: { user_id: data.id, months:months}, 
-                                    error: function (err) {
-                                        if (err.hasOwnProperty('responseJSON')) {
-                                            if (err.responseJSON.hasOwnProperty('message')) {
-                                                swal.fire({
-                                                    title: "حطـأ !",
-                                                    text: err.responseJSON.message,
-                                                    confirmButtonText: "موافق",
-                                                    icon: "error",
-                                                     confirmButtonClass: "btn font-weight-bold btn-primary",
-                                                });
-                                            }
-                                        }
-                                        console.log(err);
-                                    }
-                                }).done(function (res) {
-                                    console.log(res);
-                                    if(res == "0"){
-                                        swal.fire({
-                                            title: "حطـأ !",
-                                            text: 'لا يمكن تجديد الاشتراك الأن',
-                                            confirmButtonText: "موافق",
-                                            icon: "error",
-                                             confirmButtonClass: "btn font-weight-bold btn-primary",
-                                        });
-                                        
-                                    }else{
-                                        swal.fire({
-                                            text: "تم تجديد الإشتراك بنجاح بنجاح",
-                                            confirmButtonText: "موافق",
-                                            icon: "success",
-                                            confirmButtonClass: "btn font-weight-bold btn-primary",
-                                        });
-                                    }
-                                    
                                     datatable.reload();
                                 });
                             }
@@ -179,47 +108,41 @@ var KTDatatableRemoteAjaxDemo = function() {
                 sortable: 'asc',
                 width: 30,
                 type: 'number',
-                selector: true,
                 textAlign: 'center',
-                selector: {
-                    class: 'kt-checkbox--wageh'
-                  }
 
             },{
-                field: 'image',
-                title: "الصوره الشخصيه",
-                selector: false,
-                textAlign: 'center',
-                template: function(row) {
-                    if (row.image)
-                    {
-                        return '<img src="/storage/Images/Users/' + row.image +'" style="width:50px;height:50px;border-radius:5px" class=""/>';
-
-                    }else
-                    {
-                        return '<img src="/storage/Images/placeholder.png" style="width:50px;height:50px;border-radius:5px" class=""/>';
-                    }
-
-
-                },
-            },{
-                field: 'store_manager',
-                title: "مدير المتجر",
+                field: 'name',
+                title: "Full Name",
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'store_name',
-                title: "اسم المتجر",
+                field: 'parent.name',
+                title: "Belongs To",
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'subdomain_name',
-                title: "اسم الدومين",
+                field: 'email',
+                title: "Email",
                 selector: false,
                 textAlign: 'center',
             }, {
                 field: 'phone',
-                title: "الموبيل",
+                title: "Phone",
+                selector: false,
+                textAlign: 'center',
+            },{
+                field: 'team',
+                title: "Team",
+                selector: false,
+                textAlign: 'center',
+            }, {
+                field: 'position',
+                title: "Position",
+                selector: false,
+                textAlign: 'center',
+            }, {
+                field: 'status',
+                title: "Status",
                 selector: false,
                 textAlign: 'center',
             },{
@@ -234,11 +157,11 @@ var KTDatatableRemoteAjaxDemo = function() {
                 template: function(row) {
                     return '\
                         <div class="dropdown dropdown-inline">\
-                            <a href="' + route + '/' + row.id  + '" class="btn btn-sm btn-clean btn-icon" title="عـرض">\
+                            <a href="' + route + '/' + row.id  + '" class="btn btn-sm btn-clean btn-icon" title="Show">\
                              \<i class="flaticon-eye"></i>\
                             </a>\
                         </div>\
-                        <a href="'+ route + '/' + row.id +'/edit" class="btn btn-sm btn-clean btn-icon" title="تعديل">\
+                        <a href="'+ route + '/' + row.id +'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
                             <span class="svg-icon svg-icon-md">\
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -249,7 +172,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                                 </svg>\
                             </span>\
                         </a>\
-                        <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete-item" title="حذف">\
+                        <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete-item" title="Delete">\
                             <span class="svg-icon svg-icon-md">\
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -258,11 +181,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                                         <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>\
                                     </g>\
                                 </svg>\
-                            </span>\
-                        </a>\
-                        <a href="javascript:;" class="btn btn-sm btn-clean btn-icon renewal" title="تجديد الاشتراك" style="display:inline">\
-                            <span class="svg-icon svg-icon-md">\
-                            <i class="fas fa-redo-alt fa-lg"></i>\
                             </span>\
                         </a>\
                     ';

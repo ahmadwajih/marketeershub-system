@@ -28,23 +28,23 @@
                             </svg>
                             <!--end::Svg Icon-->
                         </span>
-                        <span class="menu-text">لوحه التحكم</span>
+                        <span class="menu-text">{{ __('Dashboard') }}</span>
                     </a>
                 </li>
 
                 <li class="menu-section">
-                    <h4 class="menu-text">الأشخاص</h4>
+                    <h4 class="menu-text">{{ __('Persons') }}</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
 
-
+                @can('view_users') 
                 {{-- Start Users  --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='users'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                           <i class="fas fa-user-cog"></i>
                         </span>
-                        <span class="menu-text">المستخدمين</span>
+                        <span class="menu-text">{{ __('Users') }}</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="menu-submenu">
@@ -52,7 +52,7 @@
                         <ul class="menu-subnav">
                             <li class="menu-item menu-item-parent" aria-haspopup="true">
                                 <span class="menu-link">
-                                    <span class="menu-text">المستخدمين</span>
+                                    <span class="menu-text">{{ __('Users') }}</span>
                                 </span>
                             </li>
                             @can('view_users')
@@ -61,12 +61,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">عرض جميع المستخدمين</span>
-                                    {{--
-                                    <span class="menu-label">
-                                        <span class="label label-danger label-inline">new</span>
-                                    </span>
-                                        --}}
+                                    <span class="menu-text">{{ __('All Users') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -76,12 +71,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">إضافة مستخدم جديد</span>
-                                    
-                                    {{-- <span class="menu-label">
-                                        <span class="label label-danger label-inline">new</span>
-                                    </span> --}}
-                                        
+                                    <span class="menu-text">{{ __('Add New User') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -89,21 +79,21 @@
                     </div>
                 </li>
                 {{--  End Users --}}
-
+                @endcan
          
          
                 <li class="menu-section">
-                    <h4 class="menu-text">بيئه العمل</h4>
+                    <h4 class="menu-text">{{ __('Work environment') }}</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
-                
+                @can('view_countries')
                 {{-- Start Roles --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='roles'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                           	<i class="fas fa-lock"></i>
                         </span>
-                        <span class="menu-text">الصلاحيات</span>
+                        <span class="menu-text">{{ __('Roles') }}</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="menu-submenu">
@@ -111,7 +101,7 @@
                         <ul class="menu-subnav">
                             <li class="menu-item menu-item-parent" aria-haspopup="true">
                                 <span class="menu-link">
-                                    <span class="menu-text">الصلاحيات</span>
+                                    <span class="menu-text">{{ __('Roles') }}</span>
                                 </span>
                             </li>
                             @can('view_roles')
@@ -120,7 +110,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">عرض جميع الصلاحيات</span>
+                                    <span class="menu-text">{{ __('All Roles') }}</span>
                                     {{--
                                     <span class="menu-label">
                                         <span class="label label-danger label-inline">new</span>
@@ -135,7 +125,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">إضافة صلاحيه جديده</span>
+                                    <span class="menu-text">{{ __('Add New Role') }}</span>
                                     {{--
                                     <span class="menu-label">
                                         <span class="label label-danger label-inline">new</span>
@@ -148,6 +138,7 @@
                     </div>
                 </li>
                 {{-- End Roles --}}
+                @endcan
    
                 {{-- Start Currencies --}}
                 {{-- <li class="menu-item menu-item-submenu  {{ Request::segment(2)=='currencies'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
@@ -215,7 +206,7 @@
                             <i class="fas fa-sign-out-alt"></i>
                         </span>
                     </span>
-                        <span class="menu-text">تسجيل الخروج</span>
+                        <span class="menu-text">{{ __('Logout') }}</span>
                         <i class="menu-arrow"></i>
                     </a>
                 </li>

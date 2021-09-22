@@ -12,8 +12,8 @@
                         <!--begin::User-->
                         <div class="topbar-item">
                             <div class="btn btn-icon btn-icon-mobile w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
-                                <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">مرحبــا , </span>
-                                <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">{{Auth::guard('admin')->user()->name}} </span>
+                                <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">{{ __('Hello') }} , </span>
+                                <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">{{Auth::guard('web')->user()->name}} </span>
                                 @if( 3 < 2)
                                     <span class="symbol symbol-lg-40 symbol-25 symbol-light-success">
                                         <span class="symbol-label font-size-h5 font-weight-bold">a</span>
@@ -28,7 +28,7 @@
                         <div class="topbar-item">
                             <div class="topbar-item" data-toggle="dropdown">
                                 <div class="btn btn-icon btn-clean btn-dropdown btn-lg">
-                                    <img class="h-45px w-45px rounded-sm"   src="{{getImagesPath("Admins").Auth::guard('admin')->user()->image}}" alt="" />
+                                    <img class="h-45px w-45px rounded-sm"   src="{{Auth::guard('web')->user()->image}}" alt="" />
                                 </div>
                             </div>
                         </div>

@@ -31,7 +31,7 @@
                             <div class="d-flex flex-column pt-12 bgi-size-cover bgi-no-repeat rounded-top" style="background-image: url({{asset('dashboard/media/misc/bg-1.jpg')}})">
                                 <!--begin::Title-->
                                 <h4 class="d-flex flex-center rounded-top">
-                                    <span class="btn btn-text btn-primary btn-sm font-weight-bolder btn-font-md ml-2 mb-10"><span id="notification-count-2"></span> جديد </span>
+                                    <span class="btn btn-text btn-primary btn-sm font-weight-bolder btn-font-md ml-2 mb-10"><span id="notification-count-2"></span> {{ __('New') }} </span>
                                 </h4>
                                 <!--end::Title-->
                             </div>

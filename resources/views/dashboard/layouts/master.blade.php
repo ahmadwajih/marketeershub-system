@@ -1,4 +1,4 @@
-<html lang="ar" direction="rtl" style="direction:rtl" >
+<html lang="en" >
 <!--begin::Head-->
 <head>
     @include('dashboard.layouts.head')

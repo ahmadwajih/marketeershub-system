@@ -46,6 +46,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
+    public function parent(){
+        return $this->belongsTo(User::class, 'parent_id')->with('parent');
+    }
+
 
     public function assignRole($role)
     {

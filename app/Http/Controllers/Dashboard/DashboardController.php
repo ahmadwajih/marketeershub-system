@@ -10,9 +10,7 @@ class DashboardController extends Controller
 {
     public function index(){
         $this->authorize('view_countries');
-        dd('ddddddddd');
-        // dd(Gate::allows('admin'));
-        // dd(request()->user()->can('admin'));
+        
         return view('dashboard.home');
     }
 }

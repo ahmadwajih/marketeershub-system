@@ -23,13 +23,16 @@ Route::post('import', 'UserController@import')->name('import');
 // Web Routes
 
 // Dashboard Routes
-
 Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dashboard.'], function(){
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
-    Route::middleware(['web'])->group(function (){
+    Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
+        Route::resource('users', UserController::class);
+        Route::post('users/cities', 'UserController@getCitiesBasedOnCountryAjax')->name('users.cities');
 
+        Route::resource('roles', RoleController::class);
+        Route::resource('cities', CityController::class);
 
         Route::post('logout', 'AuthController@logout')->name('logout');
     });

@@ -80,3 +80,20 @@ use Illuminate\Support\Str;
         return $response;
     }
 }
+
+/*
+    * Return rote url text after hosting to use it in js index to make the url daynamic .
+     * @param  String Route Namw 
+     * @return url
+     * Author : Wageh 
+     * created By Wagih
+*/
+if(!function_exists('getUrlAfterDomain')){
+    function getUrlAfterDomain(string $route){
+        $host = parse_url(request()->root())['host'];
+        $scheme = parse_url(request()->root())['scheme'];
+        $fullDomain = $scheme."://".$host;
+        $url = str_replace($fullDomain,'',$route);
+        return $url;
+    }
+}
