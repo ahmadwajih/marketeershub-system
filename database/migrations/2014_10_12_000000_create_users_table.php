@@ -26,10 +26,10 @@ class CreateUsersTable extends Migration
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('city_id');
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('city');
+            $table->string('city')->nullable();
             $table->enum('gender', ['male','female','other'])->default('male');
-            $table->enum('team', ['admin','media_buying', 'influencer', 'affiliate'])->default('affiliate');
-            $table->enum('position', ['super_admin','head', 'account_manager', 'publisher'])->default('publisher');
+            $table->enum('team', ['management','digital_operation', 'finance','media_buying', 'influencer', 'affiliate'])->default('affiliate');
+            $table->enum('position', ['super_admin','head','team_leader', 'account_manager', 'publisher', 'employee'])->default('publisher');
             $table->enum('status', ['active','pending', 'closed'])->default('pending');
             $table->string('category')->nullable();
             // Connection Information

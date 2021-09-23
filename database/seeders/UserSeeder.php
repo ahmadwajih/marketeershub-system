@@ -27,11 +27,12 @@ class UserSeeder extends Seeder
             'city_id'               => 1,
             'city'                  => 'Mohandseen',
             'gender'                => 'male',
-            'team'                  => 'admin',
+            'team'                  => 'management',
             'position'              => 'super_admin',
             'email'                 => 'admin@gmail.com',
             'phone'                 => '01027887897',
             'skype'                 => '01027887897',
+            'status'                => 'active'
         ]);
         $superAdmin->assignRole(Role::get()->first());
         
@@ -60,6 +61,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
         //Affiliate head
@@ -86,6 +88,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
          //Medi Buying head
@@ -112,6 +115,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
         // Account manager 
@@ -139,6 +143,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
         //Affiliate Account Manager
@@ -165,6 +170,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
          //Medi Buying Account Manager
@@ -191,6 +197,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
         // Publisher 
@@ -218,6 +225,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
         //Affiliate Publisher
@@ -244,6 +252,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
 
          //Medi Buying Publisher
@@ -270,6 +279,7 @@ class UserSeeder extends Seeder
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
             'currency'              => 'SAR',
+            'status'                => 'active'
         ]);
     }
 }

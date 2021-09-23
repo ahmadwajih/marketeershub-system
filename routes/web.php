@@ -30,10 +30,8 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
         Route::get('index', 'DashboardController@index')->name('index');
         Route::resource('users', UserController::class);
         Route::post('users/cities', 'UserController@getCitiesBasedOnCountryAjax')->name('users.cities');
-
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
-
         Route::post('logout', 'AuthController@logout')->name('logout');
     });
 });
