@@ -15,7 +15,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                     read: {
                         url:route,
                         method:'GET',
-                        data:{id:1},
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
                         map: function(raw) {

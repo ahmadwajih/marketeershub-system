@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
  * created By Wageh
  */
  if(!function_exists('getModelData')){
-    function getModelData($model, Request $request , $relations = [], $trashed = false)
+    function getModelData($model, Request $request , $relations = [], $where = array( ['id', '!=', 0]), $trashed = false)
     {
         $model = app('\\App\Models\\' . $model);
         $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
@@ -30,7 +30,6 @@ use Illuminate\Support\Str;
 
         // Get the request parameters
         $params = $request->all();
-
         // Set the current page
         if(isset($params['pagination']['page'])) {
             $page = $params['pagination']['page'];
@@ -58,10 +57,12 @@ use Illuminate\Support\Str;
         // Get how many items there should be
         $total = $model->count();
         $total = $model->limit($per_page)->count();
+//            ->where($where['column'], $where['operation'], $where['value'])
 
         // Get the items defined by the parameters
         $results = $model->skip(($page - 1) * $per_page)
-            ->take($per_page)->orderBy($order_field, $order_sort)
+            ->where($where)
+            ->take($per_page)->orderBy('id', 'desc')
             ->get();
 
 

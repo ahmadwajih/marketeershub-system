@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
 use App\Models\Country;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class PublisherController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,16 +17,16 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_users');
+        $this->authorize('view_publishers');
         if ($request->ajax()){
             $users = getModelData('User' , $request, ['parent'], array(
-                ['position', '!=', 'publisher']
+                ['position', '=', 'publisher']
             ));
             return response()->json($users);
         }
-        return view('dashboard.users.index');
+        return view('dashboard.publishers.index');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -35,10 +34,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->authorize('create_users');
-        return view('dashboard.users.create',[
+        $this->authorize('create_publishers');
+        return view('dashboard.publishers.create',[
             'countries' => Country::all(),
-            'users' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
+            'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
         ]);
     }
 
@@ -50,29 +49,45 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create_users');
+        /*
+        
+        */
+        $this->authorize('create_publishers');
         $data = $request->validate([
             'name'                  => 'required|max:255',
             'email'                 => 'required|unique:users|max:255',
             'phone'                 => 'required|unique:users|max:255',
             'password'              => 'required|min:6',
+            'parent_id'             => 'required|numeric|exists:users,id',
             'years_of_experience'   => 'required|numeric',
             'country_id'            => 'required|exists:countries,id',
             'city_id'               => 'required|exists:cities,id',
             'gender'                => 'required|in:male,female',
             'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee'
+            'skype'                 => 'nullable|max:255',
+            'address'               => 'nullable|max:255',
+            'category'              => 'nullable|max:255',
+            'traffic_sources'       => 'nullable|max:255',
+            'affiliate_networks'    => 'nullable|max:255',
+            'owened_digital_assets' => 'nullable|max:255',
+            'account_title'         => 'required|max:255',
+            'bank_name'             => 'required|max:255',
+            'bank_branch_code'      => 'required|max:255',
+            'swift_code'            => 'required|max:255',
+            'iban'                  => 'required|max:255',
+            'currency'              => 'required|max:255',
         ]);
 
         $data['password'] = Hash::make($request->password);
+        $data['position'] = 'publisher';
         User::create($data);
 
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.users.index');
+        return redirect()->route('dashboard.publishers.index');
     }
 
     /**
@@ -81,27 +96,23 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($id)
     {
-        $this->authorize('show_users');
-        return view('dashboard.users.show', ['user' => $user]);
+        $this->authorize('show_publishers');
+        $publisher = User::findOrFail($id);
+        return view('dashboard.publishers.show', ['publisher' => $publisher]);
     }
- 
+
+
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        $this->authorize('show_users');
-        return view('dashboard.users.edit', [ 
-            'user' => $user,
-            'countries' => Country::all(),
-            'cities' => City::whereCountryId($user->country_id)->get(),
-            'parents' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
-        ]);
+        //
     }
 
     /**
@@ -111,31 +122,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        $this->authorize('update_users')
-        $data = $request->validate([
-            'name'                  => 'required|max:255',
-            'email'                 => 'required|unique:users|max:255',
-            'phone'                 => 'required|unique:users|max:255',
-            'password'              => 'required|min:6',
-            'years_of_experience'   => 'required|numeric',
-            'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
-            'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
-            'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee'
-        ]);
-
-        $data['password'] = Hash::make($request->password);
-        User::create($data);
-
-        $notification = [
-            'message' => 'Created successfully',
-            'alert-type' => 'success'
-        ];
-        return redirect()->route('dashboard.users.index');
+        //
     }
 
     /**

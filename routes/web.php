@@ -29,10 +29,13 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         Route::resource('users', UserController::class);
-        Route::post('users/cities', 'UserController@getCitiesBasedOnCountryAjax')->name('users.cities');
+        Route::resource('publishers', PublisherController::class);
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
         Route::post('logout', 'AuthController@logout')->name('logout');
+
+        // Ajax requests
+        Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
     });
 });
 

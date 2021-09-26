@@ -17,11 +17,8 @@ class User extends Authenticatable
      *
      * @var string[]
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -59,6 +56,14 @@ class User extends Authenticatable
     public function abilities()
     {
         return $this->roles->map->abilities->flatten()->pluck('name')->unique();
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
+    public function city(){
+        return $this->belongsTo(City::class);
     }
 
 }

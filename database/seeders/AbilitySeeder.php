@@ -23,7 +23,8 @@ class AbilitySeeder extends Seeder
             'advertisers',
             'offers',
             'coupons',
-            'currencies'
+            'currencies',
+            'publishers'
         ];
 
         $names = 

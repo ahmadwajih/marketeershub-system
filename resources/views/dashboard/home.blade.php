@@ -6,12 +6,12 @@
             <!--begin::Info-->
             <div class="d-flex align-items-center flex-wrap mr-2">
                 <!--begin::Page Title-->
-                <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">لوحه التحكم</h5>
+                <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">{{ __('Dashboard') }}</h5>
                 <!--end::Page Title-->
             </div>
             <!--end::Info-->
             <!--begin::Toolbar-->
-            <div class="d-flex align-items-center">
+            {{-- <div class="d-flex align-items-center">
                 <a href="https://mansour.shop/" target="_blank"  class="btn btn-sm btn-primary font-weight-bold mr-2"  data-placement="left">
                     <span class="font-size-base font-weight-bold mr-2 text-light">رابط الموقع</span>
                     <i class="flaticon2-website"></i>
@@ -27,7 +27,7 @@
                     <i class="flaticon-whatsapp"></i>
                 </a>
 
-            </div>
+            </div> --}}
             <!--end::Toolbar-->
         </div>
     </div>
@@ -61,7 +61,7 @@
 													</span>
                                 <div class="d-flex flex-column text-right">
                                     <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>العملاء الجدد</b></span>
+                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
                                 </div>
                             </div>
                             <div id="kt_stats_widget_12_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height: 150px"></div>
@@ -93,7 +93,7 @@
 											</span>
                                 <div class="d-flex flex-column text-right">
                                     <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>الطلبات الجديده</b></span>
+                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
                                 </div>
                             </div>
                             <div id="kt_stats_widget_13_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height:150px"></div>
@@ -126,7 +126,7 @@
 													</span>
                                 <div class="d-flex flex-column text-right">
                                     <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>العملاء الجدد</b></span>
+                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
                                 </div>
                             </div>
                             <div id="kt_stats_widget_12_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height: 150px"></div>
@@ -158,7 +158,7 @@
 											</span>
                                 <div class="d-flex flex-column text-right">
                                     <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>الطلبات الجديده</b></span>
+                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
                                 </div>
                             </div>
                             <div id="kt_stats_widget_13_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height:150px"></div>

@@ -13,7 +13,7 @@
                             <h2 class="card-title">{{ __('Create New User') }}</h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" id="kt_form" action="{{route('dashboard.users.store')}}" method = "POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{route('dashboard.publishers.store')}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 @if ($errors->any())
@@ -41,7 +41,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Name') }} :</label>
-                                                <input type="text" name="name" class="form-control"  value="{{old('name')}}" />
+                                                <input type="text" name="name" class="form-control"  value="{{old('name')}}" required/>
                                                 @if ($errors->has('name'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('name') }}</p>
@@ -50,7 +50,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Phone') }} :</label>
-                                                <input type="text" name="phone" class="form-control" value="{{old('phone')}}" />
+                                                <input type="text" name="phone" class="form-control" value="{{old('phone')}}" required/>
                                                 @if ($errors->has('phone'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('phone') }}</p>
@@ -62,7 +62,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Email') }} :</label>
-                                                <input type="email" name="email" class="form-control"  value="{{old('email')}}" />
+                                                <input type="email" name="email" class="form-control"  value="{{old('email')}}" required/>
                                                 @if ($errors->has('email'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('email') }}</p>
@@ -71,7 +71,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>*  {{ __('Password') }} :</label>
-                                                <input type="password" name="password" class="form-control"  value="{{old('password')}}" />
+                                                <input type="password" name="password" class="form-control"  value="{{old('password')}}" required/>
                                                 @if ($errors->has('password'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('password') }}</p>
@@ -83,10 +83,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Team') }} :</label>
-                                                <select class="form-control select2" id="kt_select_team" name="team" >
-                                                    <option value="management">{{ __('Management') }}</option>
-                                                    <option value="digital_operation">{{ __('Digital Operation') }}</option>
-                                                    <option value="finance">{{ __('Finance') }}</option>
+                                                <select class="form-control select2" id="kt_select_team" name="team" required>
                                                     <option value="media_buying">{{ __('Media Buying') }}</option>
                                                     <option value="influencer">{{ __('Influencer') }}</option>
                                                     <option value="affiliate">{{ __('Affiliate') }}</option>
@@ -99,26 +96,8 @@
                                             </div>
 
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Position') }} :</label>
-                                                <select class="form-control select2" id="kt_select_position" name="position" >
-                                                    <option value="employee">{{ __('Employee') }}</option>
-                                                    <option value="account_manager">{{ __('Account Manager') }}</option>
-                                                    <option value="team_leader">{{ __('Team Leader') }}</option>
-                                                    <option value="head">{{ __('Head') }}</option>
-                                                    <option value="super_admin">{{ __('Super Admin') }}</option>
-                                                </select>
-                                                @if ($errors->has('position'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('position') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-lg-12">
                                                 <label>* {{ __('Belongs To') }} :</label>
-                                                <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
-                                                    <option selected value="null">{{ __('No one') }}</option>
+                                                <select class="form-control select2" id="kt_select_parent_id" name="parent_id" required>
                                                     @foreach ($users as $user)
                                                         <option value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
                                                     @endforeach
@@ -130,11 +109,10 @@
                                                 @endif
                                             </div>
                                         </div>
-
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Gender') }} :</label>
-                                                <select class="form-control select2" id="kt_select_gender" name="gender" >
+                                                <select class="form-control select2" id="kt_select_gender" name="gender" required>
                                                     <option value="male">{{ __('Male') }}</option>
                                                     <option value="female">{{ __('female') }}</option>
                                                 </select>
@@ -146,7 +124,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
-                                                <select class="form-control select2" id="kt_select_status" name="status" >
+                                                <select class="form-control select2" id="kt_select_status" name="status" required>
                                                     <option value="active">{{ __('Active') }}</option>
                                                     <option value="pending">{{ __('Pending') }}</option>
                                                     <option value="closed">{{ __('Closed') }}</option>
@@ -162,7 +140,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
-                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" >
+                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
                                                     @foreach($countries as $country)
                                                         <option value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
@@ -175,7 +153,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ _('City') }} :</label>
-                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" >
+                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" required>
                                                     <option value="0">{{ __("Select Country") }}</option>
                                                 </select>
                                                 @if ($errors->has('city_id'))
@@ -187,17 +165,19 @@
                                         </div>
 
                                         <div class="form-group row">
+                                            
                                             <div class="col-lg-6">
-                                                <label>*{{ __('Years Of Experience') }} :</label>
-                                                <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience')}}" />
-                                                @if ($errors->has('years_of_experience'))
+                                                <label> {{ __('Skype') }} :</label>
+                                                <input type="text" name="skype" class="form-control" value="{{old('skype')}}" />
+                                                @if ($errors->has('skype'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('years_of_experience') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('skype') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
+
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Address') }} :</label>
+                                                <label> {{ __('Address') }} :</label>
                                                 <input type="text" name="address" class="form-control" value="{{old('address')}}" />
                                                 @if ($errors->has('address'))
                                                     <div>
@@ -207,6 +187,127 @@
                                             </div>
 
                                         </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Category') }} :</label>
+                                                <input type="text" name="category" class="form-control" value="{{old('category')}}" />
+                                                @if ($errors->has('category'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('category') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                           
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Years Of Experience') }} :</label>
+                                                <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience')}}" />
+                                                @if ($errors->has('years_of_experience'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('years_of_experience') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Traffic Sources') }} :</label>
+                                                <input type="text" name="traffic_sources" class="form-control" value="{{old('traffic_sources')}}" />
+                                                @if ($errors->has('traffic_sources'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('traffic_sources') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label> {{ __('Affiliate Networks') }} :</label>
+                                                <input type="text" name="affiliate_networks" class="form-control" value="{{old('affiliate_networks')}}" />
+                                                @if ($errors->has('affiliate_networks'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('affiliate_networks') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Owened Digital Assets') }} :</label>
+                                                <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets')}}" />
+                                                @if ($errors->has('owened_digital_assets'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                          
+                                        </div>
+
+                                        {{-- Bank Account Details --}}
+                                        <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>*{{ __('Account Title') }} :</label>
+                                                <input type="text" name="account_title" class="form-control" value="{{old('account_title')}}" required />
+                                                @if ($errors->has('account_title'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('account_title') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Bank Name') }} :</label>
+                                                <input type="text" name="bank_name" class="form-control" value="{{old('bank_name')}}" required />
+                                                @if ($errors->has('bank_name'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('bank_name') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>*{{ __('Bank Branch Code') }} :</label>
+                                                <input type="text" name="bank_branch_code" class="form-control" value="{{old('bank_branch_code')}}" required />
+                                                @if ($errors->has('bank_branch_code'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('bank_branch_code') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Swift Code') }} :</label>
+                                                <input type="text" name="swift_code" class="form-control" value="{{old('swift_code')}}" required />
+                                                @if ($errors->has('swift_code'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('swift_code') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>*{{ __('Iban') }} :</label>
+                                                <input type="text" name="iban" class="form-control" value="{{old('iban')}}" required />
+                                                @if ($errors->has('iban'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('iban') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Currency') }} :</label>
+                                                <input type="text" name="currency" class="form-control" value="{{old('currency')}}" required />
+                                                @if ($errors->has('currency'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('currency') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

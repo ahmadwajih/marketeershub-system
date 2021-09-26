@@ -19,14 +19,13 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('years_of_experience');
+            $table->integer('years_of_experience')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('country_id');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('city_id');
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('city')->nullable();
             $table->enum('gender', ['male','female','other'])->default('male');
             $table->enum('team', ['management','digital_operation', 'finance','media_buying', 'influencer', 'affiliate'])->default('affiliate');
             $table->enum('position', ['super_admin','head','team_leader', 'account_manager', 'publisher', 'employee'])->default('publisher');
@@ -36,6 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('skype')->nullable();
+            $table->string('address')->nullable();
             // Affiliate Information
             $table->string('traffic_sources')->nullable();
             $table->string('affiliate_networks')->nullable();
