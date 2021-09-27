@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use App\Models\Country;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -112,7 +113,14 @@ class PublisherController extends Controller
      */
     public function edit($id)
     {
-        //
+        $this->authorize('update_publishers');
+        $publisher = User::findOrFail($id);
+        return view('dashboard.publishers.edit', [ 
+            'publisher' => $publisher,
+            'countries' => Country::all(),
+            'cities' => City::whereCountryId($publisher->country_id)->get(),
+            'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+        ]);
     }
 
     /**
@@ -124,7 +132,44 @@ class PublisherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->authorize('update_publishers');
+        $data = $request->validate([
+            'name'                  => 'required|max:255',
+            'email'                 => 'required|max:255|unique:users,email,'.$id,
+            'phone'                 => 'required|max:255|unique:users,phone,'.$id,
+            'password'              => 'nullable|min:6',
+            'parent_id'             => 'required|numeric|exists:users,id',
+            'years_of_experience'   => 'required|numeric',
+            'country_id'            => 'required|exists:countries,id',
+            'city_id'               => 'required|exists:cities,id',
+            'gender'                => 'required|in:male,female',
+            'status'                => 'required|in:active,pending,closed',
+            'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
+            'skype'                 => 'nullable|max:255',
+            'address'               => 'nullable|max:255',
+            'category'              => 'nullable|max:255',
+            'traffic_sources'       => 'nullable|max:255',
+            'affiliate_networks'    => 'nullable|max:255',
+            'owened_digital_assets' => 'nullable|max:255',
+            'account_title'         => 'required|max:255',
+            'bank_name'             => 'required|max:255',
+            'bank_branch_code'      => 'required|max:255',
+            'swift_code'            => 'required|max:255',
+            'iban'                  => 'required|max:255',
+            'currency'              => 'required|max:255',
+        ]);
+
+        unset($data['password']);
+        if($request->password){
+            $data['password'] = Hash::make($request->password);
+        }
+        $publisher = User::findOrFail($id);
+        $publisher->update($data);
+        $notification = [
+            'message' => 'Updated successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('dashboard.publishers.index');
     }
 
     /**
@@ -133,8 +178,12 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $this->authorize('delete_users');
+        $publisher = User::findOrFail($id);
+        if($request->ajax()){
+            $publisher->delete();
+        }
     }
 }

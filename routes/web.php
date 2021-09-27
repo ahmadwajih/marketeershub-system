@@ -32,6 +32,9 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
         Route::resource('publishers', PublisherController::class);
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
+        Route::resource('advertisers', AdvertiserController::class);
+        Route::resource('offers', OfferController::class);
+        Route::resource('coupons', CouponController::class);
         Route::post('logout', 'AuthController@logout')->name('logout');
 
         // Ajax requests

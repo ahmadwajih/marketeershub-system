@@ -168,7 +168,7 @@
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-lg-12 text-center">
-                                        <a href="{{route('dashboard.users.index')}}">
+                                        <a href="{{route('dashboard.publishers.index')}}">
                                             <button type="button" class="btn btn-primary font-weight-bold mr-2">
                                                 {{ __('Back') }}
                                             </button>

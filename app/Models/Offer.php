@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Offer extends Model
 {
     use HasFactory;
+    protected $guarded = [];
 
     public function advertiser(){
         return $this->belongsTo(Advertiser::class);

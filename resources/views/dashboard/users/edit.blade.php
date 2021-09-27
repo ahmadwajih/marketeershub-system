@@ -219,8 +219,8 @@
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-lg-12 text-center">
-                                        <button type="reset" class="btn btn-light-primary font-weight-bold">إلـغـاء</button>
-                                        <button type="submit" class="btn btn-primary font-weight-bold mr-2">تـأكيـد</button>
+                                        <button type="reset" class="btn btn-light-primary font-weight-bold">{{ _('Cancel') }}</button>
+                                        <button type="submit" class="btn btn-primary font-weight-bold mr-2">{{ _('Submit') }}</button>
                                     </div>
                                 </div>
                             </div>

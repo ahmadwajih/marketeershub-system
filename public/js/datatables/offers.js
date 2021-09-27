@@ -129,7 +129,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 },
             },{
                 field: 'Actions',
-                title: "الأجراءات",
+                title: "Actions",
                 sortable: false,
                 width: 125,
                 overflow: 'visible',

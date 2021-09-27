@@ -165,7 +165,6 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            
                                             <div class="col-lg-6">
                                                 <label> {{ __('Skype') }} :</label>
                                                 <input type="text" name="skype" class="form-control" value="{{old('skype')}}" />
@@ -347,18 +346,13 @@
         $('#kt_select_status').select2({
             placeholder: "Select Option",
         });
-        $('#kt_select_package_id').select2({
-            placeholder: "Select Option",
-        });
         $('#kt_select_country_id').select2({
             placeholder: "Select Option",
         });
         $('#kt_select_city_id').select2({
             placeholder: "You sholud select country",
         });
-        $('#kt_select_subscription_type').select2({
-            placeholder: "Select Option",
-        });
+
     </script>
     <script>
         $(document).ready(function(){

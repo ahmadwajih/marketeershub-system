@@ -150,7 +150,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
             },{
                 field: 'Actions',
-                title: "الأجراءات",
+                title: "Actions",
                 sortable: false,
                 width: 125,
                 overflow: 'visible',

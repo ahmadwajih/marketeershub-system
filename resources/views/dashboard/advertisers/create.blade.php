@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title','Users')
+@section('title','Advertisers')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -10,10 +10,10 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">{{ __('Create New User') }}</h2>
+                            <h2 class="card-title">{{ __('Create New Advertiser') }}</h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" id="kt_form" action="{{route('dashboard.users.store')}}" method = "POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{route('dashboard.advertisers.store')}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 @if ($errors->any())
@@ -40,6 +40,16 @@
                                     <div class="mb-2">
                                         <div class="form-group row">
                                             <div class="col-lg-6">
+                                                <label>* {{ __('Company Name') }} :</label>
+                                                <input type="text" name="company_name" class="form-control"  value="{{old('company_name')}}" />
+                                                @if ($errors->has('company_name'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('company_name') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Name') }} :</label>
                                                 <input type="text" name="name" class="form-control"  value="{{old('name')}}" />
                                                 @if ($errors->has('name'))
@@ -48,6 +58,10 @@
                                                     </div>
                                                 @endif
                                             </div>
+                                            
+                                        </div>
+
+                                        <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Phone') }} :</label>
                                                 <input type="text" name="phone" class="form-control" value="{{old('phone')}}" />
@@ -57,9 +71,6 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                        </div>
-
-                                        <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Email') }} :</label>
                                                 <input type="email" name="email" class="form-control"  value="{{old('email')}}" />
@@ -69,94 +80,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>*  {{ __('Password') }} :</label>
-                                                <input type="password" name="password" class="form-control"  value="{{old('password')}}" />
-                                                @if ($errors->has('password'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('password') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Team') }} :</label>
-                                                <select class="form-control select2" id="kt_select_team" name="team" >
-                                                    <option value="management">{{ __('Management') }}</option>
-                                                    <option value="digital_operation">{{ __('Digital Operation') }}</option>
-                                                    <option value="finance">{{ __('Finance') }}</option>
-                                                    <option value="media_buying">{{ __('Media Buying') }}</option>
-                                                    <option value="influencer">{{ __('Influencer') }}</option>
-                                                    <option value="affiliate">{{ __('Affiliate') }}</option>
-                                                </select>
-                                                @if ($errors->has('team'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('team') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Position') }} :</label>
-                                                <select class="form-control select2" id="kt_select_position" name="position" >
-                                                    <option value="employee">{{ __('Employee') }}</option>
-                                                    <option value="account_manager">{{ __('Account Manager') }}</option>
-                                                    <option value="team_leader">{{ __('Team Leader') }}</option>
-                                                    <option value="head">{{ __('Head') }}</option>
-                                                    <option value="super_admin">{{ __('Super Admin') }}</option>
-                                                </select>
-                                                @if ($errors->has('position'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('position') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-lg-12">
-                                                <label>* {{ __('Belongs To') }} :</label>
-                                                <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
-                                                    <option selected value="null">{{ __('No one') }}</option>
-                                                    @foreach ($users as $user)
-                                                        <option value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('parent_id'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('parent_id') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Gender') }} :</label>
-                                                <select class="form-control select2" id="kt_select_gender" name="gender" >
-                                                    <option value="male">{{ __('Male') }}</option>
-                                                    <option value="female">{{ __('female') }}</option>
-                                                </select>
-                                                @if ($errors->has('gender'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('gender') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Status') }} :</label>
-                                                <select class="form-control select2" id="kt_select_status" name="status" >
-                                                    <option value="active">{{ __('Active') }}</option>
-                                                    <option value="pending">{{ __('Pending') }}</option>
-                                                    <option value="closed">{{ __('Closed') }}</option>
-                                                </select>
-                                                @if ($errors->has('status'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('status') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
                                         </div>
 
                                         <div class="form-group row">
@@ -188,15 +112,6 @@
 
                                         <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label>*{{ __('Years Of Experience') }} :</label>
-                                                <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience')}}" />
-                                                @if ($errors->has('years_of_experience'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('years_of_experience') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-6">
                                                 <label>* {{ __('Address') }} :</label>
                                                 <input type="text" name="address" class="form-control" value="{{old('address')}}" />
                                                 @if ($errors->has('address'))
@@ -205,7 +120,30 @@
                                                     </div>
                                                 @endif
                                             </div>
-
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Status') }} :</label>
+                                                <select class="form-control select2" id="kt_select_status" name="status" >
+                                                    <option value="pending">{{ __('Pending') }}</option>
+                                                    <option value="rejected">{{ __('Rejected') }}</option>
+                                                    <option value="approved">{{ __('Approved') }}</option>
+                                                </select>
+                                                @if ($errors->has('status'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('status') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <label>* {{ __('Website') }} :</label>
+                                                <input type="url" name="website" class="form-control" value="{{old('website')}}" />
+                                                @if ($errors->has('website'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('website') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -231,18 +169,7 @@
 @endsection
 @push('scripts')
     <script>
-        $('#kt_select_team').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_position').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_parent_id').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_gender').select2({
-            placeholder: "Select Option",
-        });
+
         $('#kt_select_status').select2({
             placeholder: "Select Option",
         });

@@ -113,12 +113,12 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $this->authorize('update_users')
+        $this->authorize('update_users');
         $data = $request->validate([
             'name'                  => 'required|max:255',
-            'email'                 => 'required|unique:users|max:255',
-            'phone'                 => 'required|unique:users|max:255',
-            'password'              => 'required|min:6',
+            'email'                 => 'required|max:255|unique:users,email,'.$user->id,
+            'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
+            'password'              => 'nullable|min:6',
             'years_of_experience'   => 'required|numeric',
             'country_id'            => 'required|exists:countries,id',
             'city_id'               => 'required|exists:cities,id',
@@ -127,12 +127,16 @@ class UserController extends Controller
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee'
         ]);
+        unset($data['password']);
+        if($request->password){
+            $data['password'] = Hash::make($request->password);
+        }
+            
 
-        $data['password'] = Hash::make($request->password);
-        User::create($data);
-
+       
+        $user->update($data);
         $notification = [
-            'message' => 'Created successfully',
+            'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
         return redirect()->route('dashboard.users.index');
@@ -144,8 +148,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, User $user)
     {
-        //
+        $this->authorize('delete_users');
+        if($request->ajax()){
+            $user->delete();
+        }
     }
 }
