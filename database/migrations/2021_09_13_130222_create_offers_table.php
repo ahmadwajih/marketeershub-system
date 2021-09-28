@@ -22,17 +22,20 @@ class CreateOffersTable extends Migration
             $table->string('website')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('offer_url');
+            $table->string('category')->nullable();
             $table->string('payout_type')->nullable();
             $table->float('default_payout')->nullable();
             $table->float('percent_payout')->nullable();
-            $table->enum('status', ['active', 'pused', 'pending'])->default('pending');
+            $table->enum('status', ['active', 'pused', 'pending', 'expire'])->default('pending');
             $table->date('expire_date');
             $table->text('note')->nullable();
             $table->text('terms_and_conditions')->nullable();
-            $table->unsignedBigInteger('advertiser_id');
+            $table->unsignedBigInteger('advertiser_id')->nullable();
             $table->foreign('advertiser_id')->references('id')->on('advertisers')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('currency_id');
+            $table->unsignedBigInteger('currency_id')->nullable();
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -118,7 +118,7 @@
                                             <div class="col-lg-12">
                                                 <label>* {{ __('Belongs To') }} :</label>
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
-                                                    <option selected value="null">{{ __('No one') }}</option>
+                                                    <option selected value="">{{ __('No one') }}</option>
                                                     @foreach ($users as $user)
                                                         <option value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
                                                     @endforeach

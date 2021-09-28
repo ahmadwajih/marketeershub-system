@@ -17,4 +17,8 @@ class Offer extends Model
     public function currency(){
         return $this->belongsTo(Currency::class);
     }
+
+    public function coupons(){
+        return $this->hasMany(Coupon::class);
+    }
 }

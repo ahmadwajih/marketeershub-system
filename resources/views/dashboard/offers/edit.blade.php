@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title','Advertisers')
+@section('title','Offers')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -11,10 +11,10 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title"> {{ __('Company Name') }} {{ $advertiser->company_name }}</h2>
+                            <h2 class="card-title"> {{ __('Company Name') }} {{ $offer->company_name }}</h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" id="kt_form" action="{{route('dashboard.advertisers.update',$advertiser->id)}}" method = "POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{route('dashboard.offers.update',$offer->id)}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             
@@ -40,58 +40,103 @@
                                     </div>
                                 @endif
                                 <div class="mb-3">
+                                    <label class="col-12 text-center mb-5">{{ __('Thumbnail') }}</label>
+                                    <div class="form-group row">
+                                        <div class="col-12 text-center">
+                                            <div class="image-input image-input-outline image-input-circle" id="kt_image">
+                                                <div class="image-input-wrapper" style="background-image: url({{asset("storage/Images/Offers").'/'.$offer->thumbnail}})"></div>
+                                                <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Upload image">
+                                                    <i class="fa fa-pen icon-sm text-muted"></i>
+                                                    <input type="file" name="thumbnail" accept=".png, .jpg, .jpeg" />
+                                                    {{-- <input type="hidden" name="profile_avatar_remove" /> --}}
+                                                </label>
+                                                <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Delete image">
+                                                        <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                                    </span>
+                                            </div>
+                                            <span class="form-text text-muted mt-5 mb-5">{{ __('Available extensions is : png، jpg، jpeg،') }}</span>
+                                            @if ($errors->has('thumbnail'))
+                                                <div>
+                                                    <p class="invalid-input">{{ $errors->first('thumbnail') }}</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                     <div class="mb-2">
                                         <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Company Name') }} :</label>
-                                                <input type="text" name="company_name" class="form-control"  value="{{old('company_name') ?? $advertiser->company_name}}" />
-                                                @if ($errors->has('company_name'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('company_name') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Name') }} :</label>
-                                                <input type="text" name="name" class="form-control"  value="{{old('name') ?? $advertiser->name}}" />
+                                                <label>* {{ __('Offer Name') }} :</label>
+                                                <input type="text" name="name" class="form-control"  value="{{old('name') ?? $offer->name}}" />
                                                 @if ($errors->has('name'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('name') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
-                                            
-                                        </div>
-
-                                        <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Phone') }} :</label>
-                                                <input type="text" name="phone" class="form-control" value="{{old('phone') ?? $advertiser->phone}}" />
-                                                @if ($errors->has('phone'))
+                                                <label>* {{ __('Advertiser') }} :</label>
+                                                <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id" >
+                                                    <option selected value="">{{ __('No one') }}</option>
+                                                    @foreach ($advertisers as $advertiser)
+                                                        <option {{ old('advertiser_id')==$advertiser->id||$offer->advertiser_id==$advertiser->id?'selected':''  }} value="{{ $advertiser->id }}">{{  $advertiser->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('advertiser_id'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('phone') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Email') }} :</label>
-                                                <input type="email" name="email" class="form-control"  value="{{old('email') ?? $advertiser->email}}" />
-                                                @if ($errors->has('email'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('email') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('advertiser_id') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
                                         </div>
-
-                                       
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <label>* {{ __('Description') }} :</label>
+                                                <textarea class="form-control" name="description" cols="30" rows="10">{{old('description') ?? $offer->description}}</textarea>
+                                                @if ($errors->has('description'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('description') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
 
                                         <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Website') }} :</label>
+                                                <input type="url" name="website" class="form-control" value="{{old('website') ?? $offer->website}}" />
+                                                @if ($errors->has('website'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('website') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Offer URL') }} :</label>
+                                                <input type="url" name="offer_url" class="form-control"  value="{{old('offer_url') ?? $offer->offer_url}}" />
+                                                @if ($errors->has('offer_url'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('offer_url') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Category') }} :</label>
+                                                <input type="text" name="category" class="form-control" value="{{old('category') ?? $offer->category}}" />
+                                                @if ($errors->has('category'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('category') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_country_id" name="country_id" >
                                                     @foreach($countries as $country)
-                                                        <option {{$advertiser->country_id==$country->id?'selected':''}} value="{{$country->id}}">{{$country->name_en}}</option>
+                                                        <option {{old('country_id')==$country->id||$offer->country_id==$country->id?"selected":""}} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('country_id'))
@@ -100,28 +145,45 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ _('City') }} :</label>
-                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" >
-                                                    @foreach($cities as $city)
-                                                        <option {{$advertiser->city_id==$city->id?'selected':''}} value="{{$city->id}}">{{$city->name_en}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('city_id'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('city_id') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <div class="col-lg-6">
+                                                <label>* {{ __('Payout Type') }} :</label>
+                                                <input type="text" name="payout_type" class="form-control" value="{{old('payout_type') ?? $offer->payout_type}}" />
+                                                @if ($errors->has('payout_type'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('payout_type') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Payout Default') }} :</label>
+                                                <input type="number" name="default_payout" class="form-control" value="{{old('default_payout') ?? $offer->default_payout}}" />
+                                                @if ($errors->has('default_payout'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('default_payout') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Expire Date') }} :</label>
+                                                <input type="date" name="expire_date" class="form-control" value="{{old('expire_date') ?? $offer->expire_date}}" />
+                                                @if ($errors->has('expire_date'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('expire_date') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" >
-                                                    <option {{ $advertiser->status=='pending'?'selected':'' }} value="pending">{{ __('Pending') }}</option>
-                                                    <option {{ $advertiser->status=='rejected'?'selected':'' }} value="rejected">{{ __('Rejected') }}</option>
-                                                    <option {{ $advertiser->status=='approved'?'selected':'' }} value="approved">{{ __('Approved') }}</option>
+                                                    <option {{ old('status')=="pending"||$offer->status=="pending"?"selected":"" }} value="pending">{{ __('Pending') }}</option>
+                                                    <option {{ old('status')=="active"||$offer->status=="active"?"selected":"" }} value="active">{{ __('Rejected') }}</option>
+                                                    <option {{ old('status')=="pused"||$offer->status=="pused"?"selected":"" }} value="pused">{{ __('Approved') }}</option>
+                                                    <option {{ old('status')=="expire"||$offer->status=="expire"?"selected":"" }} value="expire">{{ __('Expire') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))
                                                     <div>
@@ -129,24 +191,27 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Address') }} :</label>
-                                                <input type="text" name="address" class="form-control" value="{{old('address') ?? $advertiser->address}}" />
-                                                @if ($errors->has('address'))
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <label>* {{ __('Note') }} :</label>
+                                                <textarea class="form-control" name="note" cols="30" rows="10">{{old('note') ?? $offer->note}}</textarea>
+                                                @if ($errors->has('note'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('address') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('note') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
-
                                         </div>
+
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Website') }} :</label>
-                                                <input type="text" name="website" class="form-control" value="{{old('website') ?? $advertiser->website}}" />
-                                                @if ($errors->has('website'))
+                                            <div class="col-lg-12">
+                                                <label>* {{ __('Terms And Conditions') }} :</label>
+                                                <textarea class="form-control" name="terms_and_conditions" cols="30" rows="10">{{old('terms_and_conditions') ?? $offer->terms_and_conditions}}</textarea>
+                                                @if ($errors->has('terms_and_conditions'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('website') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('terms_and_conditions') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -175,8 +240,11 @@
 @endsection
 @push('scripts')
     <script>
-       
+
         $('#kt_select_status').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_advertiser_id').select2({
             placeholder: "Select Option",
         });
         $('#kt_select_country_id').select2({
@@ -185,6 +253,7 @@
         $('#kt_select_city_id').select2({
             placeholder: "You sholud select country",
         });
+
     </script>
     <script>
         $(document).ready(function(){

@@ -18,7 +18,6 @@ class OfferSeeder extends Seeder
             'name' => 'Namshi',
             'description' => 'Namshi offer',
             'website' => 'https://www.namshi.com/',
-            'thumbnail' => 'https://media.go2speed.org/brand/files/marketeershub/1/namshi-logo.png',
             'offer_url' => 'https://ar-sa.namshi.com/men/under-armour-exclusives/',
             'payout_type' => 'cpa_flat',
             'default_payout' => '2.00',

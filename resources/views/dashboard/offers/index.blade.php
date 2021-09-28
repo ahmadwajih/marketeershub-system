@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title','Advertisers')
+@section('title','Offers')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -13,10 +13,10 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3>{{ __('Advertisers') }}</h3>
+                        <h3>{{ __('Offers') }}</h3>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{route('dashboard.advertisers.create')}}" class="btn btn-primary font-weight-bolder ">
+                        <a href="{{route('dashboard.offers.create')}}" class="btn btn-primary font-weight-bolder ">
                             <span class="svg-icon svg-icon-md">
                                 <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -27,7 +27,7 @@
                                     </g>
                                 </svg>
                                 <!--end::Svg Icon-->
-                            </span> {{ __('Add New Advertiser') }}
+                            </span> {{ __('Add New Offer') }}
                         </a>
 
                         <!--end::Button-->
@@ -95,8 +95,8 @@
 @endsection
 @push('scripts')
 <script>
-    var route = "{{ route('dashboard.advertisers.index') }}";
+    var route = "{{ route('dashboard.offers.index') }}";
 </script>
 
-<script src="{{asset('js/datatables/advertisers.js')}}"></script>
+<script src="{{asset('js/datatables/offers.js')}}"></script>
 @endpush

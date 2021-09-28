@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title','Advertisers')
+@section('title','Offers')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -11,7 +11,7 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">{{ __('Comppany Name :') . $advertiser->company_name }} </h2>
+                            <h2 class="card-title">{{ __('Offer Name :') . $offer->name }} </h2>
                         </div>
                         <!--begin::Form-->
                         <form class="form">
@@ -19,56 +19,88 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <div class="mb-2">
+                                        <div class="mb-2">
+                                            <div class="col-12 text-center">
+                                                <div class="image-input image-input-outline image-input" id="kt_image">
+                                                    <div class="image-input-wrapper"  style="background-image: url( {{asset("Images/Offers/").$offer->thumbnail}}" ></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Name') }} :</label>
+                                                    <input readonly disabled type="text" class="form-control"  value="{{$offer->name}}" required/>
+                                                </div>
+    
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Advertiser') }} :</label>
+                                                    <input readonly disabled type="text" class="form-control"  value="{{$offer->advertiser->name}}" required/>
+                                                </div>
+    
+                                            </div>
+    
+                                            <div class="form-group row">
+                                                <div class="col-lg-12">
+                                                    <label> {{ __('Description') }} :</label>
+                                                    <textarea readonly disabled class="form-control" cols="30" rows="10">{{$offer->description}}</textarea>
+                                                </div>
+                                            </div>
+    
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Website') }} :</label>
+                                                    <a class="form-control" href="{{$offer->website}}">{{ $offer->website}}</a>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Offer URL') }} :</label>
+                                                    <a class="form-control" href="{{$offer->offer_url}}">{{ $offer->offer_url}}</a>
+                                                </div>
+    
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Category') }} :</label>
+                                                    <input readonly disabled type="text" class="form-control" value="{{$offer->category}}" />
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Country') }} :</label>
+                                                    <input readonly disabled type="text" class="form-control" value="{{$offer->country?$offer->country->name_en:''}}" />
+                                                </div>
+                                            </div>
+    
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Payout Type') }} :</label>
+                                                    <input readonly disabled type="text" class="form-control" value="{{$offer->payout_type}}" />
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Payout Default') }} :</label>
+                                                    <input readonly disabled type="number" class="form-control" value="{{$offer->default_payout}}" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Expire Date') }} :</label>
+                                                    <input readonly disabled type="date" class="form-control" value="{{$offer->expire_date}}" />
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Status') }} :</label>
+                                                    <input readonly disabled type="date" class="form-control" value="{{$offer->status}}" />
 
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Company Name') }}</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->company_name }}" />
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Responsible Name') }}</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->name}}" />
+    
+                                            <div class="form-group row">
+                                                <div class="col-lg-12">
+                                                    <label> {{ __('Note') }} :</label>
+                                                    <textarea disabled readonly class="form-control" cols="30" rows="10">{{$offer->note}}</textarea>
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Phone') }}</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->phone}}" />
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label> {{ __('Email') }}:</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->email }}" />
-                                            </div>
-
-                                        </div>
-                                        
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Country') }}</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->country_id != null ? $advertiser->country->name_en:"" }}" />
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>{{ __('City') }}</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->city_id !=null ? $advertiser->city->name_en:""}}" />
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Status') }} :</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->status}}" />
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label> {{ __('Address') }}</label>
-                                                <input class="form-control" disabled  value="{{$advertiser->address}}" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-lg-12">
-                                                <label>{{ __('Website') }} :</label>
-                                                <a class="form-control" target="_blank"  href="{{$advertiser->website}}">{{$advertiser->website}}</a>
+    
+                                            <div class="form-group row">
+                                                <div class="col-lg-12">
+                                                    <label> {{ __('Terms And Conditions') }} :</label>
+                                                    <textarea disabled readonly class="form-control" cols="30" rows="10">{{$offer->terms_and_conditions}}</textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

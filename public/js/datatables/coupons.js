@@ -1,19 +1,21 @@
 "use strict";
 // Class definition
+var datatable;
 
 var KTDatatableRemoteAjaxDemo = function() {
 
     // basic demo
     var demo = function() {
 
-        var datatable = $('#kt_datatable').KTDatatable({
+        datatable = $('#kt_datatable').KTDatatable({
             // datasource definition
             data: {
                 type: 'remote',
                 source: {
                     read: {
-                        url: '/admin/coupons',
+                        url:route,
                         method:'GET',
+                        data:{id:1},
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
                         map: function(raw) {
@@ -22,6 +24,8 @@ var KTDatatableRemoteAjaxDemo = function() {
                             if (typeof raw.data !== 'undefined') {
                                 dataSet = raw.data;
                             }
+                            console.log('start');
+                            console.log(dataSet);
                             return dataSet;
                         },
                     },
@@ -30,6 +34,8 @@ var KTDatatableRemoteAjaxDemo = function() {
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
+                saveState: false,
+
             },
 
             // layout definition
@@ -50,17 +56,17 @@ var KTDatatableRemoteAjaxDemo = function() {
                 afterTemplate: function (row, data, index) {
                     row.find('.delete-item').on('click', function () {
                         swal.fire({
-                            text: "هـل أنـت متـأكد مـن حـذف هـذا العنـصر ؟ ",
-                            confirmButtonText: "نعــم, أمسح !",
+                            text: "Are you sure you want to delete this item?",
+                            confirmButtonText: "Yes, Delete!",
                             icon: "warning",
                             confirmButtonClass: "btn font-weight-bold btn-danger",
                             showCancelButton: true,
-                            cancelButtonText: "لا , ألغي",
+                            cancelButtonText: "No, Cancel",
                             cancelButtonClass: "btn font-weight-bold btn-primary"
                         }).then(function (result) {
                             if (result.value) {
                                 swal.fire({
-                                    title: "تحميل ...",
+                                    title: "Loading ...",
                                     onOpen: function () {
                                         swal.showLoading();
                                     }
@@ -68,14 +74,14 @@ var KTDatatableRemoteAjaxDemo = function() {
                                 $.ajax({
                                     method: 'delete',
                                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                                    url: '/admin/coupons/' + data.id,
+                                    url: route + '/' + data.id,
                                     error: function (err) {
                                         if (err.hasOwnProperty('responseJSON')) {
                                             if (err.responseJSON.hasOwnProperty('message')) {
                                                 swal.fire({
-                                                    title: "حطـأ !",
+                                                    title: "Error !",
                                                     text: err.responseJSON.message,
-                                                    confirmButtonText: "موافق",
+                                                    confirmButtonText: "Ok",
                                                     icon: "error",
                                                     confirmButtonClass: "btn font-weight-bold btn-primary",
                                                 });
@@ -85,7 +91,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                                     }
                                 }).done(function (res) {
                                     swal.fire({
-                                        text: "تم المسح بنجاخ",
+                                        text: "Deleted successfully ",
                                         confirmButtonText: "موافق",
                                         icon: "success",
                                         confirmButtonClass: "btn font-weight-bold btn-primary",
@@ -105,83 +111,23 @@ var KTDatatableRemoteAjaxDemo = function() {
                 sortable: 'asc',
                 width: 30,
                 type: 'number',
-                selector: false,
                 textAlign: 'center',
-            }, {
-                field: 'code',
-                title: 'الكود',
-                textAlign: 'center',
-            },  {
-                field: 'discount_amount',
-                title: "قيمه الخصم",
-                selector: false,
-                textAlign: 'center',
-                template : function (row){
-
-                    let val = row.discount_amount + " " + ( row.discount_type == "number" ? " جنية " : " % " );
-
-                    return val;
-                }
-            },{
-                field: 'use_type',
-                title: "نوع انتهاء الكوبون",
-                selector: false,
-                textAlign: 'center',
-                template : function (row){
-
-                    return ( row.use_type == "date" ?  "الأنتهاء بالتاريخ" : "الأنتهاء بالعدد");
-                }
-            },{
-                field: 'count_use',
-                title: "العدد",
-                selector: false,
-                textAlign: 'center',
-                template : function (row)
-                {
-                    if ( row.count_use  != null )
-                    {
-                        return  row.count_use;
-                    }else
-                    {
-                        return  "<h1><b>-</b></h1>";
-                    }
-
-                }
 
             },{
-                field: 'count_use',
-                title: "العدد المتبقي",
+                field: 'coupon',
+                title: "Coupon",
                 selector: false,
                 textAlign: 'center',
-                template : function (row)
-                {
-                    if ( row.count_use  != null )
-                    {
-                        return  row.count_use - row.count_used;
-                    }else
-                    {
-                        return  "<h1><b>-</b></h1>";
-                    }
-
-                }
-
             },{
-                field: 'from',
-                title: "تاريخ الصلاحيه",
+                field: 'offer.name',
+                title: "Offer Name",
                 selector: false,
                 textAlign: 'center',
-                template : function (row)
-                {
-                    if ( row.from  != null )
-                    {
-                        return  row.from  + " - " + row.to;
-                    }else
-                    {
-                        return  "<h1><b>-</b></h1>";
-                    }
-
-                }
-
+            },{
+                field: 'user.name',
+                title: "User Name",
+                selector: false,
+                textAlign: 'center',
             },{
                 field: 'Actions',
                 title: "Actions",
@@ -194,11 +140,11 @@ var KTDatatableRemoteAjaxDemo = function() {
                 template: function(row) {
                     return '\
                         <div class="dropdown dropdown-inline">\
-                            <a href="/admin/coupons/' + row.id  + '" class="btn btn-sm btn-clean btn-icon mr-2" title="عـرض">\
+                            <a href="' + route + '/' + row.id  + '" class="btn btn-sm btn-clean btn-icon" title="Show">\
                              \<i class="flaticon-eye"></i>\
                             </a>\
                         </div>\
-                        <a href="/admin/coupons/'+ row.id +'/edit" class="btn btn-sm btn-clean btn-icon mr-2" title="تعديل">\
+                        <a href="'+ route + '/' + row.id +'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
                             <span class="svg-icon svg-icon-md">\
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -209,7 +155,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                                 </svg>\
                             </span>\
                         </a>\
-                        <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete-item" title="مسح">\
+                        <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete-item" title="Delete">\
                             <span class="svg-icon svg-icon-md">\
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -247,4 +193,16 @@ var KTDatatableRemoteAjaxDemo = function() {
 
 jQuery(document).ready(function() {
     KTDatatableRemoteAjaxDemo.init();
+     
+    $('#deletedAll').on('click', function(){
+
+    var selected = datatable.getSelectedRecords();
+    // foreach(selected as item){
+    //     console.log(item);
+    // }
+
+    $.each(selected, function(index, item){
+        console.log(item);
+    })
+    });
 });

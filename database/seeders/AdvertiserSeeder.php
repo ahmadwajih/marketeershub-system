@@ -15,11 +15,11 @@ class AdvertiserSeeder extends Seeder
     public function run()
     {
         Advertiser::create([
-            'name' => 'Mohamed Tawfik',
+            'name' => 'Marketeers Hub',
             'phone' => '010277777777',
-            'email' => 'email@gmail.com',
-            'company_name' => 'Smart Influence LLC',
-            'website' => 'si.com',
+            'email' => 'info@marketeershub.com',
+            'company_name' => 'Marketeers Hub',
+            'website' => 'marketeershub.com',
             'country_id' => 1,
             'city_id' => 1,
             'address' => 'Riayd SAudia Arabia',

@@ -103,7 +103,7 @@
          
                 @can('view_advertisers') 
                 {{-- Start Advertisers  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='advertisers' ||  Request::segment(2)=='publishers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='advertisers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                         <i class="fas fa-building"></i>
@@ -148,7 +148,7 @@
 
                 @can('view_offers') 
                 {{-- Start Offers  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offers' ||  Request::segment(2)=='publishers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-tags"></i>
@@ -181,7 +181,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('Add New Advertiser') }}</span>
+                                    <span class="menu-text">{{ __('Add New Offer') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -189,6 +189,51 @@
                     </div>
                 </li>
                 {{--  End Offers --}}
+                @endcan
+
+                @can('view_coupons') 
+                {{-- Start Coupons  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='coupons'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-tag"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Coupons') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Coupons') }}</span>
+                                </span>
+                            </li>
+                            @can('view_coupons')
+                            <li class="menu-item {{ Request::segment(2)=='coupons'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.coupons.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Coupons') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_coupons')
+                            <li class="menu-item {{ Request::segment(2)=='coupons'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.coupons.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Coupon') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Coupons --}}
                 @endcan
 
                 <li class="menu-section">
