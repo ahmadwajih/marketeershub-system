@@ -95,7 +95,7 @@
                 <div class="card-body">
                     <!--begin: Search Form-->
                     <!--begin::Search Form-->
-                    {{-- <div class="mb-7">
+                    <div class="mb-7">
                         <div class="row align-items-center">
                             <div class="col-lg-9 col-xl-8">
                                 <div class="row align-items-center">
@@ -107,7 +107,7 @@
 																</span>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 my-2 my-md-0">
+                                    {{-- <div class="col-md-4 my-2 my-md-0">
                                         <div class="d-flex align-items-center">
                                             <label class="mr-3 mb-0 d-none d-md-block">الـحـاله</label>
                                             <select class="form-control" id="kt_datatable_search_status">
@@ -131,14 +131,14 @@
                                                 <option value="3">Direct</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+                            {{-- <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
                                 <a href="#" class="btn btn-light-primary px-6 font-weight-bold">بــحــث</a>
-                            </div>
+                            </div> --}}
                         </div>
-                    </div> --}}
+                    </div>
                     <!--end::Search Form-->
                     <!--end: Search Form-->
                     <!--begin: Datatable-->
@@ -153,12 +153,18 @@
     <!--end::Entry-->
 @endsection
 @push('scripts')
-<script>
-    var route = "{{ route('dashboard.publishers.index') }}";
-</script>
-@if(Request::segment(2)=='trashed')
-    <script src="{{asset('js/datatables/trashed/publishers.js')}}"></script>
+
+@if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='influencer')
+    <script> var route = "{{ route('dashboard.publishers.type', 'influencer') }}"; </script>
+    <script src="{{asset('js/datatables/influencers.js')}}"></script>
+
+@elseif (Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='affiliate')
+    <script> var route = "{{ route('dashboard.publishers.type', 'affiliate') }}"; </script>
+    <script src="{{asset('js/datatables/affiliates.js')}}"></script>
+
 @else
+    <script>var route = "{{ route('dashboard.publishers.index') }}";</script>
     <script src="{{asset('js/datatables/publishers.js')}}"></script>
 @endif
+
 @endpush

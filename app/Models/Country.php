@@ -13,4 +13,8 @@ class Country extends Model
     public function cities(){
         return $this->hasMany(City::class);
     }
+
+    public function offers(){
+        return $this->belongsToMany(Offer::class);
+    }
 }

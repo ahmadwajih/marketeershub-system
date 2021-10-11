@@ -66,12 +66,32 @@
                             </li>
                             @endcan
                             @can('view_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)==''?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('dashboard.publishers.index')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
                                     <span class="menu-text">{{ __('All Publishers') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('view_publishers')
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='influencer'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.publishers.type', 'influencer')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Influencers') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('view_publishers')
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='type' &&Request::segment(4)=='affiliate'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.publishers.type', 'affiliate')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Affiliates') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -92,6 +112,26 @@
                                         <span></span>
                                     </i>
                                     <span class="menu-text">{{ __('Add New Publisher') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('create_publishers')
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.publishers.upload.form')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Upload Publishers') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('update_publishers')
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='upload'&&Request::segment(4)=='update-hasoffer-id-by-email'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.publishers.upload.update.hasoffer.id.by.email.form')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Update Publishers Has Offer ID using Email') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -146,6 +186,12 @@
                 {{--  End Advertisers --}}
                 @endcan
 
+                <li class="menu-section">
+                    <h4 class="menu-text">{{ __('Work environment') }}</h4>
+                    <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                </li>
+
+                
                 @can('view_offers') 
                 {{-- Start Offers  --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
@@ -230,16 +276,69 @@
                                 </a>
                             </li>
                             @endcan
+
+                            @can('create_coupons')
+                            <li class="menu-item {{ Request::segment(2)=='coupons'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.coupons.upload.form')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Upload Coupons') }}</span>
+                                </a>
+                            </li>
+                            @endcan
                         </ul>
                     </div>
                 </li>
                 {{--  End Coupons --}}
                 @endcan
 
-                <li class="menu-section">
-                    <h4 class="menu-text">{{ __('Work environment') }}</h4>
-                    <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                @can('view_pivot_report') 
+                {{-- Start Pivot Report  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='pivot-report'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="far fa-chart-bar"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Pivot Report') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Pivot Report') }}</span>
+                                </span>
+                            </li>
+                            @can('view_pivot_report')
+                            <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.pivot-report.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Pivot Report') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_pivot_report')
+                            <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.pivot-report.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Upload New') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                        </ul>
+                    </div>
                 </li>
+                {{--  End Pivot Report --}}
+                @endcan
+
                 @can('view_countries')
                 {{-- Start Roles --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='roles'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">

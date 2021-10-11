@@ -16,12 +16,11 @@ class CreatePivotReportsTable extends Migration
         Schema::create('pivot_reports', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('coupon_id')->nullable();
-            $table->foreign('coupon_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('coupon_code')->nullable();
-            $table->integer('number_of_orders');
-            $table->double('sum_of_sales');
-            $table->double('sum_of_revenue');
-            $table->double('sum_of_payout');
+            $table->foreign('coupon_id')->references('id')->on('coupons')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('orders');
+            $table->double('sales');
+            $table->double('revenue');
+            $table->double('payout');
             $table->timestamps();
         });
     }

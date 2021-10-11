@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Imports\CouponImport;
 use App\Models\Coupon;
 use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
 class CouponController extends Controller
 {
     /**
@@ -131,5 +132,37 @@ class CouponController extends Controller
         if($request->ajax()){
             $coupon->delete();
         }
+    }
+
+
+     /**
+     * Show the form for uploading a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadForm()
+    {
+        $this->authorize('create_coupons');
+        return view('dashboard.coupons.upload',[
+            'offers' => Offer::whereStatus("active")->get()
+        ]);
+    }
+
+    
+     /**
+     * Show the form for uploading a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request $request)
+    {
+        $this->authorize('create_coupons');
+        Excel::import(new CouponImport($request->offer_id),request()->file('coupons'));
+        
+        $notification = [
+            'message' => 'Created successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('dashboard.coupons.index');
     }
 }

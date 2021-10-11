@@ -16,11 +16,10 @@ class PivotReportSeeder extends Seeder
     {
         PivotReport::create([
             'coupon_id' => 1,
-            'coupon_code' => 'MH1',
-            'number_of_orders' => '4',
-            'sum_of_sales' => '1483.03',
-            'sum_of_revenue' => '118.65',
-            'sum_of_payout' => '62.29'
+            'orders' => '4',
+            'sales' => '1483.03',
+            'revenue' => '118.65',
+            'payout' => '62.29'
         ]);
     }
 }

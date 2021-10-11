@@ -133,6 +133,18 @@
                                                 @endif
                                             </div>
                                             <div class="col-lg-6">
+                                                <label>* {{ _('Type') }} :</label>
+                                                <select class="form-control select2" id="kt_select_type" name="type" >
+                                                    <option value="coupon_tracking">{{ __('Coupon Tracking') }}</option>
+                                                    <option value="link_tracking">{{ __('Link Tracking') }}</option>
+                                                    </select>
+                                                @if ($errors->has('type'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('type') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_country_id" name="country_id" >
                                                     @foreach($countries as $country)
@@ -181,8 +193,8 @@
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" >
                                                     <option {{ old('status')=="pending"?"selected":"" }} value="pending">{{ __('Pending') }}</option>
-                                                    <option {{ old('status')=="active"?"selected":"" }} value="active">{{ __('Rejected') }}</option>
-                                                    <option {{ old('status')=="pused"?"selected":"" }} value="pused">{{ __('Approved') }}</option>
+                                                    <option {{ old('status')=="active"?"selected":"" }} value="active">{{ __('Active') }}</option>
+                                                    <option {{ old('status')=="pused"?"selected":"" }} value="pused">{{ __('Pused') }}</option>
                                                     <option {{ old('status')=="expire"?"selected":"" }} value="expire">{{ __('Expire') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))
@@ -245,6 +257,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_advertiser_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_type').select2({
             placeholder: "Select Option",
         });
         $('#kt_select_country_id').select2({

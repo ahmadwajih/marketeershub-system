@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
  * Author : Wageh
  * created By Wageh
  */
- if(!function_exists('getModelData')){
+if(!function_exists('getModelData')){
     function getModelData($model, Request $request , $relations = [], $where = array( ['id', '!=', 0]), $trashed = false)
     {
         $model = app('\\App\Models\\' . $model);
@@ -56,7 +56,7 @@ use Illuminate\Support\Str;
 
         // Get how many items there should be
         $total = $model->count();
-        $total = $model->limit($per_page)->count();
+        $total = $model->where($where)->limit($per_page)->count();
 //            ->where($where['column'], $where['operation'], $where['value'])
 
         // Get the items defined by the parameters
@@ -75,13 +75,13 @@ use Illuminate\Support\Str;
                 "sort" => $order_sort,
                 "field" => $order_field
             ],
-            'data' => $model->with($relations)->get()
+            
+            'data' => $model->with($relations)->where($where)->get()
         ];
 
         return $response;
     }
 }
-
 /*
     * Return rote url text after hosting to use it in js index to make the url daynamic .
      * @param  String Route Namw 

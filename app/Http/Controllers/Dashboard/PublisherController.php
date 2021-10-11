@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Imports\PublishersImport;
+use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PublisherController extends Controller
 {
@@ -22,6 +25,24 @@ class PublisherController extends Controller
         if ($request->ajax()){
             $users = getModelData('User' , $request, ['parent'], array(
                 ['position', '=', 'publisher']
+            ));
+            return response()->json($users);
+        }
+        return view('dashboard.publishers.index');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getBasedOnType(Request $request, $type)
+    {
+        $this->authorize('view_publishers');
+        if ($request->ajax()){
+            $users = getModelData('User' , $request, ['parent'], array(
+                ['position', '=', 'publisher'],
+                ['team', '=', $type],
             ));
             return response()->json($users);
         }
@@ -186,4 +207,61 @@ class PublisherController extends Controller
             $publisher->delete();
         }
     }
+
+    
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upload()
+    {
+        $this->authorize('create_publishers');
+        return view('dashboard.publishers.upload');
+    }
+    
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeUpload(Request $request)
+    {
+        
+        $this->authorize('create_publishers');
+        $request->validate([
+            'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
+            'publishers' => 'required|mimes:xlsx,csv',
+        ]);
+        Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+        $notification = [
+            'message' => 'Uploaded successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('dashboard.publishers.index');
+    }
+
+    public function uploadUpdateHasOfferIdByEmail()
+    {
+        $this->authorize('update_publishers');
+        return view('dashboard.publishers.upload_update_hasoffer_id_by_email');
+    }
+
+    public function storeUploadUpdateHasOfferIdByEmail(Request $request)
+    {
+        
+        $this->authorize('create_publishers');
+        $request->validate([
+            'publishers' => 'required|mimes:xlsx,csv',
+        ]);
+        Excel::import(new PublishersUpdateHasofferIdByEmail(),request()->file('publishers'));
+        $notification = [
+            'message' => 'Uploaded successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('dashboard.publishers.index');
+    }
+
+
 }

@@ -11,6 +11,14 @@ class CreateOffersTable extends Migration
      *
      * @return void
      */
+
+
+     /**
+      * Flat rate  
+      * Flat rate  (new, old )
+      * Persentage 
+      * perst ( new , old) 
+      */
     public function up()
     {
         Schema::create('offers', function (Blueprint $table) {
@@ -23,7 +31,9 @@ class CreateOffersTable extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('offer_url');
             $table->string('category')->nullable();
-            $table->string('payout_type')->nullable();
+            $table->enum('type', ['cpa_flat', 'cpa_percentage', 'cps', 'cpl', 'cpc'])->default('cpa_flat');
+            $table->enum('payout_type', ['cpa_flat', 'cpa_percentage', 'cps', 'cpl', 'cpc'])->default('cpa_flat');
+            $table->enum('cpa_type', ['static', 'new_old', 'slaps'])->default('static');
             $table->float('default_payout')->nullable();
             $table->float('percent_payout')->nullable();
             $table->enum('status', ['active', 'pused', 'pending', 'expire'])->default('pending');
@@ -34,8 +44,6 @@ class CreateOffersTable extends Migration
             $table->foreign('advertiser_id')->references('id')->on('advertisers')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('currency_id')->nullable();
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('country_id')->nullable();
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

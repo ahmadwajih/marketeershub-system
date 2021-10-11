@@ -19,7 +19,26 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <div class="mb-2">
+                                        @if($publisher->coupons)
+                                        @foreach($publisher->coupons as $coupon)
+                                            
+                                        <div class="form-group row">
+                                            <div class="col-lg-4">
+                                                <label>{{ __('Coupon') }}</label>
+                                                <input class="form-control" disabled  value="{{$coupon->coupon}}" />
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label>{{ __('Orders') }}</label>
+                                                <input class="form-control" disabled  value="{{$coupon->report->orders}}" />
+                                            </div>
 
+                                            <div class="col-lg-4">
+                                                <label>{{ __('Revenue') }}</label>
+                                                <input class="form-control" disabled  value="{{$coupon->report->payout}}" />
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                        @endif
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>{{ __('Use Name') }}</label>

@@ -181,8 +181,8 @@
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" >
                                                     <option {{ old('status')=="pending"||$offer->status=="pending"?"selected":"" }} value="pending">{{ __('Pending') }}</option>
-                                                    <option {{ old('status')=="active"||$offer->status=="active"?"selected":"" }} value="active">{{ __('Rejected') }}</option>
-                                                    <option {{ old('status')=="pused"||$offer->status=="pused"?"selected":"" }} value="pused">{{ __('Approved') }}</option>
+                                                    <option {{ old('status')=="active"||$offer->status=="active"?"selected":"" }} value="active">{{ __('Active') }}</option>
+                                                    <option {{ old('status')=="pused"||$offer->status=="pused"?"selected":"" }} value="pused">{{ __('Pused') }}</option>
                                                     <option {{ old('status')=="expire"||$offer->status=="expire"?"selected":"" }} value="expire">{{ __('Expire') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))

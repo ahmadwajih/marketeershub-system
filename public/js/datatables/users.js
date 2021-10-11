@@ -15,7 +15,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                     read: {
                         url:route,
                         method:'GET',
-                        data:{id:1},
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
                         map: function(raw) {
@@ -40,8 +39,19 @@ var KTDatatableRemoteAjaxDemo = function() {
 
             // layout definition
             layout: {
-                scroll: false,
+                scroll: true,
                 footer: false,
+                icons:{
+                    pagination:{
+                        pagination: {
+                            next: 'la la-angle-right',
+                            prev: 'la la-angle-left',
+                            first: 'la la-angle-double-left',
+                            last: 'la la-angle-double-right',
+                            more: 'la la-ellipsis-h'
+                          }
+                    }
+                }
             },
 
             // column sorting

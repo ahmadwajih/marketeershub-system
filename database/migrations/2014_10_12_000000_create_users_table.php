@@ -16,15 +16,16 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             // Main Information
-            $table->string('name');
+            $table->integer('ho_id')->nullable();
+            $table->string('name')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->integer('years_of_experience')->nullable();
+            $table->string('password')->nullable();
+            $table->string('years_of_experience')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
             $table->enum('gender', ['male','female','other'])->default('male');
             $table->enum('team', ['management','digital_operation', 'finance','media_buying', 'influencer', 'affiliate'])->default('affiliate');
@@ -33,12 +34,12 @@ class CreateUsersTable extends Migration
             $table->string('category')->nullable();
             // Connection Information
             $table->string('email')->unique();
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->string('skype')->nullable();
             $table->string('address')->nullable();
             // Affiliate Information
             $table->string('traffic_sources')->nullable();
-            $table->string('affiliate_networks')->nullable();
+            $table->text('affiliate_networks')->nullable();
             $table->string('owened_digital_assets')->nullable();
             //Payment Information
             $table->string('account_title')->nullable();

@@ -32,161 +32,181 @@
         </div>
     </div>
     <!--begin::Entry-->
-    <div class="d-flex flex-column-fluid" style="margin:1.5rem">
+    {{-- <div class="d-flex flex-column-fluid" style="margin:1.5rem"> --}}
         <!--begin::Container-->
         <div class="container">
             <!--begin::Dashboard-->
             <!--begin::Row-->
             <div class="row">
-                <div class="col-lg-6 col-xxl-6">
-                    <!--begin::Stats Widget 12-->
-                    <div class="card card-custom card-stretch">
-                        <!--begin::Body-->
-                        <div class="card-body p-0">
-                            <div class="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-													<span class="symbol symbol-50 symbol-light-primary mr-2">
-														<span class="symbol-label">
-															<span class="svg-icon svg-icon-xl svg-icon-primary">
-																<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group.svg-->
-																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																		<polygon points="0 0 24 0 24 24 0 24" />
-																		<path d="M18,14 C16.3431458,14 15,12.6568542 15,11 C15,9.34314575 16.3431458,8 18,8 C19.6568542,8 21,9.34314575 21,11 C21,12.6568542 19.6568542,14 18,14 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-																		<path d="M17.6011961,15.0006174 C21.0077043,15.0378534 23.7891749,16.7601418 23.9984937,20.4 C24.0069246,20.5466056 23.9984937,21 23.4559499,21 L19.6,21 C19.6,18.7490654 18.8562935,16.6718327 17.6011961,15.0006174 Z M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-																	</g>
-																</svg>
-                                                                <!--end::Svg Icon-->
-															</span>
-														</span>
-													</span>
-                                <div class="d-flex flex-column text-right">
-                                    <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
-                                </div>
-                            </div>
-                            <div id="kt_stats_widget_12_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height: 150px"></div>
-                        </div>
-                        <!--end::Body-->
-                    </div>
-                    <!--end::Stats Widget 12-->
+                <div class="col-lg-6 col-xxl-6 chart">
+                    <canvas id="myChart1" style="width:100%;max-width:600px"></canvas>
                 </div>
-                <div class="col-lg-6 col-xxl-6">
-                    <!--begin::Stats Widget 12-->
-                    <div class="card card-custom card-stretch">
-                        <!--begin::Body-->
-                        <div class="card-body p-0">
-                            <div class="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-                                            <span class="symbol symbol-50 symbol-light-success mr-2 bg">
-														<span class="symbol-label">
-															<span class="svg-icon svg-icon-xl svg-icon-success">
-																<!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
-																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																		<rect x="0" y="0" width="24" height="24" />
-																		<rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
-																		<path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
-																	</g>
-																</svg>
-                                                                <!--end::Svg Icon-->
-															</span>
-														</span>
-											</span>
-                                <div class="d-flex flex-column text-right">
-                                    <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
-                                </div>
-                            </div>
-                            <div id="kt_stats_widget_13_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height:150px"></div>
-                        </div>
-                        <!--end::Body-->
-                    </div>
-                    <!--end::Stats Widget 12-->
+                <div class="col-lg-6 col-xxl-6 chart">
+                    <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
                 </div>
-
-                <div class="col-lg-6 col-xxl-6 mt-25">
-                    <!--begin::Stats Widget 12-->
-                    <div class="card card-custom card-stretch">
-                        <!--begin::Body-->
-                        <div class="card-body p-0">
-                            <div class="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-													<span class="symbol symbol-50 symbol-light-primary mr-2">
-														<span class="symbol-label">
-															<span class="svg-icon svg-icon-xl svg-icon-primary">
-																<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group.svg-->
-																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																		<polygon points="0 0 24 0 24 24 0 24" />
-																		<path d="M18,14 C16.3431458,14 15,12.6568542 15,11 C15,9.34314575 16.3431458,8 18,8 C19.6568542,8 21,9.34314575 21,11 C21,12.6568542 19.6568542,14 18,14 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-																		<path d="M17.6011961,15.0006174 C21.0077043,15.0378534 23.7891749,16.7601418 23.9984937,20.4 C24.0069246,20.5466056 23.9984937,21 23.4559499,21 L19.6,21 C19.6,18.7490654 18.8562935,16.6718327 17.6011961,15.0006174 Z M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-																	</g>
-																</svg>
-                                                                <!--end::Svg Icon-->
-															</span>
-														</span>
-													</span>
-                                <div class="d-flex flex-column text-right">
-                                    <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
-                                </div>
-                            </div>
-                            <div id="kt_stats_widget_12_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height: 150px"></div>
-                        </div>
-                        <!--end::Body-->
-                    </div>
-                    <!--end::Stats Widget 12-->
+                <div class="col-lg-6 col-xxl-6 chart">
+                    <canvas id="myChart3" style="width:100%"></canvas>
                 </div>
-                <div class="col-lg-6 col-xxl-6 mt-25">
-                    <!--begin::Stats Widget 12-->
-                    <div class="card card-custom card-stretch">
-                        <!--begin::Body-->
-                        <div class="card-body p-0">
-                            <div class="d-flex align-items-center justify-content-between card-spacer flex-grow-1">
-                                            <span class="symbol symbol-50 symbol-light-success mr-2 bg">
-														<span class="symbol-label">
-															<span class="svg-icon svg-icon-xl svg-icon-success">
-																<!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
-																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																		<rect x="0" y="0" width="24" height="24" />
-																		<rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
-																		<path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
-																	</g>
-																</svg>
-                                                                <!--end::Svg Icon-->
-															</span>
-														</span>
-											</span>
-                                <div class="d-flex flex-column text-right">
-                                    <span class="text-dark-75 font-weight-bolder font-size-h3">+ 1</span>
-                                    <span class="font-weight-bold mt-2"><b>{{ __('Users') }}</b></span>
-                                </div>
-                            </div>
-                            <div id="kt_stats_widget_13_chart" class="card-rounded-bottom bg-gray-100" data-color="primary" style="height:150px"></div>
-                        </div>
-                        <!--end::Body-->
-                    </div>
-                    <!--end::Stats Widget 12-->
+                <div class="col-lg-6 col-xxl-6 chart">
+                    <canvas id="myChart4" style="width:100%;max-width:600px"></canvas>
                 </div>
-
+                <div class="col-lg-12 col-xxl-12 chart">
+                    <canvas id="myChart5" style="width:100%"></canvas>
+                </div>
+         
             </div>
             <!--end::Row-->
             <!--end::Dashboard-->
         </div>
         <!--end::Container-->
-    </div>
+    {{-- </div> --}}
     <!--end::Entry-->
 
 @endsection
+@push('styles')
+<style>
+    .chart{
+        margin: 50px auto;
+    }
+</style>
+@endpush
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    {{-- Chart 1 --}}
     <script>
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = [
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145"
+        ];
+        
+        new Chart("myChart1", {
+        type: "pie",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "World Wide Wine Production 2018"
+            }
+        }
+        });
+    </script>
+    {{-- cHART 2 --}}
+    <script>
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = [
+          "#b91d47",
+          "#00aba9",
+          "#2b5797",
+          "#e8c3b9",
+          "#1e7145"
+        ];
+        
+        new Chart("myChart2", {
+          type: "doughnut",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor: barColors,
+              data: yValues
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: "World Wide Wine Production 2018"
+            }
+          }
+        });
+    </script>
 
-        {{--var users_rate         = @json($users_rate);--}}
-        {{--var orders_rate        = @json($orders_rate);--}}
-        {{--var orderFromAndroid   = "{{$orderFromAndroid}}";--}}
-        {{--var orderFromIOS       = "{{$orderFromIOS}}";--}}
-        {{--var orderFromWebsite   = "{{$orderFromWebsite}}";--}}
+    {{-- Chart 3 3 --}}
+    <script>
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = ["red", "green","blue","orange","brown"];
+        
+        new Chart("myChart3", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            legend: {display: false},
+            title: {
+            display: true,
+            text: "World Wine Production 2018"
+            }
+        }
+        });
+    </script>
 
-   </script>
-    <script src="{{asset('dashboard/js/pages/features/charts/flotcharts.js')}}"></script>
-    <script src="{{asset('dashboard/plugins/custom/flot/flot.bundle.js')}}"></script>
+    {{-- Chart 4 --}}
+    <script>
+        var xValues = [50,60,70,80,90,100,110,120,130,140,150];
+        var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+        
+        new Chart("myChart4", {
+          type: "line",
+          data: {
+            labels: xValues,
+            datasets: [{
+              fill: false,
+              lineTension: 0,
+              backgroundColor: "rgba(0,0,255,1.0)",
+              borderColor: "rgba(0,0,255,0.1)",
+              data: yValues
+            }]
+          },
+          options: {
+            legend: {display: false},
+            scales: {
+              yAxes: [{ticks: {min: 6, max:16}}],
+            }
+          }
+        });
+    </script>
+    {{-- Chart 5 --}}
+    <script>
+        var xValues = [100,200,300,400,500,600,700,800,900,1000];
+        
+        new Chart("myChart5", {
+          type: "line",
+          data: {
+            labels: xValues,
+            datasets: [{ 
+              data: [860,1140,1060,1060,1070,1110,1330,2210,7830,2478],
+              borderColor: "red",
+              fill: false
+            }, { 
+              data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+              borderColor: "green",
+              fill: false
+            }, { 
+              data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+              borderColor: "blue",
+              fill: false
+            }]
+          },
+          options: {
+            legend: {display: false}
+          }
+        });
+        </script>
+        
 @endpush

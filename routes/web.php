@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Coupon;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
 Route::get('export', 'UserController@export')->name('export');
 Route::get('importExportView', 'UserController@importExportView');
 Route::post('import', 'UserController@import')->name('import');
@@ -29,12 +32,26 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         Route::resource('users', UserController::class);
+        // Route::get('users/upload/form', 'UserController@uploadForm')->name('users.upload.form');
+        // Route::get('users/upload','UserController@upload')->name('users.upload.form');
+        // Route::post('users/upload','UserController@storeUpload')->name('users.upload.store');
         Route::resource('publishers', PublisherController::class);
+        Route::get('publishers/type/{type}', 'PublisherController@getBasedOnType')->name('publishers.type');
+        // Upload Publishers
+        Route::get('publishers/upload/form', 'PublisherController@upload')->name('publishers.upload.form');
+        Route::post('publishers/upload', 'PublisherController@storeUpload')->name('publishers.upload.store');
+        // Upload update hasoffer id by email
+        Route::get('publishers/upload/update-hasoffer-id-by-email/form', 'PublisherController@uploadUpdateHasOfferIdByEmail')->name('publishers.upload.update.hasoffer.id.by.email.form');
+        Route::post('publishers/upload/update-hasoffer-id-by-email', 'PublisherController@storeUploadUpdateHasOfferIdByEmail')->name('publishers.upload.update.hasoffer.id.by.email.store');
+
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
         Route::resource('advertisers', AdvertiserController::class);
         Route::resource('offers', OfferController::class);
         Route::resource('coupons', CouponController::class);
+        Route::resource('pivot-report', PivotReportController::class);
+        Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
+        Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
         Route::post('logout', 'AuthController@logout')->name('logout');
 
         // Ajax requests
@@ -42,3 +59,11 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     });
 });
 
+
+
+Route::get('/test', function () {
+    $coupon  = Coupon::firstOrCreate([
+        'coupon' => 'MF21'
+    ]);
+    dd($coupon);
+});

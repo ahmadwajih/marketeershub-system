@@ -24,7 +24,8 @@ class AbilitySeeder extends Seeder
             'offers',
             'coupons',
             'currencies',
-            'publishers'
+            'publishers',
+            'pivot_report'
         ];
 
         $names = 
@@ -41,7 +42,7 @@ class AbilitySeeder extends Seeder
             foreach ($names as $name) {
                $ability =  Ability::create([
                     'name'  => $name['name'] .'_'. $model,
-                    'label' => $name['label'] .' '. $model,
+                    'label' => $name['label'] .' '. strtolower(trim(str_replace('_',' ', trim($model)))),
                     'action' => $name['name'],
                     'category' => $model
                 ]);

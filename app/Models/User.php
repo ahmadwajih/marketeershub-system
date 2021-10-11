@@ -66,4 +66,8 @@ class User extends Authenticatable
         return $this->belongsTo(City::class);
     }
 
+    public function coupons(){
+        return $this->hasMany(Coupon::class);
+    }
+
 }

@@ -18,4 +18,8 @@ class Coupon extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function report(){
+        return $this->hasOne(PivotReport::class);
+    }
 }

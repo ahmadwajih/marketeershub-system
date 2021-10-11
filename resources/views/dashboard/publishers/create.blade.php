@@ -334,25 +334,6 @@
         $('#kt_select_team').select2({
             placeholder: "Select Option",
         });
-        $('#kt_select_position').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_parent_id').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_gender').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_status').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_country_id').select2({
-            placeholder: "Select Option",
-        });
-        $('#kt_select_city_id').select2({
-            placeholder: "You sholud select country",
-        });
-
     </script>
     <script>
         $(document).ready(function(){
