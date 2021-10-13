@@ -17,21 +17,34 @@ class Offer extends Model
     public function currency(){
         return $this->belongsTo(Currency::class);
     }
+  
+    public function coupons(){
+        return $this->hasMany(Coupon::class);
+    }
 
     public function countries(){
         return $this->belongsToMany(Country::class)->withTimestamps();
     }
 
-    public function coupons(){
-        return $this->hasMany(Coupon::class);
-    }
-
-    public function allowTo($contry){
+    public function assignCountry($contry){
         return $this->countries()->save($contry);
     }
 
-    public function disallowTo($contry)
+    public function unassignCountry($contry)
     {
         return $this->countries()->detach($contry);
+    }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class)->withTimestamps();
+    }
+
+    public function assignCategory($category){
+        return $this->categories()->save($category);
+    }
+
+    public function unassignCategory($category)
+    {
+        return $this->categories()->detach($category);
     }
 }

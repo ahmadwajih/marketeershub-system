@@ -102,7 +102,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                                 }).done(function (res) {
                                     swal.fire({
                                         text: "Deleted successfully ",
-                                        confirmButtonText: "موافق",
+                                        confirmButtonText: "Accept",
                                         icon: "success",
                                         confirmButtonClass: "btn font-weight-bold btn-primary",
                                     });

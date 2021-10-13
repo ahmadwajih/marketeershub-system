@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title','الصلاحيات')
+@section('title','Roles')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -11,10 +11,10 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">إضـافه صلاحيه جـديده</h2>
+                            <h2 class="card-title">{{ __('Create New Role') }}</h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" id="kt_form" action="{{route('admin.roles.store')}}" method = "POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{route('dashboard.roles.store')}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body p-0">
                                 @if ($errors->any())
@@ -22,7 +22,7 @@
                                     <div class="alert-icon">
                                         <i class="flaticon2-bell-5"></i>
                                     </div>
-                                    <div class="alert-text font-weight-bold">خطأ في التحقق من الصحة ، قم بتغيير بعض الأشياء وحاول الإرسال مرة أخرى.</div>
+                                    <div class="alert-text font-weight-bold">{{ __('Validation error') }}</div>
                                     <div class="alert-close">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span>
@@ -35,9 +35,9 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row p-10">
-                                            <label for="example-name-ar-input" class="col-2 col-form-label">اسم الصلاحيه</label>
+                                            <label for="example-name-ar-input" class="col-2 col-form-label">{{ __('Role Name') }}</label>
                                             <div class="col-10">
-                                                <input class="form-control" name="name" type="text" value="{{ old('name') }}" id="example-name-ar-input" placeholder="اسم الصلاحيه"/>
+                                                <input class="form-control" name="name" type="text" value="{{ old('name') }}" id="example-name-ar-input"/>
                                                 @if ($errors->has('name'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('name') }}</p>
@@ -50,27 +50,27 @@
                                 </div>
                                     <table class="table bg-light">
 
-                                        @foreach($captions as $caption)
+                                        @foreach($models as $model)
                                             <thead class="thead-dark">
                                             <tr>
                                                 <th colspan="2"
-                                                    style="text-align: center">{{__(ucwords(str_replace('_', ' ', $caption)))}}</th>
+                                                    style="text-align: center">{{__(ucwords(str_replace('_', ' ', $model)))}}</th>
                                             </tr>
                                             <tr style="text-align: center">
-                                                <td>الصلاحيه</td>
-                                                <td>الحاله</td>
+                                                <td>{{ __('Role Name') }}</td>
+                                                <td>{{ __('Status') }}</td>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($permissions as $permission)
-                                                @if(strpos($permission->name, $caption) !== false)
+                                            @foreach($abilities as $ability)
+                                                @if(strpos($ability->name, $model) !== false)
                                                     <tr style="text-align: center">
-                                                        <td>{{$permission->label}}</td>
+                                                        <td>{{$ability->label}}</td>
                                                         <td>
                                                         <span class="switch switch-icon mx-auto text-center"
                                                               style="width:fit-content">
                                                             <label>
-                                                                <input type="checkbox" name="{{$permission->name}}"/>
+                                                                <input type="checkbox" name="{{$ability->name}}"/>
                                                                 <span></span>
                                                             </label>
                                                         </span>
@@ -86,8 +86,8 @@
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-lg-12 text-center">
-                                        <button type="reset" class="btn btn-light-primary font-weight-bold">إلـغـاء</button>
-                                        <button type="submit" class="btn btn-primary font-weight-bold mr-2">تـأكيـد</button>
+                                        <button type="reset" class="btn btn-light-primary font-weight-bold">{{ __('Cancel') }}</button>
+                                        <button type="submit" class="btn btn-primary font-weight-bold mr-2">{{ __('Submit') }}</button>
                                     </div>
                                 </div>
                             </div>

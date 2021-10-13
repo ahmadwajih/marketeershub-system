@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title','الصلاحيات')
+@section('title','Roles')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -11,7 +11,7 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header mx-auto text-center">
-                            <h2 class="card-title font-weight-bolder">  صلاحيه  {{$role->name}} </h2>
+                            <h2 class="card-title font-weight-bolder">  {{ __('Role') }} {{$role->name}} </h2>
                         </div>
 
                     </div>
@@ -22,25 +22,25 @@
 
                                 <table class="table bg-light">
 
-                                    @foreach($captions as $caption)
+                                    @foreach($models as $model)
                                         <thead class="thead-dark">
                                         <tr>
-                                            <th colspan="2" style="text-align: center">{{__(ucwords(str_replace('_', ' ', $caption)))}}</th>
+                                            <th colspan="2" style="text-align: center">{{__(ucwords(str_replace('_', ' ', $model)))}}</th>
                                         </tr>
                                         <tr style="text-align: center">
-                                            <td>الصلاحيه</td>
-                                            <td>الحاله</td>
+                                            <td>{{ __('Permission') }}</td>
+                                            <td>{{ __('Status') }}</td>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($permissions as $permission)
-                                            @if(strpos($permission->name, $caption) !== false)
+                                        @foreach($abilities as $ability)
+                                            @if(strpos($ability->name, $model) !== false)
                                                 <tr style="text-align: center">
-                                                    <td>{{$permission->label}}</td>
+                                                    <td>{{$ability->label}}</td>
                                                     <td>
                                                     <span class="switch switch-icon mx-auto text-center" style="width:fit-content">
                                                         <label>
-                                                            <input type="checkbox"  disabled  {{ (old($permission->name) ?: $role_permissions->contains($permission))? 'checked' : '' }} />
+                                                            <input type="checkbox"  disabled  {{ (old($ability->name) ?: $abilitiy_role->contains($ability))? 'checked' : '' }} />
                                                             <span></span>
                                                         </label>
                                                     </span>
@@ -55,8 +55,8 @@
                                                 style="text-align: center">Settings</th>
                                         </tr>
                                         <tr style="text-align: center">
-                                            <td>الصلاحيه</td>
-                                            <td>الحاله</td>
+                                            <td>{{ __('Permission') }}</td>
+                                            <td>{{ __('Status') }}</td>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -66,7 +66,7 @@
                                             <span class="switch switch-icon mx-auto text-center"
                                                   style="width:fit-content">
                                                 <label>
-                                                        <input type="checkbox" disabled {{ $role_permissions->contains(\App\Models\Permission::where('name','view_sittings')->first()) ? 'checked' : '' }} name="view_sittings"/>
+                                                        <input type="checkbox" disabled {{ $abilitiy_role->contains(\App\Models\Ability::where('name','view_sittings')->first()) ? 'checked' : '' }} name="view_sittings"/>
                                                     <span></span>
                                                 </label>
                                             </span>
@@ -82,9 +82,9 @@
                             <div class="kt-form__actions">
                                 <div class="row">
                                     <div class="col-lg-12 mt-5">
-                                        <a href="{{route('admin.roles.index')}}">
+                                        <a href="{{route('dashboard.roles.index')}}">
                                             <button type="button" class="btn btn-primary font-weight-bold mr-2">
-                                                العـوده
+                                                {{ __('Back') }}
                                             </button>
                                         </a>
                                     </div>

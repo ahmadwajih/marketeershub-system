@@ -50,17 +50,17 @@ var KTDatatableRemoteAjaxDemo = function() {
                 afterTemplate: function (row, data, index) {
                     row.find('.delete-item').on('click', function () {
                         swal.fire({
-                            text: "هـل أنـت متـأكد مـن حـذف هـذا العنـصر ؟ ",
-                            confirmButtonText: "نعــم, أمسح !",
+                            text: "Are you sure you want to delete this item?",
+                            confirmButtonText: "Yes, Delete!",
                             icon: "warning",
                             confirmButtonClass: "btn font-weight-bold btn-danger",
                             showCancelButton: true,
-                            cancelButtonText: "لا , ألغي",
+                            cancelButtonText: "No, Cancel",
                             cancelButtonClass: "btn font-weight-bold btn-primary"
                         }).then(function (result) {
                             if (result.value) {
                                 swal.fire({
-                                    title: "تحميل ...",
+                                    title: "Loading ...",
                                     onOpen: function () {
                                         swal.showLoading();
                                     }
@@ -73,9 +73,9 @@ var KTDatatableRemoteAjaxDemo = function() {
                                         if (err.hasOwnProperty('responseJSON')) {
                                             if (err.responseJSON.hasOwnProperty('message')) {
                                                 swal.fire({
-                                                    title: "حطـأ !",
+                                                    title: "Error !",
                                                     text: err.responseJSON.message,
-                                                    confirmButtonText: "موافق",
+                                                    confirmButtonText: "Ok",
                                                     icon: "error",
                                                     confirmButtonClass: "btn font-weight-bold btn-primary",
                                                 });
@@ -85,8 +85,8 @@ var KTDatatableRemoteAjaxDemo = function() {
                                     }
                                 }).done(function (res) {
                                     swal.fire({
-                                        text: "تم الحذف بنجاح",
-                                        confirmButtonText: "موافق",
+                                        text: "Deleted successfully ",
+                                        confirmButtonText: "Accept",
                                         icon: "success",
                                         confirmButtonClass: "btn font-weight-bold btn-primary",
                                     });
@@ -109,7 +109,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
             }, {
                 field: 'name',
-                title: "الأسم ",
+                title: "Role Name ",
                 selector: false,
                 textAlign: 'center',
             },{

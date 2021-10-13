@@ -3,10 +3,24 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ability;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    public $models = [
+        'countries',
+        'cites',
+        'users',
+        'roles',
+        'advertisers',
+        'offers',
+        'coupons',
+        'currencies',
+        'publishers',
+        'pivot_report'
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +32,6 @@ class RoleController extends Controller
             $roles = getModelData('Role', $request);
             return response()->json($roles);
         }
-
         return view('dashboard.roles.index');
     }
 
@@ -29,7 +42,10 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.roles.create',[
+            'models' => $this->models,
+            'abilities'=> Ability::all(),
+        ]);
     }
 
     /**
@@ -40,7 +56,22 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $role = Role::create(
+            $this->validate($request, [
+                'name' => 'required|string|unique:roles',
+            ]));
+    
+            $abilities = Ability::get();
+            foreach($abilities as $ability){
+                if (request($ability->name) == "on"){
+                    $role->allowTo($ability);
+                }
+            }
+            $notification = array(
+                'message' => 'Created Succefuly ',
+                'alert-type' => 'success'
+            );
+            return redirect()->route('dashboard.roles.index')->with($notification);
     }
 
     /**
@@ -49,9 +80,14 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Role $role)
     {
-        //
+        return view('dashboard.roles.show',[
+            'role' => $role,
+            'models' => $this->models,
+            'abilities'=> Ability::get(),
+            'abilitiy_role'=> $role->abilities
+        ]);
     }
 
     /**
@@ -60,9 +96,14 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Role $role)
     {
-        //
+        return view('dashboard.roles.edit',[
+            'role' => $role,
+            'models' => $this->models,
+            'abilities'=> Ability::get(),
+            'abilitiy_role'=> $role->abilities
+        ]);
     }
 
     /**
@@ -72,9 +113,23 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Role $role)
     {
-        //
+        $abilities = Ability::get();
+        foreach($abilities as $ability){
+            if (request($ability->name) == "on" && !$role->abilities->contains($ability)){
+                $role->allowTo($ability);
+            }elseif (!isset($request[$ability->name]) && $role->abilities->contains($ability)){
+                $role->disallowTo($ability);
+            }
+
+        }
+        $role->save();
+        $notification = array(
+            'message' => 'Updated Succefuly ',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('dashboard.roles.index')->with($notification);
     }
 
     /**
@@ -83,8 +138,15 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        if($request->ajax())
+        {
+            if($id != 1){
+                $role = Role::find($id);
+                $role->destroy($id);
+            }
+            
+        }
     }
 }

@@ -11,14 +11,6 @@ class CreateOffersTable extends Migration
      *
      * @return void
      */
-
-
-     /**
-      * Flat rate  
-      * Flat rate  (new, old )
-      * Persentage 
-      * perst ( new , old) 
-      */
     public function up()
     {
         Schema::create('offers', function (Blueprint $table) {
@@ -31,10 +23,13 @@ class CreateOffersTable extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('offer_url');
             $table->string('category')->nullable();
-            $table->enum('type', ['cpa_flat', 'cpa_percentage', 'cps', 'cpl', 'cpc'])->default('cpa_flat');
-            $table->enum('payout_type', ['cpa_flat', 'cpa_percentage', 'cps', 'cpl', 'cpc'])->default('cpa_flat');
-            $table->enum('cpa_type', ['static', 'new_old', 'slaps'])->default('static');
-            $table->float('default_payout')->nullable();
+            $table->enum('type', ['coupon_tracking', 'link_traking'])->default('coupon_tracking');
+            $table->enum('discount_type', ['flat', 'percentage'])->default('percentage');
+            $table->float('discount')->default(0);
+            $table->enum('payout_type', ['cps_flat', 'cps_percentage', 'cpa', 'cpl', 'cpc'])->default('cps_flat');
+            $table->enum('cps_type', ['static', 'new_old', 'slaps'])->default('static');
+            $table->float('payout')->nullable();
+            $table->float('revenue')->nullable();
             $table->float('percent_payout')->nullable();
             $table->enum('status', ['active', 'pused', 'pending', 'expire'])->default('pending');
             $table->date('expire_date');

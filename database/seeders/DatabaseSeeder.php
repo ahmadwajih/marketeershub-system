@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             OfferSeeder::class,
             CouponSeeder::class,
             PivotReportSeeder::class,
+            CategorySeeder::class,
         ]);
     }
 }

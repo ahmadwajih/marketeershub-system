@@ -38,6 +38,10 @@
                 font-family: 'Tajawal', sans-serif !important;
             }
             .hide {display:none;}
+			#kt_form .row > div{
+				margin-top: 1
+				0px;
+			}
         </style>
 
         @stack('styles')
