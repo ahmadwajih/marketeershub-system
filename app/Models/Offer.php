@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+//161.35.27.113
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,5 +46,13 @@ class Offer extends Model
     public function unassignCategory($category)
     {
         return $this->categories()->detach($category);
+    }
+
+    public function newOld(){
+        return $this->hasOne(NewOldOffer::class);
+    }
+
+    public function slaps(){
+        return $this->hasMany(OfferSlap::class);
     }
 }

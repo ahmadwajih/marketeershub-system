@@ -174,8 +174,8 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Payout Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_payout_type" name="payout_type" >
-                                                    <option {{ old('payout_type')=="cps_flat"||$offer->payout_type=="cps_flat"?"selected":"" }} value="cps_flat">{{ __('CPS Flat') }}</option>
-                                                    <option {{ old('payout_type')=="cps_percentage"||$offer->payout_type=="cps_flat"?"selected":"" }} value="cps_percentage">{{ __('CPS Percentage') }}</option>
+                                                    <option {{ old('payout_type')=="cps_flat"?"selected":($offer->payout_type=="cps_flat"?"selected":"") }} value="cps_flat">{{ __('CPS Flat') }}</option>
+                                                    <option {{ old('payout_type')=="cps_percentage"?"selected":($offer->payout_type=="cps_percentage"?"selected":"") }} value="cps_percentage">{{ __('CPS Percentage') }}</option>
                                                 </select>
                                                 @if ($errors->has('payout_type'))
                                                     <div>
@@ -186,9 +186,9 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('CPS Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_cps_type" name="cps_type" >
-                                                    <option {{ old('cps_type')=="static"||$offer->cps_type=="static"?"selected":"" }} value="static">{{ __('Static') }}</option>
-                                                    <option {{ old('cps_type')=="new_old"||$offer->cps_type=="new_old"?"selected":"" }} value="new_old">{{ __('New old') }}</option>
-                                                    <option {{ old('cps_type')=="slaps"||$offer->cps_type=="slaps"?"selected":"" }} value="slaps">{{ __('Slaps') }}</option>
+                                                    <option {{ old('cps_type')=="static"?"selected":($offer->cps_type=="static"?'selected':'') }} value="static">{{ __('Static') }}</option>
+                                                    <option {{ old('cps_type')=="new_old"?"selected":($offer->cps_type=="new_old"?"selected":"") }} value="new_old">{{ __('New old') }}</option>
+                                                    <option {{ old('cps_type')=="slaps"?"selected":($offer->cps_type=="slaps"?"selected":"") }} value="slaps">{{ __('Slaps') }}</option>
                                                 </select>
                                                 @if ($errors->has('cps_type'))
                                                     <div>
@@ -198,7 +198,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group row {{ $offer->cps_type!='static'?'display-none':'' }}" id="static">
+                                        <div class="form-group row {{ old('cps_type')&&old('cps_type')!="static"?"display-none":($offer->cps_type!="static"?"display-none":"") }}" id="static">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Revenu') }} :</label>
                                                 <input type="number" step="0.1" name="revenue" class="form-control" value="{{old('revenue') ?? $offer->revenue}}" />
@@ -220,11 +220,11 @@
                                         </div>
 
                                         
-                                        <div class="{{ $offer->cps_type!='new_old'?'display-none':'' }}" id="oldNew">
+                                        <div class="{{ old('cps_type')&&old('cps_type')!="new_old"?"display-none":($offer->cps_type!="new_old"?"display-none":"") }}" id="oldNew">
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
                                                     <label>* {{ __('New Payout') }} :</label>
-                                                    <input type="number" step="0.1" name="new_payout" placeholder="10" class="form-control" value="{{old('new_payout')}}" />
+                                                    <input type="number" step="0.1" name="new_payout" placeholder="10" class="form-control" value="{{old('new_payout') ? old('new_payout') : ($offer->newOld ? $offer->newOld->new_payout:'') }}" />
                                                     @if ($errors->has('new_payout'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('new_payout') }}</p>
@@ -233,7 +233,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <label>* {{ __('New Revenue') }} :</label>
-                                                    <input type="number" step="0.1" name="new_revenue" placeholder="5" class="form-control" value="{{old('new_revenue')}}" />
+                                                    <input type="number" step="0.1" name="new_revenue" placeholder="5" class="form-control" value="{{old('new_revenue') ? old('new_revenue') : ($offer->newOld ? $offer->newOld->new_revenue:'') }}" />
                                                     @if ($errors->has('new_revenue'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('new_revenue') }}</p>
@@ -242,7 +242,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <label>* {{ __('Old Payout') }} :</label>
-                                                    <input type="number" step="0.1" name="old_payout" placeholder="10" class="form-control" value="{{old('old_payout')}}" />
+                                                    <input type="number" step="0.1" name="old_payout" placeholder="10" class="form-control" value="{{old('old_payout') ? old('old_payout') : ($offer->newOld ? $offer->newOld->old_payout:'') }}" />
                                                     @if ($errors->has('old_payout'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('old_payout') }}</p>
@@ -251,7 +251,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <label>* {{ __('Old Revenue') }} :</label>
-                                                    <input type="number" step="0.1" name="old_revenue" placeholder="5" class="form-control" value="{{old('old_revenue')}}" />
+                                                    <input type="number" step="0.1" name="old_revenue" placeholder="5" class="form-control" value="{{old('old_revenue') ? old('old_revenue') : ($offer->newOld ? $offer->newOld->old_revenue:'') }}" />
                                                     @if ($errors->has('old_revenue'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('old_revenue') }}</p>
@@ -261,49 +261,64 @@
                                             </div>
                                         </div>
                                         
-
-                                        <div class="form-group row {{ $offer->cps_type!='slaps'?'display-none':'' }}" id="slaps">
+                                        <div class="form-group row {{ old('cps_type')&&old('cps_type')!="slaps"?"display-none":($offer->cps_type!="slaps"?"display-none":"") }}" id="slaps">
                                             <div id="kt_repeater_1">
                                                 <div class="form-group row" id="kt_repeater_1">
                                                     <label class="col-form-label text-right"><b>{{ __('Slaps') }}</b></label>
                                                     <div data-repeater-list="slaps" class="col-lg-12">
-                                                        <div data-repeater-item class="form-group row align-items-center">
-                                                            <div class="col-12"><h3>{{ __('Slap') }}</h3></div>
-                                                            <div class="col-md-4">
-                                                                <label>{{__('Orders Type') }}</label>
-                                                                <select class="form-control form-select" name="slap_type" style="display: block" >
-                                                                    <option value="number_of_orders">{{{ __('Number Of Orders') }}}</option>
-                                                                    <option value="ammount_of_orders">{{{ __('Ammount Of Orders') }}}</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label>{{ __('From') }}</label>
-                                                                <input type="number" name="from" class="form-control" placeholder="1"/>
-                                                                <div class="d-md-none mb-2"></div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label>{{ __('To') }}</label>
-                                                                <input type="number" name="to" class="form-control" placeholder="1"/>
-                                                                <div class="d-md-none mb-2"></div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label>{{ __('Revenue') }}</label>
-                                                                <input type="number" name="revenue" class="form-control" placeholder="1"/>
-                                                                <div class="d-md-none mb-2"></div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label>{{ __('Payout') }}</label>
-                                                                <input type="number" name="payout" class="form-control" placeholder="1"/>
-                                                                <div class="d-md-none mb-2"></div>
-                                                            </div>
-    
-                                                            <div class="col-md-4">
-                                                                <br>
-                                                                <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
-                                                                    <i class="la la-trash-o"></i>حذف
-                                                                </a>
-                                                            </div>
-                                                        </div>
+                                                        @if(old('cps_type') == 'slaps' || $offer->cps_type=="slaps")
+                                                            @if(old('cps_type') == 'slaps')
+                                                                @php 
+                                                                    $slaps = old('slaps');
+                                                                    $old = true;
+                                                                @endphp
+                                                            @elseif($offer->cps_type=="slaps")
+                                                                @php 
+                                                                    $slaps = $offer->slaps;
+                                                                    $old = true;
+                                                                @endphp
+                                                            @endif
+                                                            
+                                                            @foreach($slaps as $slap)
+                                                                <div data-repeater-item class="form-group row align-items-center">
+                                                                    <div class="col-12"><h3>{{ __('Slap') }}</h3></div>
+                                                                    <div class="col-md-4">
+                                                                        <label>{{__('Orders Type') }}</label>
+                                                                        <select class="form-control form-select" name="slap_type" style="display: block" >
+                                                                            <option {{ $old ? ($slap['slap_type']=='number_of_orders'?'selected':''):($slap->slap_type=='number_of_orders'?'selected':'') }} value="number_of_orders">{{{ __('Number Of Orders') }}}</option>
+                                                                            <option {{ $old ? ($slap['slap_type']=='ammount_of_orders'?'selected':''):($slap->slap_type=='ammount_of_orders'?'selected':'') }} value="ammount_of_orders">{{{ __('Ammount Of Orders') }}}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label>{{ __('From') }}</label>
+                                                                        <input type="number" name="from" class="form-control" placeholder="1" value="{{ $old?$slap['from']:$slap->from }}"/>
+                                                                        <div class="d-md-none mb-2"></div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label>{{ __('To') }}</label>
+                                                                        <input type="number" name="to" class="form-control" placeholder="1"  value="{{ $old?$slap['to']:$slap->to }}"/>
+                                                                        <div class="d-md-none mb-2"></div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label>{{ __('Revenue') }}</label>
+                                                                        <input type="number" name="revenue" class="form-control" placeholder="1"  value="{{ $old?$slap['revenue']:$slap->revenue }}"/>
+                                                                        <div class="d-md-none mb-2"></div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label>{{ __('Payout') }}</label>
+                                                                        <input type="number" name="payout" class="form-control" placeholder="1"  value="{{ $old?$slap['payout']:$slap->payout }}"/>
+                                                                        <div class="d-md-none mb-2"></div>
+                                                                    </div>
+            
+                                                                    <div class="col-md-4">
+                                                                        <br>
+                                                                        <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
+                                                                            <i class="la la-trash-o"></i>حذف
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
                                                     </div>
     
                                                 </div>

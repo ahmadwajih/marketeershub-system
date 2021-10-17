@@ -17,8 +17,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
 Route::get('export', 'UserController@export')->name('export');
 Route::get('importExportView', 'UserController@importExportView');
 Route::post('import', 'UserController@import')->name('import');
@@ -32,9 +30,6 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         Route::resource('users', UserController::class);
-        // Route::get('users/upload/form', 'UserController@uploadForm')->name('users.upload.form');
-        // Route::get('users/upload','UserController@upload')->name('users.upload.form');
-        // Route::post('users/upload','UserController@storeUpload')->name('users.upload.store');
         Route::resource('publishers', PublisherController::class);
         Route::get('publishers/type/{type}', 'PublisherController@getBasedOnType')->name('publishers.type');
         // Upload Publishers
