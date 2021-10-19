@@ -48,8 +48,9 @@ class User extends Authenticatable
     }
 
 
-    public function assignRole($role)
+    public function assignRole($role_id)
     {
+        $role = Role::find($role_id);
         return $this->roles()->save($role);
     }
 

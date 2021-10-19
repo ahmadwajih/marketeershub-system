@@ -25,7 +25,9 @@ class AbilitySeeder extends Seeder
             'coupons',
             'currencies',
             'publishers',
-            'pivot_report'
+            'pivot_report',
+            'categories',
+            'reports',
         ];
 
         $names = 

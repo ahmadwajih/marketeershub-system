@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return redirect()->route('dashboard.index');
     return view('welcome');
 });
 
@@ -42,6 +43,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
         Route::resource('advertisers', AdvertiserController::class);
+        Route::resource('categories', CategoryController::class);
         Route::resource('offers', OfferController::class);
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);

@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Gate;
 
 class DashboardController extends Controller
 {
-    public function index(){
-        $this->authorize('view_countries');
-        
+    public function index(){        
         return view('dashboard.home');
     }
 }

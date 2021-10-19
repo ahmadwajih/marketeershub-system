@@ -7,6 +7,7 @@ use App\Imports\PublishersImport;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -59,6 +60,7 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         return view('dashboard.publishers.create',[
             'countries' => Country::all(),
+            'roles' => Role::all(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
         ]);
     }
@@ -71,9 +73,6 @@ class PublisherController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        
-        */
         $this->authorize('create_publishers');
         $data = $request->validate([
             'name'                  => 'required|max:255',
@@ -99,12 +98,19 @@ class PublisherController extends Controller
             'swift_code'            => 'required|max:255',
             'iban'                  => 'required|max:255',
             'currency'              => 'required|max:255',
-        ]);
+            'roles.*'               => 'exists:roles,id',
 
+        ]);
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
-        User::create($data);
-
+        unset($data['roles']);
+        $publisher = User::create($data);
+        if(count($request->roles) > 0){
+            foreach ($request->roles as $role_id)
+            {
+                $publisher->assignRole($role_id);
+            }
+        }
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -141,6 +147,8 @@ class PublisherController extends Controller
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
             'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'roles' => Role::all(),
+
         ]);
     }
 
@@ -153,6 +161,8 @@ class PublisherController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+
         $this->authorize('update_publishers');
         $data = $request->validate([
             'name'                  => 'required|max:255',
@@ -178,14 +188,23 @@ class PublisherController extends Controller
             'swift_code'            => 'required|max:255',
             'iban'                  => 'required|max:255',
             'currency'              => 'required|max:255',
-        ]);
+            'roles.*'               => 'exists:roles,id',
 
+        ]);
         unset($data['password']);
+        unset($data['roles']);
         if($request->password){
             $data['password'] = Hash::make($request->password);
         }
         $publisher = User::findOrFail($id);
         $publisher->update($data);
+        if($request['roles']){
+            $publisher->roles()->detach();
+            foreach ($request['roles'] as $role_id)
+            {
+                $publisher->assignRole($role_id);
+            }
+        }
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'

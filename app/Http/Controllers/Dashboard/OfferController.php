@@ -11,7 +11,7 @@ use App\Models\Offer;
 use App\Models\OfferSlap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use Yajra\Datatables\Datatables;
 class OfferController extends Controller
 {
     /**
@@ -21,6 +21,18 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->ajax()) {
+            $data = Offer::with(['advertiser', 'categories'])->latest()->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $actionBtn = '<a href="'.route('dashboard.offers.edit', $row).'" class="edit btn btn-success btn-sm">Edit</a> <a href="'.route('dashboard.offers.destroy', $row).'" class="delete btn btn-danger btn-sm">Delete</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
         $this->authorize('view_offers');
         if ($request->ajax()){
             $offers = getModelData('Offer' , $request, ['advertiser']);

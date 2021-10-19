@@ -29,6 +29,13 @@
 		<link href="{{ asset('dashboard') }}/css/themes/layout/brand/light.css" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('dashboard') }}/css/themes/layout/aside/light.css" rel="stylesheet" type="text/css" />
   
+
+		<meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
+        <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+
 		<!--end::Layout Themes-->
 		<link rel="shortcut icon" href="{{ asset('dashboard') }}/media/logos/favicon.ico" />
         @stack('headers')
@@ -164,6 +171,11 @@
 			var trashForceDeleteUrl = '/admin/trashed/force-delete/';
 			var trashRestoreUrl = '/admin/trashed/restore/';
 		</script>
+		{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>   --}}
+		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script> --}}
+		<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+		{{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> --}}
+		<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
         @stack('scripts')
 	</body>
 	<!--end::Body -->

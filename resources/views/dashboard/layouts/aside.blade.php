@@ -191,6 +191,50 @@
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
 
+                @can('view_categories') 
+                {{-- Start Categories  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='categories'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-align-center"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Categories') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Categories') }}</span>
+                                </span>
+                            </li>
+                            @can('view_categories')
+                            <li class="menu-item {{ Request::segment(2)=='categories'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.categories.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Categories') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_categories')
+                            <li class="menu-item {{ Request::segment(2)=='categories'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.categories.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Offer') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Categories --}}
+                @endcan
                 
                 @can('view_offers') 
                 {{-- Start Offers  --}}
@@ -231,6 +275,16 @@
                                 </a>
                             </li>
                             @endcan
+                            @if(auth()->user()->position != 'super_admin')
+                            <li class="menu-item {{ Request::segment(2)=='offers'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.offers.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('My Offers') }}</span>
+                                </a>
+                            </li>
+                            @endif
                         </ul>
                     </div>
                 </li>

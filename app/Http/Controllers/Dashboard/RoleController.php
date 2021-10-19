@@ -10,16 +10,18 @@ use Illuminate\Http\Request;
 class RoleController extends Controller
 {
     public $models = [
+        'reports',
+        'advertisers',
+        'offers',
+        'coupons',
+        'categories',
+        'publishers',
+        'pivot_report',
         'countries',
         'cites',
         'users',
         'roles',
-        'advertisers',
-        'offers',
-        'coupons',
         'currencies',
-        'publishers',
-        'pivot_report'
     ];
     /**
      * Display a listing of the resource.

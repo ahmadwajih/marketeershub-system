@@ -81,7 +81,7 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" required>
                                                     <option value="media_buying">{{ __('Media Buying') }}</option>
@@ -95,7 +95,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Belongs To') }} :</label>
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" required>
                                                     @foreach ($users as $user)
@@ -108,6 +108,21 @@
                                                     </div>
                                                 @endif
                                             </div>
+
+                                            <div class="col-lg-4">
+                                                <label>* {{ _('Role') }} :</label>
+                                                <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('roles'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('roles') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-lg-6">
@@ -332,6 +347,24 @@
 @push('scripts')
     <script>
         $('#kt_select_team').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_parent_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_gender').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_status').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_country_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_city_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_role_id').select2({
             placeholder: "Select Option",
         });
     </script>
