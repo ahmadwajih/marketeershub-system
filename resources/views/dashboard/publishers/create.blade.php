@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">{{ __('Create New User') }}</h2>
+                            <h2 class="card-title">{{ __('Create New Publisher') }}</h2>
                         </div>
                         <!--begin::Form-->
                         <form class="form" id="kt_form" action="{{route('dashboard.publishers.store')}}" method = "POST" enctype="multipart/form-data">

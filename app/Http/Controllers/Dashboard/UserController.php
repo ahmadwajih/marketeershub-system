@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -38,6 +39,7 @@ class UserController extends Controller
         $this->authorize('create_users');
         return view('dashboard.users.create',[
             'countries' => Country::all(),
+            'roles' => Role::all(),
             'users' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
         ]);
     }
@@ -62,12 +64,21 @@ class UserController extends Controller
             'gender'                => 'required|in:male,female',
             'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee'
+            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
+            'roles.*'               => 'exists:roles,id',
+
         ]);
 
         $data['password'] = Hash::make($request->password);
-        User::create($data);
-
+        unset($data['roles']);
+        $user = User::create($data);
+        if(count($request->roles) > 0){
+            foreach ($request->roles as $role_id)
+            {
+                $role = Role::findOrFail($role_id);
+                $user->assignRole($role);
+            }
+        }
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -99,6 +110,7 @@ class UserController extends Controller
         return view('dashboard.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),
+            'roles' => Role::all(),
             'cities' => City::whereCountryId($user->country_id)->get(),
             'parents' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
         ]);
@@ -125,16 +137,24 @@ class UserController extends Controller
             'gender'                => 'required|in:male,female',
             'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee'
+            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
+            'roles.*'               => 'exists:roles,id',
         ]);
         unset($data['password']);
         if($request->password){
             $data['password'] = Hash::make($request->password);
         }
             
-
-       
+        unset($data['roles']);
         $user->update($data);
+        if($request['roles']){
+            $user->roles()->detach();
+            foreach ($request['roles'] as $role_id)
+            {
+                $role = Role::findOrFail($role_id);
+                $user->assignRole($role);
+            }
+        }
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'

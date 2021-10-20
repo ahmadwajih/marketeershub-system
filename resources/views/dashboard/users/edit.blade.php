@@ -85,7 +85,7 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" >
                                                     <option {{ $user->team=='management'?'selected':'' }} value="management">{{ __('Management') }}</option>
@@ -102,7 +102,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Position') }} :</label>
                                                 <select class="form-control select2" id="kt_select_position" name="position" >
                                                     <option {{ $user->position=='employee'?'selected':'' }} value="employee">{{ __('Employee') }}</option>
@@ -114,6 +114,20 @@
                                                 @if ($errors->has('position'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('position') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <label>* {{ _('Role') }} :</label>
+                                                <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{$role->id}}"  @if($user->roles->contains($role)) selected @endif>{{$role->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('roles'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('roles') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -262,6 +276,9 @@
             placeholder: "You sholud select country",
         });
         $('#kt_select_subscription_type').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_role_id').select2({
             placeholder: "Select Option",
         });
     </script>

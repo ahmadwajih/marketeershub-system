@@ -108,7 +108,8 @@ class PublisherController extends Controller
         if(count($request->roles) > 0){
             foreach ($request->roles as $role_id)
             {
-                $publisher->assignRole($role_id);
+                $role = Role::findOrFail($role_id);
+                $publisher->assignRole($role);
             }
         }
         $notification = [
@@ -202,7 +203,8 @@ class PublisherController extends Controller
             $publisher->roles()->detach();
             foreach ($request['roles'] as $role_id)
             {
-                $publisher->assignRole($role_id);
+                $role = Role::findOrFail($role_id);
+                $publisher->assignRole($role);
             }
         }
         $notification = [
