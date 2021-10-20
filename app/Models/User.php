@@ -50,8 +50,8 @@ class User extends Authenticatable
 
     public function assignRole($role_id)
     {
-        $role = Role::find($role_id);
-        return $this->roles()->save($role);
+        // $role = Role::find($role_id);
+        return $this->roles()->save($role_id);
     }
 
     public function abilities()
