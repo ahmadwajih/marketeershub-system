@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/artisan', function () {
+    Artisan::call('migrate:fresh');
+    Artisan::call('db:seed');
+    return redirect()->route('dashboard.index');
+    return view('welcome');
+});
 Route::get('/', function () {
     return redirect()->route('dashboard.index');
     return view('welcome');
