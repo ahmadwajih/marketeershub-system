@@ -8,9 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -50,7 +52,6 @@ class User extends Authenticatable
 
     public function assignRole($role_id)
     {
-        // $role = Role::find($role_id);
         return $this->roles()->save($role_id);
     }
 
@@ -71,4 +72,16 @@ class User extends Authenticatable
         return $this->hasMany(Coupon::class);
     }
 
+    public function offers(){
+        return $this->belongsToMany(Offer::class);
+    }
+
+    public function assignOffer($offerId)
+    {
+        return $this->offers()->save($offerId);
+    }
+    public function unAssignOffer($offerId)
+    {
+        return $this->offers()->detach($offerId);
+    }
 }

@@ -134,7 +134,7 @@
                                                 <label>* {{ __('Categories') }} :</label>
                                                 <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
                                                     @foreach ($categories as $category)
-                                                        <option {{ old('categories')==$category->id?'selected':''  }} value="{{ $category->id }}">{{  $category->title }}</option>
+                                                        <option {{ old('categories')?(in_array($category->id,old('categories'))?'selected':''):''  }} value="{{ $category->id }}">{{  $category->title }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('categories'))
@@ -147,7 +147,7 @@
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_countries" name="countries[]" multiple>
                                                     @foreach($countries as $country)
-                                                        <option {{old('countries')==$country->id?"selected":""}} value="{{$country->id}}">{{$country->name_en}}</option>
+                                                        <option {{ old('countries')?(in_array($country->id,old('countries'))?'selected':''):''  }} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('countries'))
@@ -368,7 +368,7 @@
 
                                         <div class="form-group row">
                                             <div class="col-lg-12">
-                                                <label>* {{ __('Note') }} :</label>
+                                                <label>{{ __('Note') }} :</label>
                                                 <textarea class="form-control" name="note" cols="30" rows="10">{{old('note')}}</textarea>
                                                 @if ($errors->has('note'))
                                                     <div>
@@ -380,7 +380,7 @@
 
                                         <div class="form-group row">
                                             <div class="col-lg-12">
-                                                <label>* {{ __('Terms And Conditions') }} :</label>
+                                                <label>{{ __('Terms And Conditions') }} :</label>
                                                 <textarea class="form-control" name="terms_and_conditions" cols="30" rows="10">{{old('terms_and_conditions')}}</textarea>
                                                 @if ($errors->has('terms_and_conditions'))
                                                     <div>

@@ -51,7 +51,7 @@
                                     <div class="form-group row">
                                         <div class="col-12 text-center">
                                             <div class="image-input image-input-outline image-input-circle" id="kt_image">
-                                                <div class="image-input-wrapper" style="background-image: url({{asset("storage/Images/Offers").'/'.$offer->thumbnail}})"></div>
+                                                <div class="image-input-wrapper" style="background-image: url({{asset("storage/Images/Offers/").'/'.$offer->thumbnail}})"></div>
                                                 <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Upload image">
                                                     <i class="fa fa-pen icon-sm text-muted"></i>
                                                     <input type="file" name="thumbnail" accept=".png, .jpg, .jpeg" />
@@ -134,7 +134,7 @@
                                                 <label>* {{ __('Categories') }} :</label>
                                                 <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
                                                     @foreach ($categories as $category)
-                                                        <option {{ in_array($category->id, $offer->categories->pluck('id')->toArray())?'selected':''  }} value="{{ $category->id }}">{{  $category->title }}</option>
+                                                        <option {{ old('categories') ? (in_array($category->id, old('categories')) ? 'selected':'') : (in_array($category->id, $offer->categories->pluck('id')->toArray())?'selected':'')  }} value="{{ $category->id }}">{{  $category->title }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('categories'))
@@ -147,7 +147,7 @@
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_countries" name="countries[]" multiple>
                                                     @foreach($countries as $country)
-                                                        <option {{in_array($country->id, $offer->countries->pluck('id')->toArray())?"selected":""}} value="{{$country->id}}">{{$country->name_en}}</option>
+                                                        <option {{ old('countries')?(in_array($country->id, old('countries'))?'selected':''):(in_array($country->id, $offer->countries->pluck('id')->toArray())?"selected":"")}} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('countries'))
@@ -334,8 +334,8 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Offer Discount Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_discount_type" name="discount_type" >
-                                                    <option value="flat">{{ __('Flat') }}</option>
-                                                    <option value="percentage">{{ __('Percentage') }}</option>
+                                                    <option {{old('discount_type')=='flat'?'selected':($offer->discount_type=='flat'?'selected':'')}} value="flat">{{ __('Flat') }}</option>
+                                                    <option {{old('discount_type')=='percentage'?'selected':($offer->discount_type=='percentage'?'selected':'')}} value="percentage">{{ __('Percentage') }}</option>
                                                 </select>
                                                 @if ($errors->has('discount_type'))
                                                     <div>
@@ -345,7 +345,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Offer Discount') }} :</label>
-                                                <input type="number" step="0.1" name="discount" class="form-control" value="{{old('discount')}}" />
+                                                <input type="number" step="0.1" name="discount" class="form-control" value="{{old('discount')??$offer->discount}}" />
                                                 @if ($errors->has('discount'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('discount') }}</p>

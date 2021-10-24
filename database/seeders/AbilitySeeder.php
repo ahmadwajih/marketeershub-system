@@ -28,6 +28,7 @@ class AbilitySeeder extends Seeder
             'pivot_report',
             'categories',
             'reports',
+            'offerRequests',
         ];
 
         $names = 

@@ -236,9 +236,46 @@
                 {{--  End Categories --}}
                 @endcan
                 
+                @can('view_reports') 
+                {{-- Start Reports  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='reports'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-tags"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Reports') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Reports') }}</span>
+                                </span>
+                            </li>
+                            @can('view_reports')
+                            <li class="menu-item {{ Request::segment(2)=='reports'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.reports.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Reports') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+
+
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Reports --}}
+                @endcan
+
                 @can('view_offers') 
                 {{-- Start Offers  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offers'||Request::segment(2)=='my-offers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-tags"></i>
@@ -274,10 +311,10 @@
                                     <span class="menu-text">{{ __('Add New Offer') }}</span>
                                 </a>
                             </li>
-                            @endcan
+                            @endcan 
                             @if(auth()->user()->position != 'super_admin')
-                            <li class="menu-item {{ Request::segment(2)=='offers'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('dashboard.offers.create')}}" class="menu-link">
+                            <li class="menu-item {{ Request::segment(2)=='my-offers'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.my-offers')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
@@ -289,6 +326,51 @@
                     </div>
                 </li>
                 {{--  End Offers --}}
+                @endcan
+
+                @can('view_offerRequests') 
+                {{-- Start Offer Requests  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offerRequests'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-tasks"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Offer Requests') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Offer Requests') }}</span>
+                                </span>
+                            </li>
+                            @can('view_offerRequests')
+                            <li class="menu-item {{ Request::segment(2)=='offerRequests'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.offerRequests.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Offer Requests') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_offerRequests')
+                            <li class="menu-item {{ Request::segment(2)=='offerRequests'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.offerRequests.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Request') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Offer Requests --}}
                 @endcan
 
                 @can('view_coupons') 

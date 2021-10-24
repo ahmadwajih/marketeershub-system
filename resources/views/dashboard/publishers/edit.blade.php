@@ -120,7 +120,7 @@
                                                 <label>* {{ _('Role') }} :</label>
                                                 <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
                                                     @foreach($roles as $role)
-                                                        <option value="{{$role->id}}"  @if($publisher->roles->contains($role)) selected @endif>{{$role->name}}</option>
+                                                        <option value="{{$role->id}}" {{old('roles') ? (in_array($role->id, old('roles'))?'selected':''): ($publisher->roles->contains($role)?'selected':'')}} >{{$role->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('roles'))
@@ -190,16 +190,6 @@
 
                                         <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label> {{ __('Skype') }} :</label>
-                                                <input type="text" name="skype" class="form-control" value="{{old('skype') ?? $publisher->skype}}" />
-                                                @if ($errors->has('skype'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('skype') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-
-                                            <div class="col-lg-6">
                                                 <label> {{ __('Address') }} :</label>
                                                 <input type="text" name="address" class="form-control" value="{{old('address') ?? $publisher->address}}" />
                                                 @if ($errors->has('address'))
@@ -208,7 +198,15 @@
                                                     </div>
                                                 @endif
                                             </div>
-
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Owened Digital Assets') }} :</label>
+                                                <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets') ?? $publisher->owened_digital_assets}}" />
+                                                @if ($errors->has('owened_digital_assets'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
 
                                         <div class="form-group row">
@@ -254,18 +252,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Owened Digital Assets') }} :</label>
-                                                <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets') ?? $publisher->owened_digital_assets}}" />
-                                                @if ($errors->has('owened_digital_assets'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                          
-                                        </div>
+                                      
 
                                         {{-- Bank Account Details --}}
                                         <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>

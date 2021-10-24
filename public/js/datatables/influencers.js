@@ -13,7 +13,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 type: 'remote',
                 source: {
                     read: {
-                        url:route,
+                        url:'/dashboard/publishers/type/affiliate',
                         method:'GET',
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},

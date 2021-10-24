@@ -1,6 +1,7 @@
 
-<?php 
+<?php
 
+use App\Models\OfferRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -83,18 +84,15 @@ if(!function_exists('getModelData')){
     }
 }
 /*
-    * Return rote url text after hosting to use it in js index to make the url daynamic .
+    * Return offer request data
      * @param  String Route Namw 
-     * @return url
+     * @return array
      * Author : Wageh 
-     * created By Wagih
+     * created By Wageh
 */
-if(!function_exists('getUrlAfterDomain')){
-    function getUrlAfterDomain(string $route){
-        $host = parse_url(request()->root())['host'];
-        $scheme = parse_url(request()->root())['scheme'];
-        $fullDomain = $scheme."://".$host;
-        $url = str_replace($fullDomain,'',$route);
-        return $url;
+if(!function_exists('getOfferRequest')){
+    function getOfferRequest(int $offerId){
+        $offerRequest = OfferRequest::where('user_id', auth()->user()->id)->where('offer_id', $offerId)->first();
+        return $offerRequest;
     }
 }

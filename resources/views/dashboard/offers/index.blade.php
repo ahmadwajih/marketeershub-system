@@ -1,95 +1,230 @@
 @extends('dashboard.layouts.app')
 @section('title','Offers')
+@push('styles')
+    <style>
+        .card-footer{
+            padding: 10px;
+        }
+        .card-footer .rounded{
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            background-color: #Dfd;
+            padding: 5px 10px
+        }
+        .modal{
+            /* display: block; */
+            overflow: scroll;
+            background: #05032a30;
+        }
+        .modal .modal-body{
+            /* background: #ddd; */
+            font-size: 14px;
+            color: #000;
+        }
+        .modal .modal-footer button{
+            width: 100%
+        }
+        .modal .close i{
+            font-size: 24px !important;
+        }
+        .modal .modal-footer{
+            padding: 5px;
+        }
+    </style>
+@endpush
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
-            <!--begin::Card-->
-            <div class="card card-custom">
-                
-                @if(session()->has('message'))
-                @include('dashboard.temps.success')
+            <div id="coupons"></div>
+
+            <div class="row">
+                @if(count($offers)> 0)
+                @foreach($offers as $offer)
+                    {{-- @dd($offer->thumbnail) --}}
+                    <div class="col-3">
+                        <div class="card-deck">
+                            <div class="card">
+                            <img class="card-img-top" src="{{asset("storage/Images/Offers")}}/{{is_null($offer->thumbnail)?'default.png':$offer->thumbnail}}" alt="{{ $offer->name }}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h4 class="card-title font-weight-bold">{{ $offer->name }}</h4>
+                                    <p class="card-title font-weight-bold">{{ __('Target Market:') }} @foreach($offer->countries as $country) {{$country->name_en}} @if(!$loop->last),@endif @endforeach</p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="card-title font-weight-bold">{{ __('Payout:') }}
+                                        @if($offer->cps_type == 'static')
+                                            {{$offer->revenu}}
+                                        @elseif($offer->cps_type == 'new_old')
+                                        new_old
+                                            {{-- <p>{{ __('New Payout:') . $offer->newOld->new_payout }}</p>
+                                            <p>{{ __('Old Payout:') . $offer->newOld->old_payout }}</p> --}}
+                                        @elseif($offer->cps_type == 'slaps')
+                                        slaps
+                                        {{-- @dd($offer->slaps) --}}
+                                        @endif
+                                    </p>
+
+                                    <p class="card-title font-weight-bold">{{ __('Discount:') }}
+                                        {{ $offer->discount }} {{ $offer->discount_type == 'percentage'?'%':'' }}
+                                    </p>
+                                </div>
+                                
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between">
+                                    <div class="rounded">{{ __('Online') }}</div>
+
+                                    {{-- Check if this offer was requested by current login user --}}
+                                    @if(in_array($offer->id, $offerRequestsArray))
+                                        {{-- Check if request is exists --}}
+                                        @if(getOfferRequest($offer->id))
+                                            {{-- Check if status approved --}}
+                                            @if(getOfferRequest($offer->id)->status=='approved')
+                                                <button class="rounded view-coupons" data-offer="{{ $offer->id }}">{{ __('View Coupons') }}</button>
+                                            @endif
+                                            {{-- Check if status pending --}}
+                                            @if(getOfferRequest($offer->id)->status=='pending')
+                                                <button class="rounded">{{ __('In Review') }}</button>
+                                            @endif
+                                            {{-- check if status rejected --}}
+                                            @if(getOfferRequest($offer->id)->status=='rejected')
+                                                <button class="rounded">{{ __('Rejected') }}</button>
+                                            @endif
+                                        @endif
+                                    @else
+                                        <button class="rounded requestOffer" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Offer') }}</button>
+                                    @endif
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal" tabindex="-1" role="dialog" id='modal{{ $offer->id }}'>
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">{{ __('To Continue you must agree to the T&Cs') }}</h5>
+                              <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
+                                <i class="far fa-times-circle"></i>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="english" dir="ltr">
+                                    <h2>Restrictions</h2>
+                                    <ul>
+                                        <li>You may not bid on any of the <b>{{ $offer->name }}</b> terms or variations in paid search ads, such as Google Adwords, Google PPC, and FaceBook Ads.</li>
+                                        <li>You may not use the <b>{{ $offer->name }}</b> name or any of its variations in pop-ups and pop-unders, as the name of your newsletter, in retargeting campaigns, in your app push notifications ads, or in wrong or misleading messages.</li>
+                                        <li>You may not use methods such as cookie stuffing.</li>
+                                        <li>ou may not promote <b>{{ $offer->name }}</b> in any sexually explicit materials, violent materials, libelous or defamatory materials, or any illegal activities.</li>
+                                        <li>You may not promote <b>{{ $offer->name }}</b> if you employ discriminatory practices, based on race, sex, religion, nationality, disability, sexual orientation, or age.</li>
+                                        <li>You may not use a link to <b>{{ $offer->name }}</b> which includes a redirecting link, that is generated or displayed on a Search Engine in response to a general Internet keyword search query, whether those links appear through your submission of data to that site or otherwise.</li>
+                                    </ul>
+                                </div>
+                                <div class="arabic text-right" dir="rtl">
+                                    <h2>تقييدات</h2>
+                                    <ul>
+                                        <li>لا يحق لك المُزايدة على أي من عبارات ومُصطلحات <b>{{ $offer->name }}</b> المدفوعة مُسبقًا على شبكة البحث, مثل- Google Adwords, Google PPC و إعلانات فيسبوك.</li>
+                                        <li>لا يجوز لك استخدام اسم <b>{{ $offer->name }}</b> أو أي من أشكاله في نوافذ الإعلانات المُنبثقة في الأعلى وفي الخلف, مثل اسم نشرتك الإعلانية لإعادة توجيه الحملات, في إعلانات تطبيق إشعارات الدّفع, أو من خلال رسائل خاطئة ومُضلّلة.</li>
+                                        <li>لا يجوز لك استخدام أساليب كحشو الْــ cookie.</li>
+                                        <li>للا يجوز لك التّرويج لِـــ <b>{{ $offer->name }}</b> في أي مواد جنسية واضحة أو مواد عنيفة أو مواد تشهيريّة أو أي افتراء أو نشاط غير قانوني.</li>
+                                        <li>لا يجوز لك التّرويج لِـــ <b>{{ $offer->name }}</b> إذا كنت تستخدم عادات تمييزية, على أساس العرق, الجنس, الدين, القومية, الإعاقة الجسدية, التوجّه الجنسي أو العمر.</li>
+                                        <li>للا يجوز لك استخدام رابط لِــ <b>{{ $offer->name }}</b> يحتوي على رابط إعادة توجيه, يتم إنشاؤه أو عرضه على مُحرّك البحث استجابة لطلب بحث الكلمة الرئيسيّة على الانترنت, سواء كانت هذه الروابط تظهر خلال إرسال المعلومات إلى الموقع أو غير ذلك.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer text-center">
+                              <button type="button" class="btn btn-primary request-codes" data-offer="{{ $offer->id }}">{{ __('Request Codes') }}</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                @endforeach
+                @else
+                      <div class="col-12"><div class="alert alert-warning d-block text-center">{{ __('No Offers Yet') }}</div></div>
                 @endif
-                <div class="card-header flex-wrap border-0 pt-6 pb-0">
-                    <div class="card-title">
-                        <h3>{{ __('Offers') }}</h3>
-                    </div>
-                    <div class="card-toolbar">
-                        <a href="{{route('dashboard.offers.create')}}" class="btn btn-primary font-weight-bolder ">
-                            <span class="svg-icon svg-icon-md">
-                                <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24" />
-                                        <circle fill="#000000" cx="9" cy="15" r="6" />
-                                        <path d="M8.8012943,7.00241953 C9.83837775,5.20768121 11.7781543,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,12.2218457 18.7923188,14.1616223 16.9975805,15.1987057 C16.9991904,15.1326658 17,15.0664274 17,15 C17,10.581722 13.418278,7 9,7 C8.93357256,7 8.86733422,7.00080962 8.8012943,7.00241953 Z" fill="#000000" opacity="0.3" />
-                                    </g>
-                                </svg>
-                                <!--end::Svg Icon-->
-                            </span> {{ __('Add New Offer') }}
-                        </a>
-
-                        <!--end::Button-->
-                    </div>
-                </div>
-                <div class="card-body">
-                   
-                    <table class="table table-bordered yajra-datatable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Thumbnail</th>
-                                <th>Name</th>
-                                <th>Advertiser Name</th>
-                                <th>Categories</th>
-                                <th>Expire Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-
-                </div>
             </div>
-            <!--end::Card-->
+            
         </div>
         <!--end::Container-->
     </div>
     <!--end::Entry-->
 @endsection
 @push('scripts')
-
-
-
-
-
     <script type="text/javascript">
-        $(function () {
-          
-          var table = $('.yajra-datatable').DataTable({
-              processing: true,
-              serverSide: true,
-              ajax: "{{ route('dashboard.offers.index') }}",
-              columns: [
-                  {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                  {data: 'thumbnail', name: 'thumbnail'},
-                  {data: 'name', name: 'name'},
-                  {data: 'advertiser.name', name: 'advertiser.name'},
-                  {data: 'category', name: 'category'},
-                  {data: 'expire_date', name: 'expire_date'},
-                  {data: 'status', name: 'status'},
-                  {
-                      data: 'action', 
-                      name: 'action', 
-                      orderable: true, 
-                      searchable: true
-                  },
-              ]
-          });
-          
+
+        $(document).ready(function(){
+            // Loade MOdal 
+            $(".requestOffer").click(function(){
+                var modal = $(this).data('modal');
+                $('#'+modal).fadeIn('slow');
+            });
+
+            // Close Modal
+            $(".close-modal").click(function(){
+                $('.modal').css('display', 'none');
+            });
+
+            // Send Request
+            $(".request-codes").click(function(){
+                var offerId = $(this).data('offer');
+                $.ajax({
+                    method: "POST",
+                    cache: false,
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: "{{route('dashboard.offerRequest.ajax')}}",
+                    data: { 
+                        offerId: offerId,
+                        }, 
+                })
+                .done(function(res) {
+                        $(".request-codes").addClass('btn-success');
+                        $(".request-codes").removeClass('btn-primary');
+                        $(".request-codes").text('Success.');
+                        $(".requestOffer").text('In Review.');
+                        $(".requestOffer").removeClass('requestOffer');
+                        $('.modal').fadeOut('slow');
+                })
+                .fail(function(res){
+                    $(".request-codes").addClass('btn-danger');
+                    $(".request-codes").removeClass('btn-primary');
+                    $(".request-codes").text('You have sent request before.');
+                    $(".requestOffer").text('In Review.');
+                    $(".requestOffer").removeClass('requestOffer');
+                    setTimeout(function(){ $('.modal').fadeOut('slow'); }, 3000);
+
+                    
+                });
+            });
+
+            // Send Request
+            $(".view-coupons").click(function(){
+                var offerId = $(this).data('offer');
+                $.ajax({
+                    method: "POST",
+                    cache: false,
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: "{{route('dashboard.ajax.view.coupons')}}",
+                    data: { 
+                        offerId: offerId,
+                        }, 
+                })
+                .done(function(response) {
+                        $("#coupons").html(response);
+
+                })
+                .fail(function(response){
+        
+
+                    
+                });
+            });
+
+            
         });
     </script>
 @endpush

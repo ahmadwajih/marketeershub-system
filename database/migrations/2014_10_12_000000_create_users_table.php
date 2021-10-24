@@ -35,7 +35,6 @@ class CreateUsersTable extends Migration
             // Connection Information
             $table->string('email')->unique();
             $table->string('phone')->nullable();
-            $table->string('skype')->nullable();
             $table->string('address')->nullable();
             // Affiliate Information
             $table->string('traffic_sources')->nullable();
@@ -50,6 +49,7 @@ class CreateUsersTable extends Migration
             $table->string('currency')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

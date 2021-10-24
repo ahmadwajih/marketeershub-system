@@ -181,16 +181,6 @@
 
                                         <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label> {{ __('Skype') }} :</label>
-                                                <input type="text" name="skype" class="form-control" value="{{old('skype')}}" />
-                                                @if ($errors->has('skype'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('skype') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-
-                                            <div class="col-lg-6">
                                                 <label> {{ __('Address') }} :</label>
                                                 <input type="text" name="address" class="form-control" value="{{old('address')}}" />
                                                 @if ($errors->has('address'))
@@ -199,7 +189,15 @@
                                                     </div>
                                                 @endif
                                             </div>
-
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Owened Digital Assets') }} :</label>
+                                                <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets')}}" />
+                                                @if ($errors->has('owened_digital_assets'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
 
                                         <div class="form-group row">
@@ -245,19 +243,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Owened Digital Assets') }} :</label>
-                                                <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets')}}" />
-                                                @if ($errors->has('owened_digital_assets'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                          
-                                        </div>
-
+                    
                                         {{-- Bank Account Details --}}
                                         <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
                                         <div class="form-group row">

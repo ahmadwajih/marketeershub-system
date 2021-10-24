@@ -4,9 +4,11 @@ namespace App\Models;
 //161.35.27.113
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Offer extends Model
 {
+    use SoftDeletes;
     use HasFactory;
     protected $guarded = [];
 
@@ -54,5 +56,9 @@ class Offer extends Model
 
     public function slaps(){
         return $this->hasMany(OfferSlap::class);
+    }
+
+    public function users(){
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 }

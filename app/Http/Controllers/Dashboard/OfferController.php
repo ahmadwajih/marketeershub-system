@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Country;
 use App\Models\NewOldOffer;
 use App\Models\Offer;
+use App\Models\OfferRequest;
 use App\Models\OfferSlap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,24 +22,22 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = Offer::with(['advertiser', 'categories'])->latest()->get();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $actionBtn = '<a href="'.route('dashboard.offers.edit', $row).'" class="edit btn btn-success btn-sm">Edit</a> <a href="'.route('dashboard.offers.destroy', $row).'" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $actionBtn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
 
         $this->authorize('view_offers');
-        if ($request->ajax()){
-            $offers = getModelData('Offer' , $request, ['advertiser']);
-            return response()->json($offers);
-        }
-        return view('dashboard.offers.index');
+        $offers = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
+        $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
+        return view('dashboard.offers.index', compact('offers', 'offerRequestsArray'));
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function myOffers(Request $request)
+    {
+        $this->authorize('view_offers');
+        $offers = auth()->user()->offers;
+        return view('dashboard.offers.index', compact('offers'));
     }
     
     /**
@@ -76,8 +75,8 @@ class OfferController extends Controller
             'type' => 'required|in:coupon_tracking,link_traking',
             'payout_type' => 'required|in:cps_flat,cps_percentage',
             'cps_type' => 'required|in:static,new_old,slaps',
-            'payout' => 'required_if:cps_type,static|numeric',
-            'revenue' => 'required_if:cps_type,static|numeric',
+            'payout' => 'required_if:cps_type,static|nullable|numeric',
+            'revenue' => 'required_if:cps_type,static|nullable|numeric',
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'required|date|after:yesterday',
             'note' => 'nullable',
@@ -174,7 +173,7 @@ class OfferController extends Controller
      */
     public function edit(Offer $offer)
     {
-        $this->authorize('show_offers');
+        $this->authorize('update_offers');
         return view('dashboard.offers.edit', [ 
             'offer' => $offer,
             'countries' => Country::all(),
@@ -195,32 +194,87 @@ class OfferController extends Controller
         $this->authorize('update_offers');
         $data = $request->validate([
             'name' => 'required|max:255',
+            'advertiser_id' => 'nullable|exists:advertisers,id',
             'description' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
-            // 'category' => 'nullable|max:255',
-            // 'default_payout' => 'nullable|numeric',
-            // 'percent_payout' => 'nullable|numeric',
+            'categories' => 'array|required|exists:categories,id',
+            'type' => 'required|in:coupon_tracking,link_traking',
+            'payout_type' => 'required|in:cps_flat,cps_percentage',
+            'cps_type' => 'required|in:static,new_old,slaps',
+            'payout' => 'required_if:cps_type,static|nullable|numeric',
+            'revenue' => 'required_if:cps_type,static|nullable|numeric',
             'status' => 'required|in:active,pending,pused,expire',
-            // 'expire_date' => 'required|date',
+            'expire_date' => 'required|date|after:yesterday',
             'note' => 'nullable',
             'terms_and_conditions' => 'nullable',
-            'advertiser_id' => 'nullable|exists:advertisers,id',
-            // 'country_id' => 'required|exists:countries,id',
-            // 'currency_id' => 'nullable',
+            'countries' => 'array|required|exists:countries,id',
+            'currency_id' => 'nullable',
+            'discount' => 'required|numeric',
+            'discount_type' => 'required|in:flat,percentage',
         ]);
-        unset($data['thumbnail']);
+        $thumbnail = $offer->thumbnail;
         if($request->has("thumbnail")){
             Storage::disk('public')->delete('Images/Offers/'.$offer->thumbnail);
-            $imageName = time().rand(11111,99999).'.'.$request->thumbnail->extension();
-            $request->thumbnail->storeAs('Images/Offers/',$imageName, 'public');
-            $data['thumbnail'] = $imageName;
+            $thumbnail = time().rand(11111,99999).'.'.$request->thumbnail->extension();
+            $request->thumbnail->storeAs('Images/Offers/',$thumbnail, 'public');
         }
-            
 
-       
-        $offer->update($data);
+        $offer->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'website' => $request->website,
+            'thumbnail' => $thumbnail,
+            'offer_url' => $request->offer_url,
+            'type' => $request->type,
+            'payout_type' => $request->payout_type,
+            'cps_type' => $request->cps_type,
+            'payout' => $request->cps_type=='static'?$request->payout:null,
+            'revenue' => $request->cps_type=='static'?$request->revenue:null,
+            'status' => $request->status,
+            'expire_date' => $request->expire_date,
+            'note' => $request->note,
+            'terms_and_conditions' => $request->terms_and_conditions,
+            'advertiser_id' => $request->advertiser_id,
+            'currency_id' => $request->currency_id,
+            'discount_type' => $request->discount_type,
+            'discount' => $request->discount,
+        ]);
+
+        foreach($request->categories as $categoryId){
+            $category = Category::findOrFail($categoryId);
+            $offer->assignCategory($category);
+        }
+        foreach($request->countries as $countryId){
+            $country = Country::findOrFail($countryId);
+            $offer->assignCountry($country);
+        }
+        // If cps is new old
+        if($request->cps_type == 'new_old'){
+            NewOldOffer::create([
+                'new_payout' => $request->new_payout,
+                'new_revenue' => $request->new_revenue,
+                'old_payout' => $request->old_payout,
+                'old_revenue' => $request->old_revenue,
+                'offer_id' => $offer->id,
+            ]);
+        }
+
+        // If cps is slaps 
+        if($request->cps_type == 'slaps'){
+            foreach($request->slaps as $slap){
+                OfferSlap::create([
+                    'slap_type' => $slap['slap_type'],
+                    'from' => $slap['from'],
+                    'to' => $slap['to'],
+                    'payout' => $slap['payout'],
+                    'revenue' => $slap['revenue'],
+                    'offer_id' => $offer->id,
+                ]);
+            }
+        }
+        
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'

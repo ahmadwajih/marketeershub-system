@@ -51,14 +51,20 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
         Route::resource('advertisers', AdvertiserController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('offers', OfferController::class);
+        Route::get('my-offers', 'OfferController@myOffers')->name('my-offers');
+        Route::resource('offerRequests', OfferRequestController::class);
+        Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
+        Route::resource('reports', ReportController::class);
+
         Route::post('logout', 'AuthController@logout')->name('logout');
 
         // Ajax requests
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
+        Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
     });
 });
 

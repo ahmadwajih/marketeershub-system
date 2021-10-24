@@ -24,7 +24,9 @@ class OfferSeeder extends Seeder
             'status' => 'active',
             'expire_date' => now(),
             'advertiser_id' => 1,
-            'currency_id' => 1
+            'currency_id' => 1,
+            'discount_type' => 'flat',
+            'discount' => 10,
         ]);
     }
 }

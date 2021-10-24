@@ -11,6 +11,7 @@ class RoleController extends Controller
 {
     public $models = [
         'reports',
+        'offerRequests',
         'advertisers',
         'offers',
         'coupons',
@@ -22,6 +23,7 @@ class RoleController extends Controller
         'users',
         'roles',
         'currencies',
+
     ];
     /**
      * Display a listing of the resource.

@@ -153,17 +153,15 @@
     <!--end::Entry-->
 @endsection
 @push('scripts')
+<script>var route = "{{ route('dashboard.publishers.index') }}";</script>
 
 @if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='influencer')
-    <script> var route = "{{ route('dashboard.publishers.type', 'influencer') }}"; </script>
     <script src="{{asset('js/datatables/influencers.js')}}"></script>
 
 @elseif (Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='affiliate')
-    <script> var route = "{{ route('dashboard.publishers.type', 'affiliate') }}"; </script>
     <script src="{{asset('js/datatables/affiliates.js')}}"></script>
 
 @else
-    <script>var route = "{{ route('dashboard.publishers.index') }}";</script>
     <script src="{{asset('js/datatables/publishers.js')}}"></script>
 @endif
 

@@ -13,7 +13,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 type: 'remote',
                 source: {
                     read: {
-                        url:'/dashboard/publishers/type/affiliate',
+                        url:route,
                         method:'GET',
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
@@ -29,7 +29,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                         },
                     },
                 },
-                pageSize: 10,
+                pageSize: 20,
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
@@ -124,43 +124,21 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
 
             },{
-                field: 'ho_id',
-                title: 'HO ID',
-                width: 30,
-                type: 'number',
-                textAlign: 'center',
-
-            },{
-                field: 'name',
-                title: "Full Name",
+                field: 'user.name',
+                title: "Publisher",
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'parent.name',
-                title: "Belongs To",
+                field: 'user.team',
+                title: "Publisher Type",
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'email',
-                title: "Email",
-                selector: false,
-                textAlign: 'center',
-            }, {
-                field: 'phone',
-                title: "Phone",
+                field: 'offer.name',
+                title: "Offer Name",
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'team',
-                title: "Team",
-                selector: false,
-                textAlign: 'center',
-            }, {
-                field: 'position',
-                title: "Position",
-                selector: false,
-                textAlign: 'center',
-            }, {
                 field: 'status',
                 title: "Status",
                 selector: false,

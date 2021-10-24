@@ -30,6 +30,7 @@ class CreateAdvertisersTable extends Migration
             $table->string('address')->nullable();
             $table->enum('status', ['pending', 'rejected', 'approved'])->default('pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
