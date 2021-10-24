@@ -22,12 +22,29 @@ class ReportController extends Controller
             $q->where('users.id', auth()->user()->id);
         },
         'coupons' => function($q){
-            $q->where('coupons.user_id', auth()->user()->id)
-            ->orWhereIn('coupons.user_id', );
+            $q->where('coupons.user_id', auth()->user()->id);
+        }])->get();
+        $totalOrders = 0;
+        $totalSales = 0;
+        $totalPayout = 0;
+        foreach($offers as $offer){
+            foreach($offer->coupons as $coupon){
+                // dd($coupon->report);
+                if($coupon->report){
+                    $totalOrders += $coupon->report->orders;
+                    $totalSales += $coupon->report->sales;
+                    $totalPayout += $coupon->report->payout;
+                }
+            }
         }
-        ])->get();
 
-        return view('dashboard.reports.index', ['offers' => $offers]);
+
+        return view('dashboard.reports.index', [
+            'offers' => $offers,
+            'totalOrders' => $totalOrders,
+            'totalSales' => $totalSales,
+            'totalPayout' => $totalPayout,
+        ]);
 
     }
 }

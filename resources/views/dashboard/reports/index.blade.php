@@ -12,6 +12,34 @@
                         <h3>{{ __('Report') }}</h3>
                     </div>
                 </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="badge badge-primary d-block">
+                                <h2>Total Conversions:</h2>
+                                <p>100</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="badge badge-primary d-block">
+                                <h2>Total Orders:</h2>
+                                <p>{{ $totalOrders }} {{ __('Order') }}</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="badge badge-primary d-block">
+                                <h2>Total Sales:</h2>
+                                <p>${{ $totalSales }}</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="badge badge-primary d-block">
+                                <h2>Total Payout:</h2>
+                                <p>${{ $totalPayout }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div id="accordion">
                         @foreach($offers as $offer)
@@ -28,7 +56,7 @@
                                 <div class="card-body">
                                     <table class="table table-bordered">
                                         <tr>
-                                            <th scope="col">{{ _('COupon') }}</th>
+                                            <th scope="col">{{ _('Coupon') }}</th>
                                             <th scope="col">{{ _('Orders') }}</th>
                                             <th scope="col">{{ __('Sales') }}</th>
                                             <th scope="col">{{ _('Payout') }}</th>

@@ -39,7 +39,7 @@
 
                 @can('view_users') 
                 {{-- Start Users  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='users' ||  Request::segment(2)=='publishers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='users'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                           <i class="fas fa-user-cog"></i>
@@ -65,6 +65,41 @@
                                 </a>
                             </li>
                             @endcan
+                            @can('create_users')
+                            <li class="menu-item {{ Request::segment(2)=='users'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('dashboard.users.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New User') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Users --}}
+                @endcan
+                @can('view_publishers')
+
+                 {{-- Start Publishers  --}}
+                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='publishers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-user-tag"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Publishers') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Publishers') }}</span>
+                                </span>
+                            </li>
+
                             @can('view_publishers')
                             <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)==''?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('dashboard.publishers.index')}}" class="menu-link">
@@ -95,16 +130,7 @@
                                 </a>
                             </li>
                             @endcan
-                            @can('create_users')
-                            <li class="menu-item {{ Request::segment(2)=='users'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('dashboard.users.create')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('Add New User') }}</span>
-                                </a>
-                            </li>
-                            @endcan
+
                             @can('create_publishers')
                             <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('dashboard.publishers.create')}}" class="menu-link">
@@ -138,7 +164,7 @@
                         </ul>
                     </div>
                 </li>
-                {{--  End Users --}}
+                {{--  End Publishers --}}
                 @endcan
          
                 @can('view_advertisers') 
