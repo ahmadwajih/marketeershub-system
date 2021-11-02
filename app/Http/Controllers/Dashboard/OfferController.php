@@ -26,7 +26,7 @@ class OfferController extends Controller
         $this->authorize('view_offers');
         $offers = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
-        return view('dashboard.offers.index', compact('offers', 'offerRequestsArray'));
+        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
     }
     /**
      * Display a listing of the resource.
@@ -37,7 +37,7 @@ class OfferController extends Controller
     {
         $this->authorize('view_offers');
         $offers = auth()->user()->offers;
-        return view('dashboard.offers.index', compact('offers'));
+        return view('admin.offers.index', compact('offers'));
     }
     
     /**
@@ -48,7 +48,7 @@ class OfferController extends Controller
     public function create()
     {
         $this->authorize('create_offers');
-        return view('dashboard.offers.create',[
+        return view('admin.offers.create',[
             'countries' => Country::all(),
             'categories' => Category::all(),
             'advertisers' => Advertiser::whereStatus('approved')->get()
@@ -150,7 +150,7 @@ class OfferController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.offers.index');
+        return redirect()->route('admin.offers.index');
     }
 
     /**
@@ -162,7 +162,7 @@ class OfferController extends Controller
     public function show(Offer $offer)
     {
         $this->authorize('show_offers');
-        return view('dashboard.offers.show', ['offer' => $offer]);
+        return view('admin.offers.show', ['offer' => $offer]);
     }
  
     /**
@@ -174,7 +174,7 @@ class OfferController extends Controller
     public function edit(Offer $offer)
     {
         $this->authorize('update_offers');
-        return view('dashboard.offers.edit', [ 
+        return view('admin.offers.edit', [ 
             'offer' => $offer,
             'countries' => Country::all(),
             'categories' => Category::all(),
@@ -279,7 +279,7 @@ class OfferController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.offers.index');
+        return redirect()->route('admin.offers.index');
     }
 
     /**

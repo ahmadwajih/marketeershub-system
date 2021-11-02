@@ -10,9 +10,9 @@ class AuthController extends Controller
 {
     public function loginForm(){
         if(Auth::check()){
-            return redirect()->route('dashboard.index');
+            return redirect()->route('admin.index');
         }
-        return view('dashboard.auth.login');
+        return view('admin.auth.login');
     }
 
     public function login(Request $request){
@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard.index');
+            return redirect()->route('admin.index');
         }
 
         return back()->withErrors([
@@ -43,6 +43,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('dashboard.login');
+        return redirect()->route('admin.login');
     }
 }

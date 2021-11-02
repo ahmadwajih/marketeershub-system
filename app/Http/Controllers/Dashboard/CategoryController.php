@@ -21,7 +21,7 @@ class CategoryController extends Controller
             $categories = getModelData('Category' , $request);
             return response()->json($categories);
         }
-        return view('dashboard.categories.index');
+        return view('admin.categories.index');
     }
     
     /**
@@ -32,7 +32,7 @@ class CategoryController extends Controller
     public function create()
     {
         $this->authorize('create_categories');
-        return view('dashboard.categories.create');
+        return view('admin.categories.create');
     }
 
     /**
@@ -54,7 +54,7 @@ class CategoryController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.categories.index');
+        return redirect()->route('admin.categories.index');
     }
 
     /**
@@ -66,7 +66,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $this->authorize('show_categories');
-        return view('dashboard.categories.show', ['category' => $category]);
+        return view('admin.categories.show', ['category' => $category]);
     }
  
     /**
@@ -78,7 +78,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $this->authorize('show_categories');
-        return view('dashboard.categories.edit', [
+        return view('admin.categories.edit', [
             'category' => $category
         ]);
     }
@@ -102,7 +102,7 @@ class CategoryController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.categories.index');
+        return redirect()->route('admin.categories.index');
     }
 
     /**

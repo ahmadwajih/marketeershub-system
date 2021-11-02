@@ -36,7 +36,7 @@ class RoleController extends Controller
             $roles = getModelData('Role', $request);
             return response()->json($roles);
         }
-        return view('dashboard.roles.index');
+        return view('admin.roles.index');
     }
 
     /**
@@ -46,7 +46,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('dashboard.roles.create',[
+        return view('admin.roles.create',[
             'models' => $this->models,
             'abilities'=> Ability::all(),
         ]);
@@ -75,7 +75,7 @@ class RoleController extends Controller
                 'message' => 'Created Succefuly ',
                 'alert-type' => 'success'
             );
-            return redirect()->route('dashboard.roles.index')->with($notification);
+            return redirect()->route('admin.roles.index')->with($notification);
     }
 
     /**
@@ -86,7 +86,7 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        return view('dashboard.roles.show',[
+        return view('admin.roles.show',[
             'role' => $role,
             'models' => $this->models,
             'abilities'=> Ability::get(),
@@ -102,7 +102,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        return view('dashboard.roles.edit',[
+        return view('admin.roles.edit',[
             'role' => $role,
             'models' => $this->models,
             'abilities'=> Ability::get(),
@@ -133,7 +133,7 @@ class RoleController extends Controller
             'message' => 'Updated Succefuly ',
             'alert-type' => 'success'
         );
-        return redirect()->route('dashboard.roles.index')->with($notification);
+        return redirect()->route('admin.roles.index')->with($notification);
     }
 
     /**

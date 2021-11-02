@@ -23,7 +23,7 @@ class PivotReportController extends Controller
             $coupons = getModelData('Coupon', $request, ['offer', 'user']);
             return response()->json($coupons);
         }
-        return view('dashboard.pivot-report.index');
+        return view('admin.pivot-report.index');
     }
 
     /**
@@ -34,7 +34,7 @@ class PivotReportController extends Controller
     public function create()
     {
         $this->authorize('create_pivot_report');
-        return view('dashboard.pivot-report.create', [
+        return view('admin.pivot-report.create', [
             'offers' => Offer::whereStatus("active")->get(),
         ]);
         
@@ -58,7 +58,7 @@ class PivotReportController extends Controller
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.pivot-report.index');
+        return redirect()->route('admin.pivot-report.index');
     }
 
     /**
@@ -71,7 +71,7 @@ class PivotReportController extends Controller
     {
         $this->authorize('show_pivot_report');
 
-        return view('dashboard.pivot-report.show', ['coupon' => $coupon]);
+        return view('admin.pivot-report.show', ['coupon' => $coupon]);
     }
 
     /**
@@ -84,7 +84,7 @@ class PivotReportController extends Controller
     {
         $this->authorize('update_pivot_report');
 
-        return view('dashboard.pivot-report.edit', [
+        return view('admin.pivot-report.edit', [
             'coupon' => $coupon,
             'offers' => Offer::whereStatus("active")->get(),
             'users' => User::whereStatus("active")->whereIn('position', ['team_leader','account_manager','publisher'])->whereIn('team', ['media_buying','influencer','affiliate'])->get(),
@@ -113,7 +113,7 @@ class PivotReportController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.pivot-report.index');
+        return redirect()->route('admin.pivot-report.index');
     }
 
     /**

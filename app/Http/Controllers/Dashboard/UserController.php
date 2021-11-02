@@ -21,12 +21,12 @@ class UserController extends Controller
     {
         $this->authorize('view_users');
         if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent'], array(
+            $users = getModelData('User' , $request, ['parent','country'], array(
                 ['position', '!=', 'publisher']
             ));
             return response()->json($users);
         }
-        return view('dashboard.users.index');
+        return view('admin.users.index');
     }
     
     /**
@@ -37,7 +37,7 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize('create_users');
-        return view('dashboard.users.create',[
+        return view('admin.users.create',[
             'countries' => Country::all(),
             'roles' => Role::all(),
             'users' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
@@ -55,6 +55,7 @@ class UserController extends Controller
         $this->authorize('create_users');
         $data = $request->validate([
             'name'                  => 'required|max:255',
+            'image'                 => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'email'                 => 'required|unique:users|max:255',
             'phone'                 => 'required|unique:users|max:255',
             'password'              => 'required|min:6',
@@ -68,6 +69,10 @@ class UserController extends Controller
             'roles.*'               => 'exists:roles,id',
 
         ]);
+
+        if($request->hasFile('image')){
+            $data['image'] = uploadImage($request->file('image'), "Users");
+        }
 
         $data['password'] = Hash::make($request->password);
         unset($data['roles']);
@@ -83,7 +88,7 @@ class UserController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.users.index');
+        return redirect()->route('admin.users.index');
     }
 
     /**
@@ -95,7 +100,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('show_users');
-        return view('dashboard.users.show', ['user' => $user]);
+        return view('admin.users.show', ['user' => $user]);
     }
  
     /**
@@ -107,7 +112,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $this->authorize('show_users');
-        return view('dashboard.users.edit', [ 
+        return view('admin.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),
             'roles' => Role::all(),
@@ -125,6 +130,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        // dd($request->all());
         $this->authorize('update_users');
         $data = $request->validate([
             'name'                  => 'required|max:255',
@@ -140,6 +146,10 @@ class UserController extends Controller
             'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
             'roles.*'               => 'exists:roles,id',
         ]);
+        if($request->hasFile('image')){
+            deleteImage($user->image, 'Users');
+            $data['image'] = uploadImage($request->file('image'), "Users");
+        }
         unset($data['password']);
         if($request->password){
             $data['password'] = Hash::make($request->password);
@@ -159,7 +169,8 @@ class UserController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.users.index');
+        return redirect()->back();
+        return redirect()->route('admin.users.index');
     }
 
     /**

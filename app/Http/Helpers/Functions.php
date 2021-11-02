@@ -27,7 +27,7 @@ if(!function_exists('getModelData')){
 
         // Define the default order
         $order_field = 'id';
-        $order_sort = 'desc';
+        $order_sort = 'DESC';
 
         // Get the request parameters
         $params = $request->all();
@@ -63,7 +63,7 @@ if(!function_exists('getModelData')){
         // Get the items defined by the parameters
         $results = $model->skip(($page - 1) * $per_page)
             ->where($where)
-            ->take($per_page)->orderBy('id', 'desc')
+            ->take($per_page)->orderBy('id', 'DESC')
             ->get();
 
 
@@ -77,7 +77,7 @@ if(!function_exists('getModelData')){
                 "field" => $order_field
             ],
             
-            'data' => $model->with($relations)->where($where)->get()
+            'data' => $model->with($relations)->where($where)->orderBy('id', 'ASC')->get()
         ];
 
         return $response;
@@ -94,5 +94,32 @@ if(!function_exists('getOfferRequest')){
     function getOfferRequest(int $offerId){
         $offerRequest = OfferRequest::where('user_id', auth()->user()->id)->where('offer_id', $offerId)->first();
         return $offerRequest;
+    }
+}
+
+if(!function_exists('getImagesPath')){
+    function getImagesPath($model, $imageName = null){
+        return asset('/storage/Images').'/'.$model.'/'.$imageName;
+    }
+}
+
+
+
+if(!function_exists('uploadImage')){
+
+    function uploadImage($request, $model){
+        $path         = "/Images/".$model;
+        $originalName =  $request->getClientOriginalName(); // Get file Original Name
+        $imageName    = 'MH-'.time().rand(11111,99999).$originalName;  // Set Image name based on user name and time
+        $request->storeAs($path, $imageName,'public');
+        return $imageName;
+    }
+}
+
+if(!function_exists('deleteImage')){
+
+    function deleteImage($imageName, $model){
+        $path = "/Images/".$model.'/'.$imageName;
+        Storage::disk('public')->delete($path);
     }
 }

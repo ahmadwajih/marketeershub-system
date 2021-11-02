@@ -23,7 +23,7 @@ class OfferRequestController extends Controller
             $offerRequests = getModelData('OfferRequest' , $request, ['user', 'offer']);
             return response()->json($offerRequests);
         }
-        return view('dashboard.offerRequests.index');
+        return view('admin.offerRequests.index');
     }
     
     /**
@@ -34,7 +34,7 @@ class OfferRequestController extends Controller
     public function create()
     {
         $this->authorize('create_offerRequests');
-        return view('dashboard.offerRequests.create', [
+        return view('admin.offerRequests.create', [
             'offers' => Offer::whereStatus('active')->get(),
             'users' => User::wherePosition('publisher')->get()
         ]);
@@ -59,7 +59,7 @@ class OfferRequestController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.offerRequests.index');
+        return redirect()->route('admin.offerRequests.index');
     }
 
     /**
@@ -97,7 +97,7 @@ class OfferRequestController extends Controller
     public function show(OfferRequest $offerRequest)
     {
         $this->authorize('show_offerRequests');
-        return view('dashboard.offerRequests.show', ['offerRequest' => $offerRequest]);
+        return view('admin.offerRequests.show', ['offerRequest' => $offerRequest]);
     }
  
     /**
@@ -109,7 +109,7 @@ class OfferRequestController extends Controller
     public function edit(OfferRequest $offerRequest)
     {
         $this->authorize('show_offerRequests');
-        return view('dashboard.offerRequests.edit', [
+        return view('admin.offerRequests.edit', [
             'offerRequest' => $offerRequest,
             'offers' => Offer::whereStatus('active')->get(),
             'users' => User::wherePosition('publisher')->get(),
@@ -149,7 +149,7 @@ class OfferRequestController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.offerRequests.index');
+        return redirect()->route('admin.offerRequests.index');
     }
 
     /**

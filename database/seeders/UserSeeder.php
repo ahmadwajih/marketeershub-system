@@ -110,6 +110,31 @@ class UserSeeder extends Seeder
             'status'                => 'active'
         ]);
 
+         //Prepaid head
+         User::create([
+            'name'                  => 'Prepaid Head',
+            'password'              => Hash::make('12345678'),
+            'years_of_experience'   => '5',
+            'parent_id'             => null,
+            'country_id'            => 1,
+            'city_id'               => 1,
+            'gender'                => 'male',
+            'team'                  => 'prepaid',
+            'position'              => 'head',
+            'email'                 => 'prepaid_head@gmail.com',
+            'phone'                 => '01027555741',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'prepaid networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency'              => 'SAR',
+            'status'                => 'active'
+        ]);
+
         // Account manager 
         //Influencer Account Manager
         User::create([
@@ -186,6 +211,31 @@ class UserSeeder extends Seeder
             'status'                => 'active'
         ]);
 
+         //Prepaid Account Manager
+         User::create([
+            'name'                  => 'Prepaid Account Manager',
+            'password'              => Hash::make('12345678'),
+            'years_of_experience'   => '5',
+            'parent_id'             => 4,
+            'country_id'            => 1,
+            'city_id'               => 1,
+            'gender'                => 'male',
+            'team'                  => 'prepaid',
+            'position'              => 'account_manager',
+            'email'                 => 'prepaid_account_manager@gmail.com',
+            'phone'                 => '01027555852',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'prepaid networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency'              => 'SAR',
+            'status'                => 'active'
+        ]);
+
         // Publisher 
         //Influencer Publisher
         User::create([
@@ -252,6 +302,31 @@ class UserSeeder extends Seeder
             'phone'                 => '01027555999',
             'traffic_sources'       => 'traffic sources',
             'affiliate_networks'    => 'media buying networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency'              => 'SAR',
+            'status'                => 'active'
+        ]);
+
+         //Prepaid Publisher
+         User::create([
+            'name'                  => 'Prepaid Publisher',
+            'password'              => Hash::make('12345678'),
+            'years_of_experience'   => '5',
+            'parent_id'             => 7,
+            'country_id'            => 1,
+            'city_id'               => 1,
+            'gender'                => 'male',
+            'team'                  => 'prepaid',
+            'position'              => 'publisher',
+            'email'                 => 'prepaid_publisher@gmail.com',
+            'phone'                 => '01027555963',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'prepaid networks',
             'owened_digital_assets' => 'owened digital assets',
             'account_title'         => 'account_title',
             'bank_name'             => 'bank_name',

@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             // Main Information
             $table->integer('ho_id')->nullable();
             $table->string('name')->nullable();
+            $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('years_of_experience')->nullable();
@@ -28,7 +29,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('city_id')->nullable();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
             $table->enum('gender', ['male','female','other'])->default('male');
-            $table->enum('team', ['management','digital_operation', 'finance','media_buying', 'influencer', 'affiliate'])->default('affiliate');
+            $table->enum('team', ['management','digital_operation', 'finance','media_buying', 'influencer', 'affiliate', 'prepaid'])->default('affiliate');
             $table->enum('position', ['super_admin','head','team_leader', 'account_manager', 'publisher', 'employee'])->default('publisher');
             $table->enum('status', ['active','pending', 'closed'])->default('pending');
             $table->string('category')->nullable();

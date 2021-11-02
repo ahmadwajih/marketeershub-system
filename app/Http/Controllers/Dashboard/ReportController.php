@@ -39,7 +39,7 @@ class ReportController extends Controller
         }
 
 
-        return view('dashboard.reports.index', [
+        return view('admin.reports.index', [
             'offers' => $offers,
             'totalOrders' => $totalOrders,
             'totalSales' => $totalSales,

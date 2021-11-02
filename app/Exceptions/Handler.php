@@ -46,9 +46,9 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-        if ($request->is('web') || $request->is('dashboard/*')) {
-            return redirect()->route('dashboard.login.form');
+        if ($request->is('web') || $request->is('admin/*')) {
+            return redirect()->route('admin.login.form');
         }
-        return redirect()->route('dashboard.login.form');
+        return redirect()->route('admin.login.form');
     }
 }

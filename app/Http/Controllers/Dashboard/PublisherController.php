@@ -29,8 +29,12 @@ class PublisherController extends Controller
             ));
             return response()->json($users);
         }
-        return view('dashboard.publishers.index');
+        return view('admin.publishers.index');
     }
+
+
+    
+
 
     /**
      * Display a listing of the resource.
@@ -47,7 +51,7 @@ class PublisherController extends Controller
             ));
             return response()->json($users);
         }
-        return view('dashboard.publishers.index');
+        return view('admin.publishers.index');
     }
 
     /**
@@ -58,7 +62,7 @@ class PublisherController extends Controller
     public function create()
     {
         $this->authorize('create_publishers');
-        return view('dashboard.publishers.create',[
+        return view('admin.publishers.create',[
             'countries' => Country::all(),
             'roles' => Role::all(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
@@ -116,7 +120,7 @@ class PublisherController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.publishers.index');
+        return redirect()->route('admin.publishers.index');
     }
 
     /**
@@ -129,7 +133,7 @@ class PublisherController extends Controller
     {
         $this->authorize('show_publishers');
         $publisher = User::findOrFail($id);
-        return view('dashboard.publishers.show', ['publisher' => $publisher]);
+        return view('admin.publishers.show', ['publisher' => $publisher]);
     }
 
 
@@ -143,7 +147,7 @@ class PublisherController extends Controller
     {
         $this->authorize('update_publishers');
         $publisher = User::findOrFail($id);
-        return view('dashboard.publishers.edit', [ 
+        return view('admin.publishers.edit', [ 
             'publisher' => $publisher,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
@@ -211,7 +215,7 @@ class PublisherController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.publishers.index');
+        return redirect()->route('admin.publishers.index');
     }
 
     /**
@@ -238,7 +242,7 @@ class PublisherController extends Controller
     public function upload()
     {
         $this->authorize('create_publishers');
-        return view('dashboard.publishers.upload');
+        return view('admin.publishers.upload');
     }
     
     /**
@@ -260,13 +264,13 @@ class PublisherController extends Controller
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.publishers.index');
+        return redirect()->route('admin.publishers.index');
     }
 
     public function uploadUpdateHasOfferIdByEmail()
     {
         $this->authorize('update_publishers');
-        return view('dashboard.publishers.upload_update_hasoffer_id_by_email');
+        return view('admin.publishers.upload_update_hasoffer_id_by_email');
     }
 
     public function storeUploadUpdateHasOfferIdByEmail(Request $request)
@@ -281,7 +285,7 @@ class PublisherController extends Controller
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.publishers.index');
+        return redirect()->route('admin.publishers.index');
     }
 
 

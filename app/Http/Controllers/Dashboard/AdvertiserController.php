@@ -22,7 +22,7 @@ class AdvertiserController extends Controller
             $advertisers = getModelData('Advertiser', $request);
             return response()->json($advertisers);
         }
-        return view('dashboard.advertisers.index');
+        return view('admin.advertisers.index');
 
     }
 
@@ -34,7 +34,7 @@ class AdvertiserController extends Controller
     public function create()
     {
         $this->authorize('create_advertisers');
-        return view('dashboard.advertisers.create',[
+        return view('admin.advertisers.create',[
             'countries' => Country::all(),
         ]);
     }
@@ -67,7 +67,7 @@ class AdvertiserController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.advertisers.index');
+        return redirect()->route('admin.advertisers.index');
     }
 
     /**
@@ -80,7 +80,7 @@ class AdvertiserController extends Controller
     {
         $this->authorize('show_advertisers');
 
-        return view('dashboard.advertisers.show', ['advertiser' => $advertiser]);
+        return view('admin.advertisers.show', ['advertiser' => $advertiser]);
     }
 
     /**
@@ -93,7 +93,7 @@ class AdvertiserController extends Controller
     {
         $this->authorize('update_advertisers');
 
-        return view('dashboard.advertisers.edit', [
+        return view('admin.advertisers.edit', [
             'advertiser' => $advertiser,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($advertiser->country_id)->get(),
@@ -128,7 +128,7 @@ class AdvertiserController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.advertisers.index');
+        return redirect()->route('admin.advertisers.index');
     }
 
     /**

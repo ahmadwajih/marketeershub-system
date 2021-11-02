@@ -84,4 +84,14 @@ class User extends Authenticatable
     {
         return $this->offers()->detach($offerId);
     }
+
+
+    public function getTeamAttribute(){
+        return ucwords(str_replace('_', ' ', $this->attributes['team']));
+    }
+
+    public function getPositionAttribute(){
+        return ucwords(str_replace('_', ' ', $this->attributes['position']));
+    }
+
 }

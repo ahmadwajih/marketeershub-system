@@ -23,7 +23,7 @@ class CouponController extends Controller
             $coupons = getModelData('Coupon', $request, ['offer', 'user']);
             return response()->json($coupons);
         }
-        return view('dashboard.coupons.index');
+        return view('admin.coupons.index');
 
     }
 
@@ -35,7 +35,7 @@ class CouponController extends Controller
     public function create()
     {
         $this->authorize('create_coupons');
-        return view('dashboard.coupons.create',[
+        return view('admin.coupons.create',[
             'offers' => Offer::whereStatus("active")->get(),
             'users' => User::whereStatus("active")->whereIn('position', ['team_leader','account_manager','publisher'])->whereIn('team', ['media_buying','influencer','affiliate'])->get(),
         ]);
@@ -62,7 +62,7 @@ class CouponController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.coupons.index');
+        return redirect()->route('admin.coupons.index');
     }
 
     /**
@@ -75,7 +75,7 @@ class CouponController extends Controller
     {
         $this->authorize('show_coupons');
 
-        return view('dashboard.coupons.show', ['coupon' => $coupon]);
+        return view('admin.coupons.show', ['coupon' => $coupon]);
     }
 
     /**
@@ -88,7 +88,7 @@ class CouponController extends Controller
     {
         $this->authorize('update_coupons');
 
-        return view('dashboard.coupons.edit', [
+        return view('admin.coupons.edit', [
             'coupon' => $coupon,
             'offers' => Offer::whereStatus("active")->get(),
             'users' => User::whereStatus("active")->whereIn('position', ['team_leader','account_manager','publisher'])->whereIn('team', ['media_buying','influencer','affiliate'])->get(),
@@ -117,7 +117,7 @@ class CouponController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.coupons.index');
+        return redirect()->route('admin.coupons.index');
     }
 
     /**
@@ -143,7 +143,7 @@ class CouponController extends Controller
     public function uploadForm()
     {
         $this->authorize('create_coupons');
-        return view('dashboard.coupons.upload',[
+        return view('admin.coupons.upload',[
             'offers' => Offer::whereStatus("active")->get()
         ]);
     }
@@ -163,6 +163,6 @@ class CouponController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('dashboard.coupons.index');
+        return redirect()->route('admin.coupons.index');
     }
 }

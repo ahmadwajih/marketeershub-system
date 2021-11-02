@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Coupon;
+use App\Models\User;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Calculation\Financial\Coupons;
 
@@ -19,7 +20,7 @@ class AjaxController extends Controller
     {
         if ($request->ajax()){
             $cities = City::where('country_id', $request->countryId)->get();
-            return view('dashboard.ajax.cities', ['cities' => $cities]);
+            return view('admin.ajax.cities', ['cities' => $cities]);
         }
     }
 
@@ -27,7 +28,17 @@ class AjaxController extends Controller
     {
         if ($request->ajax()){
             $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offerId)->get();
-            return view('dashboard.modals.coupons', ['coupons' => $coupons]);
+            return view('admin.modals.coupons', ['coupons' => $coupons]);
+        }
+    }
+
+    public function accountManagers(Request $request)
+    {
+        if ($request->ajax()){
+            $users = User::where('position', 'account_manager')
+            ->whereStatus('active')
+            ->where('team', $request->team)->get();
+            return view('admin.ajax.options', ['options' => $users]);
         }
     }
 

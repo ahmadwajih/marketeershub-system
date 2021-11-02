@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/artisan', function () {
     Artisan::call('migrate:fresh');
     Artisan::call('db:seed');
-    return redirect()->route('dashboard.index');
+    return redirect()->route('admin.index');
     return view('welcome');
 });
 Route::get('/', function () {
-    return redirect()->route('dashboard.index');
+    return redirect()->route('admin.index');
     return view('welcome');
 });
 
@@ -31,7 +31,7 @@ Route::post('import', 'UserController@import')->name('import');
 // Web Routes
 
 // Dashboard Routes
-Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dashboard.'], function(){
+Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.'], function(){
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
     Route::middleware(['auth:web'])->group(function (){
@@ -64,6 +64,7 @@ Route::group(['prefix' => 'dashboard', 'namespace' => 'Dashboard', 'as' => 'dash
 
         // Ajax requests
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
+        Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
     });
 });
