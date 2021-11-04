@@ -29,6 +29,7 @@ class AbilitySeeder extends Seeder
             'categories',
             'reports',
             'offerRequests',
+            'userActivities',
         ];
 
         $names = 

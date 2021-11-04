@@ -1,5 +1,12 @@
 @extends('admin.layouts.app')
 @section('title','Users')
+@push('styles')
+    <style>
+        .influncers{
+            display: none;
+        }
+    </style>
+@endpush
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -84,9 +91,9 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" required>
+                                                    <option value="affiliate">{{ __('Affiliate') }}</option>
                                                     <option value="media_buying">{{ __('Media Buying') }}</option>
                                                     <option value="influencer">{{ __('Influencer') }}</option>
-                                                    <option value="affiliate">{{ __('Affiliate') }}</option>
                                                     <option value="prepaid">{{ __('Prepaid') }}</option>
                                                 </select>
                                                 @if ($errors->has('team'))
@@ -191,18 +198,6 @@
                                                 @endif
                                             </div>
                                             <div class="col-lg-6">
-                                                <label>{{ __('Owened Digital Assets') }} :</label>
-                                                <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets')}}" />
-                                                @if ($errors->has('owened_digital_assets'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
                                                 <label>{{ __('Category') }} :</label>
                                                 <input type="text" name="category" class="form-control" value="{{old('category')}}" />
                                                 @if ($errors->has('category'))
@@ -211,39 +206,113 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                           
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Years Of Experience') }} :</label>
-                                                <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience')}}" />
-                                                @if ($errors->has('years_of_experience'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('years_of_experience') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                            
                                         </div>
 
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Traffic Sources') }} :</label>
-                                                <input type="text" name="traffic_sources" class="form-control" value="{{old('traffic_sources')}}" />
-                                                @if ($errors->has('traffic_sources'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('traffic_sources') }}</p>
-                                                    </div>
-                                                @endif
+                                        {{-- Affiliates Data  --}}
+
+                                        <div class="affiliates">
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>{{ __('Owened Digital Assets') }} :</label>
+                                                    <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets')}}" />
+                                                    @if ($errors->has('owened_digital_assets'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                               
+                                                <div class="col-lg-6">
+                                                    <label>{{ __('Years Of Experience') }} :</label>
+                                                    <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience')}}" />
+                                                    @if ($errors->has('years_of_experience'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('years_of_experience') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label> {{ __('Affiliate Networks') }} :</label>
-                                                <input type="text" name="affiliate_networks" class="form-control" value="{{old('affiliate_networks')}}" />
-                                                @if ($errors->has('affiliate_networks'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('affiliate_networks') }}</p>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>{{ __('Traffic Sources') }} :</label>
+                                                    <input type="text" name="traffic_sources" class="form-control" value="{{old('traffic_sources')}}" />
+                                                    @if ($errors->has('traffic_sources'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('traffic_sources') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label> {{ __('Affiliate Networks') }} :</label>
+                                                    <input type="text" name="affiliate_networks" class="form-control" value="{{old('affiliate_networks')}}" />
+                                                    @if ($errors->has('affiliate_networks'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('affiliate_networks') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+    
+                                        </div>
+                                        
+                                        {{-- Influncers --}}
+                                        <div class="influncers">
+                                            <div class="form-group row d-block" id="social_media">
+                                                <div id="kt_repeater_1">
+                                                    <div class="form-group row" id="kt_repeater_1">
+                                                        <label class="col-form-label text-right"><b>{{ __('Socia Media Accounts') }}</b></label>
+                                                        <div data-repeater-list="social_media" class="col-lg-12">
+                                                            @for($i = 0; $i < 6; $i++)
+                                                            <div data-repeater-item class="form-group row align-items-center">
+                                                                <div class="col-md-6">
+                                                                    <label>{{ __('Link') }}</label>
+                                                                    <input type="url" name="link" class="form-control" />
+                                                                    <div class="d-md-none mb-2"></div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label>{{__('Platform') }}</label>
+                                                                    <select class="form-control form-select" name="platform" style="display: block" >
+                                                                        <option {{ $i=='0'?'selected':'' }} value="facebook">{{ __('Facebook') }}</option>
+                                                                        <option {{ $i=='1'?'selected':'' }} value="instagram">{{ __('Instagram') }}</option>
+                                                                        <option {{ $i=='2'?'selected':'' }} value="twitter">{{ __('Twitter') }}</option>
+                                                                        <option {{ $i=='3'?'selected':'' }} value="snapchat">{{ __('Snapchat') }}</option>
+                                                                        <option {{ $i=='4'?'selected':'' }} value="tiktok">{{ __('Tiktok') }}</option>
+                                                                        <option {{ $i=='5'?'selected':'' }} value="youtube">{{ __('Youtube') }}</option>
+                                                                        <option value="other">{{ __('Other') }}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label>{{__('Number Of Followers') }}</label>
+                                                                    <select class="form-control form-select" name="followers" style="display: block" >
+                                                                        <option selected="selected" value="lethThan10k">< 10K</option>
+                                                                        <option value="10Kto50K">10K : 50K</option>
+                                                                        <option value="50Kto100K">50K : 100K</option>
+                                                                        <option value="100Kto500K">100K : 500K</option>
+                                                                        <option value="500Kto1M">500K : 1M</option>
+                                                                        <option value="morethan1M">> 1M</option>
+                                                                    </select>
+                                                                </div>
+        
+                                                                <div class="col-md-2">
+                                                                    <br>
+                                                                    <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
+                                                                        <i class="la la-trash-o"></i>حذف
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            @endfor
+                                                        </div>
+        
                                                     </div>
-                                                @endif
+                                                    <div class="form-group row">
+                                                        <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary btn-block">
+                                                            <i class="la la-plus"></i>إضافة
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
                     
                                         {{-- Bank Account Details --}}
                                         <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
@@ -382,10 +451,52 @@
                 .done(function(res) {
                     $("#kt_select_parent_id").html(res)
                 });
+                if(team == 'affiliate' || team == 'media_buying'){
+                    $('.affiliates').fadeIn('slow');
+                    $('.influncers').fadeOut('slow');
+                }
+                if(team == 'influencer' || team == 'prepaid'){
+                    $('.influncers').fadeIn('slow');
+                    $('.affiliates').fadeOut('slow');
+                }
             });
         });
 
 
     </script>
     <script src="{{asset('dashboard/js/pages/crud/file-upload/image-input.js')}}"></script>
+    <script>
+        // Class definition
+        var KTFormRepeater = function() {
+        // Private functions
+        var demo1 = function() {
+            $('#kt_repeater_1').repeater({
+                initEmpty: false,
+
+                defaultValues: {
+                    'text-input': 'foo'
+                },
+
+                show: function () {
+                    $(this).slideDown();
+                },
+
+                hide: function (deleteElement) {
+                    $(this).slideUp(deleteElement);
+                }
+            });
+        }
+
+        return {
+            // public functions
+            init: function() {
+                demo1();
+            }
+        };
+        }();
+
+        jQuery(document).ready(function() {
+            KTFormRepeater.init();
+        });
+    </script>
 @endpush

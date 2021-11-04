@@ -86,12 +86,15 @@ class User extends Authenticatable
     }
 
 
-    public function getTeamAttribute(){
+    public function getUpdatedTeamAttribute(){
         return ucwords(str_replace('_', ' ', $this->attributes['team']));
     }
 
-    public function getPositionAttribute(){
+    public function getUpdatedPositionAttribute(){
         return ucwords(str_replace('_', ' ', $this->attributes['position']));
     }
 
+    public function socialMediaLinks(){
+        return $this->hasMany(SocialMediaLink::class);
+    }
 }

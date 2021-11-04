@@ -135,16 +135,19 @@ class OfferController extends Controller
 
         // If cps is slaps 
         if($request->cps_type == 'slaps'){
-            foreach($request->slaps as $slap){
-                OfferSlap::create([
-                    'slap_type' => $slap['slap_type'],
-                    'from' => $slap['from'],
-                    'to' => $slap['to'],
-                    'payout' => $slap['payout'],
-                    'revenue' => $slap['revenue'],
-                    'offer_id' => $offer->id,
-                ]);
+            if($request->slaps && count($request->slaps) > 0){
+                foreach($request->slaps as $slap){
+                    OfferSlap::create([
+                        'slap_type' => $slap['slap_type'],
+                        'from' => $slap['from'],
+                        'to' => $slap['to'],
+                        'payout' => $slap['payout'],
+                        'revenue' => $slap['revenue'],
+                        'offer_id' => $offer->id,
+                    ]);
+                }
             }
+            
         }
         $notification = [
             'message' => 'Created successfully',

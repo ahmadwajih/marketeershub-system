@@ -564,6 +564,17 @@
                 </li>
                 {{-- End Roles --}}
                 @endcan
+                @can('view_userActivities')
+                <li class="menu-item menu-item-active" aria-haspopup="true">
+                    <a href="{{route('admin.user.activities.index')}}" class="menu-link">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-shoe-prints"></i>
+                      </span>
+                        <span class="menu-text">{{ __('User Activities') }}</span>
+                    </a>
+                </li>
+                @endcan
+
    
                 {{-- Start Currencies --}}
                 {{-- <li class="menu-item menu-item-submenu  {{ Request::segment(2)=='currencies'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
@@ -632,7 +643,7 @@
                         </span>
                     </span>
                         <span class="menu-text">{{ __('Logout') }}</span>
-                        <i class="menu-arrow"></i>
+                        {{-- <i class="menu-arrow"></i> --}}
                     </a>
                 </li>
 

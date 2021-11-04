@@ -8,6 +8,7 @@ use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Role;
+use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -79,41 +80,56 @@ class PublisherController extends Controller
     {
         $this->authorize('create_publishers');
         $data = $request->validate([
-            'name'                  => 'required|max:255',
-            'email'                 => 'required|unique:users|max:255',
-            'phone'                 => 'required|unique:users|max:255',
-            'password'              => 'required|min:6',
-            'parent_id'             => 'required|numeric|exists:users,id',
-            'years_of_experience'   => 'required|numeric',
-            'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
-            'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
-            'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'skype'                 => 'nullable|max:255',
-            'address'               => 'nullable|max:255',
-            'category'              => 'nullable|max:255',
-            'traffic_sources'       => 'nullable|max:255',
-            'affiliate_networks'    => 'nullable|max:255',
-            'owened_digital_assets' => 'nullable|max:255',
-            'account_title'         => 'required|max:255',
-            'bank_name'             => 'required|max:255',
-            'bank_branch_code'      => 'required|max:255',
-            'swift_code'            => 'required|max:255',
-            'iban'                  => 'required|max:255',
-            'currency'              => 'required|max:255',
-            'roles.*'               => 'exists:roles,id',
+            'name'                      => 'required|max:255',
+            'email'                     => 'required|unique:users|max:255',
+            'phone'                     => 'required|unique:users|max:255',
+            'password'                  => 'required|min:6',
+            'parent_id'                 => 'required|numeric|exists:users,id',
+            'country_id'                => 'required|exists:countries,id',
+            'city_id'                   => 'required|exists:cities,id',
+            'gender'                    => 'required|in:male,female',
+            'status'                    => 'required|in:active,pending,closed',
+            'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
+            'skype'                     => 'nullable|max:255',
+            'address'                   => 'nullable|max:255',
+            'category'                  => 'nullable|max:255',
+            'years_of_experience'       => 'required_if:team,affiliate|nullable|numeric',
+            'traffic_sources'           => 'required_if:team,affiliate|max:255',
+            'affiliate_networks'        => 'required_if:team,affiliate|max:255',
+            'owened_digital_assets'     => 'required_if:team,affiliate|max:255',
+            'account_title'             => 'required|max:255',
+            'bank_name'                 => 'required|max:255',
+            'bank_branch_code'          => 'required|max:255',
+            'swift_code'                => 'required|max:255',
+            'iban'                      => 'required|max:255',
+            'currency'                  => 'required|max:255',
+            'roles.*'                   => 'exists:roles,id',
 
         ]);
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
         unset($data['roles']);
+        unset($data['social_media']);
         $publisher = User::create($data);
+        userActivity('User', $publisher->id, 'create');
         if(count($request->roles) > 0){
             foreach ($request->roles as $role_id)
             {
                 $role = Role::findOrFail($role_id);
                 $publisher->assignRole($role);
+            }
+        }
+        if($request->team == 'influencer' || $request->team == 'prepaid'){
+            if($request->social_media && count($request->social_media) > 0){
+                foreach($request->social_media as $link){
+                    SocialMediaLink::create([
+                        'link' => $link['link'],
+                        'platform' => $link['platform'],
+                        'followers' => $link['followers'],
+                        'user_id' => $publisher->id,
+                    ]);
+                }
+                
             }
         }
         $notification = [
@@ -133,6 +149,7 @@ class PublisherController extends Controller
     {
         $this->authorize('show_publishers');
         $publisher = User::findOrFail($id);
+        userActivity('User', $publisher->id, 'show');
         return view('admin.publishers.show', ['publisher' => $publisher]);
     }
 
@@ -166,43 +183,51 @@ class PublisherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-
         $this->authorize('update_publishers');
         $data = $request->validate([
-            'name'                  => 'required|max:255',
-            'email'                 => 'required|max:255|unique:users,email,'.$id,
-            'phone'                 => 'required|max:255|unique:users,phone,'.$id,
-            'password'              => 'nullable|min:6',
-            'parent_id'             => 'required|numeric|exists:users,id',
-            'years_of_experience'   => 'required|numeric',
-            'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
-            'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
-            'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'skype'                 => 'nullable|max:255',
-            'address'               => 'nullable|max:255',
-            'category'              => 'nullable|max:255',
-            'traffic_sources'       => 'nullable|max:255',
-            'affiliate_networks'    => 'nullable|max:255',
-            'owened_digital_assets' => 'nullable|max:255',
-            'account_title'         => 'required|max:255',
-            'bank_name'             => 'required|max:255',
-            'bank_branch_code'      => 'required|max:255',
-            'swift_code'            => 'required|max:255',
-            'iban'                  => 'required|max:255',
-            'currency'              => 'required|max:255',
-            'roles.*'               => 'exists:roles,id',
+            'name'                      => 'required|max:255',
+            'email'                     => 'required|max:255|unique:users,email,'.$id,
+            'phone'                     => 'required|max:255|unique:users,phone,'.$id,
+            'password'                  => 'nullable|min:6',
+            'parent_id'                 => 'required|numeric|exists:users,id',
+            'country_id'                => 'required|exists:countries,id',
+            'city_id'                   => 'required|exists:cities,id',
+            'gender'                    => 'required|in:male,female',
+            'status'                    => 'required|in:active,pending,closed',
+            'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
+            'skype'                     => 'nullable|max:255',
+            'address'                   => 'nullable|max:255',
+            'category'                  => 'nullable|max:255',
+            'years_of_experience'       => 'required_if:team,affiliate|numeric',
+            'traffic_sources'           => 'required_if:team,affiliate|max:255',
+            'affiliate_networks'        => 'required_if:team,affiliate|max:255',
+            'owened_digital_assets'     => 'required_if:team,affiliate|max:255',
+            'account_title'             => 'required|max:255',
+            'bank_name'                 => 'required|max:255',
+            'bank_branch_code'          => 'required|max:255',
+            'swift_code'                => 'required|max:255',
+            'iban'                      => 'required|max:255',
+            'currency'                  => 'required|max:255',
+            'roles.*'                   => 'exists:roles,id',
+            'social_media.*.link'       => 'required_if:team,influncer|url',
+            'social_media.*.platform'   => 'required_if:team,influncer',
+            'social_media.*.followers'  => 'required_if:team,influncer',
 
         ]);
         unset($data['password']);
         unset($data['roles']);
+        unset($data['social_media']);
+
         if($request->password){
             $data['password'] = Hash::make($request->password);
         }
         $publisher = User::findOrFail($id);
+        if($publisher->socialMediaLinks){
+            $publisher->socialMediaLinks()->delete();
+        }
         $publisher->update($data);
+        userActivity('User', $publisher->id, 'update');
+
         if($request['roles']){
             $publisher->roles()->detach();
             foreach ($request['roles'] as $role_id)
@@ -211,6 +236,21 @@ class PublisherController extends Controller
                 $publisher->assignRole($role);
             }
         }
+
+        if($request->team == 'influencer' || $request->team == 'prepaid'){
+            if($request->social_media && count($request->social_media) > 0){
+                foreach($request->social_media as $link){
+                    SocialMediaLink::create([
+                        'link' => $link['link'],
+                        'platform' => $link['platform'],
+                        'followers' => $link['followers'],
+                        'user_id' => $publisher->id,
+                    ]);
+                }
+                
+            }
+        }
+
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
@@ -230,6 +270,7 @@ class PublisherController extends Controller
         $publisher = User::findOrFail($id);
         if($request->ajax()){
             $publisher->delete();
+            userActivity('User', $publisher->id, 'delete');
         }
     }
 
@@ -260,6 +301,7 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+        userActivity('User', null , 'upload', 'Upload Publishers');
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
@@ -281,6 +323,7 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Excel::import(new PublishersUpdateHasofferIdByEmail(),request()->file('publishers'));
+        userActivity('User', null , 'upload', 'Upload and Update HasOffer Id ByEmail');
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'

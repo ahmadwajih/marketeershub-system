@@ -24,9 +24,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('export', 'UserController@export')->name('export');
-Route::get('importExportView', 'UserController@importExportView');
-Route::post('import', 'UserController@import')->name('import');
 
 // Web Routes
 
@@ -59,6 +56,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
         Route::resource('reports', ReportController::class);
+        // User Activites
+        Route::get('user-activities', 'UserActivityController@index')->name('user.activities.index');
 
         Route::post('logout', 'AuthController@logout')->name('logout');
 

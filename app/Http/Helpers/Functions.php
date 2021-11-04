@@ -2,6 +2,7 @@
 <?php
 
 use App\Models\OfferRequest;
+use App\Models\UserActivity;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -121,5 +122,30 @@ if(!function_exists('deleteImage')){
     function deleteImage($imageName, $model){
         $path = "/Images/".$model.'/'.$imageName;
         Storage::disk('public')->delete($path);
+    }
+}
+
+
+/**
+ * Function Name : userActivity 
+ * Authr: Wageh
+ * create at : 3/11/2021
+ * Usage: create user activity 
+ * parameters : object_name, object_id
+ */
+if(!function_exists('userActivity')){
+    function userActivity($object, $objectId, $mission, $note = null, $userId=null){
+        if(!$userId){
+            $userId = auth()->user()->id;
+        }
+        UserActivity::create([
+            'user_id' => $userId,
+            'mission' => $mission,
+            'object' => $object,
+            'object_id' => $objectId,
+            'note' => $note,
+        ]);
+
+        return true;
     }
 }
