@@ -17,10 +17,14 @@ class CreatePivotReportsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('coupon_id')->nullable();
             $table->foreign('coupon_id')->references('id')->on('coupons')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('orders');
-            $table->double('sales');
-            $table->double('revenue');
-            $table->double('payout');
+            $table->integer('orders')->nullable();
+            $table->double('sales')->nullable();
+            $table->double('revenue')->nullable();
+            $table->double('payout')->nullable();
+            $table->integer('v_orders')->nullable();
+            $table->double('v_sales')->nullable();
+            $table->double('v_payout')->nullable();
+
             $table->timestamps();
         });
     }

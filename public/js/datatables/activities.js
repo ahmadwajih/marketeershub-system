@@ -134,6 +134,33 @@ var KTDatatableRemoteAjaxDemo = function() {
                 selector: false,
                 textAlign: 'center',
             },{
+                field: 'object',
+                title: "Model",
+                selector: false,
+                textAlign: 'center',
+            },{
+                field: 'Show',
+                title: "Show",
+                sortable: false,
+                width: 125,
+                overflow: 'visible',
+                selector: false,
+                textAlign: 'center',
+                autoHide: false,
+                template: function(row) {
+                    if(row.element){
+                        return '\
+                            <div class="dropdown dropdown-inline">\
+                                <a href="' + row.element  + '" class="btn btn-sm btn-clean btn-icon" title="Show">\
+                                \<i class="flaticon-eye"></i>\
+                                </a>\
+                            </div>\
+                        ';
+                    }
+                    return null;
+                    
+                },
+            },{
                 field: 'created_at',
                 title: "Created At",
                 selector: false,

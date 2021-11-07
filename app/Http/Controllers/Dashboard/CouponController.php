@@ -57,7 +57,9 @@ class CouponController extends Controller
             'user_id'        => 'nullable|numeric|exists:users,id',
         ]);
         $data['coupon'] = strtolower(trim(str_replace(' ','', trim($request->coupon))));
-        Coupon::create($data);
+        $coupon = Coupon::create($data);
+        userActivity('Coupon', $coupon->id, 'create');
+
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -71,10 +73,11 @@ class CouponController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Coupon $coupon)
+    public function show($id)
     {
         $this->authorize('show_coupons');
-
+        $coupon = Coupon::withTrashed()->findOrFail($id);
+        userActivity('Coupon', $coupon->id, 'show');
         return view('admin.coupons.show', ['coupon' => $coupon]);
     }
 
@@ -113,6 +116,8 @@ class CouponController extends Controller
         ]);
 
         $coupon->update($data);
+        userActivity('Coupon', $coupon->id, 'update');
+
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
@@ -130,6 +135,7 @@ class CouponController extends Controller
     {
         $this->authorize('delete_coupons');
         if($request->ajax()){
+            userActivity('Coupon', $coupon->id, 'delete');
             $coupon->delete();
         }
     }
@@ -158,6 +164,7 @@ class CouponController extends Controller
     {
         $this->authorize('create_coupons');
         Excel::import(new CouponImport($request->offer_id),request()->file('coupons'));
+        userActivity('Coupon',null , 'upload');
         
         $notification = [
             'message' => 'Created successfully',

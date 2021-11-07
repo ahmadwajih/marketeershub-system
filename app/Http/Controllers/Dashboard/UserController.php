@@ -84,6 +84,8 @@ class UserController extends Controller
                 $user->assignRole($role);
             }
         }
+        userActivity('User', $user->id, 'create');
+
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -97,8 +99,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($id)
     {
+        $user = User::withTrashed()->findOrFail($id);
+        userActivity('User', $user->id, 'show');
         $this->authorize('show_users');
         return view('admin.users.show', ['user' => $user]);
     }
@@ -165,6 +169,8 @@ class UserController extends Controller
                 $user->assignRole($role);
             }
         }
+        userActivity('User', $user->id, 'update');
+
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
@@ -183,6 +189,7 @@ class UserController extends Controller
     {
         $this->authorize('delete_users');
         if($request->ajax()){
+            userActivity('User', $user->id, 'delete');
             $user->delete();
         }
     }

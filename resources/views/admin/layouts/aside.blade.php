@@ -483,16 +483,7 @@
                                     <span class="menu-text">{{ __('Pivot Report') }}</span>
                                 </span>
                             </li>
-                            @can('view_pivot_report')
-                            <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.pivot-report.index')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('All Pivot Report') }}</span>
-                                </a>
-                            </li>
-                            @endcan
+
 
                             @can('create_pivot_report')
                             <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
@@ -565,7 +556,7 @@
                 {{-- End Roles --}}
                 @endcan
                 @can('view_userActivities')
-                <li class="menu-item menu-item-active" aria-haspopup="true">
+                <li class="menu-item {{ Request::segment(2)=='user-activities'?'menu-item-active':'' }}" aria-haspopup="true">
                     <a href="{{route('admin.user.activities.index')}}" class="menu-link">
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-shoe-prints"></i>

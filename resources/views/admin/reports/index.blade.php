@@ -12,28 +12,53 @@
                         <h3>{{ __('Report') }}</h3>
                     </div>
                 </div>
-                <div class="container">
+                {{-- Validation Data --}}
+                <div class="container m-5">
                     <div class="row">
                         <div class="col-4">
                             <div class="badge badge-primary d-block">
-                                <h2>Total Orders:</h2>
+                                <h2> Total Orders:</h2>
                                 <p>{{ $totalOrders }} {{ __('Order') }}</p>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="badge badge-primary d-block">
-                                <h2>Total Sales:</h2>
+                                <h2> Total Sales:</h2>
                                 <p>${{ $totalSales }}</p>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="badge badge-primary d-block">
-                                <h2>Total Payout:</h2>
+                                <h2> Total Payout:</h2>
                                 <p>${{ $totalPayout }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
+                {{-- Pending Data --}}
+                <div class="container m-5">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="badge badge-primary d-block">
+                                <h2>Pending Total Orders:</h2>
+                                <p>{{ $pendingTotalOrders }} {{ __('Order') }}</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="badge badge-primary d-block">
+                                <h2>Pending Total Sales:</h2>
+                                <p>${{ $pendingTotalSales }}</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="badge badge-primary d-block">
+                                <h2>Pending Total Payout:</h2>
+                                <p>${{ $pendingTotalPayout }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     <div id="accordion">
                         @foreach($offers as $offer)

@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Coupons')
+@section('title','Category')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -11,7 +11,7 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">{{ __('Coupon') . $coupon->code }} </h2>
+                            <h2 class="card-title">{{ __('Category') . $category->title }} </h2>
                         </div>
                         <!--begin::Form-->
                         <form class="form">
@@ -21,17 +21,9 @@
                                     <div class="mb-2">
 
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
-                                                <label>{{ __('Coupon') }}</label>
-                                                <input class="form-control" disabled  value="{{$coupon->coupon }}" />
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <label>{{ __('Offer') }}</label>
-                                                <input class="form-control" disabled  value="{{$coupon->offer->name}}" />
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <label>{{ __('User Name') }}</label>
-                                                <input class="form-control" disabled  value="{{$coupon->user?$coupon->user->name:''}}" />
+                                            <div class="col-lg-12">
+                                                <label>{{ __('Category') }}</label>
+                                                <input class="form-control" disabled  value="{{$category->title }}" />
                                             </div>
                                         </div>
 
@@ -41,7 +33,7 @@
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-lg-12 text-center">
-                                        <a href="{{route('admin.coupons.index')}}">
+                                        <a href="{{route('admin.categories.index')}}">
                                             <button type="button" class="btn btn-primary font-weight-bold mr-2">
                                                 {{ __('Back') }}
                                             </button>

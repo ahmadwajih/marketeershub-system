@@ -138,14 +138,22 @@ if(!function_exists('userActivity')){
         if(!$userId){
             $userId = auth()->user()->id;
         }
-        UserActivity::create([
-            'user_id' => $userId,
-            'mission' => $mission,
-            'object' => $object,
-            'object_id' => $objectId,
-            'note' => $note,
-        ]);
-
+        $exists = UserActivity::where([
+            ['user_id' , '=', $userId],
+            ['mission' , '=', $mission],
+            ['object' , '=', $object],
+            ['object_id' , '=', $objectId],
+        ])->first();
+        if(!$exists){
+            UserActivity::create([
+                'user_id' => $userId,
+                'mission' => $mission,
+                'object' => $object,
+                'object_id' => $objectId,
+                'note' => $note,
+            ]);
+        }
+        
         return true;
     }
 }

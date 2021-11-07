@@ -22,6 +22,7 @@ class CreateUserActivitiesTable extends Migration
             $table->unsignedBigInteger('object_id')->nullable();
             $table->string('note')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

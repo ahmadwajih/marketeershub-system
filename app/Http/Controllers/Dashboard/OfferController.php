@@ -37,7 +37,8 @@ class OfferController extends Controller
     {
         $this->authorize('view_offers');
         $offers = auth()->user()->offers;
-        return view('admin.offers.index', compact('offers'));
+        $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
+        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
     }
     
     /**
@@ -113,6 +114,7 @@ class OfferController extends Controller
             'discount_type' => $request->discount_type,
             'discount' => $request->discount,
         ]);
+        userActivity('Offer', $offer->id, 'create');
 
         foreach($request->categories as $categoryId){
             $category = Category::findOrFail($categoryId);
@@ -162,9 +164,11 @@ class OfferController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Offer $offer)
+    public function show($id)
     {
         $this->authorize('show_offers');
+        $offer = Offer::withTrashed()->findOrFail($id);
+        userActivity('Offer', $offer->id, 'create');
         return view('admin.offers.show', ['offer' => $offer]);
     }
  
@@ -244,6 +248,7 @@ class OfferController extends Controller
             'discount_type' => $request->discount_type,
             'discount' => $request->discount,
         ]);
+        userActivity('Offer', $offer->id, 'update');
 
         foreach($request->categories as $categoryId){
             $category = Category::findOrFail($categoryId);
@@ -295,6 +300,7 @@ class OfferController extends Controller
     {
         $this->authorize('delete_offers');
         if($request->ajax()){
+            userActivity('Offer', $offer->id, 'delete');
             Storage::disk('public')->delete('Images/Offers/'.$offer->thumbnail);
             $offer->delete();
         }

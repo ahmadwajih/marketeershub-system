@@ -17,6 +17,7 @@ class AdvertiserController extends Controller
      */
     public function index(Request $request)
     {
+
         $this->authorize('view_advertisers');
         if($request->ajax()){
             $advertisers = getModelData('Advertiser', $request);
@@ -62,7 +63,9 @@ class AdvertiserController extends Controller
             'status'        => 'nullable|in:pending,rejected,approved',
         ]);
 
-        Advertiser::create($data);
+        $advertiser = Advertiser::create($data);
+        userActivity('Advertiser', $advertiser->id, 'create');
+
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -76,10 +79,11 @@ class AdvertiserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Advertiser $advertiser)
+    public function show($id)
     {
         $this->authorize('show_advertisers');
-
+        $advertiser = Advertiser::withTrashed()->findOrFail($id);
+        userActivity('Advertiser', $advertiser->id, 'show');
         return view('admin.advertisers.show', ['advertiser' => $advertiser]);
     }
 
@@ -124,6 +128,7 @@ class AdvertiserController extends Controller
         ]);
 
         $advertiser->update($data);
+        userActivity('Advertiser', $advertiser->id, 'update');
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
@@ -141,6 +146,7 @@ class AdvertiserController extends Controller
     {
         $this->authorize('delete_advertisers');
         if($request->ajax()){
+            userActivity('Advertiser', $advertiser->id, 'delete');
             $advertiser->delete();
         }
     }

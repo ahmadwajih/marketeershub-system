@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserActivity;
 use Illuminate\Http\Request;
 
 class UserActivityController extends Controller
@@ -14,6 +15,8 @@ class UserActivityController extends Controller
      */
     public function index(Request $request)
     {
+        // $activities = UserActivity::all();
+        // dd($activities[0]->element);
         $this->authorize('view_userActivities');
         if($request->ajax()){
             $activities = getModelData('UserActivity', $request, ['user']);

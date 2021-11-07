@@ -71,6 +71,8 @@ class RoleController extends Controller
                     $role->allowTo($ability);
                 }
             }
+            userActivity('Role', $role->id, 'create');
+
             $notification = array(
                 'message' => 'Created Succefuly ',
                 'alert-type' => 'success'
@@ -84,8 +86,9 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Role $role)
+    public function show($id)
     {
+        $role = Role::withTrashed()->findOrFail($id);
         return view('admin.roles.show',[
             'role' => $role,
             'models' => $this->models,
@@ -102,6 +105,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+
         return view('admin.roles.edit',[
             'role' => $role,
             'models' => $this->models,
@@ -129,6 +133,8 @@ class RoleController extends Controller
 
         }
         $role->save();
+        userActivity('Role', $role->id, 'update');
+
         $notification = array(
             'message' => 'Updated Succefuly ',
             'alert-type' => 'success'
@@ -146,6 +152,7 @@ class RoleController extends Controller
     {
         if($request->ajax())
         {
+            userActivity('Role', $id, 'delete');
             if($id != 1){
                 $role = Role::find($id);
                 $role->destroy($id);

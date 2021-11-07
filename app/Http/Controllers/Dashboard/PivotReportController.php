@@ -53,7 +53,13 @@ class PivotReportController extends Controller
             'offer_id' => 'required|numeric|exists:offers,id',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new PivotReportImport($request->offer_id),request()->file('report'));
+        if($request->type=='normal'){
+            Excel::import(new PivotReportImport($request->offer_id),request()->file('report'));
+        }else{
+
+        }
+        userActivity('PivotReport', null, 'upload');
+
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
@@ -61,72 +67,5 @@ class PivotReportController extends Controller
         return redirect()->route('admin.pivot-report.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Coupon $coupon)
-    {
-        $this->authorize('show_pivot_report');
 
-        return view('admin.pivot-report.show', ['coupon' => $coupon]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Coupon $coupon)
-    {
-        $this->authorize('update_pivot_report');
-
-        return view('admin.pivot-report.edit', [
-            'coupon' => $coupon,
-            'offers' => Offer::whereStatus("active")->get(),
-            'users' => User::whereStatus("active")->whereIn('position', ['team_leader','account_manager','publisher'])->whereIn('team', ['media_buying','influencer','affiliate'])->get(),
-        
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Coupon $coupon)
-    {
-        $this->authorize('update_pivot_report');
-        $data = $request->validate([
-            'coupon'          => 'required|max:255',
-            'offer_id'        => 'required|numeric|exists:offers,id',
-            'user_id'        => 'nullable|numeric|exists:users,id',
-        ]);
-
-        $coupon->update($data);
-        $notification = [
-            'message' => 'Updated successfully',
-            'alert-type' => 'success'
-        ];
-        return redirect()->route('admin.pivot-report.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, Coupon $coupon)
-    {
-        $this->authorize('delete_pivot_report');
-        if($request->ajax()){
-            $coupon->delete();
-        }
-    }
 }

@@ -54,7 +54,9 @@ class OfferRequestController extends Controller
             'offer_id' => 'required|integer|exists:offers,id',
             'status' => 'required|in:pending,rejected,approved',
         ]);
-        OfferRequest::create($data);
+        $offerRequest = OfferRequest::create($data);
+        userActivity('OfferRequest', $offerRequest->id, 'create');
+
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -81,10 +83,12 @@ class OfferRequestController extends Controller
         if($exists){
             return response('exists', 422);
         }
-        OfferRequest::create([
+        $offerRequest = OfferRequest::create([
             'offer_id' => $request->offerId,
             'user_id' => auth()->user()->id,
         ]);
+        userActivity('OfferRequest', $offerRequest->id, 'create');
+
         return true;
     }
 
@@ -97,6 +101,7 @@ class OfferRequestController extends Controller
     public function show(OfferRequest $offerRequest)
     {
         $this->authorize('show_offerRequests');
+        userActivity('OfferRequest', $offerRequest->id, 'show');
         return view('admin.offerRequests.show', ['offerRequest' => $offerRequest]);
     }
  
@@ -149,6 +154,8 @@ class OfferRequestController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
+        userActivity('OfferRequest', $offerRequest->id, 'update');
+
         return redirect()->route('admin.offerRequests.index');
     }
 
@@ -162,6 +169,7 @@ class OfferRequestController extends Controller
     {
         $this->authorize('delete_offerRequests');
         if($request->ajax()){
+            userActivity('OfferRequest', $offerRequest->id, 'delete');
             $offerRequest->delete();
         }
     }

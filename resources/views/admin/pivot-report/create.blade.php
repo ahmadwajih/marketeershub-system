@@ -39,7 +39,19 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
+                                                <label>* {{ __('Type') }} :</label>
+                                                <select class="form-control select2" id="kt_select_type" name="type" >
+                                                    <option value="normal">{{ __('Normal') }}</option>
+                                                    <option value="validation">{{ __('Validation Report') }}</option>
+                                                </select>
+                                                @if ($errors->has('type'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('type') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Upload Pivot Report') }} :</label>
                                                 <input type="file" name="report" class="form-control"  value="{{old('report')}}" required />
                                                 @if ($errors->has('report'))
@@ -49,7 +61,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ _('Offer') }} :</label>
                                                 <select class="form-control select2" id="kt_select_offer_id" name="offer_id" required >
                                                     @foreach($offers as $offer)
@@ -89,6 +101,9 @@
 @push('scripts')
     <script>
         $('#kt_select_offer_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_type').select2({
             placeholder: "Select Option",
         });
     </script>

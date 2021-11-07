@@ -48,7 +48,8 @@ class CategoryController extends Controller
             'title' => 'required|unique:categories|max:255',
         ]);
 
-        Category::create($data);
+        $category = Category::create($data);
+        userActivity('Category', $category->id, 'create');
 
         $notification = [
             'message' => 'Created successfully',
@@ -63,9 +64,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show($id)
     {
         $this->authorize('show_categories');
+        $category = Category::withTrashed()->findOrFail($id);
+        userActivity('Category', $category->id, 'show');
         return view('admin.categories.show', ['category' => $category]);
     }
  
@@ -98,6 +101,8 @@ class CategoryController extends Controller
         ]);
        
         $category->update($data);
+        userActivity('Category', $category->id, 'update');
+
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
@@ -115,6 +120,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete_categories');
         if($request->ajax()){
+            userActivity('Category', $category->id, 'delete');
             $category->delete();
         }
     }

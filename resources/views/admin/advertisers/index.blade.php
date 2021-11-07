@@ -98,5 +98,5 @@
     var route = "{{ route('admin.advertisers.index') }}";
 </script>
 
-<script src="{{asset('js/datatables/advertisers.js')}}"></script>
+<script src="{{asset('js/datatables/advertisers2.js')}}"></script>
 @endpush

@@ -208,10 +208,7 @@ class PublisherController extends Controller
             'swift_code'                => 'required|max:255',
             'iban'                      => 'required|max:255',
             'currency'                  => 'required|max:255',
-            'roles.*'                   => 'exists:roles,id',
-            'social_media.*.link'       => 'required_if:team,influncer|url',
-            'social_media.*.platform'   => 'required_if:team,influncer',
-            'social_media.*.followers'  => 'required_if:team,influncer',
+            'roles.*'                   => 'exists:roles,id'
 
         ]);
         unset($data['password']);
