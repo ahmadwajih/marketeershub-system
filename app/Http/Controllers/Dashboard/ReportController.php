@@ -19,13 +19,16 @@ class ReportController extends Controller
     {
         $this->authorize('view_reports');
         $userId  = auth()->user()->id;
-        $offers = Offer::whereHas('users', function($q) use($userId) {
-            $q->whereIn('user_id', [$userId]);
-        })->with(['users' => function($q){
-            $q->where('users.id', auth()->user()->id);
+        $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+        array_push($childrens, $userId);
+
+        $offers = Offer::whereHas('users', function($q) use($childrens) {
+            $q->whereIn('user_id', $childrens);
+        })->with(['users' => function($q) use($childrens){
+            $q->whereIn('users.id', $childrens);
         },
-        'coupons' => function($q){
-            $q->where('coupons.user_id', auth()->user()->id);
+        'coupons' => function($q) use($childrens){
+            $q->whereIn('coupons.user_id', $childrens);
         }])->get();
         $pendingTotalOrders = 0;
         $pendingTotalSales = 0;
@@ -35,7 +38,6 @@ class ReportController extends Controller
         $totalPayout = 0;
         foreach($offers as $offer){
             foreach($offer->coupons as $coupon){
-                // dd($coupon->report);
                 if($coupon->report){
                     $pendingTotalOrders += $coupon->report->orders;
                     $pendingTotalSales += $coupon->report->sales;

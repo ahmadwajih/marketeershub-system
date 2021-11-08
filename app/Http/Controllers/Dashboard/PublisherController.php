@@ -23,7 +23,7 @@ class PublisherController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_publishers');
+        $this->authorize('view_publishers');        
         if ($request->ajax()){
             $users = getModelData('User' , $request, ['parent'], array(
                 ['position', '=', 'publisher']
@@ -46,7 +46,7 @@ class PublisherController extends Controller
     {
         $this->authorize('view_publishers');
         if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent'], array(
+            $users = getModelData('User' , $request, ['parent','socialMediaLinks', 'offers'], array(
                 ['position', '=', 'publisher'],
                 ['team', '=', $type],
             ));

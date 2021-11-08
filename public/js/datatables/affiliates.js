@@ -13,7 +13,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 type: 'remote',
                 source: {
                     read: {
-                        url:'/dashboard/publishers/type/affiliate',
+                        url:'/admin/publishers/type/affiliate',
                         method:'GET',
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
@@ -137,7 +137,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
             },{
                 field: 'parent.name',
-                title: "Belongs To",
+                title: "Account Manager",
                 selector: false,
                 textAlign: 'center',
             },{

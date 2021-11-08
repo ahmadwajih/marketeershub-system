@@ -13,7 +13,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 type: 'remote',
                 source: {
                     read: {
-                        url:'/dashboard/publishers/type/affiliate',
+                        url:'/admin/publishers/type/influencer',
                         method:'GET',
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
@@ -137,9 +137,34 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
             },{
                 field: 'parent.name',
-                title: "Belongs To",
+                title: "Account Manager",
                 selector: false,
                 textAlign: 'center',
+            },{
+                field: 'SM Platforms',
+                title: "SM Platforms",
+                sortable: false,
+                width: 125,
+                overflow: 'visible',
+                selector: false,
+                textAlign: 'center',
+                autoHide: false,
+                template: function(row) {
+                    if(row.team == 'influencer'){
+                        var data = row.socialLinks;
+                        var links = '';
+                        data.forEach(function (value, index) {
+                            links += '\
+                                <a href="' + value.link + '" class="btn btn-sm btn-clean btn-icon" target="_blank" title="'+value.platform+'">\
+                                    \<i class="fab fa-'+value.platform+'"></i>\
+                                </a>\
+                            ';
+    
+                        });
+                        return  links;
+                    }
+                    return null;
+                },
             },{
                 field: 'email',
                 title: "Email",

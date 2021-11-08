@@ -273,7 +273,7 @@
                                                     <div class="form-group row" id="kt_repeater_1">
                                                         <label class="col-form-label text-right"><b>{{ __('Socia Media Accounts') }}</b></label>
                                                         <div data-repeater-list="social_media" class="col-lg-12">
-                                                            @if($publisher->team == 'influencer')
+                                                            @if($publisher->team == 'influencer' && count($publisher->socialMediaLinks) > 0)
                                                                 @foreach($publisher->socialMediaLinks as $item)
                                                                 <div data-repeater-item class="form-group row align-items-center">
                                                                     <div class="col-md-6">

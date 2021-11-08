@@ -154,8 +154,13 @@
 @endsection
 @push('scripts')
 <script>var route = "{{ route('admin.publishers.index') }}";</script>
+@if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)!=null)
+    <script src="{{asset('js/datatables/'.Str::plural(Request::segment(4)).'.js')}}"></script>
+@else
+    <script src="{{asset('js/datatables/publishers.js')}}"></script>
+@endif
 
-@if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='influencer')
+{{-- @if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='influencer')
     <script src="{{asset('js/datatables/influencers.js')}}"></script>
 
 @elseif (Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='affiliate')
@@ -163,6 +168,6 @@
 
 @else
     <script src="{{asset('js/datatables/publishers.js')}}"></script>
-@endif
+@endif --}}
 
 @endpush

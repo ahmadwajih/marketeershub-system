@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Imports\PivotReportImport;
+use App\Imports\ValidationPivotReportImport;
 use App\Models\Offer;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -56,7 +57,7 @@ class PivotReportController extends Controller
         if($request->type=='normal'){
             Excel::import(new PivotReportImport($request->offer_id),request()->file('report'));
         }else{
-
+            Excel::import(new ValidationPivotReportImport($request->offer_id),request()->file('report'));
         }
         userActivity('PivotReport', null, 'upload');
 

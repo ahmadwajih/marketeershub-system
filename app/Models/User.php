@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,8 +21,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $guarded = [];
-
-
+    public $appends = ['socialLinks', 'offersCount', 'sumOrders'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -47,6 +47,10 @@ class User extends Authenticatable
 
     public function parent(){
         return $this->belongsTo(User::class, 'parent_id')->with('parent');
+    }
+
+    public function childrens(){
+        return $this->hasMany(User::class, 'parent_id');
     }
 
 
@@ -97,4 +101,34 @@ class User extends Authenticatable
     public function socialMediaLinks(){
         return $this->hasMany(SocialMediaLink::class);
     }
+
+    public function getSocialLinksAttribute(){
+        $links = [];
+        foreach($this->socialMediaLinks as $link ){
+            $links[] = $link;
+        }
+        return $links;
+    }
+
+    public function getOffersCountAttribute(){
+        return $this->offers()->whereStatus('active')->count();
+    }
+
+    public function getSumOrdersAttribute() 
+    {
+
+        $orders = $this->coupons->map(function ($coupon){
+            return $coupon->report()->whereMonth(
+                'created_at', '>', Carbon::now()->subMonth()->month
+            )->get();
+        })->flatten();
+
+        $sumoforders =  $orders->sum('orders');
+        if($sumoforders > 0){
+            return true;
+        }
+
+        return false;
+    }
+   
 }

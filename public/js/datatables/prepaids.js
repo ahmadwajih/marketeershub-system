@@ -13,7 +13,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 type: 'remote',
                 source: {
                     read: {
-                        url:route,
+                        url:'/admin/publishers/type/prepaid',
                         method:'GET',
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
@@ -136,38 +136,8 @@ var KTDatatableRemoteAjaxDemo = function() {
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'SM Platforms',
-                title: "SM Platforms",
-                sortable: false,
-                width: 125,
-                overflow: 'visible',
-                selector: false,
-                textAlign: 'center',
-                autoHide: false,
-                template: function(row) {
-                    if(row.team == 'influencer'){
-                        var data = row.socialLinks;
-                        var links = '';
-                        data.forEach(function (value, index) {
-                            links += '\
-                                <a href="' + value.link + '" class="btn btn-sm btn-clean btn-icon" target="_blank" title="'+value.platform+'">\
-                                    \<i class="fab fa-'+value.platform+'"></i>\
-                                </a>\
-                            ';
-    
-                        });
-                        return  links;
-                    }
-                    return null;
-                },
-            },{
                 field: 'parent.name',
                 title: "Account Manager",
-                selector: false,
-                textAlign: 'center',
-            },{
-                field: 'offersCount',
-                title: "Offers",
                 selector: false,
                 textAlign: 'center',
             },{
@@ -191,20 +161,10 @@ var KTDatatableRemoteAjaxDemo = function() {
                 selector: false,
                 textAlign: 'center',
             }, {
-                field: 'Status',
+                field: 'status',
                 title: "Status",
-                sortable: false,
-                width: 125,
-                overflow: 'visible',
                 selector: false,
                 textAlign: 'center',
-                autoHide: false,
-                template: function(row) {
-                    if(row.sumOrders){
-                        return '<span class="badge badge-success">Active</span>';
-                    }
-                    return '<span class="badge badge-danger">Unactive</span>';
-                },
             },{
                 field: 'Actions',
                 title: "Actions",

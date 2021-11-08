@@ -1,5 +1,16 @@
 @extends('admin.layouts.app')
 @section('title','Reports')
+@push('styles')
+    <style>
+        tr.yellow{
+            background-color: yellow;
+        }
+        tr.red{
+            background-color: red;
+            color: #fff;
+        }
+    </style>
+@endpush
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -76,19 +87,30 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <th scope="col">{{ _('Coupon') }}</th>
+                                            <th scope="col">{{ _('Coupon Status') }}</th>
+                                            <th scope="col">{{ _('Discount') }}</th>
+                                            <th scope="col">{{ _('Camping') }}</th>
                                             <th scope="col">{{ _('Orders') }}</th>
                                             <th scope="col">{{ __('Sales') }}</th>
                                             <th scope="col">{{ _('Payout') }}</th>
+                                            <th scope="col">{{ _('V Orders') }}</th>
+                                            <th scope="col">{{ __('V Sales') }}</th>
+                                            <th scope="col">{{ _('V Payout') }}</th>
                                           </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($offer->coupons as $coupon)
-                                                <tr>
+                                                <tr class="{{ $coupon->report&&$coupon->report->orders <= 20 && $coupon->report->orders > 10 ? 'yellow':'' }} {{ $coupon->report&&$coupon->report->orders <= 10 ? 'red' :'' }}">
                                                     <td>{{ $coupon->coupon }}</td>
+                                                    <td>{{ $coupon->report&&$coupon->report->orders > 1 ?'Active':'None Active' }}</td>
+                                                    <td>{{ $offer->discount }} {{ $offer->discount_type=='flat'?$offer->currency->code:'%' }}</td>
+                                                    <td>{{ $offer->name }}</td>
                                                     <td>{{ $coupon->report?$coupon->report->orders:0 }}</td>
                                                     <td>{{ $coupon->report?$coupon->report->sales:0 }}</td>
                                                     <td>{{ $coupon->report?$coupon->report->payout:0 }}</td>
-    
+                                                    <td>{{ $coupon->report?$coupon->report->v_orders:0 }}</td>
+                                                    <td>{{ $coupon->report?$coupon->report->v_sales:0 }}</td>
+                                                    <td>{{ $coupon->report?$coupon->report->v_payout:0 }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

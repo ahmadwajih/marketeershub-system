@@ -143,8 +143,11 @@ class OfferRequestController extends Controller
                 $existsCoupon->save();
             }
         }
+
         if($request->status =='approved'){
-            $offerRequest->user->assignOffer($offerRequest->offer);
+            if(!$offerRequest->user->offers->contains($offerRequest->offer_id)){
+                $offerRequest->user->assignOffer($offerRequest->offer);
+            }
         }else{
             $offerRequest->user->unAssignOffer($offerRequest->offer_id);
         }

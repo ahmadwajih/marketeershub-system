@@ -317,7 +317,7 @@ class UserSeeder extends Seeder
             'name'                  => 'Prepaid Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
-            'parent_id'             => 7,
+            'parent_id'             => 8,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'male',
