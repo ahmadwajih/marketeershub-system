@@ -116,14 +116,20 @@ class OfferController extends Controller
         ]);
         userActivity('Offer', $offer->id, 'create');
 
-        foreach($request->categories as $categoryId){
-            $category = Category::findOrFail($categoryId);
-            $offer->assignCategory($category);
+        if($request->categories){
+            foreach($request->categories as $categoryId){
+                $category = Category::findOrFail($categoryId);
+                $offer->assignCategory($category);
+            }
         }
-        foreach($request->countries as $countryId){
-            $country = Country::findOrFail($countryId);
-            $offer->assignCountry($country);
+        
+        if($request->countries){
+            foreach($request->countries as $countryId){
+                $country = Country::findOrFail($countryId);
+                $offer->assignCountry($country);
+            }
         }
+        
         // If cps is new old
         if($request->cps_type == 'new_old'){
             NewOldOffer::create([
@@ -250,6 +256,7 @@ class OfferController extends Controller
         ]);
         userActivity('Offer', $offer->id, 'update');
 
+        $offer->categories()->detach();
         foreach($request->categories as $categoryId){
             $category = Category::findOrFail($categoryId);
             $offer->assignCategory($category);

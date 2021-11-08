@@ -28,7 +28,7 @@
                         <div class="topbar-item">
                             <div class="topbar-item" data-toggle="dropdown">
                                 <div class="btn btn-icon btn-clean btn-dropdown btn-lg">
-                                    <img class="h-45px w-45px rounded-sm"   src="{{Auth::guard('web')->user()->image}}" alt="" />
+                                    <img class="h-45px w-45px rounded-sm"   src="{{ getImagesPath('Users', Auth::guard('web')->user()->image) }}" alt="" />
                                 </div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
         <div class="topbar">
             <div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
                 <div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1">
-                    <img class="h-20px w-20px rounded-sm" src="{{asset('dashboard/assets/media/svg/flags/158-egypt.svg')}}" alt="" />
+                    <img class="h-20px w-20px rounded-sm" src="{{asset('dashboard/media/svg/flags/133-saudi-arabia.svg')}}" alt="" />
                 </div>
             </div>
 

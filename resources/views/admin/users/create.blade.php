@@ -38,6 +38,28 @@
                                 @endif
                                 <div class="mb-3">
                                     <div class="mb-2">
+                                        <label class="col-12 text-center mb-5">{{ __('Profile Image') }}</label>
+                                        <div class="form-group row">
+                                            <div class="col-12 text-center">
+                                                <div class="image-input image-input-outline image-input-circle" id="kt_image">
+                                                    <div class="image-input-wrapper" style="background-image: url({{asset('dashboard/images/placeholder.png')}})"></div>
+                                                    <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Upload image">
+                                                        <i class="fa fa-pen icon-sm text-muted"></i>
+                                                        <input type="file" name="image" accept=".png, .jpg, .jpeg, .svg" />
+                                                        {{-- <input type="hidden" name="profile_avatar_remove" /> --}}
+                                                    </label>
+                                                    <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Delete image">
+                                                            <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                                        </span>
+                                                </div>
+                                                <span class="form-text text-muted mt-5 mb-5">{{ __('Available extensions is : png، jpg، jpeg،') }}</span>
+                                                @if ($errors->has('image'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('image') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Name') }} :</label>

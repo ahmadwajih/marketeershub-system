@@ -32,6 +32,25 @@
                     </a>
                 </li>
 
+                @if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']))
+                    <li class="menu-item menu-item-active" aria-haspopup="true">
+                        <a href="{{route('admin.publisher.profile')}}" class="menu-link">
+                            <span class="svg-icon menu-icon">
+                                <i class="fas fa-id-badge"></i>
+                            </span>
+                            <span class="menu-text">{{ __('Profile') }}</span>
+                        </a>
+                    </li>
+                @else
+                    <li class="menu-item menu-item-active" aria-haspopup="true">
+                        <a href="{{route('admin.user.profile')}}" class="menu-link">
+                            <span class="svg-icon menu-icon">
+                                <i class="fas fa-id-badge"></i>
+                            </span>
+                            <span class="menu-text">{{ __('Profile') }}</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="menu-section">
                     <h4 class="menu-text">{{ __('Persons') }}</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>

@@ -193,4 +193,16 @@ class UserController extends Controller
             $user->delete();
         }
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function profile()
+    {
+        $user = auth()->user();
+        return view('admin.users.profile', ['user' => $user]);
+    }
 }

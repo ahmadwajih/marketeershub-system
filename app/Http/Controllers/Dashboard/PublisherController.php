@@ -13,6 +13,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class PublisherController extends Controller
 {
@@ -66,6 +68,7 @@ class PublisherController extends Controller
         return view('admin.publishers.create',[
             'countries' => Country::all(),
             'roles' => Role::all(),
+            'categories' => Category::all(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
         ]);
     }
@@ -104,14 +107,31 @@ class PublisherController extends Controller
             'iban'                      => 'required|max:255',
             'currency'                  => 'required|max:255',
             'roles.*'                   => 'exists:roles,id',
+            'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+
 
         ]);
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
         unset($data['roles']);
         unset($data['social_media']);
+        if($request->hasFile('image')){
+            $data['image'] = uploadImage($request->file('image'), "Users");
+        }
+        // dd($data);
         $publisher = User::create($data);
+        // Store Activity 
         userActivity('User', $publisher->id, 'create');
+
+        // Add categories
+        if($request->categories){
+            foreach($request->categories as $categoryId){
+                $category = Category::findOrFail($categoryId);
+                $publisher->assignCategory($category);
+            }
+        }
+
+        // Assign Role 
         if(count($request->roles) > 0){
             foreach ($request->roles as $role_id)
             {
@@ -119,6 +139,8 @@ class PublisherController extends Controller
                 $publisher->assignRole($role);
             }
         }
+
+        // Store Social Media Accounts 
         if($request->team == 'influencer' || $request->team == 'prepaid'){
             if($request->social_media && count($request->social_media) > 0){
                 foreach($request->social_media as $link){
@@ -169,6 +191,7 @@ class PublisherController extends Controller
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
             'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'categories' => Category::all(),
             'roles' => Role::all(),
 
         ]);
@@ -208,23 +231,45 @@ class PublisherController extends Controller
             'swift_code'                => 'required|max:255',
             'iban'                      => 'required|max:255',
             'currency'                  => 'required|max:255',
-            'roles.*'                   => 'exists:roles,id'
+            'roles.*'                   => 'exists:roles,id',
+            'categories'                => 'array|required|exists:categories,id',
+            'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+
 
         ]);
         unset($data['password']);
         unset($data['roles']);
         unset($data['social_media']);
+        unset($data['categories']);
 
         if($request->password){
             $data['password'] = Hash::make($request->password);
         }
         $publisher = User::findOrFail($id);
+
+        // Update Image 
+        $data['image'] = $publisher->image;
+        if($request->has("image")){
+            Storage::disk('public')->delete('Images/Users/'.$publisher->image);
+            $image = time().rand(11111,99999).'.'.$request->image->extension();
+            $request->image->storeAs('Images/Users/',$image, 'public');
+            $data['image'] = $image;
+        }
+
         if($publisher->socialMediaLinks){
             $publisher->socialMediaLinks()->delete();
         }
         $publisher->update($data);
         userActivity('User', $publisher->id, 'update');
+        // Unasign categories 
+        $publisher->categories()->detach();
+        // Assign Categories
+        foreach($request->categories as $categoryId){
+            $category = Category::findOrFail($categoryId);
+            $publisher->assignCategory($category);
+        }
 
+        // Asign Role 
         if($request['roles']){
             $publisher->roles()->detach();
             foreach ($request['roles'] as $role_id)
@@ -269,6 +314,18 @@ class PublisherController extends Controller
             $publisher->delete();
             userActivity('User', $publisher->id, 'delete');
         }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function profile($id)
+    {
+        $publisher = auth()->user();
+        return view('admin.publishers.profile', ['publisher' => $publisher]);
     }
 
     
@@ -327,6 +384,5 @@ class PublisherController extends Controller
         ];
         return redirect()->route('admin.publishers.index');
     }
-
 
 }

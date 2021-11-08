@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Users')
+@section('title','Publishers')
 @push('styles')
     <style>
         .influncers{
@@ -45,6 +45,28 @@
                                 @endif
                                 <div class="mb-3">
                                     <div class="mb-2">
+                                        <label class="col-12 text-center mb-5">{{ __('Profile Image') }}</label>
+                                        <div class="form-group row">
+                                            <div class="col-12 text-center">
+                                                <div class="image-input image-input-outline image-input-circle" id="kt_image">
+                                                    <div class="image-input-wrapper" style="background-image: url({{asset('dashboard/images/placeholder.png')}})"></div>
+                                                    <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Upload image">
+                                                        <i class="fa fa-pen icon-sm text-muted"></i>
+                                                        <input type="file" name="image" accept=".png, .jpg, .jpeg, .svg" />
+                                                        {{-- <input type="hidden" name="profile_avatar_remove" /> --}}
+                                                    </label>
+                                                    <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Delete image">
+                                                            <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                                        </span>
+                                                </div>
+                                                <span class="form-text text-muted mt-5 mb-5">{{ __('Available extensions is : png، jpg، jpeg،') }}</span>
+                                                @if ($errors->has('image'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('image') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Name') }} :</label>
@@ -198,11 +220,15 @@
                                                 @endif
                                             </div>
                                             <div class="col-lg-6">
-                                                <label>{{ __('Category') }} :</label>
-                                                <input type="text" name="category" class="form-control" value="{{old('category')}}" />
-                                                @if ($errors->has('category'))
+                                                <label>* {{ __('Categories') }} :</label>
+                                                <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
+                                                    @foreach ($categories as $category)
+                                                        <option {{ old('categories')?(in_array($category->id,old('categories'))?'selected':''):''  }} value="{{ $category->id }}">{{  $category->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('categories'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('category') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('categories') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -421,6 +447,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_role_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_categories').select2({
             placeholder: "Select Option",
         });
     </script>

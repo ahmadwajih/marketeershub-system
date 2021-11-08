@@ -89,6 +89,20 @@ class User extends Authenticatable
         return $this->offers()->detach($offerId);
     }
 
+    
+    public function categories(){
+        return $this->belongsToMany(Category::class)->withTimestamps();
+    }
+
+    public function assignCategory($category){
+        return $this->categories()->save($category);
+    }
+
+    public function unassignCategory($category)
+    {
+        return $this->categories()->detach($category);
+    }
+    
 
     public function getUpdatedTeamAttribute(){
         return ucwords(str_replace('_', ' ', $this->attributes['team']));
@@ -116,18 +130,15 @@ class User extends Authenticatable
 
     public function getSumOrdersAttribute() 
     {
-
         $orders = $this->coupons->map(function ($coupon){
             return $coupon->report()->whereMonth(
                 'created_at', '>', Carbon::now()->subMonth()->month
             )->get();
         })->flatten();
-
         $sumoforders =  $orders->sum('orders');
         if($sumoforders > 0){
             return true;
         }
-
         return false;
     }
    
