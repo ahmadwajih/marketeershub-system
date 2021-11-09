@@ -71,9 +71,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
 
-        //Route::group(['prefix' => 'publisher'], function(){
-        Route::get('publisher/dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
-        //});
+        Route::group(['prefix' => 'publisher'], function(){
+            Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
+            Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
+        });
     });
 });
 

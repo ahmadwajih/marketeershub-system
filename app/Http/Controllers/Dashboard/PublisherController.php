@@ -7,6 +7,7 @@ use App\Imports\PublishersImport;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Offer;
 use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
@@ -38,11 +39,17 @@ class PublisherController extends Controller
 
 
     public function dashboard(){
-       // $this->authorize('show_publishers');
-        $id = Auth::user()->id;
-        $publisher = User::findOrFail($id);
-        userActivity('User', $publisher->id, 'show');
+       // $this->authorize('view_publishers');
+       // userActivity('User', $publisher->id, 'show');
+        $publisher = User::findOrFail(Auth::user()->id);
         return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);
+    }
+
+    public function offers() {
+        // $this->authorize('view_publishers');
+        // userActivity('User', $publisher->id, 'show');
+        $offers = Offer::paginate();
+        return view('admin.publishers.new.offers', ['offers' => $offers]);
     }
 
     /**

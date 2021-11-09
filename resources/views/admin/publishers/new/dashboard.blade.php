@@ -219,14 +219,14 @@
 
                                 @if($publisher->coupons()->count())
                                     <div class="timeline timeline-6 mt-3">
-                                        @foreach($publisher->coupons()->orderBy('id','desc')->take(5)->get() as $coupons)
+                                        @foreach($publisher->coupons()->orderBy('id','desc')->take(5)->get() as $coupon)
                                             <div class="timeline-item align-items-start">
-                                                <div class="timeline-label font-weight-bolder text-dark-75 font-size-lg">{{  $coupons->created_at }}</div>
+                                                <div class="timeline-label font-weight-bolder text-dark-75 font-size-lg">{{  $coupon->created_at }}</div>
                                                 <div class="timeline-badge">
                                                     <i class="fa fa-genderless text-warning icon-xl"></i>
                                                 </div>
                                                 <div class="font-weight-mormal font-size-lg timeline-content text-muted pl-3">
-                                                    <strong>{{  $coupons->offer->name }}</strong> - {{  $coupons->coupon }}
+                                                    <strong>{{  $coupon->offer->name }}</strong> - {{  $coupon->coupon }}
                                                 </div>
                                             </div>
                                         @endforeach
@@ -262,12 +262,12 @@
                         </thead>
                         <tbody>
                         @if($publisher->coupons()->count())
-                                @foreach($publisher->coupons()->orderBy('id','desc')->take(20)->get() as $coupons)
+                                @foreach($publisher->coupons()->orderBy('id','desc')->take(20)->get() as $coupon)
                                     <tr>
                                         <td> --- </td>
-                                        <td>{{  $coupons->offer->name }}</td>
+                                        <td>{{  $coupon->offer->name }}</td>
                                         <td> --- </td>
-                                        <td>{{  $coupons->coupon }}</td>
+                                        <td>{{  $coupon->coupon }}</td>
                                         <td> --- </td>
                                         <td> --- </td>
                                         <td> --- </td>
