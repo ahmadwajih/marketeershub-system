@@ -33,7 +33,7 @@
                 </li>
 
                 @if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']))
-                    <li class="menu-item menu-item-active" aria-haspopup="true">
+                    <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
                         <a href="{{route('admin.publisher.profile')}}" class="menu-link">
                             <span class="svg-icon menu-icon">
                                 <i class="fas fa-id-badge"></i>
@@ -42,7 +42,7 @@
                         </a>
                     </li>
                 @else
-                    <li class="menu-item menu-item-active" aria-haspopup="true">
+                    <li class="menu-item {{ Request::segment(2)=='user'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
                         <a href="{{route('admin.user.profile')}}" class="menu-link">
                             <span class="svg-icon menu-icon">
                                 <i class="fas fa-id-badge"></i>

@@ -142,5 +142,16 @@ class User extends Authenticatable
         return false;
     }
 
+    public function getSumOrdersCountAttribute() 
+    {
+        $orders = $this->coupons->map(function ($coupon){
+            return $coupon->report()->whereMonth(
+                'created_at', '>', Carbon::now()->subMonth()->month
+            )->get();
+        })->flatten();
+        return $orders;
+    
+    }
+
    
 }
