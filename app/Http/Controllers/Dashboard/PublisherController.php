@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
@@ -36,8 +37,13 @@ class PublisherController extends Controller
     }
 
 
-    
-
+    public function dashboard(){
+       // $this->authorize('show_publishers');
+        $id = Auth::user()->id;
+        $publisher = User::findOrFail($id);
+        userActivity('User', $publisher->id, 'show');
+        return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -261,7 +267,7 @@ class PublisherController extends Controller
         }
         $publisher->update($data);
         userActivity('User', $publisher->id, 'update');
-        // Unasign categories 
+        // Unasign categories
         $publisher->categories()->detach();
         // Assign Categories
         foreach($request->categories as $categoryId){
@@ -269,7 +275,7 @@ class PublisherController extends Controller
             $publisher->assignCategory($category);
         }
 
-        // Asign Role 
+        // Asign Role
         if($request['roles']){
             $publisher->roles()->detach();
             foreach ($request['roles'] as $role_id)
