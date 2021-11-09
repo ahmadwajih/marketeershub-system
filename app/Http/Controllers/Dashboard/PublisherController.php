@@ -322,7 +322,7 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function profile($id)
+    public function profile()
     {
         $publisher = auth()->user();
         return view('admin.publishers.profile', ['publisher' => $publisher]);

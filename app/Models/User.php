@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
@@ -105,7 +105,7 @@ class User extends Authenticatable
     
 
     public function getUpdatedTeamAttribute(){
-        return ucwords(str_replace('_', ' ', $this->attributes['team']));
+        return Str::plural(ucwords(str_replace('_', ' ', $this->attributes['team'])));
     }
 
     public function getUpdatedPositionAttribute(){
@@ -141,5 +141,6 @@ class User extends Authenticatable
         }
         return false;
     }
+
    
 }

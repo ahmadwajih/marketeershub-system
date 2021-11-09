@@ -100,6 +100,9 @@ if(!function_exists('getOfferRequest')){
 
 if(!function_exists('getImagesPath')){
     function getImagesPath($model, $imageName = null){
+        if(!$imageName){
+            $imageName = 'default.png';
+        }
         return asset('/storage/Images').'/'.$model.'/'.$imageName;
     }
 }
