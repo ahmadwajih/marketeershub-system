@@ -227,15 +227,16 @@
                                     @endforeach
                                     @else
                                         No Coupon Found!
+                                        {{--No Coupon Found!--}}
                                     @endempty
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <!--end::Container-->
         </div>
         <!--end::Entry-->
 @endsection
+
