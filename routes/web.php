@@ -73,21 +73,20 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
-<<<<<<< Updated upstream
-=======
+
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
+
 
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
             Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
         });
->>>>>>> Stashed changes
+
     });
 });
 
 Route::get('test', 'Dashboard\DashboardController@test');
 
-<<<<<<< Updated upstream
 
 Route::get('/test', function () {
     $coupon  = Coupon::firstOrCreate([
@@ -95,5 +94,4 @@ Route::get('/test', function () {
     ]);
     dd($coupon);
 });
-=======
->>>>>>> Stashed changes
+
