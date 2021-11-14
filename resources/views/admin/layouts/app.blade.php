@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html @if(app()->getLocale()=='ar') direction="rtl" dir="rtl" style="direction: rtl" @endif>
 	<!--begin::Head-->
 	<head><base href="">
 		<meta charset="utf-8" />
@@ -15,20 +15,36 @@
         <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
 
 		<!--end::Fonts-->
-		<!--begin::Page Vendors Styles(used by this page)-->
-		<link href="{{ asset('dashboard') }}/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
-		<!--end::Page Vendors Styles-->
-		<!--begin::Global Theme Styles(used by all pages)-->
-		<link href="{{ asset('dashboard') }}/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/css/style.bundle.css" rel="stylesheet" type="text/css" />
-		<!--end::Global Theme Styles-->
-		<!--begin::Layout Themes(used by all pages)-->
-		<link href="{{ asset('dashboard') }}/css/themes/layout/header/base/dark.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/css/themes/layout/header/menu/dark.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('dashboard') }}/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
-  
+	
+		@if(app()->getLocale()=='en')
+			<!--begin::Page Vendors Styles(used by this page)-->
+			<link href="{{ asset('dashboard') }}/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+			<!--end::Page Vendors Styles-->
+			<!--begin::Global Theme Styles(used by all pages)-->
+			<link href="{{ asset('dashboard') }}/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/style.bundle.css" rel="stylesheet" type="text/css" />
+			<!--end::Global Theme Styles-->
+			<!--begin::Layout Themes(used by all pages)-->
+			<link href="{{ asset('dashboard') }}/css/themes/layout/header/base/dark.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/themes/layout/header/menu/dark.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
+		@else
+			<!--begin::Page Vendors Styles(used by this page)-->
+			<link href="{{ asset('dashboard') }}/plugins/custom/fullcalendar/fullcalendar.bundle.rtl.css" rel="stylesheet" type="text/css" />
+			<!--end::Page Vendors Styles-->
+			<!--begin::Global Theme Styles(used by all pages)-->
+			<link href="{{ asset('dashboard') }}/plugins/global/plugins.bundle.rtl.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/plugins/custom/prismjs/prismjs.bundle.rtl.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/style.bundle.rtl.css" rel="stylesheet" type="text/css" />
+			<!--end::Global Theme Styles-->
+			<!--begin::Layout Themes(used by all pages)-->
+			<link href="{{ asset('dashboard') }}/css/themes/layout/header/base/light.rtl.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/themes/layout/header/menu/light.rtl.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/themes/layout/brand/dark.rtl.css" rel="stylesheet" type="text/css" />
+			<link href="{{ asset('dashboard') }}/css/themes/layout/aside/dark.rtl.css" rel="stylesheet" type="text/css" />
+		@endif
 		<!--end::Layout Themes-->
 		<link rel="shortcut icon" href="{{ asset('dashboard') }}/media/logos/favicon.ico" />
         @stack('headers')
@@ -164,7 +180,21 @@
 			var trashForceDeleteUrl = '/admin/trashed/force-delete/';
 			var trashRestoreUrl = '/admin/trashed/restore/';
 		</script>
+		{{-- Begin::read notifications  --}}
+		<script>
+			$(document).ready(function(){
+				$('#notification-bell').on('click', function(){
+					// var notificationId = $(this).data('notification');
+					$.ajax({
+						method: "POST",
+						headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+						url: "{{route('admin.ajax.read.notifications')}}",
+					})
 
+				});
+			})
+		</script>
+		{{-- End::read notifications  --}}
         @stack('scripts')
 	</body>
 	<!--end::Body -->

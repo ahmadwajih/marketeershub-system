@@ -121,8 +121,9 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        @if(auth()->user()->id != $publisher->id)
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" >
                                                     <option {{ $publisher->team=='affiliate'?'selected':'' }} value="affiliate">{{ __('Affiliate') }}</option>
@@ -137,7 +138,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Belongs To') }} :</label>
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
                                                     @foreach ($parents as $parent)
@@ -151,7 +152,11 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
                                                 <label>* {{ _('Role') }} :</label>
                                                 <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
                                                     @foreach($roles as $role)
@@ -161,21 +166,6 @@
                                                 @if ($errors->has('roles'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('roles') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-     
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Gender') }} :</label>
-                                                <select class="form-control select2" id="kt_select_gender" name="gender" >
-                                                    <option {{ $publisher->gender=='male'?'selected':'' }} value="male">{{ __('Male') }}</option>
-                                                    <option {{ $publisher->gender=='female'?'selected':'' }} value="female">{{ __('female') }}</option>
-                                                </select>
-                                                @if ($errors->has('gender'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('gender') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -193,6 +183,8 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        @endif
+
 
                                         <div class="form-group row">
                                             <div class="col-lg-6">
@@ -272,6 +264,7 @@
                                                 </div>
                                             </div>
     
+                                            
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
                                                     <label>{{ __('Traffic Sources') }} :</label>
@@ -288,6 +281,20 @@
                                                     @if ($errors->has('affiliate_networks'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('affiliate_networks') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Gender') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_gender" name="gender" >
+                                                        <option {{ $publisher->gender=='male'?'selected':'' }} value="male">{{ __('Male') }}</option>
+                                                        <option {{ $publisher->gender=='female'?'selected':'' }} value="female">{{ __('female') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('gender'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('gender') }}</p>
                                                         </div>
                                                     @endif
                                                 </div>

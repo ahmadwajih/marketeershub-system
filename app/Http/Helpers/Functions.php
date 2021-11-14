@@ -100,6 +100,7 @@ if(!function_exists('getOfferRequest')){
 
 if(!function_exists('getImagesPath')){
     function getImagesPath($model, $imageName = null){
+        $model =  Str::ucfirst(Str::plural($model));
         if(!$imageName){
             $imageName = 'default.png';
         }

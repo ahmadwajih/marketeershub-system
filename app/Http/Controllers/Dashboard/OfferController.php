@@ -10,9 +10,12 @@ use App\Models\NewOldOffer;
 use App\Models\Offer;
 use App\Models\OfferRequest;
 use App\Models\OfferSlap;
+use App\Models\User;
+use App\Notifications\NewOffer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Notification;
+
 class OfferController extends Controller
 {
     /**
@@ -107,7 +110,7 @@ class OfferController extends Controller
             'revenue' => $request->cps_type=='static'?$request->revenue:null,
             'status' => $request->status,
             'expire_date' => $request->expire_date,
-            'note' => $request->note,
+            'note' => $request->note, 
             'terms_and_conditions' => $request->terms_and_conditions,
             'advertiser_id' => $request->advertiser_id,
             'currency_id' => $request->currency_id,
@@ -115,6 +118,8 @@ class OfferController extends Controller
             'discount' => $request->discount,
         ]);
         userActivity('Offer', $offer->id, 'create');
+        $publishers = User::wherePosition('publisher')->get();
+        Notification::send($publishers, new NewOffer($offer));
 
         if($request->categories){
             foreach($request->categories as $categoryId){

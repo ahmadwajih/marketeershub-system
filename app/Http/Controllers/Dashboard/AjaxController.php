@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use PhpOffice\PhpSpreadsheet\Calculation\Financial\Coupons;
 
 class AjaxController extends Controller
@@ -40,6 +41,10 @@ class AjaxController extends Controller
             ->where('team', $request->team)->get();
             return view('admin.ajax.options', ['options' => $users]);
         }
+    }
+
+    public function readNotifications(){
+        auth()->user()->unreadNotifications->markAsRead();
     }
 
 }

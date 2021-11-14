@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Imports\PivotReportImport;
 use App\Imports\ValidationPivotReportImport;
 use App\Models\Offer;
+use App\Notifications\UpdateValidation;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Notification;
 
 class PivotReportController extends Controller
 {
@@ -58,6 +60,9 @@ class PivotReportController extends Controller
             Excel::import(new PivotReportImport($request->offer_id),request()->file('report'));
         }else{
             Excel::import(new ValidationPivotReportImport($request->offer_id),request()->file('report'));
+            $offer = Offer::findOrFail($request->offer_id);
+            Notification::send($offer->users, new UpdateValidation($offer));
+
         }
         userActivity('PivotReport', null, 'upload');
 

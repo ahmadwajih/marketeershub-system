@@ -39,15 +39,15 @@
 						<!--begin::Login Header-->
 						<div class="d-flex flex-center">
 							<a href="#">
-								<img src="{{ asset('dashboard') }}/images/logo.png?d=<?php echo time()?>" class="max-h-75px" alt="" />
+								<img src="{{ asset('dashboard') }}/images/logo_dark.png?d=<?php echo time()?>" class="max-h-75px" alt="" />
 							</a>
 						</div>
 						<!--end::Login Header-->
 						<!--begin::Login Sign in form-->
 						<div class="login-signin">
 							<div class="mb-20 mt-20">
-								<h3>Login to dashboard</h3>
-								<div class="text-muted font-weight-bold">Pleas enter your email and password</div>
+								<h3>{{ __('Login to dashboard') }}</h3>
+								<div class="text-muted font-weight-bold">{{ __('Please enter your email and password') }}</div>
 							</div>
 							<form action="{{ route('admin.login') }}" class="form" id="kt_login_signin_form" method="POST">
 								@csrf
@@ -65,7 +65,7 @@
 									</div>
 									{{-- <a href="javascript:;" id="kt_login_forgot" cla ss="text-muted text-hover-primary">نسيت كلمة المرور؟</a> --}}
 								</div>
-								<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">Login</button>
+								<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">{{ __('Login') }}</button>
 							</form>
 
 						</div>

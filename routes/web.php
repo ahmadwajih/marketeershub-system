@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Coupon;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,6 +29,8 @@ Route::get('/', function () {
 
 // Dashboard Routes
 Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.'], function(){
+
+    Route::get('change-lang/{lang}', 'DashboardController@changeLang')->name('change.lang');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
     Route::middleware(['auth:web'])->group(function (){
@@ -39,6 +41,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
 
         Route::resource('publishers', PublisherController::class);
         Route::get('publishers/type/{type}', 'PublisherController@getBasedOnType')->name('publishers.type');
+        Route::get('publishers/sort/{sort}', 'PublisherController@sort')->name('publishers.sort');
         // Publisher Profile
         Route::get('publisher/profile', 'PublisherController@profile')->name('publisher.profile');
         // Upload Publishers
@@ -70,10 +73,21 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
+<<<<<<< Updated upstream
+=======
+        Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
+
+        Route::group(['prefix' => 'publisher'], function(){
+            Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
+            Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
+        });
+>>>>>>> Stashed changes
     });
 });
 
+Route::get('test', 'Dashboard\DashboardController@test');
 
+<<<<<<< Updated upstream
 
 Route::get('/test', function () {
     $coupon  = Coupon::firstOrCreate([
@@ -81,3 +95,5 @@ Route::get('/test', function () {
     ]);
     dd($coupon);
 });
+=======
+>>>>>>> Stashed changes

@@ -113,10 +113,10 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" required>
-                                                    <option value="affiliate">{{ __('Affiliate') }}</option>
-                                                    <option value="media_buying">{{ __('Media Buying') }}</option>
-                                                    <option value="influencer">{{ __('Influencer') }}</option>
-                                                    <option value="prepaid">{{ __('Prepaid') }}</option>
+                                                    <option {{ old('team')=='affiliate'?'selected':'' }} value="affiliate">{{ __('Affiliate') }}</option>
+                                                    <option {{ old('team')=='media_buying'?'selected':'' }} value="media_buying">{{ __('Media Buying') }}</option>
+                                                    <option {{ old('team')=='influencer'?'selected':'' }} value="influencer">{{ __('Influencer') }}</option>
+                                                    <option {{ old('team')=='prepaid'?'selected':'' }} value="prepaid">{{ __('Prepaid') }}</option>
                                                 </select>
                                                 @if ($errors->has('team'))
                                                     <div>
@@ -129,7 +129,7 @@
                                                 <label>* {{ __('Belongs To') }} :</label>
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" required>
                                                     @foreach ($users as $user)
-                                                        <option value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
+                                                        <option {{ old('parent_id')==$user->id?'selected':'' }} value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('parent_id'))
@@ -143,7 +143,7 @@
                                                 <label>* {{ _('Role') }} :</label>
                                                 <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
                                                     @foreach($roles as $role)
-                                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                                        <option {{ old('roles')?(in_array($role->id,old('roles'))?'selected':''):''  }} value="{{$role->id}}">{{$role->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('roles'))
@@ -158,8 +158,8 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Gender') }} :</label>
                                                 <select class="form-control select2" id="kt_select_gender" name="gender" required>
-                                                    <option value="male">{{ __('Male') }}</option>
-                                                    <option value="female">{{ __('female') }}</option>
+                                                    <option {{ old('gender')=='male'?'selected':'' }} value="male">{{ __('Male') }}</option>
+                                                    <option {{ old('gender')=='female'?'selected':'' }} value="female">{{ __('female') }}</option>
                                                 </select>
                                                 @if ($errors->has('gender'))
                                                     <div>
@@ -170,9 +170,9 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" required>
-                                                    <option value="active">{{ __('Active') }}</option>
-                                                    <option value="pending">{{ __('Pending') }}</option>
-                                                    <option value="closed">{{ __('Closed') }}</option>
+                                                    <option {{ old('status')=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
+                                                    <option {{ old('status')=='pending'?'selected':'' }} value="pending">{{ __('Pending') }}</option>
+                                                    <option {{ old('status')=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))
                                                     <div>
@@ -187,7 +187,7 @@
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
                                                     @foreach($countries as $country)
-                                                        <option value="{{$country->id}}">{{$country->name_en}}</option>
+                                                        <option  {{ old('country_id')==$user->id?'$country':'' }} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('country_id'))
@@ -199,7 +199,13 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ _('City') }} :</label>
                                                 <select class="form-control select2" id="kt_select_city_id" name="city_id" required>
-                                                    <option value="0">{{ __("Select Country") }}</option>
+                                                    @if(old('country_id'))
+                                                      @foreach(App\Models\Country::findOrFail(old('country_id'))->cities as $city)
+                                                        <option {{ old('city_id')==$city->id?'selected':'' }} value="0">{{ $city->name_en }}</option>
+                                                      @endforeach
+                                                    @else
+                                                        <option value="0">{{ __("Select Country") }}</option>
+                                                    @endif
                                                 </select>
                                                 @if ($errors->has('city_id'))
                                                     <div>
