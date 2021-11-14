@@ -8,6 +8,8 @@ use App\Models\Offer;
 use Illuminate\Http\Request;
 use App\Models\OfferRequest;
 use App\Models\User;
+use App\Notifications\NewAssigenCoupon;
+use Illuminate\Support\Facades\Notification;
 
 class OfferRequestController extends Controller
 {
@@ -142,6 +144,9 @@ class OfferRequestController extends Controller
                 $existsCoupon->user_id = $offerRequest->user_id;
                 $existsCoupon->save();
             }
+
+            Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));
+
         }
 
         if($request->status =='approved'){

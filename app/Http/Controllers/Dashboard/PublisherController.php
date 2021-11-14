@@ -71,6 +71,84 @@ class PublisherController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sort(Request $request, $sort)
+    {
+        /*
+         $offers = Offer::whereHas('users', function($q) use($childrens) {
+            $q->whereIn('user_id', $childrens);
+        })->with(['users' => function($q) use($childrens){
+            $q->whereIn('users.id', $childrens);
+        },
+        'coupons' => function($q) use($childrens){
+            $q->whereIn('coupons.user_id', $childrens);
+        }])->get();
+         */
+        $this->authorize('view_publishers');
+        if ($request->ajax()){
+           
+            $model = new Offer();
+            $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
+            $model   = $model->query();
+
+            // Define the page and number of items per page
+            $page = 1;
+            $per_page = 10;
+
+            // Get the request parameters
+            $params = $request->all();
+            // Set the current page
+            if(isset($params['pagination']['page'])) {
+                $page = $params['pagination']['page'];
+            }
+
+            // Set the number of items
+            if(isset($params['pagination']['perpage'])) {
+                $per_page = $params['pagination']['perpage'];
+            }
+
+            // Set the search filter
+            if(isset($params['query']['generalSearch'])) {
+                foreach ($columns as $column){
+                    $model->orWhere($column, 'LIKE', "%" . $params['query']['generalSearch'] . "%");
+                }
+            }
+
+
+            // Get how many items there should be
+            $total = $model->count();
+            $total = $model->where($where)->limit($per_page)->count();
+    //            ->where($where['column'], $where['operation'], $where['value'])
+
+            // Get the items defined by the parameters
+            $results = $model->skip(($page - 1) * $per_page)
+                ->where($where)
+                ->take($per_page)->orderBy('id', 'DESC')
+                ->get();
+
+
+            $response = [
+                'meta' => [
+                    "page" => $page,
+                    "pages" => ceil($total / $per_page),
+                    "perpage" => $per_page,
+                    "total" => $total,
+                    "sort" => $order_sort,
+                    "field" => $order_field
+                ],
+                
+                'data' => $model->with($relations)->where($where)->orderBy('id', 'ASC')->get()
+            ];
+
+            return response()->json($response);
+        }
+        return view('admin.publishers.index');
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -197,7 +275,9 @@ class PublisherController extends Controller
      */
     public function edit($id)
     {
-        $this->authorize('update_publishers');
+        if(auth()->user()->id != $id){
+            $this->authorize('update_publishers');
+        }
         $publisher = User::findOrFail($id);
         return view('admin.publishers.edit', [ 
             'publisher' => $publisher,
@@ -219,18 +299,23 @@ class PublisherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->authorize('update_publishers');
+
+        if(auth()->user()->id != $id){
+            $this->authorize('update_publishers');
+        }
+
         $data = $request->validate([
             'name'                      => 'required|max:255',
             'email'                     => 'required|max:255|unique:users,email,'.$id,
             'phone'                     => 'required|max:255|unique:users,phone,'.$id,
             'password'                  => 'nullable|min:6',
-            'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'required|exists:countries,id',
             'city_id'                   => 'required|exists:cities,id',
             'gender'                    => 'required|in:male,female',
-            'status'                    => 'required|in:active,pending,closed',
-            'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
+            // 'parent_id'                 => 'required|numeric|exists:users,id',
+            // 'status'                    => 'required|in:active,pending,closed',
+            // 'roles.*'                   => 'exists:roles,id',
+            // 'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
             'skype'                     => 'nullable|max:255',
             'address'                   => 'nullable|max:255',
             'category'                  => 'nullable|max:255',
@@ -244,12 +329,12 @@ class PublisherController extends Controller
             'swift_code'                => 'required|max:255',
             'iban'                      => 'required|max:255',
             'currency'                  => 'required|max:255',
-            'roles.*'                   => 'exists:roles,id',
             'categories'                => 'array|required|exists:categories,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
 
         ]);
+
         unset($data['password']);
         unset($data['roles']);
         unset($data['social_media']);
@@ -258,6 +343,7 @@ class PublisherController extends Controller
         if($request->password){
             $data['password'] = Hash::make($request->password);
         }
+
         $publisher = User::findOrFail($id);
 
         // Update Image 
@@ -274,7 +360,9 @@ class PublisherController extends Controller
         }
         $publisher->update($data);
         userActivity('User', $publisher->id, 'update');
+
         // Unasign categories
+
         $publisher->categories()->detach();
         // Assign Categories
         foreach($request->categories as $categoryId){
@@ -305,11 +393,15 @@ class PublisherController extends Controller
                 
             }
         }
+        
 
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
+        if(auth()->user()->id == $id){
+            return redirect()->route('admin.publisher.profile');
+        }
         return redirect()->route('admin.publishers.index');
     }
 
@@ -338,7 +430,46 @@ class PublisherController extends Controller
     public function profile()
     {
         $publisher = auth()->user();
-        return view('admin.publishers.profile', ['publisher' => $publisher]);
+        $userId  = auth()->user()->id;
+        $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+        array_push($childrens, $userId);
+
+        $offers = Offer::whereHas('users', function($q) use($childrens) {
+            $q->whereIn('user_id', $childrens);
+        })->with(['users' => function($q) use($childrens){
+            $q->whereIn('users.id', $childrens);
+        },
+        'coupons' => function($q) use($childrens){
+            $q->whereIn('coupons.user_id', $childrens);
+        }])->get();
+        $pendingTotalOrders = 0;
+        $pendingTotalSales = 0;
+        $pendingTotalPayout = 0;
+        $totalOrders = 0;
+        $totalSales = 0;
+        $totalPayout = 0;
+        foreach($offers as $offer){
+            foreach($offer->coupons as $coupon){
+                if($coupon->report){
+                    $pendingTotalOrders += $coupon->report->orders;
+                    $pendingTotalSales += $coupon->report->sales;
+                    $pendingTotalPayout += $coupon->report->payout;
+                    $totalOrders += $coupon->report->v_orders;
+                    $totalSales += $coupon->report->v_sales;
+                    $totalPayout += $coupon->report->v_payout;
+                }
+            }
+        }
+        return view('admin.publishers.profile', [
+            'publisher' => $publisher,
+            'offers' => $offers,
+            'pendingTotalOrders' => $pendingTotalOrders,
+            'pendingTotalSales' => $pendingTotalSales,
+            'pendingTotalPayout' => $pendingTotalPayout,
+            'totalOrders' => $totalOrders,
+            'totalSales' => $totalSales,
+            'totalPayout' => $totalPayout,
+        ]);
     }
 
     

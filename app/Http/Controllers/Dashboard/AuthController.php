@@ -23,6 +23,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+                return redirect()->route('admin.publisher.profile');
+            }
             return redirect()->route('admin.index');
         }
 
