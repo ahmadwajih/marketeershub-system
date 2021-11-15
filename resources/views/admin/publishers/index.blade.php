@@ -37,6 +37,26 @@
                                 <ul class="navi flex-column navi-hover py-2">
                                     <li class="navi-item">
                                         <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
+                                            <span class="navi-text">{{ __('Name') }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="navi-item">
+                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
+                                            <span class="navi-text">{{ __('Status') }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="navi-item">
+                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
+                                            <span class="navi-text">{{ __('Assigned To Account Manager') }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="navi-item">
+                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
+                                            <span class="navi-text">{{ __('Un Assigned To Account Manager') }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="navi-item">
+                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
                                             <span class="navi-text">{{ __('Highest Orders') }}</span>
                                         </a>
                                     </li>

@@ -403,7 +403,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->discount }} {{ $offer->discount_type=='flat'?$offer->currency->code:'%' }}</span>
+                                                                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->discount }}</span>
                                                                 </td>
                                                                 <td>
                                                                     <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $coupon->report?$coupon->report->orders:0 }}</span>

@@ -118,7 +118,7 @@ var KTDatatableRemoteAjaxDemo = function() {
             columns: [{
                 field: 'id',
                 title: '#',
-                sortable: 'asc',
+                sortable: 'desc',
                 width: 30,
                 type: 'number',
                 textAlign: 'center',
@@ -183,11 +183,6 @@ var KTDatatableRemoteAjaxDemo = function() {
             },{
                 field: 'team',
                 title: "Team",
-                selector: false,
-                textAlign: 'center',
-            }, {
-                field: 'position',
-                title: "Position",
                 selector: false,
                 textAlign: 'center',
             }, {

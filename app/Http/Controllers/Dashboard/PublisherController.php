@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
+use App\Models\Offer;
 use Illuminate\Support\Facades\Storage;
 
 class PublisherController extends Controller
@@ -74,13 +75,16 @@ class PublisherController extends Controller
             $q->whereIn('coupons.user_id', $childrens);
         }])->get();
          */
+        
         $this->authorize('view_publishers');
         if ($request->ajax()){
            
             $model = new Offer();
             $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
             $model   = $model->query();
-
+            // $model = $model->with(['coupons' => function($q){
+            //     $q->whereIn('users.id', $childrens);
+            // },
             // Define the page and number of items per page
             $page = 1;
             $per_page = 10;
@@ -107,12 +111,11 @@ class PublisherController extends Controller
 
             // Get how many items there should be
             $total = $model->count();
-            $total = $model->where($where)->limit($per_page)->count();
+            $total = $model->limit($per_page)->count();
     //            ->where($where['column'], $where['operation'], $where['value'])
 
             // Get the items defined by the parameters
             $results = $model->skip(($page - 1) * $per_page)
-                ->where($where)
                 ->take($per_page)->orderBy('id', 'DESC')
                 ->get();
 
@@ -122,9 +125,7 @@ class PublisherController extends Controller
                     "page" => $page,
                     "pages" => ceil($total / $per_page),
                     "perpage" => $per_page,
-                    "total" => $total,
-                    "sort" => $order_sort,
-                    "field" => $order_field
+                    "total" => $total
                 ],
                 
                 'data' => $model->with($relations)->where($where)->orderBy('id', 'ASC')->get()
@@ -347,12 +348,7 @@ class PublisherController extends Controller
         }
         $publisher->update($data);
         userActivity('User', $publisher->id, 'update');
-<<<<<<< Updated upstream
         // Unasign categories 
-=======
-
-        // Unasign categories
->>>>>>> Stashed changes
         $publisher->categories()->detach();
         // Assign Categories
         foreach($request->categories as $categoryId){
