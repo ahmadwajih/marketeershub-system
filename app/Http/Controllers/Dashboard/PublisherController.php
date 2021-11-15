@@ -7,10 +7,12 @@ use App\Imports\PublishersImport;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Offer;
 use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
@@ -37,8 +39,19 @@ class PublisherController extends Controller
     }
 
 
-    
+    public function dashboard(){
+       // $this->authorize('view_publishers');
+       // userActivity('User', $publisher->id, 'show');
+        $publisher = User::findOrFail(Auth::user()->id);
+        return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);
+    }
 
+    public function offers() {
+        // $this->authorize('view_publishers');
+        // userActivity('User', $publisher->id, 'show');
+        $offers = Offer::paginate();
+        return view('admin.publishers.new.offers', ['offers' => $offers]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -356,7 +369,7 @@ class PublisherController extends Controller
             $publisher->assignCategory($category);
         }
 
-        // Asign Role 
+        // Asign Role
         if($request['roles']){
             $publisher->roles()->detach();
             foreach ($request['roles'] as $role_id)
