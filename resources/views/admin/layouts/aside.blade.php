@@ -103,7 +103,7 @@
                 @can('view_publishers')
 
                  {{-- Start Publishers  --}}
-                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='publishers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='publishers'|| Request::segment(2)=='publishers-search' ?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-user-tag"></i>

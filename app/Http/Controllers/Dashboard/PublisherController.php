@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
-use App\Models\Offer;
 use Illuminate\Support\Facades\Storage;
 
 class PublisherController extends Controller
@@ -35,7 +34,12 @@ class PublisherController extends Controller
             ));
             return response()->json($users);
         }
-        return view('admin.publishers.index');
+        $categories = Category::all();
+        $accountManagers = User::wherePosition('account_manager')->get();
+        return view('admin.publishers.index', [
+            'categories' => $categories,
+            'accountManagers' => $accountManagers,
+        ]);
     }
 
 
@@ -76,22 +80,17 @@ class PublisherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sort(Request $request, $sort)
+    public function search(Request $request)
     {
-        /*
-         $offers = Offer::whereHas('users', function($q) use($childrens) {
-            $q->whereIn('user_id', $childrens);
-        })->with(['users' => function($q) use($childrens){
-            $q->whereIn('users.id', $childrens);
-        },
-        'coupons' => function($q) use($childrens){
-            $q->whereIn('coupons.user_id', $childrens);
-        }])->get();
-         */
-        
+        // dd($request->all());
         $this->authorize('view_publishers');
         if ($request->ajax()){
-           
+            $where = [];
+            $relations = [];
+            if(isset($request->status) && !is_null($request->status)){
+                $status = 
+                $where[] = array( ['status', '!=', 0]);
+            }
             $model = new Offer();
             $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
             $model   = $model->query();
@@ -146,7 +145,13 @@ class PublisherController extends Controller
 
             return response()->json($response);
         }
-        return view('admin.publishers.index');
+        $categories = Category::all();
+        $accountManagers = User::wherePosition('account_manager')->get();
+        $data = $request->all();
+        $data['categories'] = $categories;
+        $data['accountManagers'] = $accountManagers;
+        // dd($data);
+        return view('admin.publishers.search', $data);
     }
 
     /**

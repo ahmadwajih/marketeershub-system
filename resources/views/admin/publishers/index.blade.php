@@ -31,59 +31,6 @@
                                     <!--end::Svg Icon-->
                                 </span> <span class="m-2">{{ __('Sort By') }}</span>
                             </button>
-                            <!--begin::Dropdown Menu-->
-                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                                <!--begin::Navigation-->
-                                <ul class="navi flex-column navi-hover py-2">
-                                    <li class="navi-item">
-                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
-                                            <span class="navi-text">{{ __('Name') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
-                                            <span class="navi-text">{{ __('Status') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
-                                            <span class="navi-text">{{ __('Assigned To Account Manager') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
-                                            <span class="navi-text">{{ __('Un Assigned To Account Manager') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="{{ route('admin.publishers.sort', 'highest-orders') }}" class="navi-link">
-                                            <span class="navi-text">{{ __('Highest Orders') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="#" class="navi-link">
-                                            <span class="navi-text">{{ __('Highest Revenue') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="#" class="navi-link">
-                                            <span class="navi-text">{{ __('Highest Payout') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="#" class="navi-link">
-                                            <span class="navi-text">{{ __('Least Orders') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="navi-item">
-                                        <a href="#" class="navi-link">
-                                            <span class="navi-text">{{ __('Least Revenue') }}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <!--end::Navigation-->
-                            </div>
-                            <!--end::Dropdown Menu-->
                         </div>
                         <!--end::Dropdown-->
 
@@ -103,12 +50,66 @@
                         <!--end::Button-->
                     </div>
                 </div>
+                
                 <div class="card-body">
                     <!--begin: Search Form-->
+                    <form action="{{ route('admin.publishers.search') }}" method="GET">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-12 col-xl-12">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3 my-2 my-md-0">
+                                            <div class="input-icon">
+                                                <input type="text" class="form-control" placeholder="{{ __('Search') }}" id="kt_datatable_search_query" />
+                                                <span>
+                                                    <i class="flaticon2-search-1 text-muted"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 my-2 my-md-0">
+                                            <div class="d-flex align-items-center">
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('Status') }}</label>
+                                                <select class="form-control" id="kt_datatable_search_status" name="status">
+                                                    <option value="">{{ __('All') }}</option>
+                                                    <option value="active">{{ __('Active') }}</option>
+                                                    <option value="unactive">{{ __('Unactive') }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 my-2 my-md-0">
+                                            <div class="d-flex align-items-center">
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('Category') }}</label>
+                                                <select class="form-control select2" id="kt_datatable_search_category_id" name="category_id" >
+                                                    <option value="">{{ __('All') }}</option>
+                                                    @foreach($categories as $category)
+                                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3  mt-5">
+                                            <div class="d-flex align-items-center">
+                                                <label class="d-none d-md-block">{{ __('Account Manager') }}</label>
+                                                <select class="form-control select2" id="kt_select_account_manager_id" name="account_manager_id" >
+                                                    <option value="">{{ __('All') }}</option>
+                                                    @foreach($accountManagers as $accountManager)
+                                                        <option value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-xl-12 mt-5 mt-lg-0">
+                                    <button type="submit" class="btn btn-light-primary px-6 font-weight-bold">{{ __('Search') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                     <!--begin::Search Form-->
                     <div class="mb-7">
                         <div class="row align-items-center">
-                            <div class="col-lg-9 col-xl-8">
+                            {{-- <div class="col-lg-9 col-xl-8">
                                 <div class="row align-items-center">
                                     <div class="col-md-4 my-2 my-md-0">
                                         <div class="input-icon">
@@ -120,7 +121,7 @@
                                     </div>
       
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
                                 <a href="#" class="btn btn-light-primary px-6 font-weight-bold">بــحــث</a>
                             </div> --}}
@@ -145,4 +146,12 @@
     <script src="{{asset('js/datatables/publishers.js')}}"></script>
 @endif
 
+<script>
+    $('#kt_datatable_search_category_id').select2({
+        placeholder: "Select Option",
+    });
+    $('#kt_select_account_manager_id').select2({
+        placeholder: "Select Option",
+    });
+</script>
 @endpush
