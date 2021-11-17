@@ -434,10 +434,105 @@
                             
                         </div>
                         <!--end::Advance Table Widget 8-->
+                  
                     </div>
+                    
                     <!--end::Content-->
                 </div>
+
+                @if(auth()->user()->position == 'account_manager')
+
                 <!--end::Profile 4-->
+                <div class="">
+                    <!--begin::Base Table Widget 1-->
+                    <div class="card card-custom card-stretch gutter-b">
+                        <!--begin::Header-->
+                        <div class="card-header border-0 pt-5">
+                            <h3 class="card-title align-items-start flex-column">
+                                <span class="card-label font-weight-bolder text-dark">{{ __("My Publishers") }}</span>
+                                <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ __('More than') }} {{ $publisher->childrens->count() }} {{ __('publisher') }}</span>
+                            </h3>
+                        </div>
+                        <!--end::Header-->
+                            <div class="card-body">
+                                <!--begin::Table-->
+                                <div class="table-responsive">
+                                <table class="table table-head-custom table-head-bg table-vertical-center table-borderless">
+                                    <thead>                                            
+                                        
+                                        <tr class="bg-gray-100 text-left">
+                                            <th class="pl-7">
+                                                <span class="text-dark-75">{{ __('Image') }}</span>
+                                            </th>
+                                            <th scope="col">{{ __('Status') }}</th>
+                                            <th scope="col">{{ __('SM Platform') }}</th>
+                                            <th scope="col">{{ __('Offers') }}</th>
+                                            <th scope="col">{{ __('Email') }}</th>
+                                            <th scope="col">{{ __('Phone') }}</th>
+                                            <th scope="col">{{ __('Team') }}</th>
+                                            <th scope="col">{{ __('Actions') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($publisher->childrens  as $singlePublisher)
+                                        <tr>
+                                            <td class="pl-0 py-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="symbol symbol-50 flex-shrink-0 mr-4">
+                                                        <div class="symbol-label" style="background-image: url('{{ getImagesPath('Users', $singlePublisher->image) }}')"></div>
+                                                    </div>
+                                                    <div>
+                                                        <a href="javascript:void(0)" class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $singlePublisher->name }}</a>
+                                                        {{-- <span class="text-muted font-weight-bold d-block">{{ $singlePublisher->name }}</span> --}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if($singlePublisher->sumOrders > 1)
+                                                    <span class="label label-lg label-success label-inline">Active</span>
+                                                @else
+                                                    <span class="label label-lg label-danger label-inline">Unactive</span>
+                                                @endif
+                                            </td>
+                                            <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                @if(count($publisher->socialLinks) > 1)
+                                                @foreach($publisher->socialLinks as $link)
+                                                    <a href="{{ $link->link }}" class="btn btn-sm btn-clean btn-icon" target="_blank" title="{{ $link->platform }}">
+                                                        <i class="fab fa-{{ $link->platform }}"></i>
+                                                    </a>
+                                                @endforeach
+                                                @else
+                                                    <span class="label label-lg label-danger label-inline">{{ __('No Social Media Added') }}</span>
+                                                @endif
+                                            </span></td>
+                                            <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $singlePublisher->offersCount }}</span></td>
+                                            <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $singlePublisher->email }}</span></td>
+                                            <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $singlePublisher->phone }}</span></td>
+                                            <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $singlePublisher->team }}</span></td>
+                                            <td>
+                                                <div class="dropdown dropdown-inline">
+                                                    <a href="{{ route('admin.publishers.show', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                                     <i class="flaticon-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                                     <i class="flaticon-edit"></i>
+                                                    </a>
+                                                </div>    
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                    
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--end::Table-->
+                            </div>
+
+                    </div>
+                    <!--end::Base Table Widget 1-->
+                </div>
+                @endif
+
             </div>
             <!--end::Container-->
         </div>

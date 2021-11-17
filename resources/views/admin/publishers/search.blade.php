@@ -2,6 +2,8 @@
 @section('title','Publishers')
 @push('styles')
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
+
 @endpush
 @section('content')
     <!--begin::Entry-->
@@ -59,7 +61,7 @@
                     <form action="{{ route('admin.publishers.search') }}" method="GET">
                         <div class="container">
                             <div class="row align-items-center">
-                                <div class="col-lg-12 col-xl-12">
+                                <div class="col-lg-12 col-xl-12 mb-5">
                                     <div class="row align-items-center">
                                         <div class="col-md-3 my-2 my-md-0">
                                             <div class="input-icon">
@@ -82,7 +84,7 @@
                                         <div class="col-md-3 my-2 my-md-0">
                                             <div class="d-flex align-items-center">
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('Category') }}</label>
-                                                <select class="form-control " id="" name="category_id" >
+                                                <select class="form-control selectpicker" data-live-search="true" id="" name="category_id" >
                                                     <option selected value="">{{ __('All') }}</option>
                                                     @foreach($categories as $category)
                                                         <option {{isset($category_id)&&$category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->title }}</option>
@@ -90,11 +92,12 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3  mt-5">
+                                        <div class="col-md-3">
                                             <div class="d-flex align-items-center">
-                                                <label class="d-none d-md-block">{{ __('Account Manager') }}</label>
-                                                <select class="form-control " id="" name="account_manager_id" >
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('AM') }}</label>
+                                                <select class="form-control selectpicker" data-live-search="true" id="" name="account_manager_id" >
                                                     <option value="">{{ __('All') }}</option>
+                                                    <option {{isset($account_manager_id)&&$account_manager_id=='unassigned'?'selected':'' }} value="unassigned">{{ __('Un Assigned') }}</option>
                                                     @foreach($accountManagers as $accountManager)
                                                         <option {{isset($account_manager_id)&&$account_manager_id==$accountManager->id?'selected':'' }}  value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
                                                     @endforeach
@@ -104,7 +107,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-xl-12 mt-5 mt-lg-0">
-                                    <button type="submit" class="btn btn-light-primary px-6 font-weight-bold">{{ __('Search') }}</button>
+                                    <button type="submit" class="btn btn-light-primary px-6 font-weight-bold btn-block">{{ __('Search') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -209,4 +212,6 @@
         // options
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+
 @endpush

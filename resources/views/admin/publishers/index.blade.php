@@ -92,6 +92,7 @@
                                                 <label class="d-none d-md-block">{{ __('Account Manager') }}</label>
                                                 <select class="form-control select2" id="kt_select_account_manager_id" name="account_manager_id" >
                                                     <option value="">{{ __('All') }}</option>
+                                                    <option value="unassigned">{{ __('Un Assigned') }}</option>
                                                     @foreach($accountManagers as $accountManager)
                                                         <option value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
                                                     @endforeach
