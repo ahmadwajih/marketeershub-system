@@ -97,7 +97,13 @@ class PublisherController extends Controller
 
         // check based on account manager 
         if($request->account_manager_id){
-            $where[] = ['parent_id', '=', $request->account_manager_id];
+            if($request->account_manager_id == 'unassigned'){
+                $where[] = ['parent_id', '=', null];
+
+            }else{
+                $where[] = ['parent_id', '=', $request->account_manager_id];
+
+            }
         }
         $publishers = $publishers->with('parent')->where($where)->get();
 
