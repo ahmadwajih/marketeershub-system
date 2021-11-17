@@ -107,7 +107,7 @@ var KTDatatableRemoteAjaxDemo = function() {
             columns: [{
                 field: 'id',
                 title: '#',
-                sortable: 'asc',
+                sortable: 'desc',
                 width: 30,
                 type: 'number',
                 textAlign: 'center',

@@ -133,20 +133,30 @@ class OfferRequestController extends Controller
      */
     public function update(Request $request, OfferRequest $offerRequest)
     {
-        // dd($request->all());
         $this->authorize('update_offerRequests');
         $data = $request->validate([
             'status' => 'required|in:pending,rejected,approved',
         ]);
+        $userCoupons = $offerRequest->user->coupons->pluck('id')->toArray();
+
         if($request->coupons ){
-            foreach($request->coupons as $coupon){
-                $existsCoupon = Coupon::findOrFail($coupon);
-                $existsCoupon->user_id = $offerRequest->user_id;
-                $existsCoupon->save();
+            // For loop to unassign un exists coupons 
+            foreach($userCoupons as $userCoupon){
+                if(!in_array($userCoupon, $request->coupons)){
+                    $existsCoupon = Coupon::findOrFail($userCoupon);
+                    $existsCoupon->user_id = null;
+                    $existsCoupon->save();
+                }
             }
-
+            // For loop to assign coupons
+            foreach($request->coupons as $coupon){
+                if(!in_array($coupon, $userCoupons)){
+                    $existsCoupon = Coupon::findOrFail($coupon);
+                    $existsCoupon->user_id = $offerRequest->user_id;
+                    $existsCoupon->save();
+                }
+            }
             Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));
-
         }
 
         if($request->status =='approved'){

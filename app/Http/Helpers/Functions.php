@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * Get Model Data To data Table .
  * Author : Wageh
@@ -62,9 +64,27 @@ if(!function_exists('getModelData')){
 //            ->where($where['column'], $where['operation'], $where['value'])
 
         // Get the items defined by the parameters
+        $orderFieldIsRelation = strpos($order_field, ".") !== false;
+
+
+        if ($orderFieldIsRelation){
+
+            $orderRelation = explode(".", $order_field)[0];
+            $orderField = explode(".", $order_field)[1];
+
+            $model->whereHas($orderRelation, function (Builder $query) use ($orderField ,$order_sort){
+                $query->orderBy($orderField, $order_sort);
+            });
+
+        }else{
+
+            $model->orderBy($order_field, $order_sort);
+        }
+
+
         $results = $model->skip(($page - 1) * $per_page)
             ->where($where)
-            ->take($per_page)->orderBy('id', 'DESC')
+            ->take($per_page)
             ->get();
 
 
@@ -78,7 +98,7 @@ if(!function_exists('getModelData')){
                 "field" => $order_field
             ],
             
-            'data' => $model->with($relations)->where($where)->orderBy('id', 'ASC')->get()
+            'data' => $model->with($relations)->where($where)->get()
         ];
 
         return $response;

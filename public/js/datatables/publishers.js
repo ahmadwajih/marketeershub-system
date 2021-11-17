@@ -118,7 +118,7 @@ var KTDatatableRemoteAjaxDemo = function() {
             columns: [{
                 field: 'id',
                 title: '#',
-                sortable: 'asc',
+                sortable: 'desc',
                 width: 30,
                 type: 'number',
                 textAlign: 'center',
@@ -168,6 +168,7 @@ var KTDatatableRemoteAjaxDemo = function() {
             },{
                 field: 'offersCount',
                 title: "Offers",
+                sortable:false,
                 selector: false,
                 textAlign: 'center',
             },{
@@ -183,11 +184,6 @@ var KTDatatableRemoteAjaxDemo = function() {
             },{
                 field: 'team',
                 title: "Team",
-                selector: false,
-                textAlign: 'center',
-            }, {
-                field: 'position',
-                title: "Position",
                 selector: false,
                 textAlign: 'center',
             }, {
@@ -249,15 +245,19 @@ var KTDatatableRemoteAjaxDemo = function() {
 
         });
 
-        $('#kt_datatable_search_status').on('change', function() {
-            datatable.search($(this).val().toLowerCase(), 'Status');
-        });
+        // $('#kt_datatable_search_status').on('change', function() {
+        //     datatable.search($(this).val().toLowerCase(), 'Status');
+        // });
 
-        $('#kt_datatable_search_type').on('change', function() {
-            datatable.search($(this).val().toLowerCase(), 'Type');
-        });
+        // $('#kt_datatable_search_type').on('change', function() {
+        //     datatable.search($(this).val().toLowerCase(), 'Type');
+        // });
 
-        $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
+        // $('#kt_datatable_search_category_id').on('change', function() {
+        //     datatable.search($(this).val().toLowerCase(), 'category_id');
+        // });
+
+        // $('#kt_datatable_search_status, #kt_datatable_search_type, #kt_datatable_search_category_id').selectpicker();
     };
 
     return {

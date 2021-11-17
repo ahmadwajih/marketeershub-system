@@ -34,7 +34,12 @@ class PublisherController extends Controller
             ));
             return response()->json($users);
         }
-        return view('admin.publishers.index');
+        $categories = Category::all();
+        $accountManagers = User::wherePosition('account_manager')->get();
+        return view('admin.publishers.index', [
+            'categories' => $categories,
+            'accountManagers' => $accountManagers,
+        ]);
     }
 
 
@@ -46,8 +51,6 @@ class PublisherController extends Controller
     }
 
     public function offers() {
-        // $this->authorize('view_publishers');
-        // userActivity('User', $publisher->id, 'show');
         $offers = Offer::paginate();
         return view('admin.publishers.new.offers', ['offers' => $offers]);
     }
@@ -75,77 +78,37 @@ class PublisherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sort(Request $request, $sort)
+    public function search(Request $request)
     {
-        /*
-         $offers = Offer::whereHas('users', function($q) use($childrens) {
-            $q->whereIn('user_id', $childrens);
-        })->with(['users' => function($q) use($childrens){
-            $q->whereIn('users.id', $childrens);
-        },
-        'coupons' => function($q) use($childrens){
-            $q->whereIn('coupons.user_id', $childrens);
-        }])->get();
-         */
         $this->authorize('view_publishers');
-        if ($request->ajax()){
-           
-            $model = new Offer();
-            $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
-            $model   = $model->query();
-
-            // Define the page and number of items per page
-            $page = 1;
-            $per_page = 10;
-
-            // Get the request parameters
-            $params = $request->all();
-            // Set the current page
-            if(isset($params['pagination']['page'])) {
-                $page = $params['pagination']['page'];
-            }
-
-            // Set the number of items
-            if(isset($params['pagination']['perpage'])) {
-                $per_page = $params['pagination']['perpage'];
-            }
-
-            // Set the search filter
-            if(isset($params['query']['generalSearch'])) {
-                foreach ($columns as $column){
-                    $model->orWhere($column, 'LIKE', "%" . $params['query']['generalSearch'] . "%");
-                }
-            }
-
-
-            // Get how many items there should be
-            $total = $model->count();
-            $total = $model->where($where)->limit($per_page)->count();
-    //            ->where($where['column'], $where['operation'], $where['value'])
-
-            // Get the items defined by the parameters
-            $results = $model->skip(($page - 1) * $per_page)
-                ->where($where)
-                ->take($per_page)->orderBy('id', 'DESC')
-                ->get();
-
-
-            $response = [
-                'meta' => [
-                    "page" => $page,
-                    "pages" => ceil($total / $per_page),
-                    "perpage" => $per_page,
-                    "total" => $total,
-                    "sort" => $order_sort,
-                    "field" => $order_field
-                ],
-                
-                'data' => $model->with($relations)->where($where)->orderBy('id', 'ASC')->get()
-            ];
-
-            return response()->json($response);
+        $publishers = User::query();
+        $where = [['id', '!=', 0]];
+        // Check  pased on status
+        if($request->status){
+            $where[] = ['status', '=', $request->status];
         }
-        return view('admin.publishers.index');
+
+        // check based on category
+        if($request->category_id){
+            $publishers = $publishers->whereHas('categories', function($q) use($request) {
+                $q->whereIn('category_id', [$request->category_id]);
+            });
+        }
+
+        // check based on account manager 
+        if($request->account_manager_id){
+            $where[] = ['parent_id', '=', $request->account_manager_id];
+        }
+        $publishers = $publishers->with('parent')->where($where)->get();
+
+        $categories = Category::all();
+        $accountManagers = User::wherePosition('account_manager')->get();
+        $data = $request->all();
+        $data['categories'] = $categories;
+        $data['accountManagers'] = $accountManagers;
+        $data['publishers'] = $publishers;
+        // dd($data);
+        return view('admin.publishers.search', $data);
     }
 
     /**
@@ -360,9 +323,7 @@ class PublisherController extends Controller
         }
         $publisher->update($data);
         userActivity('User', $publisher->id, 'update');
-
-        // Unasign categories
-
+        // Unasign categories 
         $publisher->categories()->detach();
         // Assign Categories
         foreach($request->categories as $categoryId){

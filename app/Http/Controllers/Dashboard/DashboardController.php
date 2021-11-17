@@ -15,7 +15,36 @@ use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
-    public function index(){        
+    public function index(){     
+        $offers = Offer::all();
+        $pendingTotalOrders = 0;
+        $pendingTotalSales = 0;
+        $pendingTotalPayout = 0;
+        $totalOrders = 0;
+        $totalSales = 0;
+        $totalPayout = 0;
+        foreach($offers as $offer){
+            foreach($offer->coupons as $coupon){
+                if($coupon->report){
+                    $pendingTotalOrders += $coupon->report->orders;
+                    $pendingTotalSales += $coupon->report->sales;
+                    $pendingTotalPayout += $coupon->report->payout;
+                    $totalOrders += $coupon->report->v_orders;
+                    $totalSales += $coupon->report->v_sales;
+                    $totalPayout += $coupon->report->v_payout;
+                }
+            }
+        }
+        return view('admin.index', [
+            'offers' => $offers,
+            'pendingTotalOrders' => $pendingTotalOrders,
+            'pendingTotalSales' => $pendingTotalSales,
+            'pendingTotalPayout' => $pendingTotalPayout,
+            'totalOrders' => $totalOrders,
+            'totalSales' => $totalSales,
+            'totalPayout' => $totalPayout,
+        ]);
+
         return view('admin.index');
     }
 

@@ -1,5 +1,8 @@
 @extends('admin.layouts.app')
 @section('title','Publishers')
+@push('styles')
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+@endpush
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -50,7 +53,7 @@
                         <!--end::Button-->
                     </div>
                 </div>
-                
+
                 <div class="card-body">
                     <!--begin: Search Form-->
                     <form action="{{ route('admin.publishers.search') }}" method="GET">
@@ -71,18 +74,18 @@
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('Status') }}</label>
                                                 <select class="form-control" id="kt_datatable_search_status" name="status">
                                                     <option value="">{{ __('All') }}</option>
-                                                    <option value="active">{{ __('Active') }}</option>
-                                                    <option value="closed">{{ __('Unactive') }}</option>
+                                                    <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
+                                                    <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Unactive') }}</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-3 my-2 my-md-0">
                                             <div class="d-flex align-items-center">
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('Category') }}</label>
-                                                <select class="form-control select2" id="kt_datatable_search_category_id" name="category_id" >
-                                                    <option value="">{{ __('All') }}</option>
+                                                <select class="form-control " id="" name="category_id" >
+                                                    <option selected value="">{{ __('All') }}</option>
                                                     @foreach($categories as $category)
-                                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                                        <option {{isset($category_id)&&$category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->title }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -90,10 +93,10 @@
                                         <div class="col-md-3  mt-5">
                                             <div class="d-flex align-items-center">
                                                 <label class="d-none d-md-block">{{ __('Account Manager') }}</label>
-                                                <select class="form-control select2" id="kt_select_account_manager_id" name="account_manager_id" >
+                                                <select class="form-control " id="" name="account_manager_id" >
                                                     <option value="">{{ __('All') }}</option>
                                                     @foreach($accountManagers as $accountManager)
-                                                        <option value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
+                                                        <option {{isset($account_manager_id)&&$account_manager_id==$accountManager->id?'selected':'' }}  value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -128,7 +131,59 @@
                         </div>
                     </div>
                     <!--begin: Datatable-->
-                    <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
+                    <table id="example" class="display">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>{{ __('Full Name') }}</th>
+                                <th>{{ __('SM Platform') }}</th>
+                                <th>{{ __('Account Manager') }}</th>
+                                <th>{{ __('Offers') }}</th>
+                                <th>{{ __('Email') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Team') }}</th>
+                                <th>{{ __('Phone') }}</th>
+                                <th>{{ __('Actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($publishers as $publisher)
+                                <tr>
+                                    <td>{{ $publisher->id }}</td>
+                                    <td>{{ $publisher->name }}</td>
+                                    <td>
+                                        @foreach($publisher->socialLinks as $link)
+                                        <a href="{{ $link->link }}" class="btn btn-sm btn-clean btn-icon" target="_blank" title="{{ $link->platform }}">
+                                            <i class="fab fa-{{ $link->platform }}"></i>
+                                        </a>
+                                        @endforeach
+                                    </td>
+                                    <td>{{ $publisher->parent?$publisher->parent->name:'' }}</td>
+                                    <td>{{ $publisher->offersCount }}</td>
+                                    <td>{{ $publisher->email }}</td>
+                                    <td>
+                                        @if($publisher->status == 'active')
+                                            <span class="badge badge-success">Active</span>
+                                        @else
+                                            <span class="badge badge-danger">Unactive</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $publisher->team }}</td>
+                                    <td>{{ $publisher->phone }}</td>
+                                    <td>
+                                        <div class="dropdown dropdown-inline">
+                                            <a href="{{ route('admin.publishers.show', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                             <i class="flaticon-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                             <i class="flaticon-edit"></i>
+                                            </a>
+                                        </div>    
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                     <!--end: Datatable-->
                 </div>
             </div>
@@ -139,12 +194,6 @@
     <!--end::Entry-->
 @endsection
 @push('scripts')
-<script>var route = "{{ route('admin.publishers.index') }}";</script>
-@if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)!=null)
-    <script src="{{asset('js/datatables/'.Str::plural(Request::segment(4)).'.js')}}"></script>
-@else
-    <script src="{{asset('js/datatables/publishers.js')}}"></script>
-@endif
 
 <script>
     $('#kt_datatable_search_category_id').select2({
@@ -152,6 +201,12 @@
     });
     $('#kt_select_account_manager_id').select2({
         placeholder: "Select Option",
+    });
+</script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script>
+    let table = new DataTable('#example', {
+        // options
     });
 </script>
 @endpush
