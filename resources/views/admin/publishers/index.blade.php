@@ -72,7 +72,7 @@
                                                 <select class="form-control" id="kt_datatable_search_status" name="status">
                                                     <option value="">{{ __('All') }}</option>
                                                     <option value="active">{{ __('Active') }}</option>
-                                                    <option value="unactive">{{ __('Unactive') }}</option>
+                                                    <option value="closed">{{ __('Unactive') }}</option>
                                                 </select>
                                             </div>
                                         </div>

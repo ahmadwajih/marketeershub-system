@@ -51,8 +51,6 @@ class PublisherController extends Controller
     }
 
     public function offers() {
-        // $this->authorize('view_publishers');
-        // userActivity('User', $publisher->id, 'show');
         $offers = Offer::paginate();
         return view('admin.publishers.new.offers', ['offers' => $offers]);
     }
@@ -82,74 +80,33 @@ class PublisherController extends Controller
      */
     public function search(Request $request)
     {
-        // dd($request->all());
         $this->authorize('view_publishers');
-        if ($request->ajax()){
-            $where = [];
-            $relations = [];
-            if(isset($request->status) && !is_null($request->status)){
-                $status = 
-                $where[] = array( ['status', '!=', 0]);
-            }
-            $model = new Offer();
-            $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
-            $model   = $model->query();
-            // $model = $model->with(['coupons' => function($q){
-            //     $q->whereIn('users.id', $childrens);
-            // },
-            // Define the page and number of items per page
-            $page = 1;
-            $per_page = 10;
-
-            // Get the request parameters
-            $params = $request->all();
-            // Set the current page
-            if(isset($params['pagination']['page'])) {
-                $page = $params['pagination']['page'];
-            }
-
-            // Set the number of items
-            if(isset($params['pagination']['perpage'])) {
-                $per_page = $params['pagination']['perpage'];
-            }
-
-            // Set the search filter
-            if(isset($params['query']['generalSearch'])) {
-                foreach ($columns as $column){
-                    $model->orWhere($column, 'LIKE', "%" . $params['query']['generalSearch'] . "%");
-                }
-            }
-
-
-            // Get how many items there should be
-            $total = $model->count();
-            $total = $model->limit($per_page)->count();
-    //            ->where($where['column'], $where['operation'], $where['value'])
-
-            // Get the items defined by the parameters
-            $results = $model->skip(($page - 1) * $per_page)
-                ->take($per_page)->orderBy('id', 'DESC')
-                ->get();
-
-
-            $response = [
-                'meta' => [
-                    "page" => $page,
-                    "pages" => ceil($total / $per_page),
-                    "perpage" => $per_page,
-                    "total" => $total
-                ],
-                
-                'data' => $model->with($relations)->where($where)->orderBy('id', 'ASC')->get()
-            ];
-
-            return response()->json($response);
+        $publishers = User::query();
+        $where = [['id', '!=', 0]];
+        // Check  pased on status
+        if($request->status){
+            $where[] = ['status', '=', $request->status];
         }
+
+        // check based on category
+        if($request->category_id){
+            $publishers = $publishers->whereHas('categories', function($q) use($request) {
+                $q->whereIn('category_id', [$request->category_id]);
+            });
+        }
+
+        // check based on account manager 
+        if($request->account_manager_id){
+            $where[] = ['parent_id', '=', $request->account_manager_id];
+        }
+        $publishers = $publishers->with('parent')->where($where)->get();
+
         $categories = Category::all();
         $accountManagers = User::wherePosition('account_manager')->get();
         $data = $request->all();
         $data['categories'] = $categories;
         $data['accountManagers'] = $accountManagers;
+        $data['publishers'] = $publishers;
         // dd($data);
         return view('admin.publishers.search', $data);
     }
