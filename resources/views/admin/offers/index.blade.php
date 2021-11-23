@@ -30,6 +30,36 @@
         .modal .modal-footer{
             padding: 5px;
         }
+        .edit-offer{
+            position: absolute;
+            right: 5px;
+            background: #1e1e2d;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            top: 37px;
+            line-height: 33px;
+
+            border-radius: 50%;
+        }
+        .edit-offer i{
+            color: #fff;
+        }
+        .show-offer{
+            position: absolute;
+            right: 5px;
+            background: #1e1e2d;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            top: 5px;
+            line-height: 32px;
+
+        }
+        .show-offer i{
+            color: #fff;
+        }
     </style>
 @endpush
 @section('content')
@@ -46,6 +76,8 @@
                     <div class="col-3">
                         <div class="card-deck">
                             <div class="card">
+                                @if($update)<a class="edit-offer" href="{{ route('admin.offers.edit', $offer->id) }}"><i class="fas fa-pen"></i></a>@endif
+                                <a class="show-offer" href="{{ route('admin.offers.show', $offer->id) }}"><i class="fas fa-eye"></i></a>
                             <img class="card-img-top" src="{{asset("storage/Images/Offers")}}/{{is_null($offer->thumbnail)?'default.png':$offer->thumbnail}}" alt="{{ $offer->name }}">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">

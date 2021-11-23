@@ -60,7 +60,7 @@
                                         <div class="form-group row">
                                             <div class="col-12 text-center">
                                                 <div class="image-input image-input-outline image-input-circle" id="kt_image">
-                                                    <div class="image-input-wrapper" style="background-image: url({{asset("storage/Images/Users/").'/'.$publisher->image}})"></div>
+                                                    <div class="image-input-wrapper" style="background-image: url({{ getImagesPath('Users', $publisher->image) }})"></div>
                                                     <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Upload image">
                                                         <i class="fa fa-pen icon-sm text-muted"></i>
                                                         <input type="file" name="image" accept=".png, .jpg, .jpeg" />
@@ -82,7 +82,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Name') }} :</label>
-                                                <input type="text" name="name" class="form-control"  value="{{old('name') ?? $publisher->name}}" />
+                                                <input type="text" name="name" class="form-control"  value="{{old('name') ?? $publisher->name}}" required />
                                                 @if ($errors->has('name'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('name') }}</p>
@@ -91,7 +91,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Phone') }} :</label>
-                                                <input type="text" name="phone" class="form-control" value="{{old('phone') ?? $publisher->phone}}" />
+                                                <input type="text" name="phone" class="form-control" value="{{old('phone') ?? $publisher->phone}}" required />
                                                 @if ($errors->has('phone'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('phone') }}</p>
@@ -103,7 +103,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Email') }} :</label>
-                                                <input type="email" name="email" class="form-control"  value="{{old('email') ?? $publisher->email}}" />
+                                                <input type="email" name="email" class="form-control"  value="{{old('email') ?? $publisher->email}}" required/>
                                                 @if ($errors->has('email'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('email') }}</p>
@@ -125,7 +125,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Team') }} :</label>
-                                                <select class="form-control select2" id="kt_select_team" name="team" >
+                                                <select class="form-control select2" id="kt_select_team" name="team" required>
                                                     <option {{ $publisher->team=='affiliate'?'selected':'' }} value="affiliate">{{ __('Affiliate') }}</option>
                                                     <option {{ $publisher->team=='media_buying'?'selected':'' }} value="media_buying">{{ __('Media Buying') }}</option>
                                                     <option {{ $publisher->team=='influencer'?'selected':'' }} value="influencer">{{ __('Influencer') }}</option>
@@ -140,7 +140,7 @@
 
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Belongs To') }} :</label>
-                                                <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
+                                                <select class="form-control select2" id="kt_select_parent_id" name="parent_id" required>
                                                     @foreach ($parents as $parent)
                                                         <option {{ $publisher->parent_id==$parent->id?'selected':'' }} value="{{ $parent->id }}">{{  $parent->name }} from team {{  $parent->team }} position {{  $parent->position }}</option>
                                                     @endforeach
@@ -156,22 +156,10 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ _('Role') }} :</label>
-                                                <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
-                                                    @foreach($roles as $role)
-                                                        <option value="{{$role->id}}" {{old('roles') ? (in_array($role->id, old('roles'))?'selected':''): ($publisher->roles->contains($role)?'selected':'')}} >{{$role->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('roles'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('roles') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
+
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
-                                                <select class="form-control select2" id="kt_select_status" name="status" >
+                                                <select class="form-control select2" id="kt_select_status" name="status" required>
                                                     <option {{ $publisher->status=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
                                                     <option {{ $publisher->status=='pending'?'selected':'' }} value="pending">{{ __('Pending') }}</option>
                                                     <option {{ $publisher->status=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
@@ -189,7 +177,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
-                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" >
+                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
                                                     @foreach($countries as $country)
                                                         <option {{$publisher->country_id==$country->id?'selected':''}} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
@@ -202,7 +190,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ _('City') }} :</label>
-                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" >
+                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" required >
                                                     @foreach($cities as $city)
                                                         <option {{$publisher->city_id==$city->id?'selected':''}} value="{{$city->id}}">{{$city->name_en}}</option>
                                                     @endforeach
@@ -512,9 +500,7 @@
         $('#kt_select_subscription_type').select2({
             placeholder: "Select Option",
         });
-        $('#kt_select_role_id').select2({
-            placeholder: "Select Option",
-        });
+
         $('#kt_select_categories').select2({
             placeholder: "Select Option",
         });

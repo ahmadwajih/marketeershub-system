@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
     /**
      * The attributes that are mass assignable.
@@ -64,6 +65,13 @@ class User extends Authenticatable
         return $this->roles->map->abilities->flatten()->pluck('name')->unique();
     }
 
+    public function permissions()
+    {
+        return $this->hasManyDeep(
+            Ability::class,
+            ['role_user', Role::class, 'ability_role'], // Pivot tables/models starting from the Parent, which is the User
+        );
+    }
     public function country(){
         return $this->belongsTo(Country::class);
     }
@@ -153,5 +161,8 @@ class User extends Authenticatable
     
     }
 
-   
+    public function getCreatedAtAttribute()
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('Y-m-d');   
+    }
 }

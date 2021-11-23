@@ -87,7 +87,7 @@
                                             <div class="col-lg-8" style="max-height: 400px !important;overflow: scroll;">
                                                 <table class="table table-bordered">
                                                     <tbody>
-                                                        @foreach($coupons as $coupon)
+                                                        @foreach($offerRequest->offer->coupons as $coupon)
                                                             <tr>
                                                                 <td width="2%"><input type="checkbox"  {{ $coupon->user_id==$offerRequest->user_id?'checked':'' }} name='coupons[]' value="{{ $coupon->id }}"></td>
                                                                 <td>{{ $coupon->coupon }}</td>
