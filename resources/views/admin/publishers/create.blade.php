@@ -303,11 +303,11 @@
                                                                     <label>{{__('Number Of Followers') }}</label>
                                                                     <select class="form-control form-select" name="followers" style="display: block" >
                                                                         <option selected="selected" value="lethThan10k">< 10K</option>
-                                                                        <option value="10Kto50K">10K : 50K</option>
-                                                                        <option value="50Kto100K">50K : 100K</option>
-                                                                        <option value="100Kto500K">100K : 500K</option>
-                                                                        <option value="500Kto1M">500K : 1M</option>
-                                                                        <option value="morethan1M">> 1M</option>
+                                                                        <option value="10K : 50K">10K : 50K</option>
+                                                                        <option value="50K : 100K">50K : 100K</option>
+                                                                        <option value="100K : 500K">100K : 500K</option>
+                                                                        <option value="500K : 1M">500K : 1M</option>
+                                                                        <option value="> 1M">> 1M</option>
                                                                     </select>
                                                                 </div>
         

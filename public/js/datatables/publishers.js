@@ -152,7 +152,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                             links += '\
                                 <a href="' + value.link + '" class="btn btn-sm btn-clean btn-icon" target="_blank" title="'+value.platform+'">\
                                     \<i class="fab fa-'+value.platform+'"></i>\
-                                </a>\
+                                '+value.followers+'</a>\
                             ';
     
                         });
@@ -174,7 +174,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                         var links = '';
                         data.forEach(function (value, index) {
                             links += '<span class="badge badge-primary m-1">'+value.title+'</span>';
-    
                         });
                         return  links;
                 
