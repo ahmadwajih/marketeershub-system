@@ -137,8 +137,11 @@ class OfferRequestController extends Controller
         $data = $request->validate([
             'status' => 'required|in:pending,rejected,approved',
         ]);
-        $userCoupons = $offerRequest->user->coupons->pluck('id')->toArray();
-
+        $userCoupons = Coupon::where([
+            ['user_id', '=', $offerRequest->user_id],
+            ['offer_id', '=', $offerRequest->offer_id],
+        ])->pluck('id')->toArray();
+        // dd($request->coupons);
         if($request->coupons ){
             // For loop to unassign un exists coupons 
             foreach($userCoupons as $userCoupon){

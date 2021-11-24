@@ -17,6 +17,13 @@ class DashboardController extends Controller
 {
     public function index(){     
         $offers = Offer::all();
+        $affiliates = User::whereTeam('affiliate')->get();
+        $influencers = User::whereTeam('influencer')->get();
+        $media_buying = User::whereTeam('media_buying')->get();
+    
+        
+
+        
         $pendingTotalOrders = 0;
         $pendingTotalSales = 0;
         $pendingTotalPayout = 0;

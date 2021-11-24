@@ -27,9 +27,10 @@ class OfferController extends Controller
     {
 
         $this->authorize('view_offers');
+        $update = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offers = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
-        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
+        return view('admin.offers.index', compact('offers', 'offerRequestsArray', 'update'));
     }
     /**
      * Display a listing of the resource.

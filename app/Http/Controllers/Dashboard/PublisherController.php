@@ -29,7 +29,7 @@ class PublisherController extends Controller
     {
         $this->authorize('view_publishers');        
         if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent'], array(
+            $users = getModelData('User' , $request, ['parent', 'categories'], array(
                 ['position', '=', 'publisher']
             ));
             return response()->json($users);
@@ -127,7 +127,6 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         return view('admin.publishers.create',[
             'countries' => Country::all(),
-            'roles' => Role::all(),
             'categories' => Category::all(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
         ]);
@@ -166,14 +165,12 @@ class PublisherController extends Controller
             'swift_code'                => 'required|max:255',
             'iban'                      => 'required|max:255',
             'currency'                  => 'required|max:255',
-            'roles.*'                   => 'exists:roles,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
 
         ]);
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
-        unset($data['roles']);
         unset($data['social_media']);
         if($request->hasFile('image')){
             $data['image'] = uploadImage($request->file('image'), "Users");
@@ -191,14 +188,9 @@ class PublisherController extends Controller
             }
         }
 
-        // Assign Role 
-        if(count($request->roles) > 0){
-            foreach ($request->roles as $role_id)
-            {
-                $role = Role::findOrFail($role_id);
-                $publisher->assignRole($role);
-            }
-        }
+
+            $role = Role::findOrFail(4);
+            $publisher->assignRole($role);
 
         // Store Social Media Accounts 
         if($request->team == 'influencer' || $request->team == 'prepaid'){
@@ -254,8 +246,6 @@ class PublisherController extends Controller
             'cities' => City::whereCountryId($publisher->country_id)->get(),
             'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
             'categories' => Category::all(),
-            'roles' => Role::all(),
-
         ]);
     }
 
@@ -281,10 +271,9 @@ class PublisherController extends Controller
             'country_id'                => 'required|exists:countries,id',
             'city_id'                   => 'required|exists:cities,id',
             'gender'                    => 'required|in:male,female',
-            // 'parent_id'                 => 'required|numeric|exists:users,id',
-            // 'status'                    => 'required|in:active,pending,closed',
-            // 'roles.*'                   => 'exists:roles,id',
-            // 'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
+            'parent_id'                 => 'required|numeric|exists:users,id',
+            'status'                    => 'required|in:active,pending,closed',
+            'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
             'skype'                     => 'nullable|max:255',
             'address'                   => 'nullable|max:255',
             'category'                  => 'nullable|max:255',
@@ -300,12 +289,9 @@ class PublisherController extends Controller
             'currency'                  => 'required|max:255',
             'categories'                => 'array|required|exists:categories,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
-
-
         ]);
 
         unset($data['password']);
-        unset($data['roles']);
         unset($data['social_media']);
         unset($data['categories']);
 
@@ -335,16 +321,6 @@ class PublisherController extends Controller
         foreach($request->categories as $categoryId){
             $category = Category::findOrFail($categoryId);
             $publisher->assignCategory($category);
-        }
-
-        // Asign Role
-        if($request['roles']){
-            $publisher->roles()->detach();
-            foreach ($request['roles'] as $role_id)
-            {
-                $role = Role::findOrFail($role_id);
-                $publisher->assignRole($role);
-            }
         }
 
         if($request->team == 'influencer' || $request->team == 'prepaid'){

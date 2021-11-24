@@ -161,6 +161,25 @@ var KTDatatableRemoteAjaxDemo = function() {
                     return null;
                 },
             },{
+                field: 'Categories',
+                title: "Categories",
+                sortable: false,
+                width: 125,
+                overflow: 'visible',
+                selector: false,
+                textAlign: 'center',
+                autoHide: false,
+                template: function(row) {
+                        var data = row.categories;
+                        var links = '';
+                        data.forEach(function (value, index) {
+                            links += '<span class="badge badge-primary m-1">'+value.title+'</span>';
+    
+                        });
+                        return  links;
+                
+                },
+            },{
                 field: 'parent.name',
                 title: "Account Manager",
                 selector: false,
