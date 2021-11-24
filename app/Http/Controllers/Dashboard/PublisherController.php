@@ -223,6 +223,7 @@ class PublisherController extends Controller
     {
         $this->authorize('show_publishers');
         $publisher = User::findOrFail($id);
+        dd($publisher->socialLinks);
         userActivity('User', $publisher->id, 'show');
         return view('admin.publishers.show', ['publisher' => $publisher]);
     }
