@@ -18,3 +18,5 @@ yarn-error.log
 OLD
 Commands
 test.php
+composer.json
+composer.lock
