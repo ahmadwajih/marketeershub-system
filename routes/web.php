@@ -42,8 +42,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('publishers', PublisherController::class);
         Route::get('publishers/type/{type}', 'PublisherController@getBasedOnType')->name('publishers.type');
         Route::get('publishers-search', 'PublisherController@search')->name('publishers.search');
+        Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
         // Publisher Profile
         Route::get('publisher/profile', 'PublisherController@profile')->name('publisher.profile');
+        Route::get('publisher/my-account-manager', 'PublisherController@myAccountManager')->name('publisher.account.manager');
         // Upload Publishers
         Route::get('publishers/upload/form', 'PublisherController@upload')->name('publishers.upload.form');
         Route::post('publishers/upload', 'PublisherController@storeUpload')->name('publishers.upload.store');

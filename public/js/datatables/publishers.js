@@ -111,6 +111,70 @@ var KTDatatableRemoteAjaxDemo = function() {
                             }
                         });
                     });
+
+                    row.find('.assign-am').on('click', function () {
+                        swal.fire({
+                            title: 'Select field validation',
+                            input: 'select',
+                            inputOptions: {
+                                'Fruits': {
+                                apples: 'Apples',
+                                bananas: 'Bananas',
+                                grapes: 'Grapes',
+                                oranges: 'Oranges'
+                                },
+                                'Vegetables': {
+                                potato: 'Potato',
+                                broccoli: 'Broccoli',
+                                carrot: 'Carrot'
+                                },
+                                'icecream': 'Ice cream'
+                            },
+                            confirmButtonText: "Yes, Delete!",
+                            icon: "warning",
+                            confirmButtonClass: "btn font-weight-bold btn-danger",
+                            showCancelButton: true,
+                            cancelButtonText: "No, Cancel",
+                            cancelButtonClass: "btn font-weight-bold btn-primary"
+                        }).then(function (result) {
+                            if (result.value) {
+                                swal.fire({
+                                    title: "Loading ...",
+                                    onOpen: function () {
+                                        swal.showLoading();
+                                    }
+                                });
+                                $.ajax({
+                                    method: 'delete',
+                                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                                    url: route + '/' + data.id,
+                                    error: function (err) {
+                                        if (err.hasOwnProperty('responseJSON')) {
+                                            if (err.responseJSON.hasOwnProperty('message')) {
+                                                swal.fire({
+                                                    title: "Error !",
+                                                    text: err.responseJSON.message,
+                                                    confirmButtonText: "Ok",
+                                                    icon: "error",
+                                                    confirmButtonClass: "btn font-weight-bold btn-primary",
+                                                });
+                                            }
+                                        }
+                                        console.log(err);
+                                    }
+                                }).done(function (res) {
+                                    swal.fire({
+                                        text: "Deleted successfully ",
+                                        confirmButtonText: "موافق",
+                                        icon: "success",
+                                        confirmButtonClass: "btn font-weight-bold btn-primary",
+                                    });
+                                    datatable.reload();
+                                });
+                            }
+                        });
+                    });
+
                 }
             },
 
@@ -152,7 +216,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                             links += '\
                                 <a href="' + value.link + '" class="btn btn-sm btn-clean btn-icon" target="_blank" title="'+value.platform+'">\
                                     \<i class="fab fa-'+value.platform+'"></i>\
-                                '+value.followers+'</a>\
+                                </a>\
                             ';
     
                         });
@@ -179,10 +243,21 @@ var KTDatatableRemoteAjaxDemo = function() {
                 
                 },
             },{
-                field: 'parent.name',
-                title: "Account Manager",
+                field: 'parent.nam',
+                title: "AM",
+                sortable: false,
+                width: 125,
+                overflow: 'visible',
                 selector: false,
                 textAlign: 'center',
+                autoHide: false,
+                template: function(row) {
+                    if(row.parent){
+                        return '<a href="javascript:;"  class="badge badge-primary assign-am">'+row.parent.name+'</a>';
+                    }
+                    return '<a href="javascript:;" class="badge badge-primary assign-am">Assigen To Me</a>';
+                }
+
             },{
                 field: 'offersCount',
                 title: "Offers",

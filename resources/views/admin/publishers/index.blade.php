@@ -1,5 +1,10 @@
 @extends('admin.layouts.app')
 @section('title','Publishers')
+@push('styles')
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
+
+@endpush
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -50,20 +55,25 @@
                         <!--end::Button-->
                     </div>
                 </div>
-                
+
                 <div class="card-body">
                     <!--begin: Search Form-->
                     <form action="{{ route('admin.publishers.search') }}" method="GET">
                         <div class="container">
                             <div class="row align-items-center">
-                                <div class="col-lg-12 col-xl-12">
+                                <div class="col-lg-12 col-xl-12 mb-5">
                                     <div class="row align-items-center">
+
                                         <div class="col-md-3 my-2 my-md-0">
-                                            <div class="input-icon">
-                                                <input type="text" class="form-control" placeholder="{{ __('Search') }}" id="kt_datatable_search_query" />
-                                                <span>
-                                                    <i class="flaticon2-search-1 text-muted"></i>
-                                                </span>
+                                            <div class="d-flex align-items-center">
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('Team') }}</label>
+                                                <select class="form-control" id="" name="team">
+                                                    <option selected value="">{{ __('All') }}</option>
+                                                    <option {{ isset($team)&&$team=='affiliate'?'selected':'' }} value="affiliate">{{ __('Affiliate') }}</option>
+                                                    <option {{ isset($team)&&$team=='media_buying'?'selected':'' }} value="media_buying">{{ __('Media Buying') }}</option>
+                                                    <option {{ isset($team)&&$team=='influencer'?'selected':'' }} value="influencer">{{ __('Influencer') }}</option>
+                                                    <option {{ isset($team)&&$team=='prepaid'?'selected':'' }} value="prepaid">{{ __('Prepaid') }}</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-md-3 my-2 my-md-0">
@@ -71,38 +81,63 @@
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('Status') }}</label>
                                                 <select class="form-control" id="kt_datatable_search_status" name="status">
                                                     <option value="">{{ __('All') }}</option>
-                                                    <option value="active">{{ __('Active') }}</option>
-                                                    <option value="closed">{{ __('Unactive') }}</option>
+                                                    <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
+                                                    <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Unactive') }}</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-3 my-2 my-md-0">
                                             <div class="d-flex align-items-center">
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('Category') }}</label>
-                                                <select class="form-control select2" id="kt_datatable_search_category_id" name="category_id" >
-                                                    <option value="">{{ __('All') }}</option>
+                                                <select class="form-control selectpicker" data-live-search="true" id="" name="category_id" >
+                                                    <option selected value="">{{ __('All') }}</option>
                                                     @foreach($categories as $category)
-                                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                                        <option {{isset($category_id)&&$category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->title }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3  mt-5">
+                                        <div class="col-md-3">
                                             <div class="d-flex align-items-center">
-                                                <label class="d-none d-md-block">{{ __('Account Manager') }}</label>
-                                                <select class="form-control select2" id="kt_select_account_manager_id" name="account_manager_id" >
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('AM') }}</label>
+                                                <select class="form-control selectpicker" data-live-search="true" id="" name="account_manager_id" >
                                                     <option value="">{{ __('All') }}</option>
-                                                    <option value="unassigned">{{ __('Un Assigned') }}</option>
+                                                    <option {{isset($account_manager_id)&&$account_manager_id=='unassigned'?'selected':'' }} value="unassigned">{{ __('Un Assigned') }}</option>
                                                     @foreach($accountManagers as $accountManager)
-                                                        <option value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
+                                                        <option {{isset($account_manager_id)&&$account_manager_id==$accountManager->id?'selected':'' }}  value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="d-flex align-items-center">
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('AM') }}</label>
+                                                <select class="form-control selectpicker" data-live-search="true" id="" name="account_manager_id" >
+                                                    <option value="">{{ __('All') }}</option>
+                                                    <option {{isset($account_manager_id)&&$account_manager_id=='unassigned'?'selected':'' }} value="unassigned">{{ __('Un Assigned') }}</option>
+                                                    @foreach($accountManagers as $accountManager)
+                                                        <option {{isset($account_manager_id)&&$account_manager_id==$accountManager->id?'selected':'' }}  value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <label>{{__('Size') }}</label>
+                                            <select class="form-control form-select" name="followers" style="display: block" >
+                                                <option selected="selected" value="lethThan10k">< 10K</option>
+                                                <option value="10K : 50K">10K : 50K</option>
+                                                <option value="50K : 100K">50K : 100K</option>
+                                                <option value="100K : 500K">100K : 500K</option>
+                                                <option value="500K : 1M">500K : 1M</option>
+                                                <option value="> 1M">> 1M</option>
+                                            </select>
+
+
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-xl-12 mt-5 mt-lg-0">
-                                    <button type="submit" class="btn btn-light-primary px-6 font-weight-bold">{{ __('Search') }}</button>
+                                    <button type="submit" class="btn btn-light-primary px-6 font-weight-bold btn-block">{{ __('Search') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -126,10 +161,88 @@
                             {{-- <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
                                 <a href="#" class="btn btn-light-primary px-6 font-weight-bold">بــحــث</a>
                             </div> --}}
+                           
                         </div>
                     </div>
                     <!--begin: Datatable-->
-                    <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
+                    <table id="example" class="display text-center">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>{{ __('Full Name') }}</th>
+                                <th>{{ __('SM Platform') }}</th>
+                                <th>{{ __('Account Manager') }}</th>
+                                <th>{{ __('Offers') }}</th>
+                                <th>{{ __('Size') }}</th>
+                                <th>{{ __('Categories') }}</th>
+                                <th>{{ __('Email') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Team') }}</th>
+                                <th>{{ __('Phone') }}</th>
+                                <th>{{ __('Join Date') }}</th>
+                                <th>{{ __('Actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($publishers as $publisher)
+                                <tr>
+                                    <td>{{ $publisher->id }}</td>
+                                    <td>{{ $publisher->name }}</td>
+                                    <td>
+                                        @foreach($publisher->socialLinks as $link)
+                                        <a href="{{ $link->link }}" class="btn btn-sm btn-clean btn-icon" target="_blank" title="{{ $link->platform }}">
+                                            <i class="fab fa-{{ $link->platform }}"></i>
+                                        </a>
+                                        @endforeach
+                                    </td>
+                                    <td>{!! $publisher->parent?$publisher->parent->name:" <button class='btn btn-success assignToMe' data-affiliate='".$publisher->id."'>".__('Assign To Me')."</button>" !!}</td>
+                                    <td>{{ $publisher->offersCount }}</td>
+                                    <td>
+                                        @if($publisher->team = 'influncer' && $publisher->socialMediaLinks)
+                                        <table class="table table-bordered">
+                                            @foreach($publisher->socialMediaLinks as $link)
+                                            <tr>
+                                                <td>{{ $link->platform }}</td>
+                                                <td>{{ $link->followers }}</td>
+                                             </tr> 
+                                         @endforeach
+                                        </table>
+                                            
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($publisher->categories)
+                                            @foreach($publisher->categories as $category)
+                                                {{ $category->title }}
+                                            @endforeach
+                                            
+                                        @endif
+                                    </td>
+                                    <td>{{ $publisher->email }}</td>
+                                    <td>
+                                        @if($publisher->status == 'active')
+                                            <span class="badge badge-success">Active</span>
+                                        @else
+                                            <span class="badge badge-danger">Unactive</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $publisher->team }}</td>
+                                    <td>{{ $publisher->phone }}</td>
+                                    <td>{{ $publisher->created_at }}</td>
+                                    <td>
+                                        <div class="dropdown dropdown-inline">
+                                            <a href="{{ route('admin.publishers.show', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                             <i class="flaticon-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                             <i class="flaticon-edit"></i>
+                                            </a>
+                                        </div>    
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                     <!--end: Datatable-->
                 </div>
             </div>
@@ -140,12 +253,6 @@
     <!--end::Entry-->
 @endsection
 @push('scripts')
-<script>var route = "{{ route('admin.publishers.index') }}";</script>
-@if(Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)!=null)
-    <script src="{{asset('js/datatables/'.Str::plural(Request::segment(4)).'.js')}}"></script>
-@else
-    <script src="{{asset('js/datatables/publishers.js')}}"></script>
-@endif
 
 <script>
     $('#kt_datatable_search_category_id').select2({
@@ -154,5 +261,67 @@
     $('#kt_select_account_manager_id').select2({
         placeholder: "Select Option",
     });
+    $('#kt_select_team').select2({
+            placeholder: "Select Option",
+        });
 </script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script>
+    let table = new DataTable('#example', {
+        // options
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('.assignToMe').on('click', function(){
+            var assignToMe = $(this);
+            var affiliateId = $(this).data('affiliate');
+            Swal.fire({
+                title: "{{ __('Are you sure?') }}",
+                text: '{{ "You won`t be able to revert this!" }}',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '{{ __("Yes, assign!") }}'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method: 'post',
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        url: "{{ route('admin.publishers.updateAccountManager') }}",
+                        data: {
+                            affiliateId:affiliateId
+                        },
+                        error: function (err) {
+                            if (err.hasOwnProperty('responseJSON')) {
+                                if (err.responseJSON.hasOwnProperty('message')) {
+                                    swal.fire({
+                                        title: "Error !",
+                                        text: err.responseJSON.message,
+                                        confirmButtonText: "Ok",
+                                        icon: "error",
+                                        confirmButtonClass: "btn font-weight-bold btn-primary",
+                                    });
+                                }
+                            }
+                            console.log(err);
+                        }
+                    }).done(function (res) {
+                        console.log(res)
+                        assignToMe.parent().html('<span class="btn btn-success">{{ __("Done") }}</span>');
+                        Swal.fire(
+                            '{{ __("Assigned Successfully!") }}',
+                            'success'
+                        )
+                    });
+                    
+                }
+            })
+        })
+    })
+    </script>
 @endpush
