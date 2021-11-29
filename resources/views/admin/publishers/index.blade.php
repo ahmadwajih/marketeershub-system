@@ -97,7 +97,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        {{-- <div class="col-md-3">
                                             <div class="d-flex align-items-center">
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('AM') }}</label>
                                                 <select class="form-control selectpicker" data-live-search="true" id="" name="account_manager_id" >
@@ -108,31 +108,21 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-3">
                                             <div class="d-flex align-items-center">
-                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('AM') }}</label>
-                                                <select class="form-control selectpicker" data-live-search="true" id="" name="account_manager_id" >
+                                                <label class="mr-3 mb-0 d-none d-md-block">{{ __('Social Media') }}</label>
+                                                <select class="form-control selectpicker" data-live-search="true" id="" name="platform" >
                                                     <option value="">{{ __('All') }}</option>
-                                                    <option {{isset($account_manager_id)&&$account_manager_id=='unassigned'?'selected':'' }} value="unassigned">{{ __('Un Assigned') }}</option>
-                                                    @foreach($accountManagers as $accountManager)
-                                                        <option {{isset($account_manager_id)&&$account_manager_id==$accountManager->id?'selected':'' }}  value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
-                                                    @endforeach
+                                                    <option {{isset($platform)&&$platform=='facebook'?'selected':'' }} value="facebook">{{ __('Facebook') }}</option>
+                                                    <option {{isset($platform)&&$platform=='instagram'?'selected':'' }} value="instagram">{{ __('Instagram') }}</option>
+                                                    <option {{isset($platform)&&$platform=='twitter'?'selected':'' }} value="twitter">{{ __('Twitter') }}</option>
+                                                    <option {{isset($platform)&&$platform=='snapchat'?'selected':'' }} value="snapchat">{{ __('Snapchat') }}</option>
+                                                    <option {{isset($platform)&&$platform=='tiktok'?'selected':'' }} value="tiktok">{{ __('Tiktok') }}</option>
+                                                    <option {{isset($platform)&&$platform=='youtube'?'selected':'' }} valuothere="youtube">{{ __('Youtube') }}</option>
+                                                    <option {{isset($platform)&&$platform=='other'?'selected':'' }} valuothere="other">{{ __('Other') }}</option>
                                                 </select>
                                             </div>
-
-                                            <label>{{__('Size') }}</label>
-                                            <select class="form-control form-select" name="followers" style="display: block" >
-                                                <option selected="selected" value="lethThan10k">< 10K</option>
-                                                <option value="10K : 50K">10K : 50K</option>
-                                                <option value="50K : 100K">50K : 100K</option>
-                                                <option value="100K : 500K">100K : 500K</option>
-                                                <option value="500K : 1M">500K : 1M</option>
-                                                <option value="> 1M">> 1M</option>
-                                            </select>
-
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -177,8 +167,8 @@
                                 <th>{{ __('Categories') }}</th>
                                 <th>{{ __('Email') }}</th>
                                 <th>{{ __('Status') }}</th>
-                                <th>{{ __('Team') }}</th>
                                 <th>{{ __('Phone') }}</th>
+                                <th>{{ __('Referral AM') }}</th>
                                 <th>{{ __('Join Date') }}</th>
                                 <th>{{ __('Actions') }}</th>
                             </tr>
@@ -188,6 +178,7 @@
                                 <tr>
                                     <td>{{ $publisher->id }}</td>
                                     <td>{{ $publisher->name }}</td>
+                                    
                                     <td>
                                         @foreach($publisher->socialLinks as $link)
                                         <a href="{{ $link->link }}" class="btn btn-sm btn-clean btn-icon" target="_blank" title="{{ $link->platform }}">
@@ -226,8 +217,8 @@
                                             <span class="badge badge-danger">Unactive</span>
                                         @endif
                                     </td>
-                                    <td>{{ $publisher->team }}</td>
                                     <td>{{ $publisher->phone }}</td>
+                                    <td>{{ $publisher->referral_account_manager }}</td>
                                     <td>{{ $publisher->created_at }}</td>
                                     <td>
                                         <div class="dropdown dropdown-inline">

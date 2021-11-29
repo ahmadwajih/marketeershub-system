@@ -127,7 +127,7 @@
                                             @endif
                                         @endif
                                     @else
-                                        <button class="rounded requestOffer" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Offer') }}</button>
+                                        <button class="rounded requestOffer" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Coupons') }}</button>
                                     @endif
                                 </div>
                             </div>

@@ -29,8 +29,11 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');   
-
-        $publishers = User::wherePosition('publisher')->with('parent', 'categories')->get();
+        if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+            $publishers = User::wherePosition('publisher')->with('parent', 'categories')->where('parent_id', auth()->user()->id)->orWhere('parent_id', null)->get();
+        }else{
+            $publishers = User::wherePosition('publisher')->with('parent', 'categories')->get();
+        }
         $categories = Category::all();
         $accountManagers = User::wherePosition('account_manager')->get();
         return view('admin.publishers.index', [
@@ -288,7 +291,6 @@ class PublisherController extends Controller
             'traffic_sources'           => 'required_if:team,affiliate|max:255',
             'affiliate_networks'        => 'required_if:team,affiliate|max:255',
             'owened_digital_assets'     => 'required_if:team,affiliate|max:255',
-            'referral_account_manager'  => 'nullable|max:255',
             'account_title'             => 'required|max:255',
             'bank_name'                 => 'required|max:255',
             'bank_branch_code'          => 'required|max:255',

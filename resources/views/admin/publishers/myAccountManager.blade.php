@@ -75,6 +75,11 @@
                                                 <a href="#" class="text-muted text-hover-primary">{{ $accountManager->parent?$accountManager->parent->phone:'' }}</a>
                                             </div>
 
+                                            <div class="d-flex align-items-center justify-content-left mb-2">
+                                                <span class="font-weight-bold mr-2">{{ __('His Manager Email') }}:</span>
+                                                <a href="#" class="text-muted text-hover-primary">{{ $accountManager->parent?$accountManager->parent->email:'' }}</a>
+                                            </div>
+
                                             <div class="d-flex align-items-center justify-content-left">
                                                 <span class="font-weight-bold mr-2">{{ __('Location') }}:</span>
                                                 <span class="text-muted">{{ $accountManager->country?$accountManager->country->name_en:'' }}</span>
