@@ -138,6 +138,31 @@ class UserSeeder extends Seeder
         // Account manager 
         //Influencer Account Manager
         User::create([
+            'name'                  => 'Nora Elsubaie AM',
+            'password'              => Hash::make('920033874'),
+            'years_of_experience'   => '5',
+            'parent_id'             => 2,
+            'country_id'            => 1,
+            'city_id'               => 1,
+            'gender'                => 'female',
+            'team'                  => 'influencer',
+            'position'              => 'account_manager',
+            'email'                 => 'nora@marketeershub.com',
+            'phone'                 => '920033874',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'affiliate networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency'              => 'SAR',
+            'status'                => 'active'
+        ]);
+
+        //Influencer Account Manager
+        User::create([
             'name'                  => 'Influencer Account Manager',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -237,6 +262,30 @@ class UserSeeder extends Seeder
         ]);
 
         // Publisher 
+        User::create([
+            'name'                  => 'Nora Elsubaie Publisher',
+            'password'              => Hash::make('920033874'),
+            'years_of_experience'   => '5',
+            'parent_id'             => 5,
+            'country_id'            => 1,
+            'city_id'               => 1,
+            'gender'                => 'female',
+            'team'                  => 'influencer',
+            'position'              => 'publisher',
+            'email'                 => 'nora@athrco.com',
+            'phone'                 => '05920033874',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'affiliate networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency'              => 'SAR',
+            'status'                => 'active'
+        ]);
+
         //Influencer Publisher
         User::create([
             'name'                  => 'Influencer Publisher',
