@@ -130,36 +130,6 @@
                                 </a>
                             </li>
                             @endcan
-                            @can('view_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='type'&&Request::segment(4)=='influencer'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.publishers.type', 'influencer')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('All Influencers') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-                            @can('view_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='type' &&Request::segment(4)=='affiliate'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.publishers.type', 'affiliate')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('All Affiliates') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-                            @can('view_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='type' &&Request::segment(4)=='prepaid'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.publishers.type', 'prepaid')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('All Prepaid') }}</span>
-                                </a>
-                            </li>
-                            @endcan
 
                             @can('create_publishers')
                             <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">

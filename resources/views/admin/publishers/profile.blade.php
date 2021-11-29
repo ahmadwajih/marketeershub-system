@@ -181,6 +181,7 @@
                             <!--end::Item-->
                         </div>
                         <!--begin::Items-->
+                        
                     </div>
                 </div>
                 <!--end::Card-->
@@ -438,6 +439,13 @@
                     </div>
                     
                     <!--end::Content-->
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6"><input type="date" name="" id=""></div>
+                        <div class="col-6"><input type="date" name="" id=""></div>
+                    </div>
                 </div>
 
                 @if(auth()->user()->position == 'account_manager')

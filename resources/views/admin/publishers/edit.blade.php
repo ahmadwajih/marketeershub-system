@@ -288,7 +288,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <label> {{ __('Referral Account Manager') }} :</label>
-                                                    <input type="text" name="referral_account_manager" class="form-control" value="{{old('referral_account_manager') ?? $publisher->referral_account_manager}}" />
+                                                    <input type="text" readonly disabled name="referral_account_manager" class="form-control" value="{{old('referral_account_manager') ?? $publisher->referral_account_manager}}" />
                                                     @if ($errors->has('referral_account_manager'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('referral_account_manager') }}</p>
