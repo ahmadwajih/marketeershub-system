@@ -65,7 +65,7 @@
                                         <div class="pt-8 pb-6">
                                             <div class="d-flex align-items-center justify-content-left mb-2">
                                                 <span class="font-weight-bold mr-2">{{ __('Account Manager') }}:</span>
-                                                <a href="#" class="text-muted text-hover-primary">{{ $publisher->parent?$publisher->parent->name:'' }}</a>
+                                                <a href="{{ route('admin.publisher.account.manager') }}" class="text-muted text-hover-primary">{{ $publisher->parent?$publisher->parent->name:'' }}</a>
                                             </div>
 
                                             <div class="d-flex align-items-center justify-content-left">

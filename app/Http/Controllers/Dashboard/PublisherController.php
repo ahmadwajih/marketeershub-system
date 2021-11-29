@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\DataTables;
 
 class PublisherController extends Controller
 {
@@ -27,18 +28,15 @@ class PublisherController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_publishers');        
-        if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent', 'categories'], array(
-                ['position', '=', 'publisher']
-            ));
-            return response()->json($users);
-        }
+        $this->authorize('view_publishers');   
+
+        $publishers = User::wherePosition('publisher')->with('parent', 'categories')->get();
         $categories = Category::all();
         $accountManagers = User::wherePosition('account_manager')->get();
         return view('admin.publishers.index', [
             'categories' => $categories,
             'accountManagers' => $accountManagers,
+            'publishers' => $publishers,
         ]);
     }
 
@@ -63,13 +61,17 @@ class PublisherController extends Controller
     public function getBasedOnType(Request $request, $type)
     {
         $this->authorize('view_publishers');
-        if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent','socialMediaLinks', 'offers'], array(
-                ['position', '=', 'publisher'],
-                ['team', '=', $type],
-            ));
-            return response()->json($users);
-        }
+        $publishers = User::wherePosition('publisher')->where([
+            ['position', '=', 'publisher'],
+            ['team', '=', $type],
+        ])->with('parent', 'categories')->get();
+        $categories = Category::all();
+        $accountManagers = User::wherePosition('account_manager')->get();
+        return view('admin.publishers.index', [
+            'categories' => $categories,
+            'accountManagers' => $accountManagers,
+            'publishers' => $publishers,
+        ]);
         return view('admin.publishers.index');
     }
 
@@ -86,6 +88,9 @@ class PublisherController extends Controller
         // Check  pased on status
         if($request->status){
             $where[] = ['status', '=', $request->status];
+        }
+        if($request->team){
+            $where[] = ['team', '=', $request->team];
         }
 
         // check based on category
@@ -114,7 +119,7 @@ class PublisherController extends Controller
         $data['accountManagers'] = $accountManagers;
         $data['publishers'] = $publishers;
         // dd($data);
-        return view('admin.publishers.search', $data);
+        return view('admin.publishers.index', $data);
     }
 
     /**
@@ -159,6 +164,7 @@ class PublisherController extends Controller
             'traffic_sources'           => 'required_if:team,affiliate|max:255',
             'affiliate_networks'        => 'required_if:team,affiliate|max:255',
             'owened_digital_assets'     => 'required_if:team,affiliate|max:255',
+            'referral_account_manager'  => 'nullable|max:255',
             'account_title'             => 'required|max:255',
             'bank_name'                 => 'required|max:255',
             'bank_branch_code'          => 'required|max:255',
@@ -272,9 +278,9 @@ class PublisherController extends Controller
             'country_id'                => 'required|exists:countries,id',
             'city_id'                   => 'required|exists:cities,id',
             'gender'                    => 'required|in:male,female',
-            'parent_id'                 => 'required|numeric|exists:users,id',
-            'status'                    => 'required|in:active,pending,closed',
-            'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
+            'parent_id'                 => 'nullable|numeric|exists:users,id',
+            'status'                    => 'nullable|in:active,pending,closed',
+            'team'                      => 'nullable|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
             'skype'                     => 'nullable|max:255',
             'address'                   => 'nullable|max:255',
             'category'                  => 'nullable|max:255',
@@ -282,6 +288,7 @@ class PublisherController extends Controller
             'traffic_sources'           => 'required_if:team,affiliate|max:255',
             'affiliate_networks'        => 'required_if:team,affiliate|max:255',
             'owened_digital_assets'     => 'required_if:team,affiliate|max:255',
+            'referral_account_manager'  => 'nullable|max:255',
             'account_title'             => 'required|max:255',
             'bank_name'                 => 'required|max:255',
             'bank_branch_code'          => 'required|max:255',
@@ -347,6 +354,30 @@ class PublisherController extends Controller
             return redirect()->route('admin.publisher.profile');
         }
         return redirect()->route('admin.publishers.index');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAccountManager(Request $request)
+    {
+        $publisher = User::whereId($request->affiliateId)->first();
+        if($publisher){
+            $publisher->parent_id = auth()->user()->id;
+            $publisher->save();
+            return response()->json([
+                'code' => 200,
+                'message' => 'Updated',
+            ], 200);
+
+        }
+        return response()->json([
+            'code'      =>  401,
+            'message'   =>  __('Affiliate Dose not exists')
+        ], 404);
     }
 
     /**
@@ -472,5 +503,22 @@ class PublisherController extends Controller
         ];
         return redirect()->route('admin.publishers.index');
     }
+    /** 
+     * Show account manager details.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function myAccountManager(){
+        if(auth()->user()->parent){
+            $accountManager = auth()->user()->parent;
+            return view('admin.publishers.myAccountManager', [
+                'accountManager' => $accountManager,
+            ]);
+        }
+        return redirect()->withErrors(['message' => __('You do not have account manager')]);
+    }
+
+    
 
 }
