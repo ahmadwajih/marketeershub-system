@@ -22,7 +22,14 @@ class OfferRequestController extends Controller
     {
         $this->authorize('view_offerRequests');
         if ($request->ajax()){
-            $offerRequests = getModelData('OfferRequest' , $request, ['user', 'offer']);
+        if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+            $offerRequests = getModelData('OfferRequest' , $request, ['user', 'offer'], function ($query) {
+                $query->whereIn('user_id',auth()->user()->childrens()->pluck('id')->toArray());
+            });
+        }else{
+            $offerRequests = getModelData('OfferRequest' , $request, ['user', 'offer'] );
+        }
+
             return response()->json($offerRequests);
         }
         return view('admin.offerRequests.index');
@@ -115,7 +122,7 @@ class OfferRequestController extends Controller
      */
     public function edit(OfferRequest $offerRequest)
     {
-        $this->authorize('show_offerRequests');
+        $this->authorize('update_offerRequests');
         return view('admin.offerRequests.edit', [
             'offerRequest' => $offerRequest,
             'offers' => Offer::whereStatus('active')->get(),

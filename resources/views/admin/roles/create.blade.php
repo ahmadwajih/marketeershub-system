@@ -49,6 +49,31 @@
                                     </div>
                                 </div>
                                     <table class="table bg-light">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th colspan="2"
+                                                    style="text-align: center">{{ __('Main Dashboard') }}</th>
+                                            </tr>
+                                            <tr style="text-align: center">
+                                                <td>{{ __('Role Name') }}</td>
+                                                <td>{{ __('Status') }}</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="text-align: center">
+                                                <td>{{ __('View Dashboard')}}</td>
+                                                <td>
+                                                <span class="switch switch-icon mx-auto text-center"
+                                                        style="width:fit-content">
+                                                    <label>
+                                                        <input type="checkbox" name="view_dashboard"/>
+                                                        <span></span>
+                                                    </label>
+                                                </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
 
                                         @foreach($models as $model)
                                             <thead class="thead-dark">

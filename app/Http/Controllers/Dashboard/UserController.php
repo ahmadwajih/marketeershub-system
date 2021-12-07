@@ -101,10 +101,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show_users');
         $user = User::withTrashed()->findOrFail($id);
         userActivity('User', $user->id, 'show');
-        $this->authorize('show_users');
-        return view('admin.users.show', ['user' => $user]);
+        $activites = getActivity('User',$id );
+        return view('admin.users.show', ['user' => $user, 'activites' => $activites]);
     }
  
     /**

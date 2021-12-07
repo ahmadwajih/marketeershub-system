@@ -108,14 +108,18 @@
                             <div class="card-footer">
                                 <div class="d-flex justify-content-between">
                                     <div class="rounded">{{ __('Online') }}</div>
-
                                     {{-- Check if this offer was requested by current login user --}}
                                     @if(in_array($offer->id, $offerRequestsArray))
                                         {{-- Check if request is exists --}}
                                         @if(getOfferRequest($offer->id))
                                             {{-- Check if status approved --}}
                                             @if(getOfferRequest($offer->id)->status=='approved')
-                                                <button class="rounded view-coupons" data-offer="{{ $offer->id }}">{{ __('View Coupons') }}</button>
+                                                @if($offer->type == 'link_tracking')
+                                                    <button class="rounded view-coupons" data-offer="{{ $offer->id }}">{{ __('View Links') }}</button>
+                                                @else
+                                                    <button class="rounded view-coupons" data-offer="{{ $offer->id }}">{{ __('View Coupons') }}</button>
+                                                @endif
+
                                             @endif
                                             {{-- Check if status pending --}}
                                             @if(getOfferRequest($offer->id)->status=='pending')
@@ -127,7 +131,11 @@
                                             @endif
                                         @endif
                                     @else
-                                        <button class="rounded requestOffer" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Coupons') }}</button>
+                                        @if($offer->type == 'link_tracking')
+                                            <button class="rounded requestOffer" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Link') }}</button>
+                                        @elseif($offer->type == 'coupon_tracking')
+                                            <button class="rounded requestOffer" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Coupons') }}</button>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -170,7 +178,12 @@
                                 </div>
                             </div>
                             <div class="modal-footer text-center">
-                              <button type="button" class="btn btn-primary request-codes" data-offer="{{ $offer->id }}">{{ __('Request Codes') }}</button>
+                                @if($offer->type == 'link_tracking')
+                                <button type="button" class="btn btn-primary request-codes" data-offer="{{ $offer->id }}">{{ __('Request Link') }}</button>
+                                @elseif($offer->type == 'coupon_tracking')
+                                <button type="button" class="btn btn-primary request-codes" data-offer="{{ $offer->id }}">{{ __('Request Codes') }}</button>
+                                @endif
+
                             </div>
                           </div>
                         </div>
@@ -247,12 +260,8 @@
                 })
                 .done(function(response) {
                         $("#coupons").html(response);
-
                 })
                 .fail(function(response){
-        
-
-                    
                 });
             });
 

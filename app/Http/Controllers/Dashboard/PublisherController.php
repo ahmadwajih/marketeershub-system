@@ -30,7 +30,10 @@ class PublisherController extends Controller
     {
         $this->authorize('view_publishers');   
         if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
-            $publishers = User::wherePosition('publisher')->with('parent', 'categories')->where('parent_id', auth()->user()->id)->orWhere('parent_id', null)->get();
+            $publishers = User::wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
+                $query->where('parent_id', '=' ,auth()->user()->id)
+                    ->orWhere('parent_id', '=', null);
+            })->get();
         }else{
             $publishers = User::wherePosition('publisher')->with('parent', 'categories')->get();
         }
@@ -232,9 +235,9 @@ class PublisherController extends Controller
     {
         $this->authorize('show_publishers');
         $publisher = User::findOrFail($id);
-        dd($publisher->socialLinks);
         userActivity('User', $publisher->id, 'show');
-        return view('admin.publishers.show', ['publisher' => $publisher]);
+        $activites = getActivity('User',$id );
+        return view('admin.publishers.show', ['publisher' => $publisher, 'activites' => $activites]);
     }
 
 
@@ -256,6 +259,7 @@ class PublisherController extends Controller
             'cities' => City::whereCountryId($publisher->country_id)->get(),
             'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
             'categories' => Category::all(),
+            'roles' => Role::all(),
         ]);
     }
 
@@ -272,7 +276,7 @@ class PublisherController extends Controller
         if(auth()->user()->id != $id){
             $this->authorize('update_publishers');
         }
-
+        
         $data = $request->validate([
             'name'                      => 'required|max:255',
             'email'                     => 'required|max:255|unique:users,email,'.$id,
@@ -300,10 +304,10 @@ class PublisherController extends Controller
             'categories'                => 'array|required|exists:categories,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
-
         unset($data['password']);
         unset($data['social_media']);
         unset($data['categories']);
+        unset($data['roles']);
 
         if($request->password){
             $data['password'] = Hash::make($request->password);
@@ -323,14 +327,25 @@ class PublisherController extends Controller
         if($publisher->socialMediaLinks){
             $publisher->socialMediaLinks()->delete();
         }
+        userActivity('User', $publisher->id, 'update', $data, $publisher);
         $publisher->update($data);
-        userActivity('User', $publisher->id, 'update');
+
         // Unasign categories 
         $publisher->categories()->detach();
         // Assign Categories
         foreach($request->categories as $categoryId){
             $category = Category::findOrFail($categoryId);
             $publisher->assignCategory($category);
+        }
+
+        // Asign Role
+        if($request['roles']){
+            $publisher->roles()->detach();
+            foreach ($request['roles'] as $role_id)
+            {
+                $role = Role::findOrFail($role_id);
+                $publisher->assignRole($role);
+            }
         }
 
         if($request->team == 'influencer' || $request->team == 'prepaid'){
