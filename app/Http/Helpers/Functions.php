@@ -158,15 +158,28 @@ if(!function_exists('deleteImage')){
  * parameters : object_name, object_id
  */
 if(!function_exists('userActivity')){
-    function userActivity($object, $objectId, $mission, $note = null, $userId=null){
+    function userActivity($object, $objectId, $mission, $data = [], $oldObject = null,  $note = null, $userId=null){
+
         if(!$userId){
             $userId = auth()->user()->id;
         }
+        $fieldsistory = [] ;
+        if($oldObject){
+            $history = array_diff_assoc($data, $oldObject->toArray());
+            $chachedFields  = array_keys($history);
+            foreach($chachedFields as $field){
+                $fieldsistory[$field]['old'] = $oldObject[$field];
+                $fieldsistory[$field]['new'] = $history[$field];
+    
+            }
+        }
+        
         $exists = UserActivity::where([
             ['user_id' , '=', $userId],
             ['mission' , '=', $mission],
             ['object' , '=', $object],
             ['object_id' , '=', $objectId],
+            ['history' , '=', serialize($fieldsistory)],
         ])->first();
         if(!$exists){
             UserActivity::create([
@@ -175,9 +188,36 @@ if(!function_exists('userActivity')){
                 'object' => $object,
                 'object_id' => $objectId,
                 'note' => $note,
+                'history' => serialize($fieldsistory),
             ]);
         }
         
         return true;
+    }
+}
+
+/**
+ * Function Name : userActivity 
+ * Authr: Wageh
+ * create at : 3/11/2021
+ * Usage: create user activity 
+ * parameters : object_name, object_id
+ */
+if(!function_exists('getActivity')){
+    function getActivity($object, $objectId){
+        $activitiees = UserActivity::where([
+            ['object' , '=', $object],
+            ['object_id' , '=', $objectId],
+        ])->orderBy('id', 'desc')->get();
+
+        return $activitiees;
+    }
+}
+
+if(!function_exists('testFunction')){
+    function testFunction($var1, $var2):int
+    {
+        return $var1;
+
     }
 }

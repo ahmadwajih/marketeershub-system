@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserActivitiesTable extends Migration
+class CreateOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateUserActivitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_activities', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_id');
+            $table->string('sales');
+            $table->enum('order_status', ['pending', 'canceled', 'completed'])->default('pending');
+            $table->unsignedBigInteger('offer_id');
+            $table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('mission', ['create', 'update', 'show', 'delete', 'upload'])->default('create');
-            $table->string('object');
-            $table->unsignedBigInteger('object_id')->nullable();
-            $table->text('history')->nullable();
-            $table->string('note')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +34,6 @@ class CreateUserActivitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_activities');
+        Schema::dropIfExists('orders');
     }
 }

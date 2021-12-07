@@ -156,7 +156,19 @@
                                         </div>
 
                                         <div class="form-group row">
-
+                                            <div class="col-lg-6">
+                                                <label>* {{ _('Role') }} :</label>
+                                                <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{$role->id}}" {{old('roles') ? (in_array($role->id, old('roles'))?'selected':''): ($publisher->roles->contains($role)?'selected':'')}} >{{$role->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('roles'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('roles') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" required>
@@ -511,6 +523,9 @@
         });
 
         $('#kt_select_categories').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_role_id').select2({
             placeholder: "Select Option",
         });
     </script>

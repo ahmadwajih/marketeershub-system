@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddReferralAccountManagerColumnToUsersTable extends Migration
+class CreateAdvertiserCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddReferralAccountManagerColumnToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('referral_account_manager')->after('owened_digital_assets')->nullable();
+        Schema::create('advertiser_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +28,6 @@ class AddReferralAccountManagerColumnToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('advertiser_categories');
     }
 }

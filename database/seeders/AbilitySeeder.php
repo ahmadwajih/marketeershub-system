@@ -15,6 +15,8 @@ class AbilitySeeder extends Seeder
      */
     public function run()
     {
+        $superAdmin = Role::get()->first();
+
         $models = [
             'countries',
             'cites',
@@ -27,9 +29,9 @@ class AbilitySeeder extends Seeder
             'publishers',
             'pivot_report',
             'categories',
-            'reports',
             'offerRequests',
             'userActivities',
+            'dashboard',
         ];
 
         $names = 
@@ -41,7 +43,29 @@ class AbilitySeeder extends Seeder
             ['label' => "delete", 'name' => 'delete'],
         ];
 
-        $superAdmin = Role::get()->first();
+        foreach ($models as $model) {
+            foreach ($names as $name) {
+               $ability =  Ability::create([
+                    'name'  => $name['name'] .'_'. $model,
+                    'label' => $name['label'] .' '. strtolower(trim(str_replace('_',' ', trim($model)))),
+                    'action' => $name['name'],
+                    'category' => $model
+                ]);
+                $superAdmin->allowTo($ability);
+            }
+        }
+
+        // Special Apilities
+        $models = [
+            'reports',
+            'dashboard',
+        ];
+
+        $names = 
+        [
+            ['label' => "view", 'name' => 'view'],
+        ];
+
         foreach ($models as $model) {
             foreach ($names as $name) {
                $ability =  Ability::create([

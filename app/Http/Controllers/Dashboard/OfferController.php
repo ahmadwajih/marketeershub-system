@@ -25,7 +25,6 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
-
         $this->authorize('view_offers');
         $update = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offers = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
@@ -41,8 +40,9 @@ class OfferController extends Controller
     {
         $this->authorize('view_offers');
         $offers = auth()->user()->offers;
+        $update = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
-        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
+        return view('admin.offers.index', compact('offers', 'offerRequestsArray', 'update'));
     }
     
     /**
@@ -77,7 +77,7 @@ class OfferController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
-            'type' => 'required|in:coupon_tracking,link_traking',
+            'type' => 'required|in:coupon_tracking,link_tracking',
             'payout_type' => 'required|in:cps_flat,cps_percentage',
             'cps_type' => 'required|in:static,new_old,slaps',
             'payout' => 'required_if:cps_type,static|nullable|numeric',
@@ -219,7 +219,7 @@ class OfferController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
-            'type' => 'required|in:coupon_tracking,link_traking',
+            'type' => 'required|in:coupon_tracking,link_tracking',
             'payout_type' => 'required|in:cps_flat,cps_percentage',
             'cps_type' => 'required|in:static,new_old,slaps',
             'payout' => 'required_if:cps_type,static|nullable|numeric',
@@ -239,16 +239,15 @@ class OfferController extends Controller
             $thumbnail = time().rand(11111,99999).'.'.$request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/',$thumbnail, 'public');
         }
-
         $offer->update([
             'name' => $request->name,
             'description' => $request->description,
             'website' => $request->website,
             'thumbnail' => $thumbnail,
             'offer_url' => $request->offer_url,
-            'type' => $request->type,
             'payout_type' => $request->payout_type,
             'cps_type' => $request->cps_type,
+            'type' => $request->type,
             'payout' => $request->cps_type=='static'?$request->payout:null,
             'revenue' => $request->cps_type=='static'?$request->revenue:null,
             'status' => $request->status,

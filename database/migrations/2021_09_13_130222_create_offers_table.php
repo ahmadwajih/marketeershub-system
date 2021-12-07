@@ -23,7 +23,7 @@ class CreateOffersTable extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('offer_url');
             $table->string('category')->nullable();
-            $table->enum('type', ['coupon_tracking', 'link_traking'])->default('coupon_tracking');
+            $table->enum('type', ['coupon_tracking', 'link_tracking'])->default('coupon_tracking');
             $table->enum('discount_type', ['flat', 'percentage'])->default('percentage');
             $table->float('discount')->default(0);
             $table->enum('payout_type', ['cps_flat', 'cps_percentage', 'cpa', 'cpl', 'cpc'])->default('cps_flat');

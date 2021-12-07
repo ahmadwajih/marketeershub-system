@@ -5,6 +5,7 @@
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
+            <div id="history"></div>
 
             <!--begin::Card-->
             <div class="row">
@@ -163,6 +164,39 @@
                                             </div>
                                         </div>
 
+                                        @can('view_userActivities')
+                                        <div class="card card-custom example example-compact">
+                                            <div class="card-header">
+                                                <h2 class="card-title">{{ __('User Activities') }} </h2>
+                                            </div>
+                                            <div class="card-body">
+                                                <table class="table table-bordered text-center">
+                                                    <thead>
+                                                      <tr>
+                                                        <th scope="col">{{ __('Mission') }}</th>
+                                                        <th scope="col">{{ __('Updated By') }}</th>
+                                                        <th scope="col">{{ __('Created At') }}</th>
+                                                        <th scope="col">{{ __('Show History') }}</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($activites as $activity)
+                                                            <tr>
+                                                                <td>{{ $activity->mission }}</td>
+                                                                <td> <a href="{{ route('admin.users.show',  $activity->user_id) }}" target="_blank" >{{ $activity->user->name }}</a> </td>
+                                                                <td>{{ $activity->created_at }}</td>
+                                                                <td>
+                                                                    @if(unserialize($activity->history))
+                                                                    <button class="btn btn-success show-history" data-id="{{ $activity->id }}">{{ __('Show') }}</button>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                  </table>
+                                            </div>
+                                        </div>
+                                        @endcan
 
                                          <!--begin::Profile 4-->
                                         <div class="d-flex flex-row">
@@ -442,3 +476,30 @@
     </div>
     <!--end::Entry-->
 @endsection
+@push('scripts')
+<script>
+    $(document).ready(function(){
+
+        // Show history 
+        $(".show-history").on("click",function(){
+            var activityId = $(this).data('id');
+            $.ajax({
+                method: "POST",
+                cache: false,
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: "{{route('admin.ajax.view.activity.history')}}",
+                data: { 
+                    activityId: activityId,
+                }, 
+            })
+            .done(function(response) {
+                    $("#history").html(response);
+            })
+            .fail(function(response){
+            });
+        });
+    });
+
+
+</script>
+@endpush

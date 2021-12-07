@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Coupon;
+use App\Models\Offer;
 use App\Models\User;
+use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
 use PhpOffice\PhpSpreadsheet\Calculation\Financial\Coupons;
@@ -28,8 +30,24 @@ class AjaxController extends Controller
     public function viewCoupons(Request $request)
     {
         if ($request->ajax()){
-            $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offerId)->get();
-            return view('admin.modals.coupons', ['coupons' => $coupons]);
+            $coupons = [];
+            $link = '';
+
+            $offer = Offer::findOrFail($request->offerId);
+            if($offer->type == 'coupon_tracking'){
+                $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offerId)->get();
+            }else{
+                $link = $offer->offer_url.'?affiliate_id='.auth()->user()->id.'&offer_id='.$offer->id; 
+            }
+            return view('admin.modals.coupons', ['coupons' => $coupons, 'link' => $link]);
+        }
+    }
+
+    public function viewActivityHistory(Request $request)
+    {
+        if ($request->ajax()){
+            $activity = UserActivity::findOrFail($request->activityId);
+            return view('admin.modals.activityHistory', ['activity' => $activity]);
         }
     }
 

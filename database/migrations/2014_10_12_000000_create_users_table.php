@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
             $table->enum('position', ['super_admin','head','team_leader', 'account_manager', 'publisher', 'employee'])->default('publisher');
             $table->enum('status', ['active','pending', 'closed'])->default('pending');
             $table->string('category')->nullable();
+            $table->string('referral_account_manager')->nullable();
             // Connection Information
             $table->string('email')->unique();
             $table->string('phone')->nullable();

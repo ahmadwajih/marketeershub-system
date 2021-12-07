@@ -75,6 +75,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
+        Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
 
 

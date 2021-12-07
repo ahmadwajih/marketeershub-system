@@ -23,6 +23,7 @@ class RoleController extends Controller
         'users',
         'roles',
         'currencies',
+        'userActivities',
 
     ];
     /**

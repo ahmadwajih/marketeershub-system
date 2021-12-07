@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
-    public function index(){     
+    public function index(){ 
+        
+        $this->authorize('view_dashboard');
         $offers = Offer::all();
         $affiliates = User::whereTeam('affiliate')->get();
         $influencers = User::whereTeam('influencer')->get();
@@ -62,22 +64,10 @@ class DashboardController extends Controller
     }
 
 
-    public function test(){        
+    public function test():array{
+        
 
-        // foreach(auth()->user()->notifications->take(10) as $notification){
-        //     dd($notification);
-        // }
-
-
-
-        // dd(auth()->user()->notifications);
-        // dd(env('DB_DATABASE'));
-        $publishers = User::wherePosition('publisher')->limit(10)->get();
-        $offer = Offer::first();
-        Notification::send($publishers, new NewOffer($offer));
-            dd($publishers);
-        // $publishers = 
-        // dd($publishers);
+        dd(testFunction(var2:10, var1:20));
     }
 
 }

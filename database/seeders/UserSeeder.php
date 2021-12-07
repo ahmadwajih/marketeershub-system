@@ -136,30 +136,6 @@ class UserSeeder extends Seeder
         ]);
 
         // Account manager 
-        //Influencer Account Manager
-        User::create([
-            'name'                  => 'Nora Elsubaie AM',
-            'password'              => Hash::make('920033874'),
-            'years_of_experience'   => '5',
-            'parent_id'             => 2,
-            'country_id'            => 1,
-            'city_id'               => 1,
-            'gender'                => 'female',
-            'team'                  => 'influencer',
-            'position'              => 'account_manager',
-            'email'                 => 'nora@marketeershub.com',
-            'phone'                 => '920033874',
-            'traffic_sources'       => 'traffic sources',
-            'affiliate_networks'    => 'affiliate networks',
-            'owened_digital_assets' => 'owened digital assets',
-            'account_title'         => 'account_title',
-            'bank_name'             => 'bank_name',
-            'bank_branch_code'      => 'bank_branch_code',
-            'swift_code'            => 'swift_code',
-            'iban'                  => 'iban',
-            'currency'              => 'SAR',
-            'status'                => 'active'
-        ]);
 
         //Influencer Account Manager
         User::create([
@@ -241,7 +217,7 @@ class UserSeeder extends Seeder
             'name'                  => 'Prepaid Account Manager',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
-            'parent_id'             => 4,
+            'parent_id'             => 5,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'male',
@@ -261,19 +237,18 @@ class UserSeeder extends Seeder
             'status'                => 'active'
         ]);
 
-        // Publisher 
         User::create([
-            'name'                  => 'Nora Elsubaie Publisher',
+            'name'                  => 'Nora Elsubaie AM',
             'password'              => Hash::make('920033874'),
             'years_of_experience'   => '5',
-            'parent_id'             => 5,
+            'parent_id'             => 2,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'female',
             'team'                  => 'influencer',
-            'position'              => 'publisher',
-            'email'                 => 'nora@athrco.com',
-            'phone'                 => '05920033874',
+            'position'              => 'account_manager',
+            'email'                 => 'nora@marketeershub.com',
+            'phone'                 => '920033874',
             'traffic_sources'       => 'traffic sources',
             'affiliate_networks'    => 'affiliate networks',
             'owened_digital_assets' => 'owened digital assets',
@@ -286,12 +261,13 @@ class UserSeeder extends Seeder
             'status'                => 'active'
         ]);
 
+        // Publisher 
         //Influencer Publisher
         User::create([
             'name'                  => 'Influencer Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
-            'parent_id'             => 5,
+            'parent_id'             => 6,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'male',
@@ -316,7 +292,7 @@ class UserSeeder extends Seeder
             'name'                  => 'Affiliate Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
-            'parent_id'             => 6,
+            'parent_id'             => 7,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'male',
@@ -341,7 +317,7 @@ class UserSeeder extends Seeder
             'name'                  => 'Media Buying Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
-            'parent_id'             => 7,
+            'parent_id'             => 8,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'male',
@@ -366,7 +342,7 @@ class UserSeeder extends Seeder
             'name'                  => 'Prepaid Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
-            'parent_id'             => 8,
+            'parent_id'             => 9,
             'country_id'            => 1,
             'city_id'               => 1,
             'gender'                => 'male',
@@ -385,5 +361,30 @@ class UserSeeder extends Seeder
             'currency'              => 'SAR',
             'status'                => 'active'
         ]);
+
+        User::create([
+            'name'                  => 'Nora Elsubaie Publisher',
+            'password'              => Hash::make('920033874'),
+            'years_of_experience'   => '5',
+            'parent_id'             => 10,
+            'country_id'            => 1,
+            'city_id'               => 1,
+            'gender'                => 'female',
+            'team'                  => 'influencer',
+            'position'              => 'publisher',
+            'email'                 => 'nora@athrco.com',
+            'phone'                 => '05920033874',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'affiliate networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency'              => 'SAR',
+            'status'                => 'active'
+        ]);
     }
+
 }

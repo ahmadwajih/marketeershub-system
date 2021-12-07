@@ -83,6 +83,7 @@
                                             </div>
                                             
                                         </div>
+                                        @if($offerRequest->offer->type == 'coupon_tracking')
                                         <div class="form-group row">
                                             <div class="col-lg-8" style="max-height: 400px !important;overflow: scroll;">
                                                 <table class="table table-bordered">
@@ -98,6 +99,7 @@
                                                   {{-- {!! $coupons->links() !!} --}}
                                             </div>
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

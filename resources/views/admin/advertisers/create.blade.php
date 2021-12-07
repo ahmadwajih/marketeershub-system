@@ -50,7 +50,7 @@
                                             </div>
 
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Name') }} :</label>
+                                                <label>* {{ __('Contact Person') }} :</label>
                                                 <input type="text" name="name" class="form-control"  value="{{old('name')}}" />
                                                 @if ($errors->has('name'))
                                                     <div>
@@ -135,8 +135,8 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <div class="col-lg-12">
-                                                <label>* {{ __('Website') }} :</label>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Link') }} :</label>
                                                 <input type="url" name="website" class="form-control" value="{{old('website')}}" />
                                                 @if ($errors->has('website'))
                                                     <div>
@@ -144,7 +144,93 @@
                                                     </div>
                                                 @endif
                                             </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('source') }} :</label>
+                                                <input type="url" name="source" class="form-control" value="{{old('source')}}" />
+                                                @if ($errors->has('source'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('source') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Access Username Or Email') }} :</label>
+                                                <input type="text" name="access_username" class="form-control" value="{{old('access_username')}}" />
+                                                @if ($errors->has('access_username'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('access_username') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Access Password') }} :</label>
+                                                <input type="password" name="access_password" class="form-control"  value="{{old('access_password')}}" />
+                                                @if ($errors->has('access_password'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('access_password') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Currency') }} :</label>
+                                                <input type="text" name="currency" class="form-control" value="{{old('currency')}}" />
+                                                @if ($errors->has('currency'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('currency') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Language') }} :</label>
+                                                <input type="text" name="language" class="form-control"  value="{{old('language')}}" />
+                                                @if ($errors->has('language'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('language') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Validation Note') }} :</label>
+                                                <input type="text" name="validation_period" class="form-control" value="{{old('validation_period')}}" />
+                                                @if ($errors->has('validation_period'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('validation_period') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Validation Type') }} :</label>
+                                                <input type="text" name="validation_type" class="form-control"  value="{{old('validation_type')}}" />
+                                                @if ($errors->has('validation_type'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('validation_type') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <label>* {{ __('Note') }} :</label>
+                                                <textarea name="note"  class="form-control" id="" cols="30" rows="10">{{old('note')}}</textarea>
+                                                @if ($errors->has('note'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('note') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+
+
                                     </div>
                                 </div>
                             </div>
