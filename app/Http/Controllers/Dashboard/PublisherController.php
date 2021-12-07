@@ -302,6 +302,7 @@ class PublisherController extends Controller
             'iban'                      => 'required|max:255',
             'currency'                  => 'required|max:255',
             'categories'                => 'array|required|exists:categories,id',
+            'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
         unset($data['password']);
