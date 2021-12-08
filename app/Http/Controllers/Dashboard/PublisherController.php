@@ -24,11 +24,25 @@ class PublisherController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
     {
-        $this->authorize('view_publishers');   
+        $this->authorize('view_publishers');
+        $columns = [
+            ['name'=> 'id', 'label' => __('ID')],
+            ['name'=> 'full_name', 'label' => __('Full Name')],
+            ['name'=> 'email', 'label' => __('Email')],
+            ['name'=> 'sm_platform', 'label' => __('SM Platform'), 'checked' => true],
+            ['name'=> 'account_manager', 'label' => __('Account Manager'), 'checked' => true],
+            ['name'=> 'offers', 'label' => __('Offers')],
+            ['name'=> 'categories', 'label' => __('Categories')],
+            ['name'=> 'phone', 'label' => __('Phone')],
+            ['name'=> 'referral_am', 'label' => __('Referral AM'), 'checked' => true],
+            ['name'=> 'join_date', 'label' => __('Join Date'), 'checked' => true],
+            ['name'=> 'status', 'label' => __('Status')],
+            ['name'=> 'action', 'label' => __('Action'), 'disabled'=> true],
+        ];
         if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
             $publishers = User::wherePosition('publisher')->with('parent', 'categories')->where('parent_id', auth()->user()->id)->orWhere('parent_id', null)->get();
         }else{
@@ -36,10 +50,12 @@ class PublisherController extends Controller
         }
         $categories = Category::all();
         $accountManagers = User::wherePosition('account_manager')->get();
+
         return view('admin.publishers.index', [
             'categories' => $categories,
             'accountManagers' => $accountManagers,
             'publishers' => $publishers,
+            'columns' => $columns
         ]);
     }
 
@@ -103,7 +119,7 @@ class PublisherController extends Controller
             });
         }
 
-        // check based on account manager 
+        // check based on account manager
         if($request->account_manager_id){
             if($request->account_manager_id == 'unassigned'){
                 $where[] = ['parent_id', '=', null];
@@ -186,7 +202,7 @@ class PublisherController extends Controller
         }
         // dd($data);
         $publisher = User::create($data);
-        // Store Activity 
+        // Store Activity
         userActivity('User', $publisher->id, 'create');
 
         // Add categories
@@ -201,7 +217,7 @@ class PublisherController extends Controller
             $role = Role::findOrFail(4);
             $publisher->assignRole($role);
 
-        // Store Social Media Accounts 
+        // Store Social Media Accounts
         if($request->team == 'influencer' || $request->team == 'prepaid'){
             if($request->social_media && count($request->social_media) > 0){
                 foreach($request->social_media as $link){
@@ -212,7 +228,7 @@ class PublisherController extends Controller
                         'user_id' => $publisher->id,
                     ]);
                 }
-                
+
             }
         }
         $notification = [
@@ -250,7 +266,7 @@ class PublisherController extends Controller
             $this->authorize('update_publishers');
         }
         $publisher = User::findOrFail($id);
-        return view('admin.publishers.edit', [ 
+        return view('admin.publishers.edit', [
             'publisher' => $publisher,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
@@ -311,7 +327,7 @@ class PublisherController extends Controller
 
         $publisher = User::findOrFail($id);
 
-        // Update Image 
+        // Update Image
         $data['image'] = $publisher->image;
         if($request->has("image")){
             Storage::disk('public')->delete('Images/Users/'.$publisher->image);
@@ -325,7 +341,7 @@ class PublisherController extends Controller
         }
         $publisher->update($data);
         userActivity('User', $publisher->id, 'update');
-        // Unasign categories 
+        // Unasign categories
         $publisher->categories()->detach();
         // Assign Categories
         foreach($request->categories as $categoryId){
@@ -343,10 +359,10 @@ class PublisherController extends Controller
                         'user_id' => $publisher->id,
                     ]);
                 }
-                
+
             }
         }
-        
+
 
         $notification = [
             'message' => 'Updated successfully',
@@ -449,7 +465,7 @@ class PublisherController extends Controller
         ]);
     }
 
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -460,7 +476,7 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         return view('admin.publishers.upload');
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -469,7 +485,7 @@ class PublisherController extends Controller
      */
     public function storeUpload(Request $request)
     {
-        
+
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
@@ -492,7 +508,7 @@ class PublisherController extends Controller
 
     public function storeUploadUpdateHasOfferIdByEmail(Request $request)
     {
-        
+
         $this->authorize('create_publishers');
         $request->validate([
             'publishers' => 'required|mimes:xlsx,csv',
@@ -505,7 +521,7 @@ class PublisherController extends Controller
         ];
         return redirect()->route('admin.publishers.index');
     }
-    /** 
+    /**
      * Show account manager details.
      *
      * @param  int  $id
@@ -521,6 +537,6 @@ class PublisherController extends Controller
         return redirect()->withErrors(['message' => __('You do not have account manager')]);
     }
 
-    
+
 
 }
