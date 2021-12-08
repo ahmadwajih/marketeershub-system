@@ -25,4 +25,3 @@
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
 <!--end::Layout Themes-->
 <link rel="shortcut icon" href="{{asset('dashboard/media/logos/favicon.ico')}}" />
-
