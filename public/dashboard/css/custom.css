@@ -187,10 +187,7 @@ table.dataTable thead tr td:first-child::after {
 .dataTables_wrapper .dataTables_paginate .pagination .page-item {
     margin-left: 0.4rem;
 }
-.dataTables_wrapper .dataTables_paginate > a,
 .dataTables_wrapper .dataTables_paginate > span {
-    outline: none !important;
-    cursor: pointer;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -200,13 +197,18 @@ table.dataTable thead tr td:first-child::after {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+}
+.dataTables_wrapper .dataTables_paginate > a,
+.dataTables_wrapper .dataTables_paginate > span > a {
+    outline: none !important;
+    cursor: pointer;
     height: 2.25rem;
     min-width: 2.25rem;
     padding: 0.5rem;
     text-align: center;
     position: relative;
     font-size: 1rem;
-    line-height: 1rem;
+    line-height: 1.3rem;
     font-weight: 500;
     border-radius: 0.42rem;
     border: 0;
@@ -217,14 +219,19 @@ table.dataTable thead tr td:first-child::after {
     color: #7e8299;
     background-color: transparent;
 }
-.dataTables_wrapper .dataTables_paginate > span {
+.dataTables_wrapper .dataTables_paginate > a {
+    -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
+    background-color: #F3F6F9;
+    color: #7E8299;
+}
+.dataTables_wrapper .dataTables_paginate > span > a.current {
     -webkit-transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, -webkit-box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, -webkit-box-shadow 0.15s ease;
     background-color: #3699ff;
-    color: #ffffff;
-}
-.dataTables_wrapper .dataTables_paginate > span a {
     color: #ffffff;
 }
