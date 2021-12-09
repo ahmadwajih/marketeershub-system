@@ -219,7 +219,7 @@ $thead = '';
                                         <a href="{{ $link->link }}" class="sm-platform" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ __('Followers :num', ['num'=>$link->followers]) }}"><i class="fab fa-{{ $link->platform }}"></i></a>
                                     @endforeach
                                 </td>
-                                <td>{!! $publisher->parent?$publisher->parent->name:" <button class='btn btn-success assignToMe' data-affiliate='".$publisher->id."'>".__('Assign To Me')."</button>" !!}</td>
+                                <td>{!! $publisher->parent?$publisher->parent->name:" <button class='btn badge btn-success assignToMe' data-affiliate='".$publisher->id."'>".__('Assign To Me')."</button>" !!}</td>
                                 <td>{{ $publisher->offersCount }}</td>
                                 <td>
                                     @if($publisher->categories)
