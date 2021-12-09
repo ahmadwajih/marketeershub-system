@@ -134,6 +134,10 @@ table.dataTable thead tr td:first-child::after {
     background-color: #f0f0f0;
     border-color: #e1e1e1;
 }
+table.dataTable td.dataTables_empty {
+    text-align: center;
+    padding: 40px !important;
+}
 /* Datatable filters */
 .dataTables_wrapper {
     position: relative;
