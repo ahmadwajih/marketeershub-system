@@ -29,7 +29,7 @@ table.dataTable {
     width: 100% !important;
     table-layout: fixed;
     position: relative;
-    min-height: 540px;
+    height: 540px;
 }
 table.dataTable::after {
     content: "";
@@ -46,7 +46,7 @@ table.dataTable::after {
     border-radius: calc(0.42rem - 1px);
 }
 .dataTables_wrapper table.dataTable {
-    min-height: 0;
+    height: auto;
 }
 .dataTables_wrapper .dataTable::after {
     animation: fadein 1s linear forwards;
