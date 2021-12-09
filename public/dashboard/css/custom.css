@@ -20,12 +20,16 @@ body {
 .dropdown-menu .form-group label {
     margin-bottom: 0.1rem;
 }
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
 /* Datatable */
 table.dataTable {
     width: 100% !important;
     table-layout: fixed;
     position: relative;
-    min-height: 544px;
+    min-height: 540px;
 }
 table.dataTable::after {
     content: "";
@@ -35,9 +39,11 @@ table.dataTable::after {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #fff;
     z-index: 10;
     opacity: 1;
+    pointer-events: none;
+    background: #fff url("../images/preloader.gif") no-repeat center;
+    border-radius: calc(0.42rem - 1px);
 }
 .dataTables_wrapper table.dataTable {
     min-height: 0;
@@ -86,10 +92,10 @@ table.dataTable thead .sorting:before {
     content: "\f0dc" !important
 }
 table.dataTable thead .sorting_asc:before {
-    content: "\f882" !important
+    content: "\f881" !important
 }
 table.dataTable thead .sorting_desc:before {
-    content: "\f881" !important
+    content: "\f882" !important
 }
 table.dataTable thead tr th:first-child,
 table.dataTable thead tr td:first-child,
@@ -168,10 +174,13 @@ table.dataTable thead tr td:first-child::after {
     margin-right: 10px;
 }
 /* Datatable Pagination */
-.dataTables_wrapper div.dataTables_info {
-    padding-top: 0.85em;
+.dataTables_wrapper .dataTables_info {
+    float: left;
+    padding-top: 22px;
 }
-.dataTables_wrapper div.dataTables_paginate {
+.dataTables_wrapper .dataTables_paginate {
+    padding-top: 15px;
+    float: right;
     margin: 2px 0;
     white-space: nowrap;
     -webkit-box-pack: end;
@@ -183,9 +192,6 @@ table.dataTable thead tr td:first-child::after {
     padding-left: 0;
     list-style: none;
     border-radius: 0.42rem;
-}
-.dataTables_wrapper .dataTables_paginate .pagination .page-item {
-    margin-left: 0.4rem;
 }
 .dataTables_wrapper .dataTables_paginate > span {
     display: -webkit-box;
@@ -200,6 +206,7 @@ table.dataTable thead tr td:first-child::after {
 }
 .dataTables_wrapper .dataTables_paginate > a,
 .dataTables_wrapper .dataTables_paginate > span > a {
+    margin-left: 0.4rem;
     outline: none !important;
     cursor: pointer;
     height: 2.25rem;

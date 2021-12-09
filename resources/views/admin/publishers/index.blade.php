@@ -4,6 +4,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
 
 @endpush
+@php
+$columns = [
+    ['name'=> 'id', 'label' => __('ID')],
+    ['name'=> 'full_name', 'label' => __('Full Name')],
+    ['name'=> 'email', 'label' => __('Email')],
+    ['name'=> 'sm_platform', 'label' => __('SM Platform'), 'checked' => true],
+    ['name'=> 'account_manager', 'label' => __('Account Manager'), 'checked' => true],
+    ['name'=> 'offers', 'label' => __('Offers')],
+    ['name'=> 'categories', 'label' => __('Categories')],
+    ['name'=> 'phone', 'label' => __('Phone')],
+    ['name'=> 'referral_am', 'label' => __('Referral AM'), 'checked' => true],
+    ['name'=> 'join_date', 'label' => __('Join Date'), 'checked' => true],
+    ['name'=> 'status', 'label' => __('Status')],
+    ['name'=> 'action', 'label' => __('Action'), 'disabled'=> true],
+];
+$thead = '';
+@endphp
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -40,14 +57,12 @@
                                 <div class="px-4 py-3">
                                     <div class="checkbox-inline">
                                         <div class="row">
-                                            @php $thead = ''; @endphp
                                             @foreach($columns as $key=>$column)
                                                 @php $thead .= '<th>'.$column['label'].'</th>' @endphp
+                                                @continue(isset($column['disabled']))
                                                 <div class="col-md-6">
                                                     <label class="checkbox checkbox-square" style="font-size: 11px">
-                                                        <input class="toggle-column" type="checkbox"
-                                                               @isset($column['disabled']) disabled="disabled" @endisset
-                                                               @isset($column['checked']) checked="checked" @endisset
+                                                        <input class="toggle-column" type="checkbox" @isset($column['checked']) checked="checked" @endisset
                                                                value="{{$column['name']}}">
                                                         <span></span> {{$column['label']}}
                                                     </label>

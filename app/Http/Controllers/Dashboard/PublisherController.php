@@ -29,20 +29,6 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
-        $columns = [
-            ['name'=> 'id', 'label' => __('ID')],
-            ['name'=> 'full_name', 'label' => __('Full Name')],
-            ['name'=> 'email', 'label' => __('Email')],
-            ['name'=> 'sm_platform', 'label' => __('SM Platform'), 'checked' => true],
-            ['name'=> 'account_manager', 'label' => __('Account Manager'), 'checked' => true],
-            ['name'=> 'offers', 'label' => __('Offers')],
-            ['name'=> 'categories', 'label' => __('Categories')],
-            ['name'=> 'phone', 'label' => __('Phone')],
-            ['name'=> 'referral_am', 'label' => __('Referral AM'), 'checked' => true],
-            ['name'=> 'join_date', 'label' => __('Join Date'), 'checked' => true],
-            ['name'=> 'status', 'label' => __('Status')],
-            ['name'=> 'action', 'label' => __('Action'), 'disabled'=> true],
-        ];
         if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
             $publishers = User::wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
                 $query->where('parent_id', '=' ,auth()->user()->id)
@@ -57,7 +43,6 @@ class PublisherController extends Controller
             'categories' => $categories,
             'accountManagers' => $accountManagers,
             'publishers' => $publishers,
-            'columns' => $columns
         ]);
     }
 
