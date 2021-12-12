@@ -17,7 +17,7 @@ class UserActivityController extends Controller
     {
         // $activities = UserActivity::all();
         // dd($activities[0]->element);
-        $this->authorize('view_userActivities');
+        $this->authorize('view_user_activities');
         if($request->ajax()){
             $activities = getModelData('UserActivity', $request, ['user']);
             return response()->json($activities);

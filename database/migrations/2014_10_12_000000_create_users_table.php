@@ -48,7 +48,8 @@ class CreateUsersTable extends Migration
             $table->string('bank_branch_code')->nullable();
             $table->string('swift_code')->nullable();
             $table->string('iban')->nullable();
-            $table->string('currency')->nullable();
+            $table->unsignedBigInteger('currency_id')->nullable();
+            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade')->onUpdate('cascade');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

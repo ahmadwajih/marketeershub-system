@@ -57,9 +57,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('cities', CityController::class);
         Route::resource('advertisers', AdvertiserController::class);
         Route::resource('categories', CategoryController::class);
+        Route::resource('publisherCategories', PublisherCategoryController::class);
         Route::resource('offers', OfferController::class);
         Route::get('my-offers', 'OfferController@myOffers')->name('my-offers');
         Route::resource('offerRequests', OfferRequestController::class);
+        Route::resource('advertiserCategories', AdvertiserCategoryController::class);
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);

@@ -20,7 +20,7 @@ class OfferRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_offerRequests');
+        $this->authorize('view_offer_requests');
         if ($request->ajax()){
         if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
             $offerRequests = getModelData('OfferRequest' , $request, ['user', 'offer'], function ($query) {
@@ -42,7 +42,7 @@ class OfferRequestController extends Controller
      */
     public function create()
     {
-        $this->authorize('create_offerRequests');
+        $this->authorize('create_offer_requests');
         return view('admin.offerRequests.create', [
             'offers' => Offer::whereStatus('active')->get(),
             'users' => User::wherePosition('publisher')->get()
@@ -57,7 +57,7 @@ class OfferRequestController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create_offerRequests');
+        $this->authorize('create_offer_requests');
         $data = $request->validate([
             'user_id' => 'required|integer|exists:users,id',
             'offer_id' => 'required|integer|exists:offers,id',
@@ -81,7 +81,7 @@ class OfferRequestController extends Controller
      */
     public function offerRequestAjax(Request $request)
     {
-        $this->authorize('create_offerRequests');
+        $this->authorize('create_offer_requests');
         $data = $request->validate([
             'offerId' => 'required|integer|exists:offers,id',
         ]);
@@ -109,7 +109,7 @@ class OfferRequestController extends Controller
      */
     public function show(OfferRequest $offerRequest)
     {
-        $this->authorize('show_offerRequests');
+        $this->authorize('show_offer_requests');
         userActivity('OfferRequest', $offerRequest->id, 'show');
         return view('admin.offerRequests.show', ['offerRequest' => $offerRequest]);
     }
@@ -122,7 +122,7 @@ class OfferRequestController extends Controller
      */
     public function edit(OfferRequest $offerRequest)
     {
-        $this->authorize('update_offerRequests');
+        $this->authorize('update_offer_requests');
         return view('admin.offerRequests.edit', [
             'offerRequest' => $offerRequest,
             'offers' => Offer::whereStatus('active')->get(),
@@ -140,7 +140,7 @@ class OfferRequestController extends Controller
      */
     public function update(Request $request, OfferRequest $offerRequest)
     {
-        $this->authorize('update_offerRequests');
+        $this->authorize('update_offer_requests');
         $data = $request->validate([
             'status' => 'required|in:pending,rejected,approved',
         ]);
@@ -195,7 +195,7 @@ class OfferRequestController extends Controller
      */
     public function destroy(Request $request, OfferRequest $offerRequest)
     {
-        $this->authorize('delete_offerRequests');
+        $this->authorize('delete_offer_requests');
         if($request->ajax()){
             userActivity('OfferRequest', $offerRequest->id, 'delete');
             $offerRequest->delete();

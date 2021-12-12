@@ -92,7 +92,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @can('view_userActivities')
+                            @can('view_user_activities')
                                 <div class="card card-custom example example-compact">
                                     <div class="card-header">
                                         <h2 class="card-title">{{ __('User Activities') }} </h2>

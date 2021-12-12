@@ -16,7 +16,7 @@
                         <h3>{{ __('Categories') }}</h3>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{route('admin.categories.create')}}" class="btn btn-primary font-weight-bolder ">
+                        <a href="{{route('admin.advertiserCategories.create')}}" class="btn btn-primary font-weight-bolder ">
                             <span class="svg-icon svg-icon-md">
                                 <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -95,8 +95,8 @@
 @endsection
 @push('scripts')
 <script>
-    var route = "{{ route('admin.publisherCategories.index') }}";
+    var route = "{{ route('admin.advertiserCategories.index') }}";
 </script>
 
-<script src="{{asset('js/datatables/publisherCategories.js')}}"></script>
+<script src="{{asset('js/datatables/advertiserCategories.js')}}"></script>
 @endpush

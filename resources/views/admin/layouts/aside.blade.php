@@ -169,7 +169,7 @@
          
                 @can('view_advertisers') 
                 {{-- Start Advertisers  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='advertisers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='advertisers'|| Request::segment(2)=='advertiserCategories'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                         <i class="fas fa-building"></i>
@@ -206,6 +206,29 @@
                                 </a>
                             </li>
                             @endcan
+                            {{-- Categories --}}
+                            @can('view_advertisers')
+                            <li class="menu-item {{ Request::segment(2)=='advertiserCategories'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.advertiserCategories.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Advertisers Categories') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_advertisers')
+                            <li class="menu-item {{ Request::segment(2)=='advertiserCategories'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.advertiserCategories.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Advertiser Category') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
                         </ul>
                     </div>
                 </li>
@@ -354,7 +377,7 @@
                 {{--  End Offers --}}
                 @endcan
 
-                @can('view_offerRequests') 
+                @can('view_offer_requests') 
                 {{-- Start Offer Requests  --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='offerRequests'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
@@ -372,7 +395,7 @@
                                     <span class="menu-text">{{ __('Offer Requests') }}</span>
                                 </span>
                             </li>
-                            @can('view_offerRequests')
+                            @can('view_offer_requests')
                             <li class="menu-item {{ Request::segment(2)=='offerRequests'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.offerRequests.index')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
@@ -383,7 +406,7 @@
                             </li>
                             @endcan
 
-                            @can('create_offerRequests')
+                            @can('create_offer_requests')
                             <li class="menu-item {{ Request::segment(2)=='offerRequests'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.offerRequests.create')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
@@ -545,7 +568,7 @@
                 </li>
                 {{-- End Roles --}}
                 @endcan
-                @can('view_userActivities')
+                @can('view_user_activities')
                 <li class="menu-item {{ Request::segment(2)=='user-activities'?'menu-item-active':'' }}" aria-haspopup="true">
                     <a href="{{route('admin.user.activities.index')}}" class="menu-link">
                         <span class="svg-icon menu-icon">
