@@ -98,7 +98,7 @@ class User extends Authenticatable
         return $this->offers()->detach($offerId);
     }
 
-    
+
     public function categories(){
         return $this->belongsToMany(PublisherCategory::class)->withTimestamps();
     }
@@ -111,7 +111,7 @@ class User extends Authenticatable
     {
         return $this->categories()->detach($category);
     }
-    
+
 
     public function getUpdatedTeamAttribute(){
         return Str::plural(ucwords(str_replace('_', ' ', $this->attributes['team'])));
@@ -137,7 +137,7 @@ class User extends Authenticatable
         return $this->offers()->whereStatus('active')->count();
     }
 
-    public function getSumOrdersAttribute() 
+    public function getSumOrdersAttribute()
     {
         $orders = $this->coupons->map(function ($coupon){
             return $coupon->report()->whereMonth(
@@ -151,7 +151,7 @@ class User extends Authenticatable
         return false;
     }
 
-    public function getSumOrdersCountAttribute() 
+    public function getSumOrdersCountAttribute()
     {
         $orders = $this->coupons->map(function ($coupon){
             return $coupon->report()->whereMonth(
@@ -159,12 +159,12 @@ class User extends Authenticatable
             )->get();
         })->flatten();
         return $orders;
-    
+
     }
 
     public function getCreatedAtAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('Y-m-d');   
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('Y-m-d');
     }
 
     public function getSizeAttribute(){
@@ -179,3 +179,4 @@ class User extends Authenticatable
         }
     }
 }
+
