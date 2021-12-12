@@ -15,6 +15,10 @@ class Advertiser extends Model
     public function country(){
         return $this->belongsTo(Country::class);
     }
+
+    public function currency(){
+        return $this->belongsTo(Currency::class);
+    }
     
     public function city(){
         return $this->belongsTo(City::class);
@@ -22,5 +26,13 @@ class Advertiser extends Model
 
     public function offers(){
         return $this->hasMany(Offer::class);
+    }
+    
+    public function getCompanyNameAttribute(){
+        return $this->attributes['company_name_'.app()->getLocale()];
+    }
+
+    public function categories(){
+        return $this->belongsToMany(AdvertiserCategory::class);
     }
 }

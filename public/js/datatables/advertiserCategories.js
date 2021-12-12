@@ -15,7 +15,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                     read: {
                         url:route,
                         method:'GET',
-                        data:{id:1},
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
                         map: function(raw) {
@@ -114,28 +113,8 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
 
             },{
-                field: 'company_name_en',
-                title: "Company Name",
-                selector: false,
-                textAlign: 'center',
-            },{
-                field: 'name',
-                title: "Responsible Person",
-                selector: false,
-                textAlign: 'center',
-            },{
-                field: 'email',
-                title: "Email",
-                selector: false,
-                textAlign: 'center',
-            }, {
-                field: 'phone',
-                title: "Phone",
-                selector: false,
-                textAlign: 'center',
-            },{
-                field: 'status',
-                title: "Status",
+                field: 'title',
+                title: "Category Title",
                 selector: false,
                 textAlign: 'center',
             },{

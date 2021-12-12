@@ -11,4 +11,11 @@ class AdvertiserCategory extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = [];
     
+    public function getTitleAttribute(){
+        return $this->attributes['title_'.app()->getLocale()];
+    }
+
+    public function advertisers(){
+        return $this->belongsToMany(Advertiser::class);
+    }
 }

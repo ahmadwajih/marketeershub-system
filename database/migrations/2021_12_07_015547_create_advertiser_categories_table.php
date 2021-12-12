@@ -15,7 +15,8 @@ class CreateAdvertiserCategoriesTable extends Migration
     {
         Schema::create('advertiser_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title_ar');
+            $table->string('title_en');
             $table->timestamps();
             $table->softDeletes();
         });

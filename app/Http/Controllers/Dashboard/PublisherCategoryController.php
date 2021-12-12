@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdvertiserCategory;
+use App\Models\PublisherCategory;
 use Illuminate\Http\Request;
 
-class AdvertiserCategoryController extends Controller
+class PublisherCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,9 @@ class AdvertiserCategoryController extends Controller
     public function index(Request $request)
     {
 
-        $this->authorize('view_categories');
+        $this->authorize('view_publisher_ategories');
         if ($request->ajax()){
-            $categories = getModelData('AdvertiserCategory' , $request);
+            $categories = getModelData('PublisherCategory' , $request);
             return response()->json($categories);
         }
         return view('admin.advertiserCategories.index');
@@ -31,7 +31,7 @@ class AdvertiserCategoryController extends Controller
      */
     public function create()
     {
-        $this->authorize('create_categories');
+        $this->authorize('create_publisher_categories');
         return view('admin.advertiserCategories.create');
     }
 
@@ -43,13 +43,13 @@ class AdvertiserCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create_categories');
+        $this->authorize('create_publisher_categories');
         $data = $request->validate([
-            'title' => 'required|unique:advertiser_categories|max:255',
+            'title' => 'required|unique:publisher_categories|max:255',
         ]);
 
-        $category = AdvertiserCategory::create($data);
-        userActivity('AdvertiserCategory', $category->id, 'create');
+        $category = PublisherCategory::create($data);
+        userActivity('PublisherCategory', $category->id, 'create');
 
         $notification = [
             'message' => 'Created successfully',
@@ -66,9 +66,9 @@ class AdvertiserCategoryController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_categories');
-        $category = AdvertiserCategory::withTrashed()->findOrFail($id);
-        userActivity('AdvertiserCategory', $category->id, 'show');
+        $this->authorize('show_publisher_categories');
+        $category = PublisherCategory::withTrashed()->findOrFail($id);
+        userActivity('PublisherCategory', $category->id, 'show');
         return view('admin.advertiserCategories.show', ['category' => $category]);
     }
  
@@ -78,11 +78,11 @@ class AdvertiserCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(AdvertiserCategory $advertiserCategory)
+    public function edit(PublisherCategory $publisherCategory)
     {
-        $this->authorize('show_categories');
+        $this->authorize('show_publisher_categories');
         return view('admin.advertiserCategories.edit', [
-            'category' => $advertiserCategory
+            'category' => $publisherCategory
         ]);
     }
 
@@ -93,15 +93,15 @@ class AdvertiserCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AdvertiserCategory $advertiserCategory)
+    public function update(Request $request, PublisherCategory $publisherCategory)
     {
-        $this->authorize('update_categories');
+        $this->authorize('update_publisher_categories');
         $data = $request->validate([
-            'title' => 'required|max:255|unique:advertiser_categories,title,'.$advertiserCategory->id,
+            'title' => 'required|max:255|unique:advertiser_categories,title,'.$publisherCategory->id,
         ]);
        
-        $advertiserCategory->update($data);
-        userActivity('AdvertiserCategory', $advertiserCategory->id, 'update');
+        $publisherCategory->update($data);
+        userActivity('PublisherCategory', $publisherCategory->id, 'update');
 
         $notification = [
             'message' => 'Updated successfully',
@@ -116,11 +116,11 @@ class AdvertiserCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, AdvertiserCategory $category)
+    public function destroy(Request $request, PublisherCategory $category)
     {
-        $this->authorize('delete_categories');
+        $this->authorize('delete_publisher_categories');
         if($request->ajax()){
-            userActivity('AdvertiserCategory', $category->id, 'delete');
+            userActivity('PublisherCategory', $category->id, 'delete');
             $category->delete();
         }
     }

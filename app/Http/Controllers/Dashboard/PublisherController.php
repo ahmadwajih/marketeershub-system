@@ -70,7 +70,7 @@ class PublisherController extends Controller
         $publishers = User::wherePosition('publisher')->where([
             ['position', '=', 'publisher'],
             ['team', '=', $type],
-        ])->with('parent', 'categories')->get();
+        ])->with('parent', 'categories')->paginate(10);
         $categories = Category::all();
         $accountManagers = User::wherePosition('account_manager')->get();
         return view('admin.publishers.index', [
@@ -116,7 +116,7 @@ class PublisherController extends Controller
 
             }
         }
-        $publishers = $publishers->with('parent')->where($where)->get();
+        $publishers = $publishers->with('parent')->where($where)->paginate(10);
 
         $categories = Category::all();
         $accountManagers = User::wherePosition('account_manager')->get();

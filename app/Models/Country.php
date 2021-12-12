@@ -10,6 +10,10 @@ class Country extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function getnameAttribute(){
+        return $this->attributes['name_'. app()->getLocale()];
+    }
+    
     public function cities(){
         return $this->hasMany(City::class);
     }

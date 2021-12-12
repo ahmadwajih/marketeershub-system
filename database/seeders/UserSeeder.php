@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         
         // Head 
         //Influencer Head
-        User::create([
+        $user = User::create([
             'name'                  => 'Influencer Head',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -56,12 +56,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
         //Affiliate head
-        User::create([
+        $user = User::create([
             'name'                  => 'Affiliate Head',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -81,12 +82,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
          //Medi Buying head
-         User::create([
+         $user = User::create([
             'name'                  => 'Media Buying Head',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -106,12 +108,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
          //Prepaid head
-         User::create([
+         $user = User::create([
             'name'                  => 'Prepaid Head',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -131,14 +134,15 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
         // Account manager 
 
         //Influencer Account Manager
-        User::create([
+        $user = User::create([
             'name'                  => 'Influencer Account Manager',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -158,12 +162,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
         //Affiliate Account Manager
-        User::create([
+        $user = User::create([
             'name'                  => 'Affiliate Account Manager',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -183,12 +188,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
          //Medi Buying Account Manager
-         User::create([
+         $user = User::create([
             'name'                  => 'Media Buying Account Manager',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -208,12 +214,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
          //Prepaid Account Manager
-         User::create([
+         $user = User::create([
             'name'                  => 'Prepaid Account Manager',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -233,11 +240,12 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
-        User::create([
+        $user = User::create([
             'name'                  => 'Nora Elsubaie AM',
             'password'              => Hash::make('920033874'),
             'years_of_experience'   => '5',
@@ -257,13 +265,14 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(3));
 
         // Publisher 
         //Influencer Publisher
-        User::create([
+        $user = User::create([
             'name'                  => 'Influencer Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -283,12 +292,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(4));
 
         //Affiliate Publisher
-        User::create([
+        $user = User::create([
             'name'                  => 'Affiliate Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -308,12 +318,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(4));
 
          //Medi Buying Publisher
-         User::create([
+         $user = User::create([
             'name'                  => 'Media Buying Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -333,12 +344,13 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(4));
 
          //Prepaid Publisher
-         User::create([
+         $user = User::create([
             'name'                  => 'Prepaid Publisher',
             'password'              => Hash::make('12345678'),
             'years_of_experience'   => '5',
@@ -358,11 +370,12 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(4));
 
-        User::create([
+        $user = User::create([
             'name'                  => 'Nora Elsubaie Publisher',
             'password'              => Hash::make('920033874'),
             'years_of_experience'   => '5',
@@ -382,9 +395,11 @@ class UserSeeder extends Seeder
             'bank_branch_code'      => 'bank_branch_code',
             'swift_code'            => 'swift_code',
             'iban'                  => 'iban',
-            'currency'              => 'SAR',
+            'currency_id'           => 1,
             'status'                => 'active'
         ]);
+        $user->assignRole(Role::findOrFail(4));
+
     }
 
 }

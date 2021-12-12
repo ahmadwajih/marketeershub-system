@@ -18,13 +18,15 @@ class DatabaseSeeder extends Seeder
             AbilitySeeder::class,
             CountrySeeder::class,
             CitySeeder::class,
-            UserSeeder::class,
             CurrencySeeder::class,
+            UserSeeder::class,
             AdvertiserSeeder::class,
             OfferSeeder::class,
             CouponSeeder::class,
             PivotReportSeeder::class,
             CategorySeeder::class,
+            AdvertiserCategorySeeder::class,
+            PublisherCategorySeeder::class,
         ]);
     }
 }

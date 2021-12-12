@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
+use App\Models\AdvertiserCategory;
 use Illuminate\Database\Seeder;
 
-class CategorySeeder extends Seeder
+class AdvertiserCategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -73,13 +73,12 @@ class CategorySeeder extends Seeder
         ];
 
         foreach($enCategories as $index => $category){
-            Category::create([
+            AdvertiserCategory::create([
                 'title_ar' => $arCategories[$index],
                 'title_en' => $enCategories[$index]
             ]);
         }
         
 
-       
     }
 }

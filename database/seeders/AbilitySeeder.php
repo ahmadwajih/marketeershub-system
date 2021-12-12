@@ -29,9 +29,9 @@ class AbilitySeeder extends Seeder
             'publishers',
             'pivot_report',
             'categories',
-            'offerRequests',
-            'userActivities',
-            'dashboard',
+            'offer_requests',
+            'user_activities',
+            'publisher_categories',
         ];
 
         $names = 
