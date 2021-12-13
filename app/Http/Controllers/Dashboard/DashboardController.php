@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
+use App\Models\Currency;
 use App\Models\Offer;
 use App\Models\PublisherCategory;
 use App\Models\User;
@@ -65,10 +66,14 @@ class DashboardController extends Controller
     }
 
 
-    public function test():array{
-        $country = PublisherCategory::where('title_en', 'like', '%Life style%')->orWhere('title_ar', 'like', '% Life style%')->first();
-        dd($country);
-        dd(testFunction(var2:10, var1:20));
+    public function test(){
+        Currency::firstOrCreate([
+            'name_ar' => 'درهم اماراتي ',
+            'name_en' => 'United Arab Emirates dirham',
+            'code' => 'AED',
+            'sign' => 'AED',
+        ]);
+
     }
 
 }
