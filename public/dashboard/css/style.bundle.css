@@ -70169,6 +70169,7 @@ code {
 .ck-body .ck-balloon-panel .ck-toolbar {
     border-radius: 0.42rem !important;
 }
+/*
 .dataTables_wrapper {
     padding: 0 !important;
 }
@@ -70519,9 +70520,9 @@ code {
     border-bottom: 0;
 }
 .dataTables_wrapper .dt-bootstrap4 .dropdown .dropdown-menu.dropdown-menu-right {
-    /*rtl:ignore*/
     margin-left: 65px;
 }
+*/
 .dropzone {
     min-height: auto;
 }

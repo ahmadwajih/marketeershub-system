@@ -6268,16 +6268,16 @@ Build date: 2019-12-19 16:51:02
   filter: brightness(105%); }
 
 /*!
- * 
+ *
  * Super simple wysiwyg editor v0.8.18
  * https://summernote.org
- * 
- * 
+ *
+ *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
- * 
+ *
  * Date: 2020-05-20T16:47Z
- * 
+ *
  */
 @font-face {
   font-family: "summernote";
@@ -12742,7 +12742,9 @@ body.swal2-toast-column .swal2-toast .swal2-validation-message {
     transform: rotate(0deg); }
   100% {
     -webkit-transform: rotate(360deg);
-    transform: rotate(360deg); } }
+    transform: rotate(360deg);
+  }
+}
 
 @keyframes la-spin {
   0% {
@@ -12750,12 +12752,14 @@ body.swal2-toast-column .swal2-toast .swal2-validation-message {
     transform: rotate(0deg); }
   100% {
     -webkit-transform: rotate(360deg);
-    transform: rotate(360deg); } }
+    transform: rotate(360deg); }
+}
 
 .la-rotate-90 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg); }
+  transform: rotate(90deg);
+}
 
 .la-rotate-180 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
@@ -12789,7 +12793,8 @@ body.swal2-toast-column .swal2-toast .swal2-validation-message {
 :root .la-flip-vertical,
 :root .la-flip-both {
   -webkit-filter: none;
-  filter: none; }
+  filter: none;
+}
 
 .la-stack {
   display: inline-block;
@@ -17023,10 +17028,12 @@ readers do not read off random characters that represent icons */
   font-weight: normal;
   font-display: auto;
   src: url("fonts/line-awesome/la-brands-400.eot");
-  src: url("fonts/line-awesome/la-brands-400.eot?#iefix") format("embedded-opentype"), url("fonts/line-awesome/la-brands-400.woff2") format("woff2"), url("fonts/line-awesome/la-brands-400.woff") format("woff"), url("fonts/line-awesome/la-brands-400.ttf") format("truetype"), url("fonts/line-awesome/la-brands-400.svg#lineawesome") format("svg"); }
+  src: url("fonts/line-awesome/la-brands-400.eot?#iefix") format("embedded-opentype"), url("fonts/line-awesome/la-brands-400.woff2") format("woff2"), url("fonts/line-awesome/la-brands-400.woff") format("woff"), url("fonts/line-awesome/la-brands-400.ttf") format("truetype"), url("fonts/line-awesome/la-brands-400.svg#lineawesome") format("svg");
+}
 
 .lab {
-  font-family: 'Line Awesome Brands'; }
+  font-family: 'Line Awesome Brands';
+}
 
 @font-face {
   font-family: 'Line Awesome Free';
@@ -17272,7 +17279,8 @@ readers do not read off random characters that represent icons */
   content: "\f004"; }
 
 .la.la-sign-out:before {
-  content: "\f2f5"; }
+  content: "\f2f5";
+}
 
 .la.la-linkedin-square {
   font-family: 'Line Awesome Brands';

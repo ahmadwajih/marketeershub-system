@@ -29,7 +29,7 @@ class OrderController extends Controller
             'order_status'  => $request->order_status ?? 'pending',
             'offer_id'      => $request->offer_id,
             'user_id'       => $request->affiliate_id,
-        ]); 
+        ]);
         return response(true, 200)->header('Content-Type', 'application/json');
     }
 }
