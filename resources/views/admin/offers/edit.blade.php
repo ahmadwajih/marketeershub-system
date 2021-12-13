@@ -72,11 +72,20 @@
                                     <div class="mb-2">
                                         <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Offer Name') }} :</label>
-                                                <input type="text" name="name" class="form-control"  value="{{old('name') ?? $offer->name}}" />
-                                                @if ($errors->has('name'))
+                                                <label>* {{ __('Offer Name AR') }} :</label>
+                                                <input type="text" name="name_ar" class="form-control"  value="{{old('name_ar') ?? $offer->name_ar}}" />
+                                                @if ($errors->has('name_ar'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('name') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('name_ar') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Offer Name EN') }} :</label>
+                                                <input type="text" name="name_en" class="form-control"  value="{{old('name_en') ?? $offer->name_en}}" />
+                                                @if ($errors->has('name_en'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('name_en') }}</p>
                                                     </div>
                                                 @endif
                                             </div>

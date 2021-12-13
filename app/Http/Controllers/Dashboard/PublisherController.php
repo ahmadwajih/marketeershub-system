@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Imports\PublishersImport;
+use App\Imports\PublisherV2Import;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\City;
 use App\Models\Country;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
+use App\Models\Currency;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
@@ -37,10 +39,10 @@ class PublisherController extends Controller
         }else{
             $publishers = User::wherePosition('publisher')->with('parent', 'categories')->get();
         }
-        $categories = Category::all();
+
         $accountManagers = User::wherePosition('account_manager')->get();
         return view('admin.publishers.index', [
-            'categories' => $categories,
+            'categories' => Category::whereType('publishers')->get(),
             'accountManagers' => $accountManagers,
             'publishers' => $publishers,
         ]);
@@ -71,10 +73,10 @@ class PublisherController extends Controller
             ['position', '=', 'publisher'],
             ['team', '=', $type],
         ])->with('parent', 'categories')->paginate(10);
-        $categories = Category::all();
+
         $accountManagers = User::wherePosition('account_manager')->get();
         return view('admin.publishers.index', [
-            'categories' => $categories,
+            'categories' => Category::whereType('publishers')->get(),
             'accountManagers' => $accountManagers,
             'publishers' => $publishers,
         ]);
@@ -118,7 +120,7 @@ class PublisherController extends Controller
         }
         $publishers = $publishers->with('parent')->where($where)->paginate(10);
 
-        $categories = Category::all();
+        $categories = Category::whereType('publishers')->get();
         $accountManagers = User::wherePosition('account_manager')->get();
         $data = $request->all();
         $data['categories'] = $categories;
@@ -138,8 +140,9 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         return view('admin.publishers.create',[
             'countries' => Country::all(),
-            'categories' => Category::all(),
+            'categories' => Category::whereType('publishers')->get(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'currencies' => Currency::all(),
         ]);
     }
 
@@ -176,7 +179,7 @@ class PublisherController extends Controller
             'bank_branch_code'          => 'required|max:255',
             'swift_code'                => 'required|max:255',
             'iban'                      => 'required|max:255',
-            'currency'                  => 'required|max:255',
+            'currency_id'               => 'required|exists:currencies,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
 
@@ -258,8 +261,9 @@ class PublisherController extends Controller
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
             'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
-            'categories' => Category::all(),
+            'categories' => Category::whereType('publishers')->get(),
             'roles' => Role::all(),
+            'currencies' => Currency::all(),
         ]);
     }
 
@@ -300,7 +304,7 @@ class PublisherController extends Controller
             'bank_branch_code'          => 'required|max:255',
             'swift_code'                => 'required|max:255',
             'iban'                      => 'required|max:255',
-            'currency'                  => 'required|max:255',
+            'currency_id'               => 'required|exists:currencies,id',
             'categories'                => 'array|required|exists:categories,id',
             'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',

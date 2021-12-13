@@ -10,7 +10,7 @@ class Currency extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function getnameAttribute(){
+    public function getNameAttribute(){
         return $this->attributes['name_'. app()->getLocale()];
     }
 }

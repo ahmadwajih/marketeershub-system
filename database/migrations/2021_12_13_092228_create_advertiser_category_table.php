@@ -13,10 +13,10 @@ class CreateAdvertiserCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('advertiser_advertiser_category', function (Blueprint $table) {
+        Schema::create('advertiser_category', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('advertiser_category_id');
-            $table->foreign('advertiser_category_id')->references('id')->on('advertiser_categories')->onDelete('cascade');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->unsignedBigInteger('advertiser_id');
             $table->foreign('advertiser_id')->references('id')->on('advertisers')->onDelete('cascade');
             $table->timestamps();
@@ -30,6 +30,6 @@ class CreateAdvertiserCategoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('advertiser_advertiser_category');
+        Schema::dropIfExists('advertiser_category');
     }
 }

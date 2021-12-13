@@ -11,6 +11,7 @@ class Advertiser extends Model
     use HasFactory;
     use SoftDeletes;
     protected $guarded = [];
+    protected $appends = ['company_name'];
 
     public function country(){
         return $this->belongsTo(Country::class);
@@ -33,6 +34,6 @@ class Advertiser extends Model
     }
 
     public function categories(){
-        return $this->belongsToMany(AdvertiserCategory::class);
+        return $this->belongsToMany(Category::class);
     }
 }

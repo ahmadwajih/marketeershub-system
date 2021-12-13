@@ -100,7 +100,7 @@ class User extends Authenticatable
 
     
     public function categories(){
-        return $this->belongsToMany(PublisherCategory::class)->withTimestamps();
+        return $this->belongsToMany(Category::class)->withTimestamps();
     }
 
     public function assignCategory($category){

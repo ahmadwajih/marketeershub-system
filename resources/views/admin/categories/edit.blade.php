@@ -42,16 +42,38 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Category') }} :</label>
-                                                <input type="text" name="title" class="form-control"  value="{{old('title') ?? $category->title}}" />
-                                                @if ($errors->has('title'))
+                                            <div class="col-lg-4">
+                                                <label>* اسم القسم باللغة العربية :</label>
+                                                <input type="text" name="title_ar" class="form-control"  value="{{old('title_ar') ?? $category->title_ar}}" />
+                                                @if ($errors->has('title_ar'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('title') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('title_ar') }}</p>
                                                     </div>
                                                 @endif
                                             </div>    
-
+                                            <div class="col-lg-4">
+                                                <label>* Category Name In English :</label>
+                                                <input type="text" name="title_en" class="form-control"  value="{{old('title_en') ?? $category->title_en}}" />
+                                                @if ($errors->has('title_en'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('title_en') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>  
+                                            <div class="col-lg-4">
+                                                <label>* {{ __('Category Type') }} :</label>
+                                                <select class="form-control select2" id="kt_select_type" name="type" >
+                                                    <option {{ old('type')=="advertisers"?"selected":($category->type=='advertisers'?"selected":'') }} value="advertisers">{{ __('Advertisers') }}</option>
+                                                    <option {{ old('type')=="publishers"?"selected":($category->type=='publishers'?"selected":'') }} value="publishers">{{ __('Publishers') }}</option>
+                                                    <option {{ old('type')=="offers"?"selected":($category->type=='offers'?"selected":'') }} value="offers">{{ __('Offers') }}</option>
+                                                    <option {{ old('type')=="other"?"selected":($category->type=='other'?"selected":'') }} value="other">{{ __('Other') }}</option>
+                                                </select>
+                                                @if ($errors->has('type'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('type') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div> 
                                         </div>
                                     </div>
                                 </div>
@@ -75,3 +97,10 @@
     </div>
     <!--end::Entry-->
 @endsection
+@push('scripts')
+   <script>
+       $('#kt_select_type').select2({
+            placeholder: "Select Option",
+        });
+    </script> 
+@endpush

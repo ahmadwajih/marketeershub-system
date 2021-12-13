@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Advertiser;
-use App\Models\AdvertiserCategory;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
@@ -40,7 +40,7 @@ class AdvertiserController extends Controller
         $this->authorize('create_advertisers');
         return view('admin.advertisers.create',[
             'countries' => Country::all(),
-            'categories' => AdvertiserCategory::all(),
+            'categories' => Category::whereType('advertisers')->get(),
             'currencies' => Currency::all(),
         ]);
     }
@@ -62,7 +62,7 @@ class AdvertiserController extends Controller
             'company_name_ar'       => 'required|max:255',
             'company_name_en'       => 'required|max:255',
             'website'               => 'nullable|max:255',
-            'categories'            => 'array|required|exists:advertiser_categories,id',
+            'categories'            => 'array|required|exists:categories,id',
             'country_id'            => 'required|max:255|exists:countries,id',
             'city_id'               => 'required|max:255|exists:cities,id',
             'currency_id'           => 'required|max:255|exists:currencies,id',
@@ -118,7 +118,7 @@ class AdvertiserController extends Controller
             'advertiser' => $advertiser,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($advertiser->country_id)->get(),
-            'categories' => AdvertiserCategory::all(),
+            'categories' => Category::whereType('advertisers')->get(),
             'currencies' => Currency::all(),
         ]);
     }
@@ -141,7 +141,7 @@ class AdvertiserController extends Controller
             'company_name_ar'       => 'required|max:255',
             'company_name_en'       => 'nullable|max:255',
             'website'               => 'nullable|max:255',
-            'categories'            => 'array|required|exists:advertiser_categories,id',
+            'categories'            => 'array|required|exists:categories,id',
             'country_id'            => 'required|max:255|exists:countries,id',
             'city_id'               => 'required|max:255|exists:cities,id',
             'currency_id'           => 'required|max:255|exists:currencies,id',
