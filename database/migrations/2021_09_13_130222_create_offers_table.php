@@ -35,8 +35,7 @@ class CreateOffersTable extends Migration
             $table->float('percent_payout')->nullable();
             $table->enum('status', ['active', 'pused', 'pending', 'expire'])->default('pending');
             $table->date('expire_date');
-            $table->text('note_ar')->nullable();
-            $table->text('note_en')->nullable();
+            $table->text('note')->nullable();
             $table->text('terms_and_conditions_ar')->nullable();
             $table->text('terms_and_conditions_en')->nullable();
             $table->unsignedBigInteger('advertiser_id')->nullable();

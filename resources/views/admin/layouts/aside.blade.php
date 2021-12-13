@@ -161,6 +161,7 @@
                                 </a>
                             </li>
                             @endcan
+
                         </ul>
                     </div>
                 </li>
@@ -169,7 +170,7 @@
          
                 @can('view_advertisers') 
                 {{-- Start Advertisers  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='advertisers'|| Request::segment(2)=='advertiserCategories'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='advertisers'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                         <i class="fas fa-building"></i>
@@ -206,29 +207,7 @@
                                 </a>
                             </li>
                             @endcan
-                            {{-- Categories --}}
-                            @can('view_advertisers')
-                            <li class="menu-item {{ Request::segment(2)=='advertiserCategories'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.advertiserCategories.index')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('All Advertisers Categories') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-
-                            @can('create_advertisers')
-                            <li class="menu-item {{ Request::segment(2)=='advertiserCategories'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.advertiserCategories.create')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('Add New Advertiser Category') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-
+                       
                         </ul>
                     </div>
                 </li>
@@ -275,7 +254,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('Add New Offer') }}</span>
+                                    <span class="menu-text">{{ __('Add New Category') }}</span>
                                 </a>
                             </li>
                             @endcan

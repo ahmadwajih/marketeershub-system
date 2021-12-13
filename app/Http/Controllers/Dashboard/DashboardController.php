@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
 use App\Models\Offer;
+use App\Models\PublisherCategory;
 use App\Models\User;
 use App\Notifications\NewOffer;
 use Illuminate\Support\Facades\Notification;
@@ -65,8 +66,8 @@ class DashboardController extends Controller
 
 
     public function test():array{
-        
-
+        $country = PublisherCategory::where('title_en', 'like', '%Life style%')->orWhere('title_ar', 'like', '% Life style%')->first();
+        dd($country);
         dd(testFunction(var2:10, var1:20));
     }
 

@@ -56,7 +56,7 @@ class OfferController extends Controller
         return view('admin.offers.create',[
             'countries' => Country::all(),
             'categories' => Category::all(),
-            'advertisers' => Advertiser::whereStatus('approved')->get()
+            'advertisers' => Advertiser::whereStatus('active')->get()
         ]);
     }
 
@@ -70,9 +70,11 @@ class OfferController extends Controller
     {
         $this->authorize('create_offers');
         $data = $request->validate([
-            'name' => 'required|max:255',
+            'name_ar' => 'required|max:255',
+            'name_en' => 'required|max:255',
             'advertiser_id' => 'nullable|exists:advertisers,id',
-            'description' => 'nullable',
+            'description_ar' => 'nullable',
+            'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
@@ -85,7 +87,8 @@ class OfferController extends Controller
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'required|date|after:yesterday',
             'note' => 'nullable',
-            'terms_and_conditions' => 'nullable',
+            'terms_and_conditions_ar' => 'nullable',
+            'terms_and_conditions_en' => 'nullable',
             'countries' => 'array|required|exists:countries,id',
             'currency_id' => 'nullable',
             'discount' => 'required|numeric',
@@ -97,43 +100,23 @@ class OfferController extends Controller
             $thumbnail = time().rand(11111,99999).'.'.$request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/',$thumbnail, 'public');
         }
-        
-        $offer = Offer::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'website' => $request->website,
-            'thumbnail' => $thumbnail,
-            'offer_url' => $request->offer_url,
-            'type' => $request->type,
-            'payout_type' => $request->payout_type,
-            'cps_type' => $request->cps_type,
-            'payout' => $request->cps_type=='static'?$request->payout:null,
-            'revenue' => $request->cps_type=='static'?$request->revenue:null,
-            'status' => $request->status,
-            'expire_date' => $request->expire_date,
-            'note' => $request->note, 
-            'terms_and_conditions' => $request->terms_and_conditions,
-            'advertiser_id' => $request->advertiser_id,
-            'currency_id' => $request->currency_id,
-            'discount_type' => $request->discount_type,
-            'discount' => $request->discount,
-        ]);
+        unset($data['categories']);
+        unset($data['countries']);
+        $data['thumbnail'] = $thumbnail;
+        $data['payout'] = $request->cps_type=='static'?$request->payout:null;
+        $data['revenue'] = $request->cps_type=='static'?$request->revenue:null;
+
+        $offer = Offer::create($data);
         userActivity('Offer', $offer->id, 'create');
         $publishers = User::wherePosition('publisher')->get();
         Notification::send($publishers, new NewOffer($offer));
 
         if($request->categories){
-            foreach($request->categories as $categoryId){
-                $category = Category::findOrFail($categoryId);
-                $offer->assignCategory($category);
-            }
+            $offer->categories()->attach($request->categories);
         }
         
         if($request->countries){
-            foreach($request->countries as $countryId){
-                $country = Country::findOrFail($countryId);
-                $offer->assignCountry($country);
-            }
+            $offer->countries()->attach($request->countries);
         }
         
         // If cps is new old
@@ -197,7 +180,7 @@ class OfferController extends Controller
             'offer' => $offer,
             'countries' => Country::all(),
             'categories' => Category::all(),
-            'advertisers' => Advertiser::whereStatus('approved')->get()
+            'advertisers' => Advertiser::whereStatus('active')->get()
         ]);
     }
 
@@ -212,9 +195,11 @@ class OfferController extends Controller
     {
         $this->authorize('update_offers');
         $data = $request->validate([
-            'name' => 'required|max:255',
+            'name_ar' => 'required|max:255',
+            'name_en' => 'required|max:255',
             'advertiser_id' => 'nullable|exists:advertisers,id',
-            'description' => 'nullable',
+            'description_ar' => 'nullable',
+            'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
@@ -227,7 +212,8 @@ class OfferController extends Controller
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'required|date|after:yesterday',
             'note' => 'nullable',
-            'terms_and_conditions' => 'nullable',
+            'terms_and_conditions_ar' => 'nullable',
+            'terms_and_conditions_en' => 'nullable',
             'countries' => 'array|required|exists:countries,id',
             'currency_id' => 'nullable',
             'discount' => 'required|numeric',
@@ -239,36 +225,22 @@ class OfferController extends Controller
             $thumbnail = time().rand(11111,99999).'.'.$request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/',$thumbnail, 'public');
         }
-        $offer->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'website' => $request->website,
-            'thumbnail' => $thumbnail,
-            'offer_url' => $request->offer_url,
-            'payout_type' => $request->payout_type,
-            'cps_type' => $request->cps_type,
-            'type' => $request->type,
-            'payout' => $request->cps_type=='static'?$request->payout:null,
-            'revenue' => $request->cps_type=='static'?$request->revenue:null,
-            'status' => $request->status,
-            'expire_date' => $request->expire_date,
-            'note' => $request->note,
-            'terms_and_conditions' => $request->terms_and_conditions,
-            'advertiser_id' => $request->advertiser_id,
-            'currency_id' => $request->currency_id,
-            'discount_type' => $request->discount_type,
-            'discount' => $request->discount,
-        ]);
-        userActivity('Offer', $offer->id, 'update');
 
-        $offer->categories()->detach();
-        foreach($request->categories as $categoryId){
-            $category = Category::findOrFail($categoryId);
-            $offer->assignCategory($category);
+        unset($data['categories']);
+        unset($data['countries']);
+        $data['thumbnail'] = $thumbnail;
+        $data['payout'] = $request->cps_type=='static'?$request->payout:null;
+        $data['revenue'] = $request->cps_type=='static'?$request->revenue:null;
+
+        userActivity('Offer', $offer->id, 'update', $data, $offer);
+        $offer->update($data);
+
+        if($request->categories){
+            $offer->categories()->sync($request->categories);
         }
-        foreach($request->countries as $countryId){
-            $country = Country::findOrFail($countryId);
-            $offer->assignCountry($country);
+        
+        if($request->countries){
+            $offer->countries()->sync($request->countries);
         }
         // If cps is new old
         if($request->cps_type == 'new_old'){

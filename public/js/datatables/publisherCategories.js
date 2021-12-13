@@ -23,8 +23,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                             if (typeof raw.data !== 'undefined') {
                                 dataSet = raw.data;
                             }
-                            console.log('start');
-                            console.log(dataSet);
                             return dataSet;
                         },
                     },
@@ -86,12 +84,11 @@ var KTDatatableRemoteAjaxDemo = function() {
                                                 });
                                             }
                                         }
-                                        console.log(err);
                                     }
                                 }).done(function (res) {
                                     swal.fire({
                                         text: "Deleted successfully ",
-                                        confirmButtonText: "موافق",
+                                        confirmButtonText: "Done.",
                                         icon: "success",
                                         confirmButtonClass: "btn font-weight-bold btn-primary",
                                     });
@@ -120,11 +117,6 @@ var KTDatatableRemoteAjaxDemo = function() {
             },{
                 field: 'title_ar',
                 title: "اسم القسم ",
-                selector: false,
-                textAlign: 'center',
-            },{
-                field: 'type',
-                title: "Type",
                 selector: false,
                 textAlign: 'center',
             },{
@@ -196,12 +188,6 @@ jQuery(document).ready(function() {
     $('#deletedAll').on('click', function(){
 
     var selected = datatable.getSelectedRecords();
-    // foreach(selected as item){
-    //     console.log(item);
-    // }
 
-    $.each(selected, function(index, item){
-        console.log(item);
-    })
     });
 });

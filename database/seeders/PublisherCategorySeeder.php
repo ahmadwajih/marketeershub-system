@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\PublisherCategory;
 use Illuminate\Database\Seeder;
 
@@ -59,9 +60,10 @@ class PublisherCategorySeeder extends Seeder
         ];
 
         foreach($enCategories as $index => $category){
-            PublisherCategory::create([
+            Category::create([
                 'title_ar' => $arCategories[$index],
-                'title_en' => $enCategories[$index]
+                'title_en' => $enCategories[$index],
+                'type' => 'publishers'
             ]);
         }
         

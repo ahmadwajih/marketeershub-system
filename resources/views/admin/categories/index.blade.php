@@ -95,8 +95,8 @@
 @endsection
 @push('scripts')
 <script>
-    var route = "{{ route('admin.publisherCategories.index') }}";
+    var route = "{{ route('admin.categories.index') }}";
 </script>
 
-<script src="{{asset('js/datatables/publisherCategories.js')}}"></script>
+<script src="{{asset('js/datatables/categories.js')}}"></script>
 @endpush

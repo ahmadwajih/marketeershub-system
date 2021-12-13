@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('title_ar');
             $table->string('title_en');
+            $table->enum('type', ['advertisers', 'publishers', 'offers', 'other'])->default('advertisers');
             $table->timestamps();
             $table->softDeletes();
         });

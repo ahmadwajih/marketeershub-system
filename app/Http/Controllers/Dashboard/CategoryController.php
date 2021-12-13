@@ -45,7 +45,9 @@ class CategoryController extends Controller
     {
         $this->authorize('create_categories');
         $data = $request->validate([
-            'title' => 'required|unique:categories|max:255',
+            'title_en' => 'required|unique:categories|max:255',
+            'title_ar' => 'required|unique:categories|max:255',
+            'type'     => 'required|in:advertisers,publishers,offers,other'
         ]);
 
         $category = Category::create($data);
@@ -97,11 +99,13 @@ class CategoryController extends Controller
     {
         $this->authorize('update_categories');
         $data = $request->validate([
-            'title' => 'required|max:255|unique:categories,title,'.$category->id,
+            'title_ar' => 'required|max:255|unique:categories,title_ar,'.$category->id,
+            'title_en' => 'required|max:255|unique:categories,title_en,'.$category->id,    
+            'type'     => 'required|in:advertisers,publishers,offers,other'
         ]);
+        userActivity('Category', $category->id, 'update', $data, $category);
        
         $category->update($data);
-        userActivity('Category', $category->id, 'update');
 
         $notification = [
             'message' => 'Updated successfully',
