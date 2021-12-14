@@ -20,4 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::namespace('Api')->group(function () {
     Route::get('order', 'OrderController@store');
+    Route::get('order-update-status', 'OrderController@updateStatus');
 });

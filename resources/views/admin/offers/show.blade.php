@@ -5,7 +5,6 @@
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
-
             <!--begin::Card-->
             <div class="row">
                 <div class="col-lg-12">
@@ -22,7 +21,7 @@
                                         <div class="mb-2">
                                             <div class="col-12 text-center">
                                                 <div class="image-input image-input-outline image-input" id="kt_image">
-                                                    <div class="image-input-wrapper"  style="background-image: url( {{asset("Images/Offers/").$offer->thumbnail}}" ></div>
+                                                    <div class="image-input-wrapper"  style="background-image: url( {{getImagesPath('Offers', $offer->thumbnail)}}" ></div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -33,7 +32,7 @@
     
                                                 <div class="col-lg-6">
                                                     <label> {{ __('Advertiser') }} :</label>
-                                                    <input readonly disabled type="text" class="form-control"  value="{{$offer->advertiser->name}}" required/>
+                                                    <input readonly disabled type="text" class="form-control"  value="{{$offer->advertiser?$offer->advertiser->company_name:''}}" required/>
                                                 </div>
     
                                             </div>
