@@ -87,7 +87,9 @@
                                                     </div>
                                                 @endif
                                             </div>
+                                        </div>
 
+                                        <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Advertiser') }} :</label>
                                                 <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id" >
@@ -103,8 +105,20 @@
                                                 @endif
                                             </div>
 
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Categories') }} :</label>
+                                                <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
+                                                    @foreach ($categories as $category)
+                                                        <option {{ old('categories')?(in_array($category->id,old('categories'))?'selected':''):''  }} value="{{ $category->id }}">{{  $category->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('categories'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('categories') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
-
                                         <div class="form-group row">
                                             <div class="col-lg-12">
                                                 <label>* {{ __('Description') }} :</label>
@@ -140,20 +154,8 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
-                                                <label>* {{ __('Categories') }} :</label>
-                                                <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
-                                                    @foreach ($categories as $category)
-                                                        <option {{ old('categories')?(in_array($category->id,old('categories'))?'selected':''):''  }} value="{{ $category->id }}">{{  $category->title }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('categories'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('categories') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-4">
+                                            
+                                            <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_countries" name="countries[]" multiple>
                                                     @foreach($countries as $country)
@@ -166,7 +168,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <label>* {{ _('Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_type" name="type" >
                                                     <option value="coupon_tracking">{{ __('Coupon Tracking') }}</option>

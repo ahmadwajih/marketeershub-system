@@ -51,7 +51,7 @@
                                     <div class="form-group row">
                                         <div class="col-12 text-center">
                                             <div class="image-input image-input-outline image-input-circle" id="kt_image">
-                                                <div class="image-input-wrapper" style="background-image: url({{asset("storage/Images/Offers/").'/'.$offer->thumbnail}})"></div>
+                                                <div class="image-input-wrapper" style="background-image: url({{getImagesPath('Offers', $offer->thumbnail)}})"></div>
                                                 <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Upload image">
                                                     <i class="fa fa-pen icon-sm text-muted"></i>
                                                     <input type="file" name="thumbnail" accept=".png, .jpg, .jpeg" />

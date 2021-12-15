@@ -78,7 +78,7 @@
                             <div class="card">
                                 @if($update)<a class="edit-offer" href="{{ route('admin.offers.edit', $offer->id) }}"><i class="fas fa-pen"></i></a>@endif
                                 <a class="show-offer" href="{{ route('admin.offers.show', $offer->id) }}"><i class="fas fa-eye"></i></a>
-                            <img class="card-img-top" src="{{asset("storage/Images/Offers")}}/{{is_null($offer->thumbnail)?'default.png':$offer->thumbnail}}" alt="{{ $offer->name }}">
+                            <img class="card-img-top" src="{{getImagesPath('Offers', $offer->thumbnail)}}" alt="{{ $offer->name }}">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <h4 class="card-title font-weight-bold">{{ $offer->name }}</h4>

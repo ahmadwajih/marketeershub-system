@@ -67,12 +67,9 @@ class DashboardController extends Controller
 
 
     public function test(){
-        Currency::firstOrCreate([
-            'name_ar' => 'درهم اماراتي ',
-            'name_en' => 'United Arab Emirates dirham',
-            'code' => 'AED',
-            'sign' => 'AED',
-        ]);
+        $user = User::first();
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        dd($token);
 
     }
 

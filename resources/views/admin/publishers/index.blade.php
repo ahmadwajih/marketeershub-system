@@ -280,6 +280,7 @@ $thead = '';
     <script>
         $(document).ready(function () {
             $('.assignToMe').on('click', function () {
+                console.log('start')
                 var assignToMe = $(this);
                 var affiliateId = $(this).data('affiliate');
                 Swal.fire({

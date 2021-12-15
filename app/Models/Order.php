@@ -11,4 +11,11 @@ class Order extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = [];
     
+    public function offer(){
+        return $this->belongsTo(Offer::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
