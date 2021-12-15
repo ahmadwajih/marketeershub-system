@@ -17,9 +17,9 @@ class CreateSocialMediaLinksTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('link');
-            $table->string('platform');
-            $table->string('followers');
+            $table->string('link')->nullable();
+            $table->string('platform')->nullable();
+            $table->string('followers')->nullable();
             $table->timestamps();
         });
     }

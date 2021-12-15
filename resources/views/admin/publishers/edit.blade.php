@@ -156,6 +156,7 @@
                                         </div>
 
                                         <div class="form-group row">
+                                            @can('update_roles')
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Role') }} :</label>
                                                 <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
@@ -169,6 +170,7 @@
                                                     </div>
                                                 @endif
                                             </div>
+                                            @endcan
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" required>
