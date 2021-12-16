@@ -32,27 +32,35 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
-        if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
-            $publishers = User::wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
-                $query->where('parent_id', '=' ,auth()->user()->id)
-                    ->orWhere('parent_id', '=', null);
-            })->get();
-        }else{
-            $publishers = User::wherePosition('publisher')->with('parent', 'categories')->get();
-        }
 
-        $accountManagers = User::wherePosition('account_manager')->get();
+        if ($request->ajax()) {
+            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
+                    $query->where('parent_id', '=' ,auth()->user()->id)
+                        ->orWhere('parent_id', '=', null);
+                });
+            }else{
+                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories');
+            }
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+     
+                           $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
+                           $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
         return view('admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
-            'accountManagers' => $accountManagers,
-            'publishers' => $publishers,
+            'accountManagers' => User::wherePosition('account_manager')->get(),
         ]);
     }
 
 
     public function dashboard(){
-        // $this->authorize('view_publishers');
-        // userActivity('User', $publisher->id, 'show');
         $publisher = User::findOrFail(Auth::user()->id);
         return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);
     }
@@ -93,7 +101,7 @@ class PublisherController extends Controller
     {
         $this->authorize('view_publishers');
         $publishers = User::query();
-        $where = [['id', '!=', 0]];
+        $where = [['position', '=', 'publisher']];
         // Check  pased on status
         if($request->status){
             $where[] = ['status', '=', $request->status];
@@ -119,15 +127,35 @@ class PublisherController extends Controller
 
             }
         }
-        $publishers = $publishers->with('parent')->where($where)->paginate(10);
+
+        if ($request->ajax()) {
+            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
+                    $query->where('parent_id', '=' ,auth()->user()->id)
+                        ->orWhere('parent_id', '=', null);
+                })->where($where);
+            }else{
+                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where($where);
+            }
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+     
+                           $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
+                           $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
 
         $categories = Category::whereType('publishers')->get();
         $accountManagers = User::wherePosition('account_manager')->get();
         $data = $request->all();
         $data['categories'] = $categories;
         $data['accountManagers'] = $accountManagers;
-        $data['publishers'] = $publishers;
-        // dd($data);
+
         return view('admin.publishers.index', $data);
     }
 
