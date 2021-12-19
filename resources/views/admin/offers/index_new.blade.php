@@ -218,60 +218,6 @@
                 $('.modal').css('display', 'none');
             });
 
-            // Send Request
-            $(".request-codes").click(function () {
-                var offerId = $(this).data('offer');
-                $.ajax({
-                    method: "POST",
-                    cache: false,
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    url: "{{route('admin.offerRequest.ajax')}}",
-                    data: {
-                        offerId: offerId,
-                    },
-                })
-                    .done(function (res) {
-                        $(".request-codes").addClass('btn-success');
-                        $(".request-codes").removeClass('btn-primary');
-                        $(".request-codes").text('Success.');
-                        $(".requestOffer").text('In Review.');
-                        $(".requestOffer").removeClass('requestOffer');
-                        $('.modal').fadeOut('slow');
-                    })
-                    .fail(function (res) {
-                        $(".request-codes").addClass('btn-danger');
-                        $(".request-codes").removeClass('btn-primary');
-                        $(".request-codes").text('You have sent request before.');
-                        $(".requestOffer").text('In Review.');
-                        $(".requestOffer").removeClass('requestOffer');
-                        setTimeout(function () {
-                            $('.modal').fadeOut('slow');
-                        }, 3000);
-
-
-                    });
-            });
-
-            // Send Request
-            $(".view-coupons").click(function () {
-                var offerId = $(this).data('offer');
-                $.ajax({
-                    method: "POST",
-                    cache: false,
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    url: "{{route('admin.ajax.view.coupons')}}",
-                    data: {
-                        offerId: offerId,
-                    },
-                })
-                    .done(function (response) {
-                        $("#coupons").html(response);
-                    })
-                    .fail(function (response) {
-                    });
-            });
-
-
         });
     </script>
 @endpush

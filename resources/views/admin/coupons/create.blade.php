@@ -64,7 +64,7 @@
                                             </div>
 
                                             <div class="col-lg-4">
-                                                <label>{{ _('User') }} :</label>
+                                                <label>{{ _('Publisher') }} :</label>
                                                 <select class="form-control select2" id="kt_select_user_id" name="user_id" >
                                                     <option value="">{{ __('No One') }}</option>
                                                     @foreach($users as $user)

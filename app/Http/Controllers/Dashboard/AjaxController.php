@@ -33,9 +33,9 @@ class AjaxController extends Controller
             $coupons = [];
             $link = '';
 
-            $offer = Offer::findOrFail($request->offerId);
+            $offer = Offer::findOrFail($request->offer_id);
             if($offer->type == 'coupon_tracking'){
-                $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offerId)->get();
+                $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offer_id)->get();
             }else{
                 $link = $offer->offer_url.'?affiliate_id='.auth()->user()->id.'&offer_id='.$offer->id; 
             }
