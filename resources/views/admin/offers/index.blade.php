@@ -24,8 +24,8 @@
         }
         table.dataTable thead tr,
         table.dataTable tbody tr {
-            z-index: 2;
-            position: static;
+            z-index: 1;
+
         }
     </style>
 @endpush
