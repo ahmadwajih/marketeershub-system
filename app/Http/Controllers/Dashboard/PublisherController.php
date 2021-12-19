@@ -53,6 +53,7 @@ class PublisherController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
         }
+
         return view('admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' => User::wherePosition('account_manager')->get(),
@@ -127,6 +128,7 @@ class PublisherController extends Controller
 
             }
         }
+
 
         if ($request->ajax()) {
             if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
@@ -524,7 +526,7 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+        Excel::import(new PublisherImportV2($request->team),request()->file('publishers'));
         userActivity('User', null , 'upload', 'Upload Publishers');
         $notification = [
             'message' => 'Uploaded successfully',

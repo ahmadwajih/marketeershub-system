@@ -93,11 +93,11 @@ class User extends Authenticatable
     {
         return $this->offers()->save($offerId);
     }
+
     public function unAssignOffer($offerId)
     {
         return $this->offers()->detach($offerId);
     }
-
 
     public function categories(){
         return $this->belongsToMany(Category::class)->withTimestamps();
@@ -179,4 +179,3 @@ class User extends Authenticatable
         }
     }
 }
-

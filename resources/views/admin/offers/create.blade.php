@@ -84,6 +84,17 @@
                                                 @if ($errors->has('name_en'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('name_en') }}</p>
+
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Offer Name EN') }} :</label>
+                                                <input type="text" name="name_en" class="form-control"  value="{{old('name_en')}}" required/>
+                                                @if ($errors->has('name_en'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('name_en') }}</p>
                                                     </div>
                                                 @endif
                                             </div>

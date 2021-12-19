@@ -31,7 +31,7 @@ table.dataTable {
     position: relative;
     height: 540px;
 }
-table.dataTable::after {
+table.loading::after {
     content: "";
     display: block;
     position: absolute;
@@ -44,6 +44,13 @@ table.dataTable::after {
     pointer-events: none;
     background: #fff url("../images/preloader.gif") no-repeat center;
     border-radius: calc(0.42rem - 1px);
+}
+.btn-xs:not(.btn-icon) {
+    padding: 0.18rem 1rem;
+    font-size: 0.9rem;
+}
+.btn.btn-xs i {
+    font-size: 0.9rem;
 }
 .dataTables_wrapper table.dataTable {
     height: auto;
