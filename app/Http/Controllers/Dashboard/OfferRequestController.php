@@ -10,6 +10,7 @@ use App\Models\OfferRequest;
 use App\Models\User;
 use App\Notifications\NewAssigenCoupon;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
 
 class OfferRequestController extends Controller
 {
@@ -73,33 +74,6 @@ class OfferRequestController extends Controller
         return redirect()->route('admin.offerRequests.index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function offerRequestAjax(Request $request)
-    {
-        $this->authorize('create_offer_requests');
-        $data = $request->validate([
-            'offerId' => 'required|integer|exists:offers,id',
-        ]);
-        $exists = OfferRequest::where([
-            ['offer_id', '=', $request->offerId],
-            ['user_id', '=', auth()->user()->id]
-        ])->first();
-        if($exists){
-            return response('exists', 422);
-        }
-        $offerRequest = OfferRequest::create([
-            'offer_id' => $request->offerId,
-            'user_id' => auth()->user()->id,
-        ]);
-        userActivity('OfferRequest', $offerRequest->id, 'create');
-
-        return true;
-    }
 
     /**
      * Display the specified resource.
@@ -201,4 +175,51 @@ class OfferRequestController extends Controller
             $offerRequest->delete();
         }
     }
+
+    
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function offerRequestAjax(Request $request)
+    {
+        $this->authorize('create_offer_requests');
+        $data = $request->validate([
+            'offerId' => 'required|integer|exists:offers,id',
+        ]);
+        
+        $offerRequest = OfferRequest::create([
+            'offer_id' => $request->offerId,
+            'user_id' => auth()->user()->id,
+        ]);
+        userActivity('OfferRequest', $offerRequest->id, 'create');
+
+        return true;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function offerRequestAjaxForm(Request $request)
+    {
+        $this->authorize('create_offer_requests');
+        $validator = Validator::make($request->all(), [
+            'offer_id' => 'required|integer|exists:offers,id',
+        ]);
+        
+        // Check Validation
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages(), 'code' => 422], 422);
+        }
+        
+        return view('admin.offerRequests.form', [
+            'offer' => Offer::findOrFail($request->offer_id)
+        ]);
+    }
+
 }
