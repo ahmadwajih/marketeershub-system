@@ -11,6 +11,29 @@ class Offer extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = [];
+    protected $append = [
+        'name_ar',
+        'description_ar',
+        'note_ar',
+        'terms_and_conditions_ar',
+    ];
+
+    public function getNameAttribute(){
+        return $this->attributes['name_'. app()->getLocale()];
+    }
+
+    public function getDescriptionAttribute(){
+        return $this->attributes['name_'. app()->getLocale()];
+    }
+
+    public function getNoteAttribute(){
+        return $this->attributes['name_'. app()->getLocale()];
+    }
+
+    public function getTermsAndConditionAttribute(){
+        return $this->attributes['name_'. app()->getLocale()];
+    }
+
 
     public function advertiser(){
         return $this->belongsTo(Advertiser::class);

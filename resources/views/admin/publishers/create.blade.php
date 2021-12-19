@@ -397,10 +397,14 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Currency') }} :</label>
-                                                <input type="text" name="currency" class="form-control" value="{{old('currency')}}" required />
-                                                @if ($errors->has('currency'))
+                                                <select class="form-control select2" id="kt_select_currency_id" name="currency_id">
+                                                    @foreach ($currencies as $currency)
+                                                        <option {{ old('currency_id')?($currency->id == old('currency_id') ?'selected':''):''  }} value="{{ $currency->id }}">{{  $currency->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('currency_id'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('currency') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('currency_id') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -452,6 +456,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_categories').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_currency_id').select2({
             placeholder: "Select Option",
         });
     </script>

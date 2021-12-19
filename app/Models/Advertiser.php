@@ -11,9 +11,14 @@ class Advertiser extends Model
     use HasFactory;
     use SoftDeletes;
     protected $guarded = [];
+    protected $appends = ['company_name'];
 
     public function country(){
         return $this->belongsTo(Country::class);
+    }
+
+    public function currency(){
+        return $this->belongsTo(Currency::class);
     }
     
     public function city(){
@@ -22,5 +27,13 @@ class Advertiser extends Model
 
     public function offers(){
         return $this->hasMany(Offer::class);
+    }
+    
+    public function getCompanyNameAttribute(){
+        return $this->attributes['company_name_'.app()->getLocale()];
+    }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class);
     }
 }

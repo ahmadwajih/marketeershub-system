@@ -12,6 +12,11 @@ class Category extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = [];
+    protected $appends = ['title'];
+    
+    public function getTitleAttribute(){
+        return $this->attributes['title_'.app()->getLocale()];
+    }
     
     public function offers(){
         return $this->BelongsToMany(Offer::class);

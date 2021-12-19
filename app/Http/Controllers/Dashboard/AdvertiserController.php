@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Advertiser;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 /*
  * Just for repo fix
@@ -19,7 +21,6 @@ class AdvertiserController extends Controller
      */
     public function index(Request $request)
     {
-
         $this->authorize('view_advertisers');
         if($request->ajax()){
             $advertisers = getModelData('Advertiser', $request);
@@ -39,6 +40,8 @@ class AdvertiserController extends Controller
         $this->authorize('create_advertisers');
         return view('admin.advertisers.create',[
             'countries' => Country::all(),
+            'categories' => Category::whereType('advertisers')->get(),
+            'currencies' => Currency::all(),
         ]);
     }
 
@@ -51,21 +54,33 @@ class AdvertiserController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create_advertisers');
-
         $data = $request->validate([
-            'name'          => 'required|max:255',
-            'phone'         => 'required|max:255',
-            'email'         => 'required|max:255',
-            'ho_user_id'    => 'nullable|max:255',
-            'company_name'  => 'required|max:255',
-            'website'       => 'nullable|max:255',
-            'country_id'    => 'required|max:255',
-            'city_id'       => 'required|max:255',
-            'address'       => 'nullable|max:255',
-            'status'        => 'nullable|in:pending,rejected,approved',
+            'name'                  => 'required|max:255',
+            'phone'                 => 'nullable|max:255',
+            'email'                 => 'nullable|max:255',
+            'ho_user_id'            => 'nullable|max:255',
+            'company_name_ar'       => 'required|max:255',
+            'company_name_en'       => 'required|max:255',
+            'website'               => 'nullable|max:255',
+            'categories'            => 'array|required|exists:categories,id',
+            'country_id'            => 'required|max:255|exists:countries,id',
+            'city_id'               => 'required|max:255|exists:cities,id',
+            'currency_id'           => 'required|max:255|exists:currencies,id',
+            'address'               => 'nullable|max:255',
+            'validation_duration'   => 'nullable|max:255',
+            'status'                => 'required|in:active,unactive',
+            'validation_source'     => 'nullable|max:255',
+            'validation_type'       => 'required|in:system,sheet,manual_report_via_email',
+            'language'              => 'required|in:ar,en,ar_en',
+            'access_username'       => 'nullable|max:255',
+            'access_password'       => 'nullable|max:255',
         ]);
 
+        $data['exclusive'] = isset($request->exclusive)&&$request->exclusive == 'on' ? true : false;
+        unset($data['categories']);
+
         $advertiser = Advertiser::create($data);
+        $advertiser->categories()->attach($request->categories);
         userActivity('Advertiser', $advertiser->id, 'create');
 
         $notification = [
@@ -103,6 +118,8 @@ class AdvertiserController extends Controller
             'advertiser' => $advertiser,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($advertiser->country_id)->get(),
+            'categories' => Category::whereType('advertisers')->get(),
+            'currencies' => Currency::all(),
         ]);
     }
 
@@ -117,20 +134,35 @@ class AdvertiserController extends Controller
     {
         $this->authorize('update_advertisers');
         $data = $request->validate([
-            'name'          => 'required|max:255',
-            'phone'         => 'required|max:255',
-            'email'         => 'required|max:255',
-            'ho_user_id'    => 'nullable|max:255',
-            'company_name'  => 'required|max:255',
-            'website'       => 'nullable|max:255',
-            'country_id'    => 'required|max:255',
-            'city_id'       => 'required|max:255',
-            'address'       => 'nullable|max:255',
-            'status'        => 'nullable|in:pending,rejected,approved',
+            'name'                  => 'required|max:255',
+            'phone'                 => 'nullable|max:255',
+            'email'                 => 'nullable|max:255',
+            'ho_user_id'            => 'nullable|max:255',
+            'company_name_ar'       => 'required|max:255',
+            'company_name_en'       => 'nullable|max:255',
+            'website'               => 'nullable|max:255',
+            'categories'            => 'array|required|exists:categories,id',
+            'country_id'            => 'required|max:255|exists:countries,id',
+            'city_id'               => 'required|max:255|exists:cities,id',
+            'currency_id'           => 'required|max:255|exists:currencies,id',
+            'address'               => 'nullable|max:255',
+            'validation_duration'   => 'nullable|max:255',
+            'status'                => 'required|in:active,unactive',
+            'validation_source'     => 'nullable|max:255',
+            'validation_type'       => 'required|in:system,sheet,manual_report_via_email',
+            'language'              => 'required|in:ar,en,ar_en',
+            'access_username'       => 'nullable|max:255',
+            'access_password'       => 'nullable|max:255',
         ]);
 
+        $data['exclusive'] = isset($request->exclusive)&&$request->exclusive == 'on' ? true : false;
+        unset($data['categories']);
+        userActivity('Advertiser', $advertiser->id, 'update', $data, $advertiser);
+
         $advertiser->update($data);
-        userActivity('Advertiser', $advertiser->id, 'update');
+        $advertiser->categories()->sync($request->categories);
+
+
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'

@@ -199,9 +199,6 @@ $thead = '';
                         <label>Search:<input type="search" class="" placeholder="" aria-controls="example"></label>
                     </div>
                     --}}
-                    <script>
-
-                    </script>
                     <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($columns)) !!}">
                         <thead>
                         <tr>
@@ -241,9 +238,11 @@ $thead = '';
                                 <td>
                                     <div class="dropdown dropdown-inline">
                                         <a href="{{ route('admin.publishers.show', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
-                                            <i class="flaticon-eye"></i> </a>
+                                            <i class="flaticon-eye"></i>
+                                        </a>
                                         <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
-                                            <i class="flaticon-edit"></i> </a>
+                                            <i class="flaticon-edit"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
