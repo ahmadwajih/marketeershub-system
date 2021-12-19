@@ -1,6 +1,9 @@
 
 <?php
 
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Currency;
 use App\Models\OfferRequest;
 use App\Models\UserActivity;
 use Illuminate\Support\Facades\Storage;
@@ -214,10 +217,40 @@ if(!function_exists('getActivity')){
     }
 }
 
-if(!function_exists('testFunction')){
-    function testFunction($var1, $var2):int
+if(!function_exists('getCountryId')){
+    function getCountryId($countryName):int
     {
-        return $var1;
+        $country = Country::where('name_en', 'like', '%'.$countryName.'%')->orWhere('name_ar', 'like', '%'.$countryName.'%')->first();
+        if($country){
+            return $country->id;
+        }
+        return Country::first()->id;
+    }
+}
 
+if(!function_exists('getCityId')){
+    function getCityId($cityName):int
+    {
+        $city = City::where('name_en', 'like', '%'.$cityName.'%')->orWhere('name_ar', 'like', '%'.$cityName.'%')->first();
+        if($city){
+            return $city->id;
+        }
+        return City::first()->id;
+    }
+}
+
+if(!function_exists('getCurrency')){
+    function getCurrency($currencyName):int
+    {
+        $currency = Currency::where('name_en', 'like', '%'.$currencyName.'%')
+        ->orWhere('name_ar', 'like', '%'.$currencyName.'%')
+        ->orWhere('code', 'like', '%'.$currencyName.'%')
+        ->orWhere('sign', 'like', '%'.$currencyName.'%')
+        ->first();
+
+        if($currency){
+            return $currency->id;
+        }
+        return Currency::first()->id;
     }
 }

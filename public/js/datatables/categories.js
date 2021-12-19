@@ -113,8 +113,18 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
 
             },{
-                field: 'title',
+                field: 'title_en',
                 title: "Category Title",
+                selector: false,
+                textAlign: 'center',
+            },{
+                field: 'title_ar',
+                title: "اسم القسم ",
+                selector: false,
+                textAlign: 'center',
+            },{
+                field: 'type',
+                title: "Type",
                 selector: false,
                 textAlign: 'center',
             },{

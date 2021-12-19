@@ -76,6 +76,7 @@
                                     <td>{{ $offer->name }}</td>
                                     <td>{{ __('Online') }}</td>
                                     <td>                     @if($offer->cps_type == 'static')
+
                                             {{$offer->revenu}}
                                         @elseif($offer->cps_type == 'new_old')
                                             new_old

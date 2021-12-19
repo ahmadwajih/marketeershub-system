@@ -17,17 +17,20 @@ class CurrencySeeder extends Seeder
     {
         $currencies = [
             [
-                'name' => 'Riyal Saudi',
+                'name_ar' => 'ريال سعودي',
+                'name_en' => 'Riyal Saudi',
                 'code' => 'SAR',
                 'sign' => 'SAR',
             ],
             [
-                'name' => 'Egyptian pound',
+                'name_ar' => 'جنيه مصري',
+                'name_en' => 'Egyptian pound',
                 'code' => 'EGP',
                 'sign' => 'EGP',
             ],
             [
-                'name' => 'American dollar',
+                'name_ar' => 'دولار امريكي',
+                'name_en' => 'American dollar',
                 'code' => 'USD',
                 'sign' => 'USD',
             ],

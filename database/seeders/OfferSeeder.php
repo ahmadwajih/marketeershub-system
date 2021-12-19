@@ -15,8 +15,10 @@ class OfferSeeder extends Seeder
     public function run()
     {
         Offer::create([
-            'name' => 'Namshi',
-            'description' => 'Namshi offer',
+            'name_ar' => 'نمشي',
+            'name_en' => 'Namshi',
+            'description_ar' => 'عرض نمشي',
+            'description_en' => 'Namshi offer',
             'website' => 'https://www.namshi.com/',
             'offer_url' => 'https://ar-sa.namshi.com/men/under-armour-exclusives/',
             'payout' => '10',

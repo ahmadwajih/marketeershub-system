@@ -16,7 +16,7 @@ class CreateAdvertiserCategoryTable extends Migration
         Schema::create('advertiser_category', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('advertiser_categories')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->unsignedBigInteger('advertiser_id');
             $table->foreign('advertiser_id')->references('id')->on('advertisers')->onDelete('cascade');
             $table->timestamps();

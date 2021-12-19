@@ -74,6 +74,10 @@ class DashboardController extends Controller
             'sign' => 'AED',
         ]);
 
+        $user = User::first();
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        dd($token);
+
     }
 
 }

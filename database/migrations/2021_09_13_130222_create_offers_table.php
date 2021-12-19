@@ -17,8 +17,10 @@ class CreateOffersTable extends Migration
             $table->id();
             // Offer Details 
             $table->integer('offer_id')->nullable();
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->string('name_ar');
+            $table->string('name_en');
+            $table->text('description_ar')->nullable();
+            $table->text('description_en')->nullable();
             $table->string('website')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('offer_url');
@@ -34,7 +36,8 @@ class CreateOffersTable extends Migration
             $table->enum('status', ['active', 'pused', 'pending', 'expire'])->default('pending');
             $table->date('expire_date');
             $table->text('note')->nullable();
-            $table->text('terms_and_conditions')->nullable();
+            $table->text('terms_and_conditions_ar')->nullable();
+            $table->text('terms_and_conditions_en')->nullable();
             $table->unsignedBigInteger('advertiser_id')->nullable();
             $table->foreign('advertiser_id')->references('id')->on('advertisers')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('currency_id')->nullable();
