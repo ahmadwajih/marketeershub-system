@@ -5,21 +5,23 @@
 
 @endpush
 @php
-$columns = [
-    ['name'=> 'id', 'label' => __('ID')],
-    ['name'=> 'full_name', 'label' => __('Full Name')],
-    ['name'=> 'email', 'label' => __('Email')],
-    ['name'=> 'sm_platform', 'label' => __('SM Platform'), 'checked' => true],
-    ['name'=> 'account_manager', 'label' => __('Account Manager'), 'checked' => true],
-    ['name'=> 'offers', 'label' => __('Offers')],
-    ['name'=> 'categories', 'label' => __('Categories')],
-    ['name'=> 'phone', 'label' => __('Phone')],
-    ['name'=> 'referral_am', 'label' => __('Referral AM'), 'checked' => true],
-    ['name'=> 'join_date', 'label' => __('Join Date'), 'checked' => true],
-    ['name'=> 'status', 'label' => __('Status')],
-    ['name'=> 'action', 'label' => __('Action'), 'disabled'=> true],
-];
-$thead = '';
+    $columns = [
+        ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true,],
+        ['label' => __('Name'),'data'=> 'name', 'disabled'=> true,],
+        ['label' => __('Email'),'data'=> 'email'],
+        //['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true],
+        ['label' => __('Account Manager'),'data'=> 'parent.name',  'checked' => true],
+        ['label' => __('Offers'), 'data'=> 'offersCount' ],
+        ['label' => __('Category'), 'data'=> 'category'],
+        ['label' => __('Phone'), 'data'=> 'phone'],
+        ['label' => __('Referral AM'), 'data'=> 'referral_account_manager', 'checked' => true],
+        ['label' => __('Join Date'), 'data'=> 'created_at', 'checked' => true],
+        ['label' => __('Status'), 'data'=> 'status'],
+        ['label' => __('Action'), 'data'=> 'action', 'disabled'=> true, 'checked' => true],
+    ];
+//dd(json_encode($columns));
+    $thead = '';
+    $dtColumns = [];
 @endphp
 @section('content')
     <!--begin::Entry-->
@@ -58,12 +60,19 @@ $thead = '';
                                     <div class="checkbox-inline">
                                         <div class="row">
                                             @foreach($columns as $key=>$column)
-                                                @php $thead .= '<th>'.$column['label'].'</th>' @endphp
+
+                                                @php
+                                                 $thead .= '<th>'.$column['label'].'</th>';
+                                                 $dtColumns[] = [
+                                                     'name' =>$column['data'],
+                                                     'data' =>$column['data'],
+                                                     ];
+                                                @endphp
+
                                                 @continue(isset($column['disabled']))
                                                 <div class="col-md-6">
                                                     <label class="checkbox checkbox-square" style="font-size: 11px">
-                                                        <input class="toggle-column" type="checkbox" @isset($column['checked']) checked="checked" @endisset
-                                                               value="{{$column['name']}}">
+                                                        <input class="toggle-column" type="checkbox" @isset($column['checked']) checked="checked" @endisset value="{{$column['data']}}">
                                                         <span></span> {{$column['label']}}
                                                     </label>
                                                 </div>
@@ -158,96 +167,14 @@ $thead = '';
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <div class="mb-7">
-                        <div class="row align-items-center">
-                            {{-- <div class="col-lg-9 col-xl-8">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4 my-2 my-md-0">
-                                        <div class="input-icon">
-                                            <input type="text" class="form-control" placeholder="بــحــث ..." id="kt_datatable_search_query" />
-                                            <span>
-                                                <i class="flaticon2-search-1 text-muted"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div> --}}
-                            {{-- <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
-                                <a href="#" class="btn btn-light-primary px-6 font-weight-bold">بــحــث</a>
-                            </div> --}}
-
-                        </div>
-                    </div>
-                    <!--begin: Datatable-->
-                    {{--
-                    <div id="example_wrapper" class="dataTables_wrapper no-footer">
-                    <div class="dataTables_length" id="example_length">
-                        <label>
-                            Show
-                            <select name="example_length" aria-controls="example" class="">
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                            entries
-                        </label>
-                    </div>
-                    <div id="example_filter" class="dataTables_filter">
-                        <label>Search:<input type="search" class="" placeholder="" aria-controls="example"></label>
-                    </div>
-                    --}}
-                    <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($columns)) !!}">
+                <div class="card-body table-loading position-relative">
+                    <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($dtColumns)) !!}" data-action="{{ route('admin.publishers.index') }}">
                         <thead>
                         <tr>
                             {!! $thead !!}
                         </tr>
                         </thead>
-                        <tbody>
-                        @foreach($publishers as $publisher)
-                            <tr>
-                                <td class="sorting_1">{{ $publisher->id }}</td>
-                                <td>{{ $publisher->name }}</td>
-                                <td>{{ $publisher->email }}</td>
-                                <td>
-                                    @foreach($publisher->socialMediaLinks as $link)
-                                        <a href="{{ $link->link }}" class="sm-platform" target="_blank" data-toggle="tooltip" data-placement="top" title="{{ __('Followers :num', ['num'=>$link->followers]) }}"><i class="fab fa-{{ $link->platform }}"></i></a>
-                                    @endforeach
-                                </td>
-                                <td>{!! $publisher->parent?$publisher->parent->name:" <button class='btn badge btn-success assignToMe' data-affiliate='".$publisher->id."'>".__('Assign To Me')."</button>" !!}</td>
-                                <td>{{ $publisher->offersCount }}</td>
-                                <td>
-                                    @if($publisher->categories)
-                                        @foreach($publisher->categories as $category)
-                                            {{ $category->title }}
-                                        @endforeach
-                                    @endif
-                                </td>
-                                <td>{{ $publisher->phone }}</td>
-                                <td>{{ $publisher->referral_account_manager }}</td>
-                                <td>{{ $publisher->created_at }}</td>
-                                <td>
-                                    @if($publisher->status == 'active')
-                                        <span class="badge badge-success">Active</span>
-                                    @else
-                                        <span class="badge badge-danger">Unactive</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="dropdown dropdown-inline">
-                                        <a href="{{ route('admin.publishers.show', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
-                                            <i class="flaticon-eye"></i>
-                                        </a>
-                                        <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
-                                            <i class="flaticon-edit"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                     <!--end: Datatable-->
                     {{-- </div>--}}
