@@ -56,6 +56,7 @@
         },
 
         dataColumn: function (elem) {
+
             var table = mh.table.DataTable(),
                 column = table.column(elem.val() + ':name');
             if (elem.prop('checked')) {

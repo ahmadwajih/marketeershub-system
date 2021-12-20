@@ -6,21 +6,21 @@
 @endpush
 @php
     $columns = [
-        ['name' => __('ID'), 'data'=> 'id'],
-        ['name' => __('Name'),'data'=> 'name'],
-        ['name' => __('Email'),'data'=> 'email'],
-        //['name' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true],
-        ['name' => __('Account Manager'),'data'=> 'parent.name',  'checked' => true],
-        ['name' => __('Offers'), 'data'=> 'offersCount' ],
-        ['name' => __('Category'), 'data'=> 'category'],
-        ['name' => __('Phone'), 'data'=> 'phone'],
-        ['name' => __('Referral AM'), 'data'=> 'referral_account_manager', 'checked' => true],
-        ['name' => __('Join Date'), 'data'=> 'created_at', 'checked' => true],
-        ['name' => __('Status'), 'data'=> 'status'],
-        ['name' => __('Action'), 'data'=> 'action', 'checked' => true],
+        ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true,],
+        ['label' => __('Name'),'data'=> 'name', 'disabled'=> true,],
+        ['label' => __('Email'),'data'=> 'email'],
+        //['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true],
+        ['label' => __('Account Manager'),'data'=> 'parent.name',  'checked' => true],
+        ['label' => __('Offers'), 'data'=> 'offersCount' ],
+        ['label' => __('Category'), 'data'=> 'category'],
+        ['label' => __('Phone'), 'data'=> 'phone'],
+        ['label' => __('Referral AM'), 'data'=> 'referral_account_manager', 'checked' => true],
+        ['label' => __('Join Date'), 'data'=> 'created_at', 'checked' => true],
+        ['label' => __('Status'), 'data'=> 'status'],
+        ['label' => __('Action'), 'data'=> 'action', 'disabled'=> true, 'checked' => true],
     ];
 //dd(json_encode($columns));
-    $thead = '';
+    $thead = ''; $dtColumns = [];
 @endphp
 @section('content')
     <!--begin::Entry-->
@@ -59,12 +59,20 @@
                                     <div class="checkbox-inline">
                                         <div class="row">
                                             @foreach($columns as $key=>$column)
-                                                @isset($column['name']) @php $thead .= '<th>'.$column['name'].'</th>' @endphp @endisset
+
+                                                    @php
+                                                        $thead .= '<th>'.$column['label'].'</th>';
+                                                     $dtColumns[] = [
+                                                         'name' =>$column['data'],
+                                                         'data' =>$column['data'],
+                                                         ];
+                                                    @endphp
+
                                                 @continue(isset($column['disabled']))
                                                 <div class="col-md-6">
                                                     <label class="checkbox checkbox-square" style="font-size: 11px">
                                                         <input class="toggle-column" type="checkbox" @isset($column['checked']) checked="checked" @endisset value="{{$column['data']}}">
-                                                        <span></span> @isset($column['name']){{$column['name']}}@endisset
+                                                        <span></span> {{$column['label']}}
                                                     </label>
                                                 </div>
                                             @endforeach
@@ -180,7 +188,7 @@
 
                         </div>
                     </div>
-                    <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($columns)) !!}" data-action="{{ route('admin.publishers.index') }}">
+                    <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($dtColumns)) !!}" data-action="{{ route('admin.publishers.index') }}">
                         <thead>
                         <tr>
                             {!! $thead !!}
