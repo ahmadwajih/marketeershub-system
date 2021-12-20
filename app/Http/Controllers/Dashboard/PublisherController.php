@@ -270,8 +270,7 @@ class PublisherController extends Controller
         $this->authorize('show_publishers');
         $publisher = User::findOrFail($id);
         userActivity('User', $publisher->id, 'show');
-        $activites = getActivity('User',$id );
-        return view('admin.publishers.show', ['publisher' => $publisher, 'activites' => $activites]);
+        return view('admin.publishers.show', ['publisher' => $publisher]);
     }
 
 

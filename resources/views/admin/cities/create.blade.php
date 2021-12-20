@@ -13,7 +13,7 @@
                             <h2 class="card-title">{{ __('Create New Country') }}</h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" id="kt_form" action="{{route('admin.countries.store')}}" method = "POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{route('admin.cities.store')}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 @if ($errors->any())
@@ -39,8 +39,8 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
-                                                <label>* اسم الدولة باللغه العربية :</label>
+                                            <div class="col-lg-6">
+                                                <label>* اسم المدينة باللغه العربية :</label>
                                                 <input type="text" name="name_ar" class="form-control"  value="{{old('name_ar')}}" required />
                                                 @if ($errors->has('name_ar'))
                                                     <div>
@@ -48,8 +48,8 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-lg-4">
-                                                <label>* Country Title In English :</label>
+                                            <div class="col-lg-6">
+                                                <label>* City Title In English :</label>
                                                 <input type="text" name="name_en" class="form-control"  value="{{old('name_en')}}" required />
                                                 @if ($errors->has('name_en'))
                                                     <div>
@@ -57,12 +57,27 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="col-lg-4">
-                                                <label>* {{ __('Country Code') }} :</label>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('City Code') }} :</label>
                                                 <input type="text" name="code" class="form-control"  value="{{old('code')}}" required />
                                                 @if ($errors->has('code'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('code') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ _('Country') }} :</label>
+                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
+                                                    @foreach($countries as $country)
+                                                        <option  {{ old('country_id')==$country->id?'selected':'' }} value="{{$country->id}}">{{$country->name_en}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('country_id'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('country_id') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -90,5 +105,13 @@
     </div>
     <!--end::Entry-->
 @endsection
+
+@push('scripts')
+    <script>
+        $('#kt_select_country_id').select2({
+            placeholder: "Select Option",
+        });
+    </script>
+@endpush
 
 

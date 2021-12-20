@@ -15,13 +15,15 @@ class CreateCitiesTable extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->string('name_ar');
-            $table->string('name_en');
-            $table->string('name_fr');
+            $table->string('name_ar')->nullable();
+            $table->string('name_en')->nullable();
+            $table->string('name_fr')->nullable();
             $table->string('code');
             $table->unsignedBigInteger('country_id');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 

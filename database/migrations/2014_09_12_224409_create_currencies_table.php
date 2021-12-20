@@ -20,6 +20,8 @@ class CreateCurrenciesTable extends Migration
             $table->string('code');
             $table->string('sign');
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 

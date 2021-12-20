@@ -122,6 +122,8 @@
                             </div>
                         </div>
                         <!--end::Subheader-->
+						<div id="history"></div>
+
                         @yield('content')
 
 					</div>
@@ -182,6 +184,29 @@
 
 				});
 			})
+		</script>
+		<script>
+			$(document).ready(function(){
+				// Show history 
+				$(".show-history").on("click",function(){
+					var activityId = $(this).data('id');
+					$.ajax({
+						method: "POST",
+						cache: false,
+						headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+						url: "{{route('admin.ajax.view.activity.history')}}",
+						data: { 
+							activityId: activityId,
+						}, 
+					})
+					.done(function(response) {
+							$("#history").html(response);
+					})
+					.fail(function(response){
+					});
+				});
+			});
+		
 		</script>
 		{{-- End::read notifications  --}}
         @stack('scripts')

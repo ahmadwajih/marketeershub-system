@@ -5,7 +5,6 @@
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
-            <div id="history"></div>
 
             <!--begin::Card-->
             <div class="row">
@@ -180,7 +179,7 @@
                                                       </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach($activites as $activity)
+                                                        @foreach(getActivity('User',$publisher->id ) as $activity)
                                                             <tr>
                                                                 <td>{{ $activity->mission }}</td>
                                                                 <td> <a href="{{ route('admin.users.show',  $activity->user_id) }}" target="_blank" >{{ $activity->user->name }}</a> </td>
@@ -477,29 +476,5 @@
     <!--end::Entry-->
 @endsection
 @push('scripts')
-<script>
-    $(document).ready(function(){
 
-        // Show history 
-        $(".show-history").on("click",function(){
-            var activityId = $(this).data('id');
-            $.ajax({
-                method: "POST",
-                cache: false,
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url: "{{route('admin.ajax.view.activity.history')}}",
-                data: { 
-                    activityId: activityId,
-                }, 
-            })
-            .done(function(response) {
-                    $("#history").html(response);
-            })
-            .fail(function(response){
-            });
-        });
-    });
-
-
-</script>
 @endpush
