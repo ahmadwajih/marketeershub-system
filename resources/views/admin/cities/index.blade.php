@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title',__('Countries'))
+@section('title',__('Cities'))
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -13,10 +13,10 @@
                 @endif
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
-                        <h3>{{ __('Countries') }}</h3>
+                        <h3>{{ __('Cities') }}</h3>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{route('admin.countries.create')}}" class="btn btn-primary font-weight-bolder ">
+                        <a href="{{route('admin.cities.create')}}" class="btn btn-primary font-weight-bolder ">
                             <span class="svg-icon svg-icon-md">
                                 <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -27,7 +27,7 @@
                                     </g>
                                 </svg>
                                 <!--end::Svg Icon-->
-                            </span> {{ __('Add New Country') }}
+                            </span> {{ __('Add New City') }}
                         </a>
 
                         <!--end::Button-->
@@ -95,8 +95,8 @@
 @endsection
 @push('scripts')
 <script>
-    var route = "{{ route('admin.countries.index') }}";
+    var route = "{{ route('admin.cities.index') }}";
 </script>
 
-<script src="{{asset('js/datatables/countries.js')}}"></script>
+<script src="{{asset('js/datatables/cities.js')}}"></script>
 @endpush

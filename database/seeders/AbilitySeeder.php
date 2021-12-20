@@ -32,7 +32,9 @@ class AbilitySeeder extends Seeder
             'offer_requests',
             'user_activities',
         ];
-
+        $newModels = [
+            'cities'
+        ];
         $names = 
         [
             ['label' => "view", 'name' => 'view'],

@@ -494,7 +494,7 @@
                 {{--  End Pivot Report --}}
                 @endcan
 
-                @can('view_countries')
+                @can('view_roles')
                 {{-- Start Roles --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='roles'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
@@ -546,6 +546,98 @@
                     </div>
                 </li>
                 {{-- End Roles --}}
+
+                @can('view_countries') 
+                {{-- Start Countries  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='countries'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-globe-americas"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Countries') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Countries') }}</span>
+                                </span>
+                            </li>
+                            @can('view_countries')
+                            <li class="menu-item {{ Request::segment(2)=='countries'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.countries.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Countries') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_countries')
+                            <li class="menu-item {{ Request::segment(2)=='countries'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.countries.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Country') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Countries --}}
+                @endcan
+
+                @can('view_cites') 
+                {{-- Start Cities  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='cities'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="far fa-building"></i>                        
+                        </span>
+                        <span class="menu-text">{{ __('Cities') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Cities') }}</span>
+                                </span>
+                            </li>
+                            @can('view_cites')
+                            <li class="menu-item {{ Request::segment(2)=='cities'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.cities.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Cities') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_cites')
+                            <li class="menu-item {{ Request::segment(2)=='cities'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.cities.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New City') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Cities --}}
+                @endcan
+
+
                 @endcan
                 @can('view_user_activities')
                 <li class="menu-item {{ Request::segment(2)=='user-activities'?'menu-item-active':'' }}" aria-haspopup="true">

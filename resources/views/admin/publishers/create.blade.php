@@ -172,7 +172,7 @@
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
                                                     @foreach($countries as $country)
-                                                        <option  {{ old('country_id')==$user->id?'$country':'' }} value="{{$country->id}}">{{$country->name_en}}</option>
+                                                        <option  {{ old('country_id')==$country->id?'selected':'' }} value="{{$country->id}}">{{$country->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('country_id'))
@@ -186,7 +186,7 @@
                                                 <select class="form-control select2" id="kt_select_city_id" name="city_id" required>
                                                     @if(old('country_id'))
                                                       @foreach(App\Models\Country::findOrFail(old('country_id'))->cities as $city)
-                                                        <option {{ old('city_id')==$city->id?'selected':'' }} value="0">{{ $city->name_en }}</option>
+                                                        <option {{ old('city_id')==$city->id?'selected':'' }} value="0">{{ $city->name }}</option>
                                                       @endforeach
                                                     @else
                                                         <option value="0">{{ __("Select Country") }}</option>

@@ -68,6 +68,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
         Route::resource('reports', ReportController::class);
+        Route::resource('countries', CountryController::class);
+        Route::resource('cities', CityController::class);
         // User Activites
         Route::get('user-activities', 'UserActivityController@index')->name('user.activities.index');
 
