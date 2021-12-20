@@ -34,6 +34,7 @@ table.dataTable {
     height: 745px;
     position: relative;
 }
+.dataTables_processing,
 .table-loading::after {
     content: "";
     display: block;

@@ -167,7 +167,7 @@
                     </div>
                 </div>
 
-                <div class="card-body table-loading">
+                <div class="card-body table-loading position-relative">
                     <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($dtColumns)) !!}" data-action="{{ route('admin.publishers.index') }}">
                         <thead>
                         <tr>
