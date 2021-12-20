@@ -134,7 +134,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 selector: false,
                 textAlign: 'center',
             },{
-                field: 'offer.name',
+                field: 'offer.name_en',
                 title: "Offer Name",
                 selector: false,
                 textAlign: 'center',

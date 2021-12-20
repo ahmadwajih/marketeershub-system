@@ -27,9 +27,11 @@
                                     <small class="ml-2">{{$offer->name}}</small>
                                 </h3>
                         </div>
-                            <div class="card-toolbar">
-                                <a href="{{ route('admin.offers.edit', $offer->id) }}" class="btn btn-xs btn-success font-weight-bold">{{ __('Edit') }}</a>
-                            </div>
+                            @can('update_offers')
+                                <div class="card-toolbar">
+                                    <a href="{{ route('admin.offers.edit', $offer->id) }}" class="btn btn-xs btn-success font-weight-bold">{{ __('Edit') }}</a>
+                                </div>
+                            @endcan
                         </div>
                         <div class="card-body">
                             <ul class="list-group">

@@ -39,7 +39,7 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Coupon code') }} :</label>
                                                 <input type="file" name="coupons" class="form-control"  value="{{old('coupons')}}" required />
                                                 @if ($errors->has('coupons'))
@@ -49,7 +49,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <label>* {{ _('Offer') }} :</label>
                                                 <select class="form-control select2" id="kt_select_offer_id" name="offer_id" required >
                                                     @foreach($offers as $offer)
@@ -61,6 +61,11 @@
                                                         <p class="invalid-input">{{ $errors->first('offer_id') }}</p>
                                                     </div>
                                                 @endif
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <br>
+                                                <a href="{{ asset('dashboard/excel-sheets-examples/coupons.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
                                             </div>
                                         </div>
 

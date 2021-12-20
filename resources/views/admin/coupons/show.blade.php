@@ -30,7 +30,7 @@
                                                 <input class="form-control" disabled  value="{{$coupon->offer->name}}" />
                                             </div>
                                             <div class="col-lg-4">
-                                                <label>{{ __('User Name') }}</label>
+                                                <label>{{ __('Publisher Name') }}</label>
                                                 <input class="form-control" disabled  value="{{$coupon->user?$coupon->user->name:''}}" />
                                             </div>
                                         </div>
