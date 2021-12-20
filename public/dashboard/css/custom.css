@@ -30,11 +30,15 @@ table.dataTable {
     table-layout: fixed;
     position: relative;
 }
-table.loading::after {
+.table-loading {
+    height: 745px;
+    position: relative;
+}
+.table-loading::after {
     content: "";
     display: block;
     position: absolute;
-    top: -40px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -43,6 +47,13 @@ table.loading::after {
     pointer-events: none;
     background: #fff url("../images/preloader.gif") no-repeat center;
     border-radius: calc(0.42rem - 1px);
+    visibility: visible;
+    transition: opacity 2s linear;
+}
+
+.table-loading table {
+    visibility: hidden;
+    position: absolute;
 }
 .btn-xs:not(.btn-icon) {
     padding: 0.18rem 1rem;

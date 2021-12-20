@@ -41,6 +41,9 @@
                     serverSide: true,
                     ajax: $(mh.table).data('action'),
                     //columns: {!! json_encode($columns) !!}
+                    "initComplete": function( settings, json ) {
+                       $('.table-loading').removeClass('table-loading')
+                    }
                 }),
                 elem = '',
                 column = '';

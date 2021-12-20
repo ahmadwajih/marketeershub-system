@@ -20,7 +20,8 @@
         ['label' => __('Action'), 'data'=> 'action', 'disabled'=> true, 'checked' => true],
     ];
 //dd(json_encode($columns));
-    $thead = ''; $dtColumns = [];
+    $thead = '';
+    $dtColumns = [];
 @endphp
 @section('content')
     <!--begin::Entry-->
@@ -60,13 +61,13 @@
                                         <div class="row">
                                             @foreach($columns as $key=>$column)
 
-                                                    @php
-                                                        $thead .= '<th>'.$column['label'].'</th>';
-                                                     $dtColumns[] = [
-                                                         'name' =>$column['data'],
-                                                         'data' =>$column['data'],
-                                                         ];
-                                                    @endphp
+                                                @php
+                                                 $thead .= '<th>'.$column['label'].'</th>';
+                                                 $dtColumns[] = [
+                                                     'name' =>$column['data'],
+                                                     'data' =>$column['data'],
+                                                     ];
+                                                @endphp
 
                                                 @continue(isset($column['disabled']))
                                                 <div class="col-md-6">
@@ -166,28 +167,7 @@
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <div class="mb-7">
-                        <div class="row align-items-center">
-                            {{-- <div class="col-lg-9 col-xl-8">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4 my-2 my-md-0">
-                                        <div class="input-icon">
-                                            <input type="text" class="form-control" placeholder="بــحــث ..." id="kt_datatable_search_query" />
-                                            <span>
-                                                <i class="flaticon2-search-1 text-muted"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div> --}}
-                            {{-- <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
-                                <a href="#" class="btn btn-light-primary px-6 font-weight-bold">بــحــث</a>
-                            </div> --}}
-
-                        </div>
-                    </div>
+                <div class="card-body table-loading">
                     <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($dtColumns)) !!}" data-action="{{ route('admin.publishers.index') }}">
                         <thead>
                         <tr>
