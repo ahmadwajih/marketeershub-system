@@ -37,7 +37,7 @@ class CouponController extends Controller
         $this->authorize('create_coupons');
         return view('admin.coupons.create',[
             'offers' => Offer::whereStatus("active")->get(),
-            'users' => User::whereStatus("active")->whereIn('position', ['team_leader','account_manager','publisher'])->whereIn('team', ['media_buying','influencer','affiliate'])->get(),
+            'users' => User::whereStatus("active")->whereIn('position', ['publisher'])->whereIn('team', ['media_buying','influencer','affiliate', 'prepaid'])->get(),
         ]);
     }
 
@@ -94,7 +94,7 @@ class CouponController extends Controller
         return view('admin.coupons.edit', [
             'coupon' => $coupon,
             'offers' => Offer::whereStatus("active")->get(),
-            'users' => User::whereStatus("active")->whereIn('position', ['team_leader','account_manager','publisher'])->whereIn('team', ['media_buying','influencer','affiliate'])->get(),
+            'users' => User::whereStatus("active")->whereIn('position', ['publisher'])->whereIn('team', ['media_buying','influencer','affiliate', 'prepaid'])->get(),
         
         ]);
     }

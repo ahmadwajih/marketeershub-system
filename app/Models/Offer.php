@@ -12,10 +12,10 @@ class Offer extends Model
     use HasFactory;
     protected $guarded = [];
     protected $append = [
-        'name_ar',
-        'description_ar',
-        'note_ar',
-        'terms_and_conditions_ar',
+        'name',
+        'description',
+        'note',
+        'terms_and_conditions',
     ];
 
     public function getNameAttribute(){

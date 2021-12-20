@@ -35,12 +35,12 @@ class PublisherController extends Controller
 
         if ($request->ajax()) {
             if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
-                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
+                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories', 'offers', 'socialMediaLinks')->where(function ($query) {
                     $query->where('parent_id', '=' ,auth()->user()->id)
                         ->orWhere('parent_id', '=', null);
                 });
             }else{
-                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories');
+                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories', 'offers', 'socialMediaLinks');
             }
             return Datatables::of($data)
                     ->addIndexColumn()
