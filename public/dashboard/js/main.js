@@ -18,11 +18,11 @@
         toggleColumn: function (event) {
             event.preventDefault();
             mh.dataColumn($(event.target));
-           // var val = event.target.value;
-          //  mh.columns('set', [{key:val}])
+            // var val = event.target.value;
+            //  mh.columns('set', [{key:val}])
         },
 
-/*
+        /*
         columns: function(type, data){
             if (type === 'set') {
                 var getS = localStorage.getItem('pub_cols');
@@ -33,11 +33,17 @@
                 return localStorage.getItem('pub_cols') ? JSON.parse(localStorage.getItem('pub_cols')) : [];
             }
         },
-*/
+        */
 
         eachColumn: function () {
-            var table = mh.table.DataTable(),
-                elem = '', column = '';
+            var table = mh.table.DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: $(mh.table).data('action'),
+                    //columns: {!! json_encode($columns) !!}
+                }),
+                elem = '',
+                column = '';
             mh.column.each(function (i) {
                 elem = mh.column[i];
                 column = table.column(elem.value + ':name');
@@ -73,9 +79,8 @@
 
     $(document).ready(function () {
         mh.init();
-    })
-        .on('click', '.card-header .dropdown-menu', function (e) {
-            e.stopPropagation();
-        });
+    }).on('click', '.card-header .dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
 
 })(jQuery);

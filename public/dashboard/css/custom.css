@@ -29,7 +29,6 @@ table.dataTable {
     width: 100% !important;
     table-layout: fixed;
     position: relative;
-    height: 540px;
 }
 table.loading::after {
     content: "";
