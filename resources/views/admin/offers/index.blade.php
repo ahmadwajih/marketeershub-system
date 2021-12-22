@@ -99,7 +99,8 @@
                                     <td>@foreach($offer->countries as $country) {{$country->name_en}} @if(!$loop->last),@endif @endforeach</td>
                                     <td>  {{ $offer->discount }} {{ $offer->discount_type == 'percentage'?'%':'' }}</td>
                                     <td>
-                                        @if(in_array($offer->id, $offerRequestsArray))
+                                        @can('create_offer_requests')
+                                            @if(in_array($offer->id, $offerRequestsArray))
                                             {{-- Check if request is exists --}}
                                             @if(getOfferRequest($offer->id))
                                                 {{-- Check if status approved --}}
@@ -119,16 +120,17 @@
                                                     <button class="rounded btn btn-danger btn-xs mr-2">{{ __('Rejected') }}</button>
                                                 @endif
                                             @endif
-                                        @else
-                                            @if($offer->type == 'link_tracking')
-                                                <button class="rounded requestOffer btn btn-warning btn-xs mr-2" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Link') }}</button>
-                                            @elseif($offer->type == 'coupon_tracking')
-                                                <button class="rounded requestOffer btn btn-warning btn-xs mr-2 request-coupons" data-offer="{{ $offer->id }}">{{ __('Request Coupons') }}</button>
+                                            @else
+                                                @if($offer->type == 'link_tracking')
+                                                    <button class="rounded requestOffer btn btn-warning btn-xs mr-2" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Link') }}</button>
+                                                @elseif($offer->type == 'coupon_tracking')
+                                                    <button class="rounded requestOffer btn btn-warning btn-xs mr-2 request-coupons" data-offer="{{ $offer->id }}">{{ __('Request Coupons') }}</button>
+                                                @endif
                                             @endif
-                                        @endif
-                                        @if($update)
+                                        @endcan
+                                        @can('update_offers')
                                             <a class="edit-offer btn btn-icon btn-success btn-xs mr-2" href="{{ route('admin.offers.edit', $offer->id) }}"><i class="fas fa-pen"></i></a>
-                                        @endif
+                                        @endcan
                                         <a class="show-offer btn btn-icon btn-success btn-xs" href="{{ route('admin.offers.show', $offer->id) }}"><i class="fas fa-eye"></i></a>
                                     </td>
                                 </tr>

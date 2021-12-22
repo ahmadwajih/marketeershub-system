@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Coupon;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
@@ -19,13 +20,26 @@ class CouponImport implements ToCollection
 */
     public function collection(Collection $collection)
     {
+        unset($collection[0]);
         foreach ($collection as $col) 
         {
-            if(!is_null($col[0])){
-                Coupon::create([
-                    'coupon' => $col[0],
-                    'offer_id' => $this->offerId,
-                ]);
+            if(!is_null($col[1])){
+                $userId = null;
+                if(!is_null($col[0])){
+                    $publisher = User::where('ho_id', $col[0])->first();
+                    if($publisher){
+                        $userId = $publisher->id;
+                    }
+                }
+    
+                Coupon::updateOrCreate(
+                    [
+                        'coupon' => $col[1],
+                        'offer_id' => $this->offerId,
+                    ],
+                    [
+                        'user_id' => $userId,
+                    ]);
             }
             
         }

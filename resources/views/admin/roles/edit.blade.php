@@ -57,7 +57,7 @@
                                                     <span class="switch switch-icon mx-auto text-center"
                                                             style="width:fit-content">
                                                         <label>
-                                                            <input type="checkbox" {{ (old('view_dashboard') ?: $abilitiy_role->contains(App\Models\Ability::whereName('view_dashboard')->first()))? 'checked' : '' }} name="{{ __('View Main Dashboard') }}"/>
+                                                            <input type="checkbox" {{ (old('view_dashboard') ?: $abilitiy_role->contains(App\Models\Ability::whereName('view_dashboard')->first()))? 'checked' : '' }} name="view_dashboard"/>
                                                             <span></span>
                                                         </label>
                                                     </span>

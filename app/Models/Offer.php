@@ -84,4 +84,15 @@ class Offer extends Model
     public function users(){
         return $this->belongsToMany(User::class)->withTimestamps();
     }
+
+    public function influencersCoupons(){
+        return Coupon::whereOfferId($this->id)->whereHas('user', function($q)  {
+            $q->whereTeam('influencer');
+        })->get();
+    }
+
+    public function influencers(){
+
+    }
+
 }
