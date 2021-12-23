@@ -42,21 +42,12 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_type" name="type" >
-                                                    <option value="normal">{{ __('Normal') }}</option>
+                                                    <option value="update">{{ __('Update') }}</option>
                                                     <option value="validation">{{ __('Validation Report') }}</option>
                                                 </select>
                                                 @if ($errors->has('type'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('type') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <label>* {{ __('Upload Pivot Report') }} :</label>
-                                                <input type="file" name="report" class="form-control"  value="{{old('report')}}" required />
-                                                @if ($errors->has('report'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('report') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -73,6 +64,33 @@
                                                         <p class="invalid-input">{{ $errors->first('offer_id') }}</p>
                                                     </div>
                                                 @endif
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <label>* {{ __('Date') }} :</label>
+                                                <input type="date" name="date" class="form-control"  value="{{old('date')}}" required />
+                                                @if ($errors->has('date'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('date') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-9">
+                                                <label>* {{ __('Upload Pivot Report') }} :</label>
+                                                <input type="file" name="report" class="form-control"  value="{{old('report')}}" required />
+                                                @if ($errors->has('report'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('report') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <br>
+                                                <a href="{{ asset('dashboard/excel-sheets-examples/pivot.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
                                             </div>
                                         </div>
 

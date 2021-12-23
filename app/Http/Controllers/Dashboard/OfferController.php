@@ -29,7 +29,7 @@ class OfferController extends Controller
         $update = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offers = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
-        return view('admin.offers.index', compact('offers', 'offerRequestsArray', 'update'));
+        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
     }
     /**
      * Display a listing of the resource.
@@ -42,7 +42,7 @@ class OfferController extends Controller
         $offers = auth()->user()->offers;
         $update = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
-        return view('admin.offers.index', compact('offers', 'offerRequestsArray', 'update'));
+        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
     }
     
     /**

@@ -13,9 +13,11 @@ class PivotReportImport implements ToCollection
 {
     public $offerId;
 
-    public function __construct($offerId)
+    public function __construct($offerId, $type, $date)
     {
         $this->offerId = $offerId;
+        $this->type = $type;
+        $this->date = $date;
     }
 
     /**
@@ -26,13 +28,13 @@ class PivotReportImport implements ToCollection
         unset($collection[0]);
         foreach ($collection as $index => $col) 
         {
-            Validator::make($collection->toArray(), [
-                '*.0' => 'nullable|max:255',
-                '*.1' => 'nullable|numeric',
-                '*.2' => 'nullable|numeric',
-                '*.3' => 'nullable|numeric',
-                '*.4' => 'nullable|numeric',
-            ])->validate();
+            // Validator::make($collection->toArray(), [
+            //     '*.0' => 'nullable|max:20',
+            //     '*.1' => 'nullable|numeric',
+            //     '*.2' => 'nullable|numeric',
+            //     '*.3' => 'nullable|numeric',
+            //     '*.4' => 'nullable|numeric',
+            // ])->validate();
 
             if(!is_null($col[0])){
                 $coupon  = Coupon::firstOrCreate([
@@ -40,14 +42,17 @@ class PivotReportImport implements ToCollection
                     'offer_id' => $this->offerId,
                 ]);
 
-                $pivotReport  = PivotReport::where('coupon_id', $coupon->id)->first();
+                $pivotReport  = PivotReport::where([
+                    ['coupon_id', '=',$coupon->id],
+                    ['date', '=',$this->date],
+                ])->first();
                 if($pivotReport){
                     $pivotReport->update([
-                        'coupon_id' => $coupon->id,
                         'orders' => $col[1],
                         'sales' => $col[2],
                         'revenue' => $col[3],
                         'payout' => $col[4],
+                        'type' => $this->type,
                     ]);
                 }else{
                     PivotReport::create([
@@ -56,8 +61,12 @@ class PivotReportImport implements ToCollection
                         'sales' => $col[2],
                         'revenue' => $col[3],
                         'payout' => $col[4],
+                        'type' => $this->type,
+                        'date' => $this->date,
                     ]);
                 }
+                
+                
                 
             }
         }

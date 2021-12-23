@@ -21,10 +21,6 @@ class CreatePivotReportsTable extends Migration
             $table->double('sales')->nullable();
             $table->double('revenue')->nullable();
             $table->double('payout')->nullable();
-            $table->integer('v_orders')->nullable();
-            $table->double('v_sales')->nullable();
-            $table->double('v_payout')->nullable();
-
             $table->timestamps();
         });
     }

@@ -72,7 +72,6 @@ class RoleController extends Controller
                 }
             }
             userActivity('Role', $role->id, 'create');
-
             $notification = array(
                 'message' => 'Created Succefuly ',
                 'alert-type' => 'success'
@@ -127,7 +126,7 @@ class RoleController extends Controller
         foreach($abilities as $ability){
             if (request($ability->name) == "on" && !$role->abilities->contains($ability)){
                 $role->allowTo($ability);
-            }elseif (!isset($request[$ability->name]) && $role->abilities->contains($ability)){
+            }elseif(!isset($request[$ability->name]) && $role->abilities->contains($ability)){
                 $role->disallowTo($ability);
             }
 

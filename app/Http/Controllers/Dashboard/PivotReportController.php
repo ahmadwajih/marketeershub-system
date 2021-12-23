@@ -54,15 +54,15 @@ class PivotReportController extends Controller
         $this->authorize('create_pivot_report');
         $request->validate([
             'offer_id' => 'required|numeric|exists:offers,id',
+            'type' => 'required|in:update,validation',
+            'date' => 'required|date',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        if($request->type=='normal'){
-            Excel::import(new PivotReportImport($request->offer_id),request()->file('report'));
-        }else{
-            Excel::import(new ValidationPivotReportImport($request->offer_id),request()->file('report'));
+        Excel::import(new PivotReportImport($request->offer_id, $request->type, $request->date),request()->file('report'));
+
+        if($request->type=='validation'){
             $offer = Offer::findOrFail($request->offer_id);
             Notification::send($offer->users, new UpdateValidation($offer));
-
         }
         userActivity('PivotReport', null, 'upload');
 
