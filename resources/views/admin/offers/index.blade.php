@@ -132,6 +132,9 @@
                                             <a class="edit-offer btn btn-icon btn-success btn-xs mr-2" href="{{ route('admin.offers.edit', $offer->id) }}"><i class="fas fa-pen"></i></a>
                                         @endcan
                                         <a class="show-offer btn btn-icon btn-success btn-xs" href="{{ route('admin.offers.show', $offer->id) }}"><i class="fas fa-eye"></i></a>
+                                        @can('delete_offers')
+                                            <button class="delete btn btn-icon btn-danger btn-xs mr-2" data-offer="{{ $offer->id }}"><i class="fas fa-trash"></i></button>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
@@ -273,5 +276,54 @@
 
         });
     </script>
-    
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.delete').on('click', function () {
+                var offerId = $(this).data('offer');
+                Swal.fire({
+                    title: "{{ __('Are you sure?') }}",
+                    text: '{{ "You won`t be able to revert this!" }}',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#dd3333',
+                    confirmButtonText: '{{ __("Yes, Delete!") }}'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'delete',
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            url: "{{ route('admin.offers.index') }}/"+offerId,
+                            error: function (err) {
+                                if (err.hasOwnProperty('responseJSON')) {
+                                    if (err.responseJSON.hasOwnProperty('message')) {
+                                        swal.fire({
+                                            title: "Error !",
+                                            text: err.responseJSON.message,
+                                            confirmButtonText: "Ok",
+                                            icon: "error",
+                                            confirmButtonClass: "btn font-weight-bold btn-primary",
+                                        });
+                                    }
+                                }
+                            }
+                        }).done(function (res) {
+                            Swal.fire({
+                                text: "Deleted successfully ",
+                                confirmButtonText: "Okay",
+                                icon: "success",
+                                confirmButtonClass: "btn font-weight-bold btn-primary",
+                            }).then((result) => {
+                                location.reload();
+                            });
+
+                        });
+
+                    }
+                })
+            })
+        })
+    </script>
 @endpush
