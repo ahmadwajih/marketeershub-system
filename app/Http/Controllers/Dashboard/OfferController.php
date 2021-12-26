@@ -80,10 +80,15 @@ class OfferController extends Controller
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
             'type' => 'required|in:coupon_tracking,link_tracking',
-            'payout_type' => 'required|in:cps_flat,cps_percentage',
             'cps_type' => 'required|in:static,new_old,slaps',
+            'payout_type' => 'required_if:cps_type,static|in:flat,percentage',
+            'revenue_type' => 'required_if:cps_type,static|in:flat,percentage',
             'payout' => 'required_if:cps_type,static|nullable|numeric',
             'revenue' => 'required_if:cps_type,static|nullable|numeric',
+            'new_payout' => 'required_if:cps_type,new_old|nullable|numeric',
+            'new_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
+            'old_payout' => 'required_if:cps_type,new_old|nullable|numeric',
+            'old_revenue' => 'required_if:cps_type,new_old|nullable|numeric',            
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'required|date|after:yesterday',
             'note' => 'nullable',
@@ -102,6 +107,10 @@ class OfferController extends Controller
         }
         unset($data['categories']);
         unset($data['countries']);
+        unset($data['new_payout']);
+        unset($data['new_revenue']);
+        unset($data['old_payout']);
+        unset($data['old_revenue']);
         $data['thumbnail'] = $thumbnail;
         $data['payout'] = $request->cps_type=='static'?$request->payout:null;
         $data['revenue'] = $request->cps_type=='static'?$request->revenue:null;
@@ -126,6 +135,10 @@ class OfferController extends Controller
                 'new_revenue' => $request->new_revenue,
                 'old_payout' => $request->old_payout,
                 'old_revenue' => $request->old_revenue,
+                'new_payout_type' => $request->new_payout_type,
+                'new_revenue_type' => $request->new_revenue_type,
+                'old_payout_type' => $request->old_payout_type,
+                'old_revenue_type' => $request->old_revenue_type,
                 'offer_id' => $offer->id,
             ]);
         }
@@ -205,10 +218,15 @@ class OfferController extends Controller
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
             'type' => 'required|in:coupon_tracking,link_tracking',
-            'payout_type' => 'required|in:cps_flat,cps_percentage',
             'cps_type' => 'required|in:static,new_old,slaps',
+            'payout_type' => 'required|in:flat,percentage',
+            'revenue_type' => 'required|in:flat,percentage',
             'payout' => 'required_if:cps_type,static|nullable|numeric',
             'revenue' => 'required_if:cps_type,static|nullable|numeric',
+            'new_payout' => 'required_if:cps_type,new_old|nullable|numeric',
+            'new_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
+            'old_payout' => 'required_if:cps_type,new_old|nullable|numeric',
+            'old_revenue' => 'required_if:cps_type,new_old|nullable|numeric',  
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'required|date|after:yesterday',
             'note' => 'nullable',
@@ -228,6 +246,11 @@ class OfferController extends Controller
 
         unset($data['categories']);
         unset($data['countries']);
+        unset($data['new_payout']);
+        unset($data['new_revenue']);
+        unset($data['old_payout']);
+        unset($data['old_revenue']);
+
         $data['thumbnail'] = $thumbnail;
         $data['payout'] = $request->cps_type=='static'?$request->payout:null;
         $data['revenue'] = $request->cps_type=='static'?$request->revenue:null;
@@ -244,17 +267,23 @@ class OfferController extends Controller
         }
         // If cps is new old
         if($request->cps_type == 'new_old'){
-            NewOldOffer::create([
+            NewOldOffer::updateOrCreate([
+                'offer_id' => $offer->id,
+            ],[
                 'new_payout' => $request->new_payout,
                 'new_revenue' => $request->new_revenue,
                 'old_payout' => $request->old_payout,
                 'old_revenue' => $request->old_revenue,
-                'offer_id' => $offer->id,
+                'new_payout_type' => $request->new_payout_type,
+                'new_revenue_type' => $request->new_revenue_type,
+                'old_payout_type' => $request->old_payout_type,
+                'old_revenue_type' => $request->old_revenue_type,
             ]);
         }
 
         // If cps is slaps 
         if($request->cps_type == 'slaps'){
+            $offer->slaps->detach();
             foreach($request->slaps as $slap){
                 OfferSlap::create([
                     'slap_type' => $slap['slap_type'],

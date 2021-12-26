@@ -5,7 +5,6 @@
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
-
             <!--begin::Card-->
             <div class="row">
                 <div class="col-lg-12">
@@ -27,7 +26,7 @@
                                             </div>
                                             <div class="col-lg-4">
                                                 <label>{{ __('Offer') }}</label>
-                                                <input class="form-control" disabled  value="{{$coupon->offer->name}}" />
+                                                <input class="form-control" disabled  value="{{$coupon->offer?$coupon->offer->name:''}}" />
                                             </div>
                                             <div class="col-lg-4">
                                                 <label>{{ __('Publisher Name') }}</label>

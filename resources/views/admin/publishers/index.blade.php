@@ -1,4 +1,5 @@
-@extends('admin.layouts.app')@section('title','Publishers')
+@extends('admin.layouts.app')
+@section('title','Publishers')
 @push('styles')
     {{--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">--}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">

@@ -88,16 +88,6 @@
                                                     </div>
                                                 @endif
                                             </div>
-
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Offer Name EN') }} :</label>
-                                                <input type="text" name="name_en" class="form-control"  value="{{old('name_en')}}" required/>
-                                                @if ($errors->has('name_en'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('name_en') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
                                         </div>
 
                                         <div class="form-group row">
@@ -132,11 +122,20 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-lg-12">
-                                                <label>* {{ __('Description') }} :</label>
-                                                <textarea class="form-control" name="description" cols="30" rows="10">{{old('description')}}</textarea>
-                                                @if ($errors->has('description'))
+                                                <label>الوصف باللغة العربية :</label>
+                                                <textarea class="form-control" name="description_ar" cols="30" rows="10">{{old('description_ar')}}</textarea>
+                                                @if ($errors->has('description_ar'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('description') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('description_ar') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <label>Description In English :</label>
+                                                <textarea class="form-control" name="description_en" cols="30" rows="10">{{old('description_en')}}</textarea>
+                                                @if ($errors->has('description_en'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('description_en') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -194,18 +193,7 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Payout Type') }} :</label>
-                                                <select class="form-control select2" id="kt_select_payout_type" name="payout_type" >
-                                                    <option {{ old('payout_type')=="cps_flat"?"selected":"" }} value="cps_flat">{{ __('CPS Flat') }}</option>
-                                                    <option {{ old('payout_type')=="cps_percentage"?"selected":"" }} value="cps_percentage">{{ __('CPS Percentage') }}</option>
-                                                </select>
-                                                @if ($errors->has('payout_type'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('payout_type') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                            
                                             <div class="col-lg-6">
                                                 <label>* {{ __('CPS Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_cps_type" name="cps_type" >
@@ -221,35 +209,66 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group row" id="static">
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Revenu') }} :</label>
-                                                <input type="number" step="0.1" name="revenue" class="form-control" value="{{old('revenue')}}" />
-                                                @if ($errors->has('revenue'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('revenue') }}</p>
-                                                    </div>
-                                                @endif
+                                        <div id="static">
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Revenue Type') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_revenue_type" name="revenue_type" >
+                                                        <option {{ old('revenue_type')=="flat"?"selected":"" }} value="flat">{{ __('Flat') }}</option>
+                                                        <option {{ old('revenue_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('revenue_type'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('revenue_type') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Revenue') }} :</label>
+                                                    <input type="number" step="0.1" name="revenue" class="form-control" value="{{old('revenue')}}" />
+                                                    @if ($errors->has('revenue'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('revenue') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Payout') }} :</label>
-                                                <input type="number" step="0.1" name="payout" class="form-control" value="{{old('payout')}}" />
-                                                @if ($errors->has('payout'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('payout') }}</p>
-                                                    </div>
-                                                @endif
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Payout Type') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_payout_type" name="payout_type" >
+                                                        <option {{ old('payout_type')=="flat"?"selected":"" }} value="flat">{{ __('Flat') }}</option>
+                                                        <option {{ old('payout_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('payout_type'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('payout_type') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Payout') }} :</label>
+                                                    <input type="number" step="0.1" name="payout" class="form-control" value="{{old('payout')}}" />
+                                                    @if ($errors->has('payout'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('payout') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                         
                                         <div id="oldNew">
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
-                                                    <label>* {{ __('New Payout') }} :</label>
-                                                    <input type="number" step="0.1" name="new_payout" placeholder="10" class="form-control" value="{{old('new_payout')}}" />
-                                                    @if ($errors->has('new_payout'))
+                                                    <label>* {{ __('New Revenue Type') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_new_revenue_type" name="new_revenue_type" >
+                                                        <option {{ old('new_revenue_type')=="flat"?"selected":"" }} value="flat">{{ __('Flat') }}</option>
+                                                        <option {{ old('new_revenue_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('new_revenue_type'))
                                                         <div>
-                                                            <p class="invalid-input">{{ $errors->first('new_payout') }}</p>
+                                                            <p class="invalid-input">{{ $errors->first('new_revenue_type') }}</p>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -262,12 +281,41 @@
                                                         </div>
                                                     @endif
                                                 </div>
+                                            </div>
+
+                                            <div class="form-group row">
                                                 <div class="col-lg-6">
-                                                    <label>* {{ __('Old Payout') }} :</label>
-                                                    <input type="number" step="0.1" name="old_payout" placeholder="10" class="form-control" value="{{old('old_payout')}}" />
-                                                    @if ($errors->has('old_payout'))
+                                                    <label>* {{ __('New Payout Type') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_new_payout_type" name="new_payout_type" >
+                                                        <option {{ old('new_payout_type')=="flat"?"selected":"" }} value="flat">{{ __('Flat') }}</option>
+                                                        <option {{ old('new_payout_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('new_payout_type'))
                                                         <div>
-                                                            <p class="invalid-input">{{ $errors->first('old_payout') }}</p>
+                                                            <p class="invalid-input">{{ $errors->first('new_payout_type') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('New Payout') }} :</label>
+                                                    <input type="number" step="0.1" name="new_payout" placeholder="10" class="form-control" value="{{old('new_payout')}}" />
+                                                    @if ($errors->has('new_payout'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('new_payout') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Old Revenue Type') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_old_revenue_type" name="old_revenue_type" >
+                                                        <option {{ old('old_revenue_type')=="flat"?"selected":"" }} value="flat">{{ __('Flat') }}</option>
+                                                        <option {{ old('old_revenue_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('old_revenue_type'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('old_revenue_type') }}</p>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -277,6 +325,30 @@
                                                     @if ($errors->has('old_revenue'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('old_revenue') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Old Payout Type') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_old_payout_type" name="old_payout_type" >
+                                                        <option {{ old('old_payout_type')=="flat"?"selected":"" }} value="flat">{{ __('Flat') }}</option>
+                                                        <option {{ old('old_payout_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                                                    </select>
+                                                    @if ($errors->has('old_payout_type'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('old_payout_type') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Old Payout') }} :</label>
+                                                    <input type="number" step="0.1" name="old_payout" placeholder="10" class="form-control" value="{{old('old_payout')}}" />
+                                                    @if ($errors->has('old_payout'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('old_payout') }}</p>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -455,6 +527,9 @@
         $('#kt_select_categories').select2({
             placeholder: "Select Option",
         });
+        $('#kt_select_revenue_type').select2({
+            placeholder: "Select Option",
+        });
         $('#kt_select_payout_type').select2({
             placeholder: "Select Option",
         });
@@ -462,6 +537,18 @@
             placeholder: "Select Option",
         });
         $('#kt_select_discount_type').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_new_revenue_type').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_new_payout_type').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_old_revenue_type').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_old_payout_type').select2({
             placeholder: "Select Option",
         });
 
