@@ -40,8 +40,8 @@ class UserController extends Controller
 
             $response['errors'] = $validator->messages();
             $response['success']  = false;
-            return $response;
-        } 
+            return response()->json($response);
+        }
 
         $data = [
             'name' => $request->first_name . ' ' . $request->last_name,
@@ -56,7 +56,7 @@ class UserController extends Controller
 
         Advertiser::create($data);
         $response['success']  = true;
-        return $response;
+        return response()->json($response);
 
     }
 
@@ -88,9 +88,9 @@ class UserController extends Controller
 
             $response['errors'] = $validator->messages();
             $response['success']  = false;
-            return $response;
+            return response()->json($response);
         }
-        
+
         $data = [
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
@@ -114,7 +114,7 @@ class UserController extends Controller
         $user->roles()->attach(Role::findOrFail(4));
         $response['success']  = true;
 
-        return $response;
+        return response()->json($response);
     }
 
     public function registerInfluencer(Request $request)
@@ -164,7 +164,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             $response['errors'] = $validator->messages();
             $response['success']  = false;
-            return $response;
+            return response()->json($response);
         }
 
         $data = [
@@ -190,7 +190,7 @@ class UserController extends Controller
         $user->roles()->attach(Role::findOrFail(4));
         $response['success']  = true;
 
-        return $response;
+        return response()->json($response);
     }
 
 

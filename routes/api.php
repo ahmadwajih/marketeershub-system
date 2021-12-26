@@ -21,7 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['auth:sanctum'] , 'namespace' => 'Api'], function () {
     Route::get('order', 'OrderController@store');
     Route::get('order-update-status', 'OrderController@updateStatus');
-
     Route::post('register-merchant', 'UserController@registerAdvertiser');
     Route::post('register-affiliate', 'UserController@registerAffiliate');
     Route::post('register-influencer', 'UserController@registerInfluencer');
