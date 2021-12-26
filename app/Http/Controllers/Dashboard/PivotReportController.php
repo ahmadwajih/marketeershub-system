@@ -70,7 +70,7 @@ class PivotReportController extends Controller
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.pivot-report.index');
+        return redirect()->back()->with($notification);
     }
 
 

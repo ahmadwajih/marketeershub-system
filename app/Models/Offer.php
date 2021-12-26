@@ -18,6 +18,33 @@ class Offer extends Model
         'terms_and_conditions',
     ];
 
+    // protected static $relations_to_cascade = ['coupons', 'newOld', 'slaps', 'categories', 'countries']; 
+
+    // protected static function boot(){
+    //     parent::boot();
+    //     static::deleting(function($resource) {
+    //         foreach (static::$relations_to_cascade as $relation) {
+    //             foreach ($resource->{$relation}()->get() as $item) {
+    //                 $item->delete();
+    //             }
+    //         }
+    //     });
+
+    //     static::restoring(function($resource) {
+    //         foreach (static::$relations_to_cascade as $relation) {
+    //             $resource->$relation()->withTrashed()->restore();
+    //         }
+            
+    //     });
+
+    //     static::forceDeleted(function($resource) {
+    //         foreach (static::$relations_to_cascade as $relation) {
+    //             $resource->$relation()->withTrashed()->forceDelete();
+    //         }
+    //     });
+    // }
+
+
     public function getNameAttribute(){
         return $this->attributes['name_'. app()->getLocale()];
     }

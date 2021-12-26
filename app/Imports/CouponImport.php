@@ -6,7 +6,7 @@ use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
-
+use Illuminate\Support\Facades\Validator;
 class CouponImport implements ToCollection
 {
     public $offerId;
@@ -20,25 +20,25 @@ class CouponImport implements ToCollection
 */
     public function collection(Collection $collection)
     {
-        unset($collection[0]);
+        // unset($collection[0]);
         foreach ($collection as $col) 
         {
-            if(!is_null($col[1])){
-                $userId = null;
-                if(!is_null($col[0])){
-                    $publisher = User::where('ho_id', $col[0])->first();
-                    if($publisher){
-                        $userId = $publisher->id;
-                    }
-                }
+            if(!is_null($col[0])){
+                // $userId = null;
+                // if(!is_null($col[0])){
+                //     $publisher = User::where('ho_id', $col[0])->first();
+                //     if($publisher){
+                //         $userId = $publisher->id;
+                //     }
+                // }
     
                 Coupon::updateOrCreate(
                     [
-                        'coupon' => $col[1],
+                        'coupon' => $col[0],
                         'offer_id' => $this->offerId,
                     ],
                     [
-                        'user_id' => $userId,
+                        
                     ]);
             }
             

@@ -16,6 +16,9 @@
                         <form class="form" id="kt_form" action="{{route('admin.pivot-report.store')}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
+                                @if(session()->has('message'))
+                                    @include('admin.layouts.templates.success')
+                                @endif
                                 @if ($errors->any())
                                 <div class="alert alert-custom alert-light-danger" role="alert" id="kt_form_2_msg" >
                                     <div class="alert-icon">
@@ -65,10 +68,10 @@
                                                     </div>
                                                 @endif
                                             </div>
-
+                                            
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Date') }} :</label>
-                                                <input type="date" name="date" class="form-control"  value="{{old('date')}}" required />
+                                                <input type="date" name="date" class="form-control"  value="{{ old('date')??Carbon\Carbon::now()->format('Y-m-d') }}" required />
                                                 @if ($errors->has('date'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('date') }}</p>
