@@ -264,3 +264,39 @@ table.dataTable td.dataTables_empty {
     background-color: #3699ff;
     color: #ffffff;
 }
+/* New Form */
+.new-form .select2-container--default .select2-selection,
+.new-form .form-control {
+    font-size: 14px;
+    border: none;
+    border-bottom-color: currentcolor;
+    border-bottom-style: none;
+    border-bottom-width: medium;
+    border-bottom: 1px solid #97A2B2;
+    border-radius: 0;
+    height: 34px;
+    line-height: 34px;
+    padding: 0;
+    margin: 0 0 30px;
+    min-width: 200px;
+}
+.new-form .select2-container--default .select2-selection {
+    height: auto;
+}
+.new-form textarea.form-control {
+    height: 60px;
+}
+.new-form .image-input.image-input-circle [data-action="cancel"],
+.new-form .image-input.image-input-circle [data-action="remove"],
+.new-form .image-input.image-input-circle [data-action="change"] {
+    right: -10px;
+    top: -6px;
+    box-shadow: none;
+}
+.new-form .invalid-input {
+    position: absolute;
+    bottom: 0;
+}
+.new-form .form-group {
+    margin-bottom: 0;
+}
