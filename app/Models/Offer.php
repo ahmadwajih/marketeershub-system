@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class Offer extends Model
 {
@@ -110,16 +112,6 @@ class Offer extends Model
 
     public function users(){
         return $this->belongsToMany(User::class)->withTimestamps();
-    }
-
-    public function influencersCoupons(){
-        return Coupon::whereOfferId($this->id)->whereHas('user', function($q)  {
-            $q->whereTeam('influencer');
-        })->get();
-    }
-
-    public function influencers(){
-
     }
 
 }

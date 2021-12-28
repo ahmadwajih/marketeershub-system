@@ -88,10 +88,10 @@
                                             <div class="col-lg-8" style="max-height: 400px !important;overflow: scroll;">
                                                 <table class="table table-bordered">
                                                     <tbody>
-                                                        @foreach($offerRequest->offer->coupons as $coupon)
+                                                        @foreach($coupons as $coupon)
                                                             <tr>
-                                                                <td width="2%"><input type="checkbox"  {{ $coupon->user_id==$offerRequest->user_id?'checked':'' }} name='coupons[]' value="{{ $coupon->id }}"></td>
-                                                                <td>{{ $coupon->coupon }}</td>
+                                                                <td width="2%"><input id="coupon{{ $coupon->id }}" type="checkbox"  {{ $coupon->user_id==$offerRequest->user_id?'checked':'' }} name='coupons[]' value="{{ $coupon->id }}"></td>
+                                                                <td><label width="100%" for="coupon{{ $coupon->id }}">{{ $coupon->coupon }}</label></td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
