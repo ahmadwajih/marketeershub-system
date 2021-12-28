@@ -77,6 +77,7 @@ class AdvertiserController extends Controller
         ]);
 
         $data['exclusive'] = isset($request->exclusive)&&$request->exclusive == 'on' ? true : false;
+        $data['broker'] = isset($request->broker)&&$request->broker == 'on' ? true : false;
         unset($data['categories']);
 
         $advertiser = Advertiser::create($data);
@@ -156,6 +157,7 @@ class AdvertiserController extends Controller
         ]);
 
         $data['exclusive'] = isset($request->exclusive)&&$request->exclusive == 'on' ? true : false;
+        $data['broker'] = isset($request->broker)&&$request->broker == 'on' ? true : false;
         unset($data['categories']);
         userActivity('Advertiser', $advertiser->id, 'update', $data, $advertiser);
 

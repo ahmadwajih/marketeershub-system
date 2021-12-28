@@ -39,7 +39,7 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-5">
+                                            <div class="col-lg-4">
                                                 <label>* اسم الشركة باللغة العربية :</label>
                                                 <input type="text" name="company_name_ar" class="form-control"  value="{{old('company_name_ar')}}" />
                                                 @if ($errors->has('company_name_ar'))
@@ -50,7 +50,7 @@
                                             </div>
 
 
-                                            <div class="col-lg-5">
+                                            <div class="col-lg-4">
                                                 <label>* Company Name In English:</label>
                                                 <input type="text" name="company_name_en" class="form-control"  value="{{old('company_name_en')}}" />
                                                 @if ($errors->has('company_name_en'))
@@ -64,6 +64,16 @@
                                                 <span class="switch switch-icon">
                                                     <label>
                                                         <input type="checkbox" @if(old('exclusive') == 'on') checked="checked" @endif name="exclusive"/>
+                                                        <span></span>
+                                                    </label>
+                                                </span>
+                                            </div>
+
+                                            <div class="col-lg-2">
+                                                <label>{{ __('Broker') }}</label>
+                                                <span class="switch switch-icon">
+                                                    <label>
+                                                        <input type="checkbox" @if(old('broker') == 'on') checked="checked" @endif name="broker"/>
                                                         <span></span>
                                                     </label>
                                                 </span>
