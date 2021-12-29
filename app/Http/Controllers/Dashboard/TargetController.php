@@ -41,6 +41,7 @@ class TargetController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         $this->authorize('create_targets');
         $data = $request->validate([
             'name_en' => 'required|unique:targets|max:255',

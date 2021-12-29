@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','Countries')
+@section('title',__('Targets'))
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -10,10 +10,10 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">{{ __('Create New Country') }}</h2>
+                            <h2 class="card-title">{{ __('Create New Target') }}</h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" id="kt_form" action="{{route('admin.countries.store')}}" method = "POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{route('admin.targets.store')}}" method = "POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 @if ($errors->any())
