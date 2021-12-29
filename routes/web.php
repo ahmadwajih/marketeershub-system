@@ -69,6 +69,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('reports', ReportController::class);
         Route::resource('countries', CountryController::class);
         Route::resource('cities', CityController::class);
+        Route::resource('targets', TargetController::class);
         // User Activites
         Route::get('user-activities', 'UserActivityController@index')->name('user.activities.index');
 

@@ -214,6 +214,52 @@
                 {{--  End Advertisers --}}
                 @endcan
 
+                @can('view_targets') 
+                {{-- Start Targets  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='targets'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Targets') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Targets') }}</span>
+                                </span>
+                            </li>
+                            @can('view_targets')
+                            <li class="menu-item {{ Request::segment(2)=='targets'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.targets.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Targets') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_targets')
+                            <li class="menu-item {{ Request::segment(2)=='targets'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.targets.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Target') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                       
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Targets --}}
+                @endcan
+
                 <li class="menu-section">
                     <h4 class="menu-text">{{ __('Work environment') }}</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
