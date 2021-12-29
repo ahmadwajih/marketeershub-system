@@ -17,24 +17,26 @@ use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
-    public function index(){ 
-        
+    public function index(){
+
         $this->authorize('view_dashboard');
         $offers = Offer::whereHas('coupons', function($q)  {
             $q->whereHas('report');
         })->get();
 
-        $offer = $offers[0];
-        // This line to get all influncers coupons with in this offer 
-        $offer->influencersCoupons();
+        if(isset($offers[0])) {
+            $offer = $offers[0];
+            // This line to get all influncers coupons with in this offer
+            $offer->influencersCoupons();
+        }
 
         $affiliates = User::whereTeam('affiliate')->get();
         $influencers = User::whereTeam('influencer')->get();
         $media_buying = User::whereTeam('media_buying')->get();
-    
-        
 
-        
+
+
+
         $pendingTotalOrders = 0;
         $pendingTotalSales = 0;
         $pendingTotalPayout = 0;
@@ -67,7 +69,7 @@ class DashboardController extends Controller
     }
 
 
-    public function changeLang($lang){      
+    public function changeLang($lang){
         session(['lang' => $lang]);
         return redirect()->back();
     }

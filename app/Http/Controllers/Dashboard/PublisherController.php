@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Extended\MhDataTables;
 use App\Imports\PublisherImportV2;
 use App\Imports\PublishersImport;
 use App\Imports\UserImport;
@@ -20,6 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Category;
 use App\Models\Currency;
 use Illuminate\Support\Facades\Storage;
+use Matrix\Exception;
 use Yajra\DataTables\DataTables;
 
 class PublisherController extends Controller
@@ -34,24 +36,31 @@ class PublisherController extends Controller
         $this->authorize('view_publishers');
 
         if ($request->ajax()) {
-            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
-                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories', 'offers', 'socialMediaLinks')->where(function ($query) {
-                    $query->where('parent_id', '=' ,auth()->user()->id)
-                        ->orWhere('parent_id', '=', null);
-                });
-            }else{
-                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories', 'offers', 'socialMediaLinks');
-            }
-            return Datatables::of($data)
+            try {
+                if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])) {
+                    $data = User::select('*')
+                        ->wherePosition('publisher')
+                        ->with('parent', 'categories', 'offers', 'socialMediaLinks')
+                        ->where(function ($query) {
+                            $query
+                                ->where('parent_id', '=', auth()->user()->id)
+                                ->orWhere('parent_id', '=', null);
+                        });
+                } else {
+                    $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories', 'offers', 'socialMediaLinks');
+                }
+                return MhDataTables::of($data)
                     ->addIndexColumn()
-                    ->addColumn('action', function($row){
-     
-                           $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
-                           $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
-                            return $btn;
+                    ->addColumn('action', function ($row) {
+                        $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-sm">View</a>';
+                        $btn .= $row->parent ? $row->parent->name : " <button class='btn badge btn-success assignToMe' onclick='assignToMe(" . $row->id . ")'>" . __('Assign To Me') . "</button>";
+                        return $btn;
                     })
                     ->rawColumns(['action'])
                     ->make(true);
+            } catch (Exception $exception) {
+                dd($exception->getMessage());
+            }
         }
 
         return view('admin.publishers.index', [
@@ -142,7 +151,7 @@ class PublisherController extends Controller
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
-     
+
                            $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
                            $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
                             return $btn;
