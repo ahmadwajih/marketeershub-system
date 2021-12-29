@@ -106,10 +106,18 @@ $i = 1;
                         </table>
 
                     </div>
-                    <div class="tab-pane fade" id="overall" role="tabpanel" aria-labelledby="db-tabnav-tab-2">2</div>
-                    <div class="tab-pane fade" id="teamPerformance" role="tabpanel" aria-labelledby="db-tabnav-tab-3">3</div>
-                    <div class="tab-pane fade" id="publishersAnalytics" role="tabpanel" aria-labelledby="db-tabnav-tab-4">4</div>
-                    <div class="tab-pane fade" id="offers" role="tabpanel" aria-labelledby="db-tabnav-tab-5">5</div>
+                    <div class="tab-pane fade" id="overall" role="tabpanel" aria-labelledby="db-tabnav-tab-2">
+                         @include('admin.components.overall')
+                    </div>
+                    <div class="tab-pane fade" id="teamPerformance" role="tabpanel" aria-labelledby="db-tabnav-tab-3">
+                        @include('admin.components.team-performance')
+                    </div>
+                    <div class="tab-pane fade" id="publishersAnalytics" role="tabpanel" aria-labelledby="db-tabnav-tab-4">
+                        @include('admin.components.publishers-analytics')
+                    </div>
+                    <div class="tab-pane fade" id="offers" role="tabpanel" aria-labelledby="db-tabnav-tab-5">
+                        @include('admin.components.offers')
+                    </div>
                 </div>
             </div>
             <!--end::Body-->
