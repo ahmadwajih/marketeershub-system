@@ -28,6 +28,7 @@
             <!--begin::Container-->
             <div class="container">
                 <!--begin::Dashboard-->
+            @include('admin.components.dashboard-navtab')
                 <!--begin::Row-->
                 <div class="row">
                     <div class="col-lg-12">
@@ -318,7 +319,7 @@
                     </div>
                 </div>
 
-                        @include('admin.components.dashboard-navtab')
+
 
 
                 <!--end::Row-->
