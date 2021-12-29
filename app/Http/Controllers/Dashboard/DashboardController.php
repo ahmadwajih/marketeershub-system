@@ -8,61 +8,40 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\Offer;
+use App\Models\PivotReport;
 use App\Models\PublisherCategory;
 use App\Models\User;
 use App\Notifications\NewOffer;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\App;
-
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index(){
 
         $this->authorize('view_dashboard');
+
+        // Get all offers that have coupons and report
         $offers = Offer::whereHas('coupons', function($q)  {
             $q->whereHas('report');
         })->get();
 
-        if(isset($offers[0])) {
-            $offer = $offers[0];
-            // This line to get all influncers coupons with in this offer
-            $offer->influencersCoupons();
-        }
+        // Get total numbers for all teams
+        $totalNumbers = DB::table('pivot_reports')
+            ->select(DB::raw('IFNULL(orders, 0) as orders'), DB::raw('IFNULL(sales, 0) as sales'), DB::raw('IFNULL(revenue, 0) as revenue'), DB::raw('IFNULL(payout, 0) as payout'))
+            ->orderBy('pivot_reports.date', 'desc')
+            ->first();
 
-        $affiliates = User::whereTeam('affiliate')->get();
-        $influencers = User::whereTeam('influencer')->get();
-        $media_buying = User::whereTeam('media_buying')->get();
+        // Get totla numbers for seperate Team
 
-
-
-
-        $pendingTotalOrders = 0;
-        $pendingTotalSales = 0;
-        $pendingTotalPayout = 0;
-        $totalOrders = 0;
-        $totalSales = 0;
-        $totalPayout = 0;
-        foreach($offers as $offer){
-            foreach($offer->coupons as $coupon){
-                if($coupon->report){
-                    $pendingTotalOrders += $coupon->report->orders;
-                    $pendingTotalSales += $coupon->report->sales;
-                    $pendingTotalPayout += $coupon->report->payout;
-                    $totalOrders += $coupon->report->v_orders;
-                    $totalSales += $coupon->report->v_sales;
-                    $totalPayout += $coupon->report->v_payout;
-                }
-            }
-        }
         return view('admin.index', [
             'offers' => $offers,
-            'pendingTotalOrders' => $pendingTotalOrders,
-            'pendingTotalSales' => $pendingTotalSales,
-            'pendingTotalPayout' => $pendingTotalPayout,
-            'totalOrders' => $totalOrders,
-            'totalSales' => $totalSales,
-            'totalPayout' => $totalPayout,
+            'totalNumbers' => $totalNumbers,
+            'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
+            'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
+            'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
         ]);
 
         return view('admin.index');
@@ -76,17 +55,8 @@ class DashboardController extends Controller
 
 
     public function test(){
-        Currency::firstOrCreate([
-            'name_ar' => 'درهم اماراتي ',
-            'name_en' => 'United Arab Emirates dirham',
-            'code' => 'AED',
-            'sign' => 'AED',
-        ]);
-
-        $user = User::first();
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        dd($token);
-
+        // $report = PivotReport::get()[0];
+        // $report->forceDelete();
+        dd(PivotReport::get()[0]);
     }
-
 }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\PivotReport;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class PivotReportSeeder extends Seeder
@@ -14,12 +15,20 @@ class PivotReportSeeder extends Seeder
      */
     public function run()
     {
-        PivotReport::create([
-            'coupon_id' => 1,
-            'orders' => '4',
-            'sales' => '1483.03',
-            'revenue' => '118.65',
-            'payout' => '62.29'
-        ]);
+
+
+
+        // Sub day 
+        // PivotReport::create([
+        //     'coupon_id' => 1,
+        //     'orders' => '20',
+        //     'sales' => '20',
+        //     'revenue' => '20',
+        //     'payout' => '2', 
+        //     'date' => Carbon::now()->subDay()
+        // ]);
+
+
+
     }
 }

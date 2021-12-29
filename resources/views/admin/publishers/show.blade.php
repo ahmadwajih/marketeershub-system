@@ -399,11 +399,11 @@
                                                                                         <td class="pl-0 py-8">
                                                                                             <div class="d-flex align-items-center">
                                                                                                 <div class="symbol symbol-50 flex-shrink-0 mr-4">
-                                                                                                    <div class="symbol-label" style="background-image: url('{{ getImagesPath('Offers', $coupon->offer->thumbnail) }}')"></div>
+                                                                                                    <div class="symbol-label" style="background-image: url('{{ getImagesPath('Offers', $offer->thumbnail) }}')"></div>
                                                                                                 </div>
                                                                                                 <div>
                                                                                                     <a href="javascript:void(0)" class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $coupon->coupon }}</a>
-                                                                                                    <span class="text-muted font-weight-bold d-block">{{ $coupon->offer->name }}</span>
+                                                                                                    <span class="text-muted font-weight-bold d-block">{{ $offer->name }}</span>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </td>
