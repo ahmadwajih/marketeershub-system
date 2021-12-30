@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\Currency;
 use App\Models\OfferRequest;
 use App\Models\UserActivity;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -100,7 +101,7 @@ if(!function_exists('getModelData')){
                 "sort" => $order_sort,
                 "field" => $order_field
             ],
-            
+
             'data' => $model->with($relations)->where($where)->get()
         ];
 
@@ -109,9 +110,9 @@ if(!function_exists('getModelData')){
 }
 /*
     * Return offer request data
-     * @param  String Route Namw 
+     * @param  String Route Namw
      * @return array
-     * Author : Wageh 
+     * Author : Wageh
      * created By Wageh
 */
 if(!function_exists('getOfferRequest')){
@@ -154,10 +155,10 @@ if(!function_exists('deleteImage')){
 
 
 /**
- * Function Name : userActivity 
+ * Function Name : userActivity
  * Authr: Wageh
  * create at : 3/11/2021
- * Usage: create user activity 
+ * Usage: create user activity
  * parameters : object_name, object_id
  */
 if(!function_exists('userActivity')){
@@ -173,10 +174,10 @@ if(!function_exists('userActivity')){
             foreach($chachedFields as $field){
                 $fieldsistory[$field]['old'] = $oldObject[$field];
                 $fieldsistory[$field]['new'] = $history[$field];
-    
+
             }
         }
-        
+
         $exists = UserActivity::where([
             ['user_id' , '=', $userId],
             ['mission' , '=', $mission],
@@ -194,16 +195,16 @@ if(!function_exists('userActivity')){
                 'history' => serialize($fieldsistory),
             ]);
         }
-        
+
         return true;
     }
 }
 
 /**
- * Function Name : userActivity 
+ * Function Name : userActivity
  * Authr: Wageh
  * create at : 3/11/2021
- * Usage: create user activity 
+ * Usage: create user activity
  * parameters : object_name, object_id
  */
 if(!function_exists('getActivity')){
@@ -252,5 +253,20 @@ if(!function_exists('getCurrency')){
             return $currency->id;
         }
         return Currency::first()->id;
+    }
+}
+
+if(!function_exists('assetsId')) {
+    function assetsId()
+    {
+        $cacheKey = 'static_assets_id';
+        $id       = now()->timestamp;
+
+        if (env('APP_ENV') === 'production' and Cache::has($cacheKey)) {
+            return Cache::get('static_assets_id');
+        }
+
+        Cache::put($cacheKey, $id, now()->addYear());
+        return $id;
     }
 }

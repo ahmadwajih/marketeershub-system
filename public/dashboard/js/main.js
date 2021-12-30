@@ -6,9 +6,12 @@
         column: $('.toggle-column'),
 
         init: function () {
+
             $('.btn-light').on('click', mh.toggleDropdown)
-            mh.column.on('change', mh.toggleColumn);
-            mh.eachColumn()
+            if (mh.table.length !== 0) {
+                mh.column.on('change', mh.toggleColumn);
+                mh.eachColumn()
+            }
             $('#promoted').on('change', function () {
                 $('.promoted-container').removeClass('d-none');
                 $('.promoted-container').toggle('slow');

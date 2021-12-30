@@ -1,15 +1,6 @@
 @extends('admin.layouts.app')@section('title','Dashboard')
-@push('styles')
-    <style>
-        /* {{-- .table td {
-            border: 1px solid #1e1e2d;
-            color: #000;
-        }--}} */
-    </style>
-@endpush
 @section('content')
-
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="content d-flex flex-column flex-column-fluid" id="app">
         <!--begin::Subheader-->
         <div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
             <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -24,20 +15,19 @@
         </div>
         <!--end::Subheader-->
         <!--begin::Entry-->
+        @include('admin.components.dashboard-navtab')
         <div class="d-flex flex-column-fluid">
-            <!--begin::Container-->
             <div class="container">
-                <!--begin::Dashboard-->
-                @include('admin.components.dashboard-navtab')
-                <!--begin::Row-->
-                <!--end::Row-->
-                <!--end::Dashboard-->
+                <div class="row">
+                    <mh-chart width="100%"></mh-chart>
+                    <mh-chart
+                        hidden="350px"
+                        label="Gross Margin Vs. Pay out (Aff)"
+                        type="bar"
+                        segment="chart/gm-v-po"
+                    ></mh-chart>
+                </div>
             </div>
-            <!--end::Container-->
         </div>
-        <!--end::Entry-->
     </div>
 @endsection
-
-@push('scripts')
-@endpush

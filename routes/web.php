@@ -82,6 +82,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
 
+        // Charts
+        Route::get('chart/offers-market-share', 'OfferController@chartOffersMarketShare')->name('chart.offers-market-share');
+        Route::get('chart/gm-v-po', 'OfferController@chartGmVPo')->name('chart.gm-v-po');
+
+
 
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
