@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index(){ 
-        
+    public function index(){
+
         $this->authorize('view_dashboard');
 
         // Get all offers that have coupons and report
@@ -30,15 +30,15 @@ class DashboardController extends Controller
 
         // Get total numbers for all teams
         $totalNumbers = DB::table('pivot_reports')
-        ->select(DB::raw('IFNULL(orders, 0) as orders'), DB::raw('IFNULL(sales, 0) as sales'), DB::raw('IFNULL(revenue, 0) as revenue'), DB::raw('IFNULL(payout, 0) as payout'))
-        ->orderBy('pivot_reports.date', 'desc')
-        ->first();
+            ->select(DB::raw('IFNULL(orders, 0) as orders'), DB::raw('IFNULL(sales, 0) as sales'), DB::raw('IFNULL(revenue, 0) as revenue'), DB::raw('IFNULL(payout, 0) as payout'))
+            ->orderBy('pivot_reports.date', 'desc')
+            ->first();
 
-       // Get totla numbers for seperate Team
-       
+        // Get totla numbers for seperate Team
+
         return view('admin.index', [
             'offers' => $offers,
-            'totalNumbers' => $totalNumbers, 
+            'totalNumbers' => $totalNumbers,
             'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
             'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
             'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
@@ -48,7 +48,7 @@ class DashboardController extends Controller
     }
 
 
-    public function changeLang($lang){      
+    public function changeLang($lang){
         session(['lang' => $lang]);
         return redirect()->back();
     }
