@@ -240,6 +240,28 @@ if(!function_exists('getCityId')){
     }
 }
 
+if(!function_exists('getCountryName')){
+    function getCountryName($countryId):int
+    {
+        $country = Country::find($countryId);
+        if($country){
+            return $country->name;
+        }
+        return Country::first()->name;
+    }
+}
+
+if(!function_exists('getCityName')){
+    function getCityName($cityId):int
+    {
+        $city = City::find($cityId);
+        if($city){
+            return $city->name;
+        }
+        return City::first()->name;
+    }
+}
+
 if(!function_exists('getCurrency')){
     function getCurrency($currencyName):int
     {
