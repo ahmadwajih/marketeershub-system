@@ -17,7 +17,7 @@
     import VueApexCharts from 'vue-apexcharts'
 
     export default {
-        name: "MhChart",
+        name: "OffersMarketShare",
         inheritAttrs: false,
         components: {
             apexchart: VueApexCharts,

@@ -97,11 +97,20 @@ class OfferRequestController extends Controller
     public function edit(OfferRequest $offerRequest)
     {
         $this->authorize('update_offer_requests');
+        $coupons = Coupon::where(function ($query) use($offerRequest) {
+            $query->where('user_id',$offerRequest->user_id)
+                  ->orWhere('user_id', null);
+        })->where(function ($query) use($offerRequest) {
+            $query->where('offer_id', $offerRequest->offer_id);
+        })->get();
+        
+        // $coupons = Coupon::where('offer_id', $offerRequest->offer_id)->where('user_id',$offerRequest->user_id)->orWhere('user_id', null)->orderBy('id', 'asc')->get();
+        // dd($coupons->count());
         return view('admin.offerRequests.edit', [
             'offerRequest' => $offerRequest,
             'offers' => Offer::whereStatus('active')->get(),
             'users' => User::wherePosition('publisher')->get(),
-            'coupons' => $offerRequest->offer->coupons()->where('user_id',$offerRequest->user_id)->orWhere('user_id', null)->get()
+            'coupons' => $coupons
         ]);
     }
 

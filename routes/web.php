@@ -35,6 +35,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::post('login', 'AuthController@login')->name('login');
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
+        // Charts
+        Route::get('chart/offers-market-share', 'DashboardController@chartOffersMarketShare')->name('chart.offers-market-share');
+        Route::get('chart/gm-v-po', 'DashboardController@chartGmVPo')->name('chart.gm-v-po');
+
         Route::resource('users', UserController::class);
         // User Profile
         Route::get('user/profile', 'UserController@profile')->name('user.profile');
@@ -81,12 +85,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
-
-        // Charts
-        Route::get('chart/offers-market-share', 'OfferController@chartOffersMarketShare')->name('chart.offers-market-share');
-        Route::get('chart/gm-v-po', 'OfferController@chartGmVPo')->name('chart.gm-v-po');
-
-
 
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');

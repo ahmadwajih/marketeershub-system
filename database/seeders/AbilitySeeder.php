@@ -18,19 +18,19 @@ class AbilitySeeder extends Seeder
         $superAdmin = Role::get()->first();
 
         $models = [
-            // 'countries',
-            // 'cites',
-            // 'users',
-            // 'roles',
-            // 'advertisers',
-            // 'offers',
-            // 'coupons',
-            // 'currencies',
-            // 'publishers',
-            // 'pivot_report',
-            // 'categories',
-            // 'offer_requests',
-            // 'user_activities',
+            'countries',
+            'cites',
+            'users',
+            'roles',
+            'advertisers',
+            'offers',
+            'coupons',
+            'currencies',
+            'publishers',
+            'pivot_report',
+            'categories',
+            'offer_requests',
+            'user_activities',
             'targets',
         ];
 
@@ -56,26 +56,26 @@ class AbilitySeeder extends Seeder
         }
 
         // Special Apilities
-        // $models = [
-        //     'reports',
-        //     'dashboard',
-        // ];
+        $models = [
+            'reports',
+            'dashboard',
+        ];
 
-        // $names = 
-        // [
-        //     ['label' => "view", 'name' => 'view'],
-        // ];
+        $names = 
+        [
+            ['label' => "view", 'name' => 'view'],
+        ];
 
-        // foreach ($models as $model) {
-        //     foreach ($names as $name) {
-        //        $ability =  Ability::create([
-        //             'name'  => $name['name'] .'_'. $model,
-        //             'label' => $name['label'] .' '. strtolower(trim(str_replace('_',' ', trim($model)))),
-        //             'action' => $name['name'],
-        //             'category' => $model
-        //         ]);
-        //         $superAdmin->allowTo($ability);
-        //     }
-        // }
+        foreach ($models as $model) {
+            foreach ($names as $name) {
+               $ability =  Ability::create([
+                    'name'  => $name['name'] .'_'. $model,
+                    'label' => $name['label'] .' '. strtolower(trim(str_replace('_',' ', trim($model)))),
+                    'action' => $name['name'],
+                    'category' => $model
+                ]);
+                $superAdmin->allowTo($ability);
+            }
+        }
     }
 }

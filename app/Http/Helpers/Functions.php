@@ -270,3 +270,4 @@ if(!function_exists('assetsId')) {
         return $id;
     }
 }
+

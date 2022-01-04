@@ -441,12 +441,12 @@
                     <!--end::Content-->
                 </div>
 
-                <div class="container">
+                {{-- <div class="container">
                     <div class="row">
                         <div class="col-6"><input type="date" name="" id=""></div>
                         <div class="col-6"><input type="date" name="" id=""></div>
                     </div>
-                </div>
+                </div> --}}
 
                 @if(auth()->user()->position == 'account_manager')
 
@@ -503,8 +503,8 @@
                                                 @endif
                                             </td>
                                             <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                @if(count($publisher->socialLinks) > 1)
-                                                @foreach($publisher->socialLinks as $link)
+                                                @if(count($singlePublisher->socialLinks) > 1)
+                                                @foreach($singlePublisher->socialLinks as $link)
                                                     <a href="{{ $link->link }}" class="btn btn-sm btn-clean btn-icon" target="_blank" title="{{ $link->platform }}">
                                                         <i class="fab fa-{{ $link->platform }}"></i>
                                                     </a>
@@ -519,10 +519,10 @@
                                             <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $singlePublisher->team }}</span></td>
                                             <td>
                                                 <div class="dropdown dropdown-inline">
-                                                    <a href="{{ route('admin.publishers.show', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                                    <a href="{{ route('admin.publishers.show', $singlePublisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
                                                      <i class="flaticon-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
+                                                    <a href="{{ route('admin.publishers.edit', $singlePublisher->id) }}" class="btn btn-sm btn-clean btn-icon" title="Show">
                                                      <i class="flaticon-edit"></i>
                                                     </a>
                                                 </div>    
