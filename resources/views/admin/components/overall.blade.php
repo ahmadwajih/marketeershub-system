@@ -20,13 +20,6 @@
         </thead>
         <tbody>
         @foreach($offers as $offer)
-            @php
-                $affiliateNumbers = coutValuesBasedOnTeam($offer->id,'affiliate');
-                $influencerNumbers = coutValuesBasedOnTeam($offer->id,'influencer');
-                $mediaBuyingNumbers = coutValuesBasedOnTeam($offer->id,'media_buying');
-                // All table variables
-
-            @endphp
             <tr>
                 <td class="pl-0 py-8" rowspan="4">
                     <div class="d-flex align-items-center justify-content-center">
@@ -47,19 +40,19 @@
                     <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ __('Influencer') }}</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $influencerNumbers->orders ?? 0 }}</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('influencer')->first()->orders ?? 0 }}</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $influencerNumbers->sales ?? 0 }}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('influencer')->first()->sales ?? 0 }}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $influencerNumbers->revenue ?? 0 }}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('influencer')->first()->revenue ?? 0 }}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $influencerNumbers->payout ?? 0 }}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('influencer')->first()->payout ?? 0 }}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($influencerNumbers->revenue) && isset($influencerNumbers->payout)) ? $influencerNumbers->revenue - $influencerNumbers->payout : 0 }}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($offer->reportPerTeam('influencer')->first()->revenue) && isset($offer->reportPerTeam('influencer')->first()->payout)) ? $offer->reportPerTeam('influencer')->first()->revenue - $offer->reportPerTeam('influencer')->first()->payout : 0 }}$</span>
                 </td>
             </tr>
             <tr>
@@ -67,19 +60,19 @@
                     <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ __('Affiliate') }}</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $affiliateNumbers->orders ?? 0}}</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('affiliate')->first()->orders ?? 0}}</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $affiliateNumbers->sales ?? 0}}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('affiliate')->first()->sales ?? 0}}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $affiliateNumbers->revenue ?? 0}}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('affiliate')->first()->revenue ?? 0}}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $affiliateNumbers->payout ?? 0}}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('affiliate')->first()->payout ?? 0}}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($affiliateNumbers->revenue) && isset($affiliateNumbers->payout)) ? $affiliateNumbers->revenue - $affiliateNumbers->payout : 0 }}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($offer->reportPerTeam('affiliate')->first()->revenue) && isset($offer->reportPerTeam('affiliate')->first()->payout)) ? $offer->reportPerTeam('affiliate')->first()->revenue - $offer->reportPerTeam('affiliate')->first()->payout : 0 }}$</span>
                 </td>
             </tr>
             <tr>
@@ -87,19 +80,19 @@
                     <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ __('Media Buying') }}</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $mediaBuyingNumbers->orders ?? 0}}</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('media_buying')->first()->orders ?? 0}}</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $mediaBuyingNumbers->sales ?? 0}}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('media_buying')->first()->sales ?? 0}}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $mediaBuyingNumbers->revenue ?? 0}}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('media_buying')->first()->revenue ?? 0}}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $mediaBuyingNumbers->payout ?? 0}}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $offer->reportPerTeam('media_buying')->first()->payout ?? 0}}$</span>
                 </td>
                 <td>
-                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($mediaBuyingNumbers->revenue) && isset($mediaBuyingNumbers->payout)) ? $mediaBuyingNumbers->revenue - $mediaBuyingNumbers->payout : 0 }}$</span>
+                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($offer->reportPerTeam('media_buying')->first()->revenue) && isset($offer->reportPerTeam('media_buying')->first()->payout)) ? $offer->reportPerTeam('media_buying')->first()->revenue - $offer->reportPerTeam('media_buying')->first()->payout : 0 }}$</span>
                 </td>
             </tr>
 
@@ -108,7 +101,7 @@
         <tr>
             <td></td>
             <td class="text-center">
-                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ __('All') }}</span>
+                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ __('Total') }}</span>
             </td>
             <td>
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $totalNumbers->orders ?? 0 }}</span>
@@ -168,7 +161,7 @@
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalInfluencerNumbers->payout) && isset($totalNumbers->payout)) ? number_format(($totalInfluencerNumbers->payout  / $totalNumbers->payout)  * 100,2) : 0 }}%</span>
             </td>
             <td>
-                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalInfluencerNumbers->revenue) && isset($totalInfluencerNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalInfluencerNumbers->revenue - $totalInfluencerNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span>
+                {{-- <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalInfluencerNumbers->revenue) && isset($totalInfluencerNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalInfluencerNumbers->revenue - $totalInfluencerNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span> --}}
             </td>
         </tr>
         {{-- Affiliates --}}
@@ -212,7 +205,7 @@
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalAffiliateNumbers->payout) &&  isset($totalNumbers->payout)) ? number_format(($totalAffiliateNumbers->payout  / $totalNumbers->payout)  * 100 ,2) : 0 }}%</span>
             </td>
             <td>
-                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalAffiliateNumbers->revenue) && isset($totalAffiliateNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalAffiliateNumbers->revenue - $totalAffiliateNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span>
+                {{-- <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalAffiliateNumbers->revenue) && isset($totalAffiliateNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalAffiliateNumbers->revenue - $totalAffiliateNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span> --}}
             </td>
         </tr>
         {{-- Media Buying --}}
@@ -256,7 +249,7 @@
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalMediaBuyingNumbers->payout) && isset($totalNumbers->payout)) ? number_format(($totalMediaBuyingNumbers->payout  / $totalNumbers->payout)  * 100,2) : 0 }}%</span>
             </td>
             <td>
-                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalMediaBuyingNumbers->revenue) && isset($totalMediaBuyingNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalMediaBuyingNumbers->revenue - $totalMediaBuyingNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span>
+                {{-- <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalMediaBuyingNumbers->revenue) && isset($totalMediaBuyingNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalMediaBuyingNumbers->revenue - $totalMediaBuyingNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span> --}}
             </td>
         </tr>
         </tbody>

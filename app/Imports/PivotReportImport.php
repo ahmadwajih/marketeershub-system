@@ -56,6 +56,7 @@ class PivotReportImport implements ToCollection
                         'revenue' => $col[3],
                         'payout' => $col[4],
                         'type' => $this->type,
+                        'offer_id' => $this->offerId,
                     ]);
                 }else{
                     PivotReport::create([
@@ -66,6 +67,7 @@ class PivotReportImport implements ToCollection
                         'payout' => $col[4],
                         'type' => $this->type,
                         'date' => $this->date,
+                        'offer_id' => $this->offerId,
                     ]);
                 }
                 

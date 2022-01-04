@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTargetsTable extends Migration
+class AddOfferIdToPivotReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateTargetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('targets', function (Blueprint $table) {
-            $table->id();
-            // Target Level 
-            $table->timestamps();
-            $table->softDeletes();
-
+        Schema::table('pivot_reports', function (Blueprint $table) {
+            $table->unsignedBigInteger('offer_id')->nullable()->after('coupon_id');
+            $table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -29,6 +26,6 @@ class CreateTargetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('targets');
+        //
     }
 }
