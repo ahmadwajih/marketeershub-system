@@ -2168,8 +2168,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.next = 2;
                 return axios.get(_this.segment).then(function (_ref) {
                   var data = _ref.data;
-                  _this.series = data.series;
-                  _this.chartOptions = data.chartOptions;
+                  _this.series = data.orders.series;
+                  _this.chartOptions = data.orders.chartOptions;
                 });
 
               case 2:
@@ -2185,10 +2185,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersMarketShare.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersMarketShare.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersOrders.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersOrders.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2223,7 +2223,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "OffersMarketShare",
+  name: "OffersOrders",
   inheritAttrs: false,
   components: {
     apexchart: (vue_apexcharts__WEBPACK_IMPORTED_MODULE_1___default())
@@ -2231,7 +2231,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   props: {
     label: {
       type: String,
-      "default": 'Offers Market Share'
+      "default": 'Offers Orders'
     },
     type: {
       type: String,
@@ -2239,7 +2239,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     segment: {
       type: String,
-      "default": 'chart/offers-market-share'
+      "default": 'charts/offers-orders'
+    },
+    "for": {
+      type: String,
+      "default": 'orders'
     }
   },
   data: function data() {
@@ -2263,8 +2267,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.next = 2;
                 return axios.get(_this.segment).then(function (_ref) {
                   var data = _ref.data;
-                  _this.series = data.series;
-                  _this.chartOptions = data.chartOptions;
+
+                  if (_this["for"] == 'orders') {
+                    _this.series = data.orders.series;
+                    _this.chartOptions = data.orders.chartOptions;
+                  }
+
+                  if (_this["for"] == 'revenue') {
+                    _this.series = data.revenue.series;
+                    _this.chartOptions = data.revenue.chartOptions;
+                  }
+
+                  if (_this["for"] == 'grossmargin') {
+                    _this.series = data.grossmargin.series;
+                    _this.chartOptions = data.grossmargin.chartOptions;
+                  }
+
+                  if (_this["for"] == 'payout') {
+                    _this.series = data.payout.series;
+                    _this.chartOptions = data.payout.chartOptions;
+                  }
                 });
 
               case 2:
@@ -2290,7 +2312,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _Components_MhChart__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Components/MhChart */ "./resources/js/Components/MhChart.vue");
-/* harmony import */ var _Components_OffersMarketShare__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Components/OffersMarketShare */ "./resources/js/Components/OffersMarketShare.vue");
+/* harmony import */ var _Components_OffersOrders__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Components/OffersOrders */ "./resources/js/Components/OffersOrders.vue");
 
 window.Vue = vue__WEBPACK_IMPORTED_MODULE_0__["default"];
 
@@ -2300,7 +2322,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.$http = axios;
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component(_Components_MhChart__WEBPACK_IMPORTED_MODULE_1__["default"].name, _Components_MhChart__WEBPACK_IMPORTED_MODULE_1__["default"]);
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component(_Components_OffersMarketShare__WEBPACK_IMPORTED_MODULE_2__["default"].name, _Components_OffersMarketShare__WEBPACK_IMPORTED_MODULE_2__["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component(_Components_OffersOrders__WEBPACK_IMPORTED_MODULE_2__["default"].name, _Components_OffersOrders__WEBPACK_IMPORTED_MODULE_2__["default"]);
 var app = new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
   el: '#app'
 });
@@ -20832,10 +20854,10 @@ component.options.__file = "resources/js/Components/MhChart.vue"
 
 /***/ }),
 
-/***/ "./resources/js/Components/OffersMarketShare.vue":
-/*!*******************************************************!*\
-  !*** ./resources/js/Components/OffersMarketShare.vue ***!
-  \*******************************************************/
+/***/ "./resources/js/Components/OffersOrders.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/Components/OffersOrders.vue ***!
+  \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -20843,8 +20865,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _OffersMarketShare_vue_vue_type_template_id_1f9e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OffersMarketShare.vue?vue&type=template&id=1f9e239e& */ "./resources/js/Components/OffersMarketShare.vue?vue&type=template&id=1f9e239e&");
-/* harmony import */ var _OffersMarketShare_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OffersMarketShare.vue?vue&type=script&lang=js& */ "./resources/js/Components/OffersMarketShare.vue?vue&type=script&lang=js&");
+/* harmony import */ var _OffersOrders_vue_vue_type_template_id_2d9ffdb2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OffersOrders.vue?vue&type=template&id=2d9ffdb2& */ "./resources/js/Components/OffersOrders.vue?vue&type=template&id=2d9ffdb2&");
+/* harmony import */ var _OffersOrders_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OffersOrders.vue?vue&type=script&lang=js& */ "./resources/js/Components/OffersOrders.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -20854,9 +20876,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 ;
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _OffersMarketShare_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _OffersMarketShare_vue_vue_type_template_id_1f9e239e___WEBPACK_IMPORTED_MODULE_0__.render,
-  _OffersMarketShare_vue_vue_type_template_id_1f9e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _OffersOrders_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _OffersOrders_vue_vue_type_template_id_2d9ffdb2___WEBPACK_IMPORTED_MODULE_0__.render,
+  _OffersOrders_vue_vue_type_template_id_2d9ffdb2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
   null,
@@ -20866,7 +20888,7 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/Components/OffersMarketShare.vue"
+component.options.__file = "resources/js/Components/OffersOrders.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -20887,10 +20909,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/Components/OffersMarketShare.vue?vue&type=script&lang=js&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/Components/OffersMarketShare.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************/
+/***/ "./resources/js/Components/OffersOrders.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/Components/OffersOrders.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -20898,8 +20920,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersMarketShare_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OffersMarketShare.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersMarketShare.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersMarketShare_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersOrders_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OffersOrders.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersOrders.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersOrders_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -20920,19 +20942,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/Components/OffersMarketShare.vue?vue&type=template&id=1f9e239e&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/Components/OffersMarketShare.vue?vue&type=template&id=1f9e239e& ***!
-  \**************************************************************************************/
+/***/ "./resources/js/Components/OffersOrders.vue?vue&type=template&id=2d9ffdb2&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/Components/OffersOrders.vue?vue&type=template&id=2d9ffdb2& ***!
+  \*********************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersMarketShare_vue_vue_type_template_id_1f9e239e___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersMarketShare_vue_vue_type_template_id_1f9e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersOrders_vue_vue_type_template_id_2d9ffdb2___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersOrders_vue_vue_type_template_id_2d9ffdb2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersMarketShare_vue_vue_type_template_id_1f9e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OffersMarketShare.vue?vue&type=template&id=1f9e239e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersMarketShare.vue?vue&type=template&id=1f9e239e&");
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OffersOrders_vue_vue_type_template_id_2d9ffdb2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OffersOrders.vue?vue&type=template&id=2d9ffdb2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersOrders.vue?vue&type=template&id=2d9ffdb2&");
 
 
 /***/ }),
@@ -20995,10 +21017,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersMarketShare.vue?vue&type=template&id=1f9e239e&":
-/*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersMarketShare.vue?vue&type=template&id=1f9e239e& ***!
-  \*****************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersOrders.vue?vue&type=template&id=2d9ffdb2&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/OffersOrders.vue?vue&type=template&id=2d9ffdb2& ***!
+  \************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";

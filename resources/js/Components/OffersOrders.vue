@@ -17,7 +17,7 @@
     import VueApexCharts from 'vue-apexcharts'
 
     export default {
-        name: "OffersMarketShare",
+        name: "OffersOrders",
         inheritAttrs: false,
         components: {
             apexchart: VueApexCharts,
@@ -25,7 +25,7 @@
         props: {
             label: {
                 type: String,
-                default: 'Offers Market Share'
+                default: 'Offers Orders'
             },
             type: {
                 type: String,
@@ -33,7 +33,11 @@
             },
             segment: {
                 type: String,
-                default: 'chart/offers-market-share'
+                default: 'charts/offers-orders'
+            }, 
+            for : {
+                type: String,
+                default: 'orders'
             }
         },
         data() {
@@ -48,8 +52,22 @@
         methods: {
             async getChartData() {
                 await axios.get(this.segment).then(({data}) => {
-                    this.series = data.series
-                    this.chartOptions = data.chartOptions
+                    if(this.for == 'orders'){
+                        this.series = data.orders.series
+                        this.chartOptions = data.orders.chartOptions
+                    }
+                    if(this.for == 'revenue'){
+                        this.series = data.revenue.series
+                        this.chartOptions = data.revenue.chartOptions
+                    }
+                    if(this.for == 'grossmargin'){
+                        this.series = data.grossmargin.series
+                        this.chartOptions = data.grossmargin.chartOptions
+                    }
+                    if(this.for == 'payout'){
+                        this.series = data.payout.series
+                        this.chartOptions = data.payout.chartOptions
+                    }
                 })
             }
         }

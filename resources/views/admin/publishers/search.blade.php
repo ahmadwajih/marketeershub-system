@@ -76,8 +76,9 @@
                                                 <label class="mr-3 mb-0 d-none d-md-block">{{ __('Status') }}</label>
                                                 <select class="form-control" id="kt_datatable_search_status" name="status">
                                                     <option value="">{{ __('All') }}</option>
-                                                    <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
-                                                    <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Unactive') }}</option>
+                                                    <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Live') }}</option>
+                                                    <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
+                                                    <option {{isset($status)&&$status=='pending'?'selected':'' }} value="pending">{{ __('Paused') }}</option>
                                                 </select>
                                             </div>
                                         </div>

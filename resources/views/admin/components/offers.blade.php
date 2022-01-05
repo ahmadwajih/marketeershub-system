@@ -2,13 +2,31 @@
 <div class="d-flex flex-column-fluid">
     <div class="container">
         <div class="row">
-            <offers-market-share width="100%"></offers-market-share>
-            <offers-market-share
+            <offers-orders
                 hidden="350px"
-                label="Gross Margin Vs. Pay out (Aff)"
-                type="bar"
-                segment="chart/gm-v-po"
-            ></offers-market-share>
+                label="Offers Orders"
+                for="orders"
+            ></offers-orders>
+
+            <offers-orders
+                hidden="350px"
+                label="Offers Revenue"
+                for="revenue"
+            ></offers-orders>
+
+            <offers-orders
+                hidden="350px"
+                label="Offers Gross Margin"
+                for="grossmargin"
+            ></offers-orders>
+
+            <offers-orders
+                hidden="350px"
+                label="Offers Payout"
+                for="payout"
+            ></offers-orders>
+
+            
         </div>
     </div>
 </div>

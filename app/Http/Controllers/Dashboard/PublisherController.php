@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Extended\MhDataTables;
+use App\Imports\InfluencerImport;
 use App\Imports\PublisherImportV2;
 use App\Imports\PublishersImport;
 use App\Imports\UserImport;
@@ -52,7 +53,8 @@ class PublisherController extends Controller
                 return MhDataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($row) {
-                        $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-sm">View</a>';
+                        $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
+                        $btn .= '<a href="' . route('admin.publishers.edit', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-pen"></i></a>';
                         $btn .= $row->parent ? $row->parent->name : " <button class='btn badge btn-success assignToMe' onclick='assignToMe(" . $row->id . ")'>" . __('Assign To Me') . "</button>";
                         return $btn;
                     })
@@ -66,6 +68,7 @@ class PublisherController extends Controller
         return view('admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' => User::wherePosition('account_manager')->get(),
+            'countries' => Country::all()
         ]);
     }
 
@@ -534,7 +537,13 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new PublisherImportV2($request->team),request()->file('publishers'));
+        if($request->team = 'affiliate'){
+            Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+        }
+        if($request->team = 'affiliate'){
+            Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
+        }
+
         userActivity('User', null , 'upload', 'Upload Publishers');
         $notification = [
             'message' => 'Uploaded successfully',

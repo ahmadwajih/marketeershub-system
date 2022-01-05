@@ -116,8 +116,9 @@
                                         <label>{{ __('Status') }}</label>
                                         <select class="form-control " id="kt_datatable_search_status" name="status">
                                             <option value="">{{ __('All') }}</option>
-                                            <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
-                                            <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Unactive') }}</option>
+                                            <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Live') }}</option>
+                                            <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
+                                            <option {{isset($status)&&$status=='pending'?'selected':'' }} value="pending">{{ __('Paused') }}</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -142,6 +143,24 @@
                                             <option {{isset($platform)&&$platform=='other'?'selected':'' }} valuothere="other">{{ __('Other') }}</option>
                                         </select>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>{{ __('Countries') }}</label>
+                                        <select class="form-control " data-live-search="true" id="country_id" name="country_id">
+                                            <option value="">{{ __('All') }}</option>
+                                            @foreach($countries as $country)
+                                                <option  {{ old('country_id')==$country->id?'selected':'' }} value="{{$country->id}}">{{$country->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>{{ __('Cities') }}</label>
+                                        <select class="form-control " data-live-search="true" id="city_id" name="city_id">
+                                            <option value="">{{ __('All') }}</option>
+                                        </select>
+                                    </div>
+
                                     <div>
                                         <button type="submit" class="btn btn-light-primary px-6 font-weight-bold btn-block">{{ __('Search') }}</button>
                                     </div>
@@ -255,4 +274,28 @@
             })
         })
     </script>
+
+<script>
+    $(document).ready(function(){
+        $("#country_id").on("change",function(){
+            var countryId = $("#country_id").val();
+            $.ajax({
+                method: "POST",
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: "{{route('admin.ajax.cities')}}",
+                data: { countryId: countryId}, 
+            })
+            .done(function(res) {
+                console.log(res);
+                $("#city_id").html('')
+                $("#city_id").append("<option value='' selected>{{ __('All') }}</option>");
+                $("#city_id").append(res)
+
+            });
+        });
+    });
+
+
+</script>
+
 @endpush

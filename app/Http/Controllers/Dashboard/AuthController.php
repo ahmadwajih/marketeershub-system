@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,8 +30,13 @@ class AuthController extends Controller
             return redirect()->route('admin.user.profile');
         }
 
+        if(User::where('email', $request->email)->first()){
+            return back()->withErrors([
+                'message' => __('Your password is incorrect.'),
+            ]);
+        }
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'message' => __('The provided credentials do not match our records.'),
         ]);
     }
 

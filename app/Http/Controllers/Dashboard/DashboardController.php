@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\UpdateUsersPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
@@ -26,15 +27,11 @@ class DashboardController extends Controller
         // Get all offers that have coupons and report
         $offers  = Offer::whereHas('report')->with(['report'])->get();    
 
-        $totalNumbers = DB::table('pivot_reports')
-        ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'),  DB::raw('SUM(payout) as payout'))
-        ->orderBy('date', 'desc')
-        ->groupBy('date')
-        ->first();
+        
 
         return view('admin.index', [
             'offers' => $offers,
-            'totalNumbers' => $totalNumbers,
+            'totalNumbers' => totalNumbers(),
             'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
             'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
             'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
@@ -53,68 +50,136 @@ class DashboardController extends Controller
     public function chartGmVPo()
     {
         $data = [
-            'series' => [
-                [
-                    'name' => 'Net Profit',
-                    'data' => [44, 55, 57, 56, 61, 58, 63, 60, 66],
-                ], [
-                    'name' => 'Revenue',
-                    'data' => [76, 85, 101, 98, 87, 105, 91, 114, 94],
-                ],
-            ],
-            'chartOptions' => [
-                'chart' => [
-                    'height' => 350,
-                    'type' => 'bar',
-                ],
-                'legend' => [
-                    'position' => 'top'
-                ],
-                'plotOptions' => [
-                    'bar' => [
-                        'horizontal' => false,
-                        'columnWidth' => '55%',
-                        'endingShape' => 'rounded'
+            'orders' => [
+                'series' => [
+                    [
+                        'name' => 'Net Profit',
+                        'data' => [44, 55, 57, 56, 61, 58, 63, 60, 66],
+                    ], [
+                        'name' => 'Revenue',
+                        'data' => [76, 85, 101, 98, 87, 105, 91, 114, 94],
                     ],
                 ],
-                'dataLabels' => [
-                    'enabled' => false
+                'chartOptions' => [
+                    'chart' => [
+                        'height' => 350,
+                        'type' => 'bar',
+                    ],
+                    'legend' => [
+                        'position' => 'top'
+                    ],
+                    'plotOptions' => [
+                        'bar' => [
+                            'horizontal' => false,
+                            'columnWidth' => '55%',
+                            'endingShape' => 'rounded'
+                        ],
+                    ],
+                    'dataLabels' => [
+                        'enabled' => false
+                    ],
+                    'stroke' => [
+                        'show' => true,
+                        'width' => 2,
+                        'colors' => ['transparent']
+                    ],
+                    'xaxis' => [
+                        'categories' => [''],
+                    ],
                 ],
-                'stroke' => [
-                    'show' => true,
-                    'width' => 2,
-                    'colors' => ['transparent']
-                ],
-                'xaxis' => [
-                    'categories' => [''],
-                ],
-            ],
-        ];
+            ]
+            ];
         return response()->json($data, 200);
     }
 
-    public function chartOffersMarketShare()
+    public function chartOffersorders()
     {
-        $offers = Offer::whereHas('coupons', function($q)  {
-            $q->whereHas('report');
-        })->get();
-
+        // dd(totalNumbers());
+        $offers  = Offer::whereHas('report')->with(['report'])->orderBy('id', 'desc')->get();
+        $totalNumbers  = totalNumbers();
+        $totalGrossMargin = $totalNumbers->revenue - $totalNumbers->payout;
+        $orders = DB::table('pivot_reports')
+        ->select(
+            DB::raw('SUM(pivot_reports.orders) / '.$totalNumbers->orders.' * 100 as orders'), 
+            DB::raw('SUM(pivot_reports.sales) / '.$totalNumbers->sales.' * 100 as sales'), 
+            DB::raw('SUM(pivot_reports.revenue) / '.$totalNumbers->revenue.' * 100 as revenue'),  
+            DB::raw('SUM(pivot_reports.payout) / '.$totalNumbers->payout.' * 100 as payout'),
+            DB::raw('(SUM(pivot_reports.revenue) - SUM(pivot_reports.payout))  / '.$totalGrossMargin.' * 100 as grossmargin')
+        )
+        ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+        ->orderBy('offers.id', 'desc')
+        ->groupBy('offers.id')
+        ->get();
 
         $data = [
-            'series' => [75, 25],
-            'chartOptions' => [
-                'labels' => $offers->pluck('name')->toArray(),
-                'chart' => [
-                    'width' => 680,
-                    'type' => 'pie',
-                ],
-                'legend' => [
-                    'position' => 'bottom'
-                ],
-                'stroke' => [
-                    'show' => false,
+            'orders' => [
+                'series' => $orders->pluck('orders')->toArray(),
+                'chartOptions' => [
+                    'labels' => $offers->pluck('name')->toArray(),
+                    'chart' => [
+                        'width' => 680,
+                        'type' => 'pie',
+                    ],
+                    'legend' => [
+                        'position' => 'bottom'
+                    ],
+                    'stroke' => [
+                        'show' => false,
+                    ],
                 ],
             ],
+
+            'revenue' => [
+                'series' => $orders->pluck('revenue')->toArray(),
+                'chartOptions' => [
+                    'labels' => $offers->pluck('name')->toArray(),
+                    'chart' => [
+                        'width' => 680,
+                        'type' => 'pie',
+                    ],
+                    'legend' => [
+                        'position' => 'bottom'
+                    ],
+                    'stroke' => [
+                        'show' => false,
+                    ],
+                ],
+            ],
+
+            'grossmargin' => [
+                'series' => $orders->pluck('grossmargin')->toArray(),
+                'chartOptions' => [
+                    'labels' => $offers->pluck('name')->toArray(),
+                    'chart' => [
+                        'width' => 680,
+                        'type' => 'pie',
+                    ],
+                    'legend' => [
+                        'position' => 'bottom'
+                    ],
+                    'stroke' => [
+                        'show' => false,
+                    ],
+                ],
+            ],
+
+            'payout' => [
+                'series' => $orders->pluck('payout')->toArray(),
+                'chartOptions' => [
+                    'labels' => $offers->pluck('name')->toArray(),
+                    'chart' => [
+                        'width' => 680,
+                        'type' => 'pie',
+                    ],
+                    'legend' => [
+                        'position' => 'bottom'
+                    ],
+                    'stroke' => [
+                        'show' => false,
+                    ],
+                ],
+            ],
+
         ];
         return response()->json($data);
     }
@@ -122,7 +187,10 @@ class DashboardController extends Controller
 
     public function test(){
 
-        
+        // UpdateUsersPassword::dispatch();
+
+        $users = User::where('password', null)->count();
+        dd($users);
         $totalNumbers = DB::table('offers')
         ->join('coupons', 'offers.id', '=', 'coupons.offer_id')
         ->join('pivot_reports', 'coupons.id', '=', 'pivot_reports.coupon_id')
@@ -155,3 +223,4 @@ class DashboardController extends Controller
         dd(PivotReport::get()[0]);
     }
 }
+

@@ -52,7 +52,6 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" required>
-                                                    <option value="media_buying">{{ __('Media Buying') }}</option>
                                                     <option value="influencer">{{ __('Influencer') }}</option>
                                                     <option value="affiliate">{{ __('Affiliate') }}</option>
                                                 </select>
@@ -65,7 +64,8 @@
 
                                             <div class="col-lg-4">
                                                 <br>
-                                                <a href="{{ asset('dashboard/excel-sheets-examples/publishers.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
+                                                <a href="{{ asset('dashboard/excel-sheets-examples/inflenucers.xlsx') }}" class="btn btn-info mt-2" download>{{ __('Download Influencers Example') }}</a>
+                                                <a href="{{ asset('dashboard/excel-sheets-examples/affiliates.xlsx') }}" class="btn btn-info mt-2" download>{{ __('Download Affiliate Example') }}</a>
                                             </div>
                                         </div>
 
