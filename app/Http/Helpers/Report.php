@@ -18,3 +18,14 @@ if(!function_exists('totalNumbersForSeparateTeam')){
     }
 }
 
+if(!function_exists('totalNumbers')){
+    function totalNumbers(){
+
+        return DB::table('pivot_reports')
+        ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'),  DB::raw('SUM(payout) as payout'))
+        ->orderBy('date', 'desc')
+        ->groupBy('date')
+        ->first();
+    }
+}
+

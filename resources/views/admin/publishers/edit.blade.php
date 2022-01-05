@@ -174,8 +174,8 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" required>
-                                                    <option {{ $publisher->status=='active'?'selected':'' }} value="active">{{ __('Active') }}</option>
-                                                    <option {{ $publisher->status=='pending'?'selected':'' }} value="pending">{{ __('Pending') }}</option>
+                                                    <option {{ $publisher->status=='active'?'selected':'' }} value="active">{{ __('Live') }}</option>
+                                                    <option {{ $publisher->status=='pending'?'selected':'' }} value="pending">{{ __('Paused') }}</option>
                                                     <option {{ $publisher->status=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))

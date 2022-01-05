@@ -48,8 +48,8 @@
         methods: {
             async getChartData() {
                 await axios.get(this.segment).then(({data}) => {
-                    this.series = data.series
-                    this.chartOptions = data.chartOptions
+                    this.series = data.orders.series
+                    this.chartOptions = data.orders.chartOptions
                 })
             }
         }

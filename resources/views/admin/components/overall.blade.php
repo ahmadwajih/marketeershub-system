@@ -161,7 +161,7 @@
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalInfluencerNumbers->payout) && isset($totalNumbers->payout)) ? number_format(($totalInfluencerNumbers->payout  / $totalNumbers->payout)  * 100,2) : 0 }}%</span>
             </td>
             <td>
-                {{-- <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalInfluencerNumbers->revenue) && isset($totalInfluencerNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalInfluencerNumbers->revenue - $totalInfluencerNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span> --}}
+                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalInfluencerNumbers->revenue) && isset($totalInfluencerNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout) && ($totalInfluencerNumbers->revenue - $totalInfluencerNumbers->payout != 0) ) ? number_format((($totalInfluencerNumbers->revenue - $totalInfluencerNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span>
             </td>
         </tr>
         {{-- Affiliates --}}
@@ -205,7 +205,7 @@
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalAffiliateNumbers->payout) &&  isset($totalNumbers->payout)) ? number_format(($totalAffiliateNumbers->payout  / $totalNumbers->payout)  * 100 ,2) : 0 }}%</span>
             </td>
             <td>
-                {{-- <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalAffiliateNumbers->revenue) && isset($totalAffiliateNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalAffiliateNumbers->revenue - $totalAffiliateNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span> --}}
+                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalAffiliateNumbers->revenue) && isset($totalAffiliateNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout) && ($totalAffiliateNumbers->revenue - $totalAffiliateNumbers->payout != 0) )  ? number_format((($totalAffiliateNumbers->revenue - $totalAffiliateNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span>
             </td>
         </tr>
         {{-- Media Buying --}}
@@ -249,7 +249,7 @@
                 <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalMediaBuyingNumbers->payout) && isset($totalNumbers->payout)) ? number_format(($totalMediaBuyingNumbers->payout  / $totalNumbers->payout)  * 100,2) : 0 }}%</span>
             </td>
             <td>
-                {{-- <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalMediaBuyingNumbers->revenue) && isset($totalMediaBuyingNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout)) ? number_format((($totalMediaBuyingNumbers->revenue - $totalMediaBuyingNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span> --}}
+                <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ (isset($totalMediaBuyingNumbers->revenue) && isset($totalMediaBuyingNumbers->payout) && isset($totalNumbers->revenue) && isset($totalNumbers->payout) && ($totalMediaBuyingNumbers->revenue - $totalMediaBuyingNumbers->payout != 0)) ? number_format((($totalMediaBuyingNumbers->revenue - $totalMediaBuyingNumbers->payout) / ($totalNumbers->revenue - $totalNumbers->payout)) * 100,2) : 0 }}%</span>
             </td>
         </tr>
         </tbody>

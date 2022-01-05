@@ -49,6 +49,12 @@
 								<h3>{{ __('Login to dashboard') }}</h3>
 								<div class="text-muted font-weight-bold">{{ __('Please enter your email and password') }}</div>
 							</div>
+							@if ($errors->has('message'))
+								<div class="alert alert-danger">
+									<p class="invalid-input">{{ $errors->first('message') }}</p>
+
+								</div>
+							@endif
 							<form action="{{ route('admin.login') }}" class="form" id="kt_login_signin_form" method="POST">
 								@csrf
 								<div class="form-group mb-5">
