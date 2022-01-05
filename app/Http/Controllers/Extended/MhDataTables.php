@@ -16,7 +16,6 @@ class MhDataTables extends DataTables
 {
     public function query($builder)
     {
-        dd($builder);
         return QueryDataTable::create($builder);
     }
 }

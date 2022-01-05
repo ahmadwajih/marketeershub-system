@@ -6,22 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Extended\MhDataTables;
 use App\Imports\InfluencerImport;
 use App\Imports\PublisherImportV2;
-use App\Imports\PublishersImport;
-use App\Imports\UserImport;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Offer;
 use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Category;
-use App\Models\Currency;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Matrix\Exception;
 use Yajra\DataTables\DataTables;
 
@@ -30,7 +29,8 @@ class PublisherController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request)
     {
@@ -38,20 +38,50 @@ class PublisherController extends Controller
 
         if ($request->ajax()) {
             try {
+                $publishers = User::select([
+                    'users.id',
+                    'users.name',
+                    'users.email',
+                    DB::raw('COUNT(offers.id) AS offersCount'),
+                    'users.category',
+                    'users.phone',
+                    'users.parent_id',
+                    'users.referral_account_manager',
+                    'users.created_at',
+                    'users.status',
+                    'countries.name_en as country_name',
+                    'cities.name_en as city_name'
+                ])
+                    ->leftJoin('offer_user as ou', function ($join) {
+                        $join->on('users.id', '=', 'ou.user_id');
+                    })
+                    ->leftJoin('offers', function ($join) {
+                        $join->on('offers.id', '=', 'ou.offer_id');
+                    })
+                    ->leftJoin('countries', function ($join) {
+                        $join->on('countries.id', '=', 'users.country_id');
+                    })
+                    ->leftJoin('cities', function ($join) {
+                        $join->on('cities.id', '=', 'users.city_id');
+                    })
+                    ->wherePosition('publisher')
+                    ->with('parent', 'categories', 'socialMediaLinks');
+
                 if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])) {
-                    $data = User::select('*')
-                        ->wherePosition('publisher')
-                        ->with('parent', 'categories', 'offers', 'socialMediaLinks')
-                        ->where(function ($query) {
-                            $query
-                                ->where('parent_id', '=', auth()->user()->id)
-                                ->orWhere('parent_id', '=', null);
-                        });
+                    $data = $publishers->where(function ($query) {
+                        $query
+                            ->where('parent_id', '=', auth()->user()->id)
+                            ->orWhere('parent_id', '=', null);
+                    });
                 } else {
-                    $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories', 'offers', 'socialMediaLinks');
+                    $data = $data = $publishers->groupBy('users.id');
                 }
-                return MhDataTables::of($data)
+
+                return DataTables::of($data)
                     ->addIndexColumn()
+                    ->editColumn('parent_id', function ($row) {
+                        return !empty($row->parent->name) ? $row->parent->name : '';
+                    })
                     ->addColumn('action', function ($row) {
                         $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
                         $btn .= '<a href="' . route('admin.publishers.edit', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-pen"></i></a>';
@@ -71,6 +101,7 @@ class PublisherController extends Controller
             'countries' => Country::all()
         ]);
     }
+
 
 
     public function dashboard(){
@@ -152,15 +183,15 @@ class PublisherController extends Controller
                 $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where($where);
             }
             return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
 
-                           $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
-                           $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
-                            return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
+                    $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
+                    $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
 
 
