@@ -94,7 +94,6 @@ class DashboardController extends Controller
 
     public function chartOffersorders()
     {
-        // dd(totalNumbers());
         $offers  = Offer::whereHas('report')->with(['report'])->orderBy('id', 'desc')->get();
         $totalNumbers  = totalNumbers();
         $totalGrossMargin = $totalNumbers->revenue - $totalNumbers->payout;

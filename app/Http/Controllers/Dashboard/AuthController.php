@@ -3,19 +3,26 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPassword;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
     public function loginForm(){
         if(Auth::check()){
-            return redirect()->route('admin.index');
+            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+                return redirect()->route('admin.publisher.profile');
+            }
+            return redirect()->route('admin.user.profile');
         }
         return view('admin.auth.login');
     }
 
+    
     public function login(Request $request){
         $credentials = $this->validate($request, [
             'email' => 'required|email|max:255',
@@ -39,6 +46,46 @@ class AuthController extends Controller
             'message' => __('The provided credentials do not match our records.'),
         ]);
     }
+
+    public function forgotPassword(Request $request){
+        $request->validate([
+            'email' => 'required|exists:users,email'
+        ]);
+        $code = rand(11111, 99999);
+        Mail::to($request->email)->send(new ResetPassword($code));
+        session(['reset_password_code' => $code, 'email' => $request->email]);
+        return redirect()->route('admin.reset.password.form');
+    }
+
+    public function resetPasswordForm(){
+        if(Auth::check()){
+            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+                return redirect()->route('admin.publisher.profile');
+            }
+            return redirect()->route('admin.user.profile');
+        }
+        return view('admin.auth.reset-password');
+    }
+
+    public function resetPassword(Request $request){
+        if(session('reset_password_code') && session('email') && session('reset_password_code') == $request->code){
+            $request->validate([
+                'code' => 'required',
+                'password' => 'required|min:6|confirmed'
+            ]);
+
+            $user = User::whereEmail(session('email'))->first();
+            if(!$user){
+                return redirect()->route('admin.forgot.password')->withErrors('This email dosne`t exists');
+            }
+            $user->password = Hash::make($request->password); 
+            $user->save();
+            return redirect()->route('admin.login.form');
+        }
+        return redirect()->back()->withErrors('This code dosne`t corret');
+    }
+
+
 
     
     /**

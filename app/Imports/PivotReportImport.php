@@ -28,11 +28,11 @@ class PivotReportImport implements ToCollection
         
         unset($collection[0]);
         Validator::make($collection->toArray(), [
-                '*.0' => 'required|max:20',
-                '*.1' => 'required|numeric',
-                '*.2' => 'required|numeric',
-                '*.3' => 'required|numeric',
-                '*.4' => 'required|numeric',
+                '*.0' => 'nullable|max:20',
+                '*.1' => 'nullable|numeric',
+                '*.2' => 'nullable|numeric',
+                '*.3' => 'nullable|numeric',
+                '*.4' => 'nullable|numeric',
             ])->validate();
 
         foreach ($collection as $index => $col) 
