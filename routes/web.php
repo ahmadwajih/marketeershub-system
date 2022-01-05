@@ -33,6 +33,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::get('change-lang/{lang}', 'DashboardController@changeLang')->name('change.lang');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
+    Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
+    Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
+    Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         // Charts
@@ -66,6 +69,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('offerRequests', OfferRequestController::class);
         Route::get('ajax/offerRequests/form', 'OfferRequestController@offerRequestAjaxForm')->name('offerRequest.ajax.form');
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
+        Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');

@@ -51,6 +51,11 @@
 								<h3 class="opacity-40 font-weight-normal">{{ __('Login to dashboard') }}</h3>
 								<p class="opacity-40">{{ __('Enter your details to login to your account:') }}</p>
 							</div>
+							@if($errors->any())
+								<div class="alert alert-danger">
+                                        <p class="invalid-input">{{$errors->first()}}</p>
+                                    </div>
+                                @endif
 							@if ($errors->has('message'))
 								<div class="alert alert-danger">
 									<p class="invalid-input">{{ $errors->first('message') }}</p>
@@ -62,61 +67,71 @@
 								</div>
 							@endif
 							
-							<form action="{{ route('admin.login') }}" class="form" method="POST">
+							<form action="{{ route('admin.reset.password') }}" class="form" method="POST">
 								@csrf
 								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="email" placeholder="Email" name="email" autocomplete="on" />
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="email" placeholder="Email" name="email" autocomplete="off" />
 								</div>
 								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Password" name="password" />
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="verification code" name="code" autocomplete="off" />
 								</div>
-								<div class="form-group d-flex flex-wrap justify-content-between align-items-center px-8 opacity-60">
-									<label class="checkbox checkbox-outline checkbox-white text-white m-0">
-									<input type="checkbox" name="remember" />Remember me
-									<span></span></label>
-									<a href="javascript:;" id="kt_login_forgot" class="text-white font-weight-bold">Forget Password ?</a>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="New Password" name="password" />
+								</div>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Confirm New Password" name="password_confirmation" />
 								</div>
 								<div class="form-group text-center mt-10">
-									<button type="submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3">Sign In</button>
+									<button type="submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3">{{ __('Reset Password') }}</button>
 								</div>
 							</form>
-							<!-- <div class="mt-10">
-								<span class="opacity-40 mr-4">Don't have an account yet?</span>
-								<a href="javascript:;" id="kt_login_signup" class="text-white opacity-30 font-weight-normal">Sign Up</a>
-							</div> -->
+							<div class="mt-10">
+								<span class="opacity-40 mr-4">{{ __('Do you need to login?') }}</span>
+								<a href="javascript:;" id="kt_login_signup" class="text-white opacity-30 font-weight-normal">{{ __('Login') }}</a>
+							</div>
 						</div>
 						<!--end::Login Sign in form-->
 						<!--begin::Login Sign up form-->
 						<div class="login-signup">
-							<div class="mb-20">
-								<h3 class="opacity-40 font-weight-normal">Sign Up</h3>
-								<p class="opacity-40">Enter your details to create your account</p>
-							</div>
-							<form class="form text-center">
-								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Fullname" name="fullname" />
+								<div class="mb-20">
+									<h3 class="opacity-40 font-weight-normal">{{ __('Login to dashboard') }}</h3>
+									<p class="opacity-40">{{ __('Enter your details to login to your account:') }}</p>
 								</div>
-								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Email" name="email" autocomplete="off" />
-								</div>
-								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Password" name="password" />
-								</div>
-								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Confirm Password" name="rpassword" />
-								</div>
-								<div class="form-group text-left px-8">
-									<label class="checkbox checkbox-outline checkbox-white opacity-60 text-white m-0">
-									<input type="checkbox" name="agree" />I Agree the
-									<a href="#" class="text-white font-weight-bold">terms and conditions</a>.
-									<span></span></label>
-									<div class="form-text text-muted text-center"></div>
-								</div>
-								<div class="form-group">
-									<button id="kt_login_signup_submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3 m-2">Sign Up</button>
-									<button id="kt_login_signup_cancel" class="btn btn-pill btn-outline-white opacity-70 px-15 py-3 m-2">Cancel</button>
-								</div>
-							</form>
+								@if ($errors->has('message'))
+									<div class="alert alert-danger">
+										<p class="invalid-input">{{ $errors->first('message') }}</p>
+									</div>
+								@endif
+								@if ($errors->has('email'))
+									<div class="alert alert-danger">
+										<p class="invalid-input">{{ $errors->first('email') }}</p>
+									</div>
+								@endif
+								
+								<form action="{{ route('admin.login') }}" class="form" method="POST">
+									@csrf
+									<div class="form-group">
+										<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="email" placeholder="Email" name="email" autocomplete="on" />
+									</div>
+									<div class="form-group">
+										<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Password" name="password" />
+									</div>
+									<div class="form-group d-flex flex-wrap justify-content-between align-items-center px-8 opacity-60">
+										<label class="checkbox checkbox-outline checkbox-white text-white m-0">
+										<input type="checkbox" name="remember" />Remember me
+										<span></span></label>
+										<a href="javascript:;" id="kt_login_forgot" class="text-white font-weight-bold">Forget Password ?</a>
+									</div>
+									<div class="form-group text-center mt-10">
+										<button type="submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3">Sign In</button>
+										<button id="kt_login_signup_cancel" class="btn btn-pill btn-outline-white opacity-70 px-15 py-3 m-2">Cancel</button>
+									</div>
+								</form>
+								{{-- <div class="mt-10">
+									<span class="opacity-40 mr-4">Don't have an account yet?</span>
+									<a href="javascript:;" id="kt_login_signin" class="text-white opacity-30 font-weight-normal">Sign Up</a>
+								</div> --}}
+
 						</div>
 						<!--end::Login Sign up form-->
 						<!--begin::Login forgot password form-->

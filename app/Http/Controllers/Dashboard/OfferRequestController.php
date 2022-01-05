@@ -231,4 +231,21 @@ class OfferRequestController extends Controller
         ]);
     }
 
+    public function coupons(Request $request)
+    {
+        $this->authorize('create_offer_requests');
+        $validator = Validator::make($request->all(), [
+            'offer_id' => 'required|integer|exists:offers,id',
+        ]);
+        
+        // Check Validation
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages(), 'code' => 422], 422);
+        }
+        
+        return view('admin.offerRequests.coupons', [
+            'offer' => Offer::findOrFail($request->offer_id)
+        ]);
+    }
+
 }
