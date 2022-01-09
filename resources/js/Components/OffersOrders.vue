@@ -47,9 +47,12 @@
             }
         },
         created() {
-            this.getChartData()
+            this.getChartData
         },
         methods: {
+
+        },
+         computed: {
             async getChartData() {
                 await axios.get(this.segment).then(({data}) => {
                     if(this.for == 'orders'){

@@ -1,6 +1,7 @@
 
 <?php
 
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
@@ -226,6 +227,17 @@ if(!function_exists('getCountryId')){
             return $country->id;
         }
         return Country::first()->id;
+    }
+}
+
+if(!function_exists('getCategoryId')){
+    function getCategoryId($categoryName):int
+    {
+        $category = Category::where('title_en', 'like', '%'.$categoryName.'%')->orWhere('title_ar', 'like', '%'.$categoryName.'%')->first();
+        if($category){
+            return $category->id;
+        }
+        return null;
     }
 }
 

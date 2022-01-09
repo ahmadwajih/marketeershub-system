@@ -14,24 +14,29 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
     public function registerAdvertiser(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string',
-            'mobile' => 'required|numeric',
-            'email' => 'required|email|unique:advertisers,email',
-            'country' => 'required|string',
-            'city' => 'required|string',
-            'company' => 'required|string',
-            'website' => 'required|url',
-        ], [
-            'first_name.required' => __('First name is required'),
-            'mobile.required' => __('Mobile number is required'),
-            'email.required' => __('Email is required'),
-            'country.required' => __('Country name is required'),
-            'city.required' => __('City name is required'),
-            'company.required' => __('Company name is required'),
-            'website.required' => __('Website URL is required'),
+            'full_name'             => 'required|string',
+            'mobile'                => 'required|numeric',
+            'email'                 => 'required|email|unique:advertisers,email',
+            'country'               => 'required|string',
+            'city'                  => 'required|string',
+            'company'               => 'required|string',
+            'website'               => 'required|url',
+            'account_manager'       => 'required|string',
+            'orders_avg_monthly'    => 'required|string',
+            'orders_avg_size'       => 'required|string',
+            'business_full_name'    => 'required|string',
+            'business_mobile'       => 'required|string',
+            'business_industry'     => 'required|string',
+            'bank_country'          => 'required|string',
+            'bank_address'          => 'required|string',
+            'bank_account_title'    => 'required|string',
+            'bank_swift'            => 'required|string',
+            'iban'                  => 'required|string',
         ]);
 
         $response = [];
@@ -40,21 +45,35 @@ class UserController extends Controller
 
             $response['errors'] = $validator->messages();
             $response['success']  = false;
-            return response()->json($response);
+            return response()->json($response, 422);
         }
-
         $data = [
-            'name' => $request->first_name . ' ' . $request->last_name,
-            'phone' => $request->mobile,
-            'email' => $request->email,
-            'company_name_ar' => $request->company,
-            'company_name_en' => $request->company,
-            'website' => $request->website,
-            'country_id' => getCountryId($request->country) ,
-            'city_id' => getCityId($request->city),
+            'name'                  => $request->full_name,
+            'phone'                 => $request->mobile,
+            'email'                 => $request->email,
+            'company_name_ar'       => $request->company,
+            'company_name_en'       => $request->company,
+            'website'               => $request->website,
+            'country_id'            => getCountryId($request->country) ,
+            'bank_country_id'       => getCountryId($request->bank_country) ,
+            'city_id'               => getCityId($request->city)??null,
+            'account_manager'       => $request->account_manager,
+            'orders_avg_monthly'    => $request->orders_avg_monthly,
+            'orders_avg_size'       => $request->orders_avg_size,
+            'business_full_name'    => $request->business_full_name,
+            'business_mobile'       => $request->business_mobile,
+            'business_industry'     => $request->business_industry,
+            'bank_country'          => $request->bank_country,
+            'bank_address'          => $request->bank_address,
+            'bank_account_title'    => $request->bank_account_title,
+            'bank_swift'            => $request->bank_swift,
+            'iban'                  => $request->iban,
         ];
 
-        Advertiser::create($data);
+        $advertiser = Advertiser::create($data);
+        if(getCategoryId($request->business_industry)){
+            $advertiser->categories()->attach(getCategoryId($request->business_industry));
+        }
         $response['success']  = true;
         return response()->json($response);
 
@@ -63,24 +82,28 @@ class UserController extends Controller
     public function registerAffiliate(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string',
-            'mobile' => 'required|numeric',
-            'email' => 'required|email|unique:users,email',
-            'experience' => 'required|integer',
-            'traffic_sources_used' => 'required|string',
-            'affiliate_networks' => 'required|string',
-            'digital_assets' => 'required|string',
-            'skype' => 'nullable|string',
-            'bank_account_title' => 'required|string',
-            'bank_name' => 'required|string',
-            'iban' => 'required|string',
-            'currency' => 'required|string',
-        ], [
-            'first_name.required' => __('First name is required'),
-            'mobile.required' => __('Mobile number is required'),
-            'email.required' => __('Email is required'),
-            'experience.required' => __('Enter the number of years. eg: 1,2 '),
+            'full_name'             => 'required|string',
+            'mobile'                => 'required|string',
+            'email'                 => 'required|email|unique:users,email',
+            'gender'                => 'required|string',
+            'country'               => 'required|string',
+            'city'                  => 'required|string',
+            'nationality'           => 'required|string',
+            'account_manager'       => 'required|string',
+            'experience'            => 'required|integer',
+            'previous_network'      => 'required|string',
+            'affiliate_networks'    => 'required|string',
+            'digital_assets'        => 'required|string',
+            'bank_country'          => 'required|string',
+            'bank_address'          => 'required|string',
+            'bank_account_title'    => 'required|string',
+            'bank_swift'            => 'required|string',
+            'currency'              => 'required|string',
+            'iban'                  => 'required|string',
         ]);
+
+ 
+
 
         $response = [];
 
@@ -88,30 +111,42 @@ class UserController extends Controller
 
             $response['errors'] = $validator->messages();
             $response['success']  = false;
-            return response()->json($response);
+            return response()->json($response, 422);
         }
 
         $data = [
-            'name' => $request->first_name . ' ' . $request->last_name,
-            'email' => $request->email,
-            'phone' => $request->mobile,
-            'country_id' => getCountryId($request->nationality) ,
-            'city_id' => getCityId($request->city),
-            'gender' => $request->gender ? $request->gender : 'male',
-            'years_of_experience' => $request->experience,
-            'traffic_sources' => $request->traffic_sources_used,
-            'affiliate_networks' => $request->affiliate_networks,
-            'owened_digital_assets' => $request->digital_assets,
-            'account_title' => $request->account_title,
-            'bank_name' => $request->bank_name,
-            'iban' => $request->iban,
-            'currency_id' => getCurrency($request->currency),
-            'team' => 'affiliate',
-            'position' => 'publisher',
+            'name'                      => $request->full_name,
+            'email'                     => $request->email,
+            'phone'                     => $request->mobile,
+            'country_id'                => getCountryId($request->country) ,
+            'city_id'                   => getCityId($request->city),
+            'gender'                    => $request->gender ? $request->gender : 'male',
+            'years_of_experience'       => $request->experience,
+            'referral_account_manager'  => $request->account_manager,
+            'traffic_sources'           => $request->previous_network,
+            'affiliate_networks'        => $request->affiliate_networks,
+            'previous_network'          => $request->affiliate_networks,
+            'owened_digital_assets'     => $request->digital_assets,
+            'account_title'             => $request->bank_account_title,
+            'bank_name'                 => $request->bank_name,
+            'swift_code'                => $request->bank_swift,
+            'iban'                      => $request->iban,
+            'nationality'               => $request->nationality,
+            'previous_network'          => $request->previous_network,
+            'bank_country'              => $request->bank_country,
+            'bank_address'              => $request->bank_address,
+            'currency_id'               => getCurrency($request->currency),
+            'team'                      => 'affiliate',
+            'position'                  => 'publisher',
         ];
 
         $user = User::create($data);
         $user->roles()->attach(Role::findOrFail(4));
+
+        if(getCategoryId($request->content_category)){
+            $user->categories()->attach(getCategoryId($request->content_category));
+        }
+
         $response['success']  = true;
 
         return response()->json($response);
@@ -121,42 +156,21 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string',
-            'mobile' => 'required|numeric',
-            'email' => 'required|email|unique:users',
-            'experience' => 'required|integer',
-            'traffic_sources_used' => 'required|string',
-            'affiliate_networks' => 'required|string',
-            'digital_assets' => 'required|string',
-            'skype' => 'nullable|string',
-            'bank_account_title' => 'required|string',
-            'bank_name' => 'required|string',
-            'iban' => 'required|string',
-            'currency' => 'required|string',
-        ], [
-            'first_name.required' => __('First name is required'),
-            'mobile.required' => __('Mobile number is required'),
-            'email.required' => __('Email is required'),
-            'experience.required' => __('Enter the number of years. eg: 1,2 '),
-        ]);
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string',
-            'mobile' => 'required|numeric',
-            'email' => 'required|email|unique:users,email',
-            'country' => 'required|string',
-            'city' => 'required|string',
-            'nationality' => 'required|string',
-            'bank_account_title' => 'required|string',
-            'bank_name' => 'required|string',
-            'iban' => 'required|string',
-            'promotion' => 'array',
-            'promotion.*' => 'required'
-        ], [
-            'first_name.required' => __('First name is required'),
-            'mobile.required' => __('Mobile number is required'),
-            'email.required' => __('Email is required'),
-            'country.required' => __('Country name is required'),
-            'nationality.required' => __('Nationality required'),
+            'full_name'             => 'required|string',
+            'mobile'                => 'required|string',
+            'email'                 => 'required|email|unique:users',
+            'country'               => 'required|string',
+            'city'                  => 'required|string',
+            'nationality'           => 'required|string',
+            'content_category'      => 'required|string',
+            'account_manager'       => 'required|string',
+            'digital_platforms'     => 'required|string',
+            'bank_country'          => 'required|string',
+            'bank_address'          => 'required|string',
+            'bank_account_title'    => 'required|string',
+            'bank_swift'            => 'required|string',
+            'currency'              => 'required|string',
+            'iban'                  => 'required|string',
         ]);
 
         $response = [];
@@ -164,30 +178,36 @@ class UserController extends Controller
         if ($validator->fails()) {
             $response['errors'] = $validator->messages();
             $response['success']  = false;
-            return response()->json($response);
+            return response()->json($response, 422);
         }
 
         $data = [
-            'name' => $request->first_name . ' ' . $request->last_name,
-            'email' => $request->email,
-            'phone' => $request->mobile,
-            'country_id' => getCountryId($request->nationality) ,
-            'city_id' => getCityId($request->city),
-            'gender' => $request->gender ? $request->gender : 'male',
-            'years_of_experience' => $request->experience,
-            'traffic_sources' => $request->traffic_sources_used,
-            'affiliate_networks' => $request->affiliate_networks,
-            'owened_digital_assets' => $request->digital_assets,
-            'account_title' => $request->account_title,
-            'bank_name' => $request->bank_name,
-            'iban' => $request->iban,
-            'currency_id' => getCurrency($request->currency),
-            'team' => 'influencer',
-            'position' => 'publisher',
+            'name'                      => $request->full_name,
+            'email'                     => $request->email,
+            'phone'                     => $request->mobile,
+            'country_id'                => getCountryId($request->country) ,
+            'city_id'                   => getCityId($request->city),
+            'gender'                    => $request->gender ? $request->gender : 'male',
+            'nationality'               => $request->nationality,
+            'referral_account_manager'  => $request->account_manager,
+            'digital_platforms'         => $request->digital_platforms,
+            'owened_digital_assets'     => $request->digital_assets,
+            'account_title'             => $request->bank_account_title,
+            'bank_name'                 => $request->bank_name,
+            'swift_code'                => $request->bank_swift,
+            'iban'                      => $request->iban,
+            'bank_country'              => $request->bank_country,
+            'bank_address'              => $request->bank_address,
+            'currency_id'               => getCurrency($request->currency),
+            'team'                      => 'influencer',
+            'position'                  => 'publisher',
         ];
 
         $user = User::create($data);
         $user->roles()->attach(Role::findOrFail(4));
+        if(getCategoryId($request->content_category)){
+            $user->categories()->attach(getCategoryId($request->content_category));
+        }
         $response['success']  = true;
 
         return response()->json($response);
