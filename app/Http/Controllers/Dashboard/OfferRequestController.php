@@ -65,6 +65,31 @@ class OfferRequestController extends Controller
             'status' => 'required|in:pending,rejected,approved',
         ]);
         $offerRequest = OfferRequest::create($data);
+        $userCoupons = Coupon::where([
+            ['user_id', '=', $offerRequest->user_id],
+            ['offer_id', '=', $offerRequest->offer_id],
+        ])->pluck('id')->toArray();
+
+        if($request->coupons ){
+            // For loop to unassign un exists coupons 
+            foreach($userCoupons as $userCoupon){
+                if(!in_array($userCoupon, $request->coupons)){
+                    $existsCoupon = Coupon::findOrFail($userCoupon);
+                    $existsCoupon->user_id = null;
+                    $existsCoupon->save();
+                }
+            }
+            // For loop to assign coupons
+            foreach($request->coupons as $coupon){
+                if(!in_array($coupon, $userCoupons)){
+                    $existsCoupon = Coupon::findOrFail($coupon);
+                    $existsCoupon->user_id = $offerRequest->user_id;
+                    $existsCoupon->save();
+                }
+            }
+            Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));
+        }
+
         userActivity('OfferRequest', $offerRequest->id, 'create');
 
         $notification = [
@@ -103,9 +128,7 @@ class OfferRequestController extends Controller
         })->where(function ($query) use($offerRequest) {
             $query->where('offer_id', $offerRequest->offer_id);
         })->get();
-        
-        // $coupons = Coupon::where('offer_id', $offerRequest->offer_id)->where('user_id',$offerRequest->user_id)->orWhere('user_id', null)->orderBy('id', 'asc')->get();
-        // dd($coupons->count());
+
         return view('admin.offerRequests.edit', [
             'offerRequest' => $offerRequest,
             'offers' => Offer::whereStatus('active')->get(),
@@ -236,6 +259,7 @@ class OfferRequestController extends Controller
         $this->authorize('create_offer_requests');
         $validator = Validator::make($request->all(), [
             'offer_id' => 'required|integer|exists:offers,id',
+            'user_id' => 'nullable|integer|exists:users,id',
         ]);
         
         // Check Validation
@@ -243,8 +267,17 @@ class OfferRequestController extends Controller
             return response()->json(['error' => $validator->messages(), 'code' => 422], 422);
         }
         
+        $coupons = Coupon::where(function ($query) use($request) {
+            $query->where('user_id',$request->user_id)
+                  ->orWhere('user_id', null);
+        })->where(function ($query) use($request) {
+            $query->where('offer_id', $request->offer_id);
+        })->get();
+
         return view('admin.offerRequests.coupons', [
-            'offer' => Offer::findOrFail($request->offer_id)
+            'offer' => Offer::findOrFail($request->offer_id),
+            'coupons' => $coupons, 
+            'request' => $request
         ]);
     }
 

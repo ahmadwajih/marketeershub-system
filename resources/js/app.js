@@ -4,10 +4,12 @@ require('./bootstrap');
 Vue.prototype.$http = axios
 
 import MhChart from './Components/MhChart'
-import OffersOrders from './Components/OffersOrders'
+import OffersAnalytics from './Components/OffersAnalytics'
+import TeamAnalytics from './Components/TeamAnalytics'
 
 Vue.component(MhChart.name, MhChart)
-Vue.component(OffersOrders.name, OffersOrders)
+Vue.component(OffersAnalytics.name, OffersAnalytics)
+Vue.component(TeamAnalytics.name, TeamAnalytics)
 
 var app = new Vue({
     el: '#app',

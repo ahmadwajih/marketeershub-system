@@ -385,12 +385,12 @@
                                                                     </div>
                                                                     <div class="col-md-4">
                                                                         <label>{{ __('Revenue') }}</label>
-                                                                        <input type="number" name="revenue" class="form-control" placeholder="1"/>
+                                                                        <input type="number" name="revenue" class="form-control" placeholder="1" step="0.1"/>
                                                                         <div class="d-md-none mb-2"></div>
                                                                     </div>
                                                                     <div class="col-md-4">
                                                                         <label>{{ __('Payout') }}</label>
-                                                                        <input type="number" name="payout" class="form-control" placeholder="1"/>
+                                                                        <input type="number" name="payout" class="form-control" placeholder="1"  step="0.1"/>
                                                                         <div class="d-md-none mb-2"></div>
                                                                     </div>
 
