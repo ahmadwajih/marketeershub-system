@@ -18,4 +18,9 @@ class OfferRequest extends Model
     public function offer(){
         return $this->belongsTo(Offer::class);
     }
+
+    public function coupons()
+    {
+        return $this->hasManyThrough(Coupon::class, User::class);
+    }
 }

@@ -41,7 +41,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-4">
                                                 <label>{{ _('User') }} :</label>
-                                                <select class="form-control select2" id="kt_select_user_id" name="user_id" required>
+                                                <select class="form-control select2 update-coupons" id="kt_select_user_id" name="user_id" required>
                                                     <option value="">{{ __('No One') }}</option>
                                                     @foreach($users as $user)
                                                         <option {{old('user_id')==$user->id?"selected":""}} value="{{$user->id}}">{{$user->name}}</option>
@@ -55,7 +55,7 @@
                                             </div>
                                             <div class="col-lg-4">
                                                 <label>* {{ _('Offer') }} :</label>
-                                                <select class="form-control select2" id="kt_select_offer_id" name="offer_id" required >
+                                                <select class="form-control select2 update-coupons" id="kt_select_offer_id" name="offer_id" required >
                                                     @foreach($offers as $offer)
                                                         <option {{old('offer_id')==$offer->id?"selected":""}} value="{{$offer->id}}">{{$offer->name}}</option>
                                                     @endforeach
@@ -81,34 +81,7 @@
                                             </div>
                                         </div>
 
-                                        <div id="coupons">
-                                            @if($offers->count() > 0)
-                                                @if($offers[0]->type == 'coupon_tracking')
-                                                    <div class="form-group row">
-                                                        <div class="col-lg-12" style="max-height: 400px !important;overflow: scroll;">
-                                                            <table class="table table-bordered">
-                                                                <tbody>
-                                                                    @if($offers[0]->coupons->count() > 0)
-                                                                        @foreach($offers[0]->coupons as $coupon)
-                                                                            <tr>
-                                                                                <td width="2%"><input id="coupon{{ $coupon->id }}" type="checkbox"  name='coupons[]' value="{{ $coupon->id }}"></td>
-                                                                                <td><label width="100%" for="coupon{{ $coupon->id }}">{{ $coupon->coupon }}</label></td>
-                                                                            </tr>
-                                                                        @endforeach
-                                                                    @else
-                                                                            <tr>
-                                                                                <div class="alert alert-danger m-auto">{{ __('This offer dosn`t have coupons') }}</div>
-                                                                            </tr>
-                                                                    @endif
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    @else
-                                                    its link traking
-                                                @endif
-                                            @endif
-                                        </div>
+                                        <div id="coupons"></div>
                                     </div>
                                 </div>
                             </div>
@@ -146,13 +119,35 @@
 
 <script>
     $(document).ready(function(){
-        $("#kt_select_offer_id").on("change",function(){
+
             var offerId = $("#kt_select_offer_id").val();
+            var userId = $("#kt_select_user_id").val();
             $.ajax({
                 method: "POST",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 url: "{{route('admin.offerRequest.ajax.coupons')}}",
-                data: { offer_id: offerId}, 
+                data: { 
+                    offer_id: offerId,
+                    user_id: userId
+                }, 
+            })
+            .done(function(res) {
+                console.log(res);
+                $("#coupons").html(res)
+            });
+
+
+        $(".update-coupons").on("change",function(){
+            var offerId = $("#kt_select_offer_id").val();
+            var userId = $("#kt_select_user_id").val();
+            $.ajax({
+                method: "POST",
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: "{{route('admin.offerRequest.ajax.coupons')}}",
+                data: { 
+                    offer_id: offerId,
+                    user_id: userId
+                }, 
             })
             .done(function(res) {
                 console.log(res);

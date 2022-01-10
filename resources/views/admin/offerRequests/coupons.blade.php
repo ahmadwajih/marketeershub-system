@@ -3,10 +3,10 @@
         <div class="col-lg-12" style="max-height: 400px !important;overflow: scroll;">
             <table class="table table-bordered">
                 <tbody>
-                    @if($offer->coupons->count() > 0)
-                        @foreach($offer->coupons as $coupon)
+                    @if($coupons->count() > 0)
+                        @foreach($coupons as $coupon)
                             <tr>
-                                <td width="2%"><input id="coupon{{ $coupon->id }}" type="checkbox"  name='coupons[]' value="{{ $coupon->id }}"></td>
+                                <td width="2%"><input id="coupon{{ $coupon->id }}" type="checkbox" {{ $request->user_id != null &&$coupon->user_id==$request->user_id ? 'checked':'' }}  name='coupons[]' value="{{ $coupon->id }}"></td>
                                 <td><label width="100%" for="coupon{{ $coupon->id }}">{{ $coupon->coupon }}</label></td>
                             </tr>
                         @endforeach

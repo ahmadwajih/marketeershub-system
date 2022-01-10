@@ -13,11 +13,12 @@
         </div>
     </div>
 </template>
+
 <script>
     import VueApexCharts from 'vue-apexcharts'
 
     export default {
-        name: "OffersOrders",
+        name: "OffersAnalytics",
         inheritAttrs: false,
         components: {
             apexchart: VueApexCharts,
@@ -33,7 +34,7 @@
             },
             segment: {
                 type: String,
-                default: 'charts/offers-orders'
+                default: 'charts/offers-analytics'
             }, 
             for : {
                 type: String,

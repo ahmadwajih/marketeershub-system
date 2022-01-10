@@ -58,7 +58,7 @@ $i = 1;
                         <ul class="nav nav-tabs" style="margin-top: -41px;">
                             @foreach($tabNavs as $nav)
                                 <li class="nav-item">
-                                    <a class="nav-link @if($i === 5) active @endif" id="db-tabnav-{{$i}}" data-toggle="tab" href="#{{ $nav['id']  }}">
+                                    <a class="nav-link @if($i === 3) active @endif" id="db-tabnav-{{$i}}" data-toggle="tab" href="#{{ $nav['id']  }}">
                                 <span class="nav-icon">
                                     <i class="{{ $nav['icon']  }}"></i>
                                 </span> <span class="nav-text">{{ $nav['label']  }}</span> </a>
@@ -110,13 +110,13 @@ $i = 1;
                             <div class="tab-pane fade" id="overall" role="tabpanel" aria-labelledby="db-tabnav-tab-2">
                                 @include('admin.components.overall')
                             </div>
-                            <div class="tab-pane fade" id="teamPerformance" role="tabpanel" aria-labelledby="db-tabnav-tab-3">
+                            <div class="tab-pane active" id="teamPerformance" role="tabpanel" aria-labelledby="db-tabnav-tab-3">
                                 @include('admin.components.team-performance')
                             </div>
                             <div class="tab-pane fade" id="publishersAnalytics" role="tabpanel" aria-labelledby="db-tabnav-tab-4">
                                 @include('admin.components.publishers-analytics')
                             </div>
-                            <div class="tab-pane active" id="offers" role="tabpanel" aria-labelledby="db-tabnav-tab-5">
+                            <div class="tab-pane fade" id="offers" role="tabpanel" aria-labelledby="db-tabnav-tab-5">
                                 @include('admin.components.offers')
                             </div>
                         </div>

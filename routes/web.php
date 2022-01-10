@@ -39,7 +39,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         // Charts
-        Route::get('charts/offers-orders', 'DashboardController@chartOffersorders')->name('chart.offers-orders');
+        Route::get('charts/offers-analytics', 'DashboardController@chartOffersAnalytics')->name('chart.offers-analytics');
         Route::get('charts/gm-v-po', 'DashboardController@chartGmVPo')->name('chart.gm-v-po');
 
         Route::resource('users', UserController::class);

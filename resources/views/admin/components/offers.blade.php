@@ -2,31 +2,37 @@
 <div class="d-flex flex-column-fluid">
     <div class="container">
         <div class="row">
-            <offers-orders
+
+            <offers-analytics
+                hidden="350px"
+                label="Offers Orders"
+                type="bar"
+                segment="charts/gm-v-po"
+            ></offers-analytics>
+
+            <offers-analytics
                 hidden="350px"
                 label="Offers Orders"
                 for="orders"
-            ></offers-orders>
+            ></offers-analytics>
 
-            <offers-orders
+            <offers-analytics
                 hidden="350px"
                 label="Offers Revenue"
                 for="revenue"
-            ></offers-orders>
+            ></offers-analytics>
 
-            <offers-orders
+            <offers-analytics
                 hidden="350px"
                 label="Offers Gross Margin"
                 for="grossmargin"
-            ></offers-orders>
+            ></offers-analytics>
 
-            <offers-orders
+            <offers-analytics
                 hidden="350px"
                 label="Offers Payout"
                 for="payout"
-            ></offers-orders>
-
-            
+            ></offers-analytics>
         </div>
     </div>
 </div>

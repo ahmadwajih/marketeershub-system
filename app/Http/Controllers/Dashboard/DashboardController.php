@@ -49,20 +49,47 @@ class DashboardController extends Controller
     // Charts
     public function chartGmVPo()
     {
+        $series = [];
+        $offers  = Offer::whereHas('report')->with(['report'])->orderBy('id', 'desc')->get();
+        $totalNumbers  = totalNumbers();
+        $totalGrossMargin = $totalNumbers->revenue - $totalNumbers->payout;
+        $orders = DB::table('pivot_reports')
+        ->select(
+            DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
+            DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'), 
+            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),  
+            DB::raw('TRUNCATE(SUM(pivot_reports.payout) ,2) as payout'),
+            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) - SUM(pivot_reports.payout) ,2) as grossmargin')
+        )
+        ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+        ->orderBy('offers.id', 'desc')
+        ->groupBy('offers.id')
+        ->get();
+    
         $data = [
             'orders' => [
                 'series' => [
                     [
-                        'name' => 'Net Profit',
-                        'data' => [44, 55, 57, 56, 61, 58, 63, 60, 66],
-                    ], [
+                        'name' => 'Orders',
+                        'data' => $orders->pluck('orders')->toArray(),
+                    ],
+                    [
                         'name' => 'Revenue',
-                        'data' => [76, 85, 101, 98, 87, 105, 91, 114, 94],
+                        'data' => $orders->pluck('revenue')->toArray(),
+                    ],
+                    [
+                        'name' => 'Gros Margin',
+                        'data' => $orders->pluck('grossmargin')->toArray(),
+                    ],
+                    [
+                        'name' => 'Payout',
+                        'data' => $orders->pluck('payout')->toArray(),
                     ],
                 ],
+
                 'chartOptions' => [
                     'chart' => [
-                        'height' => 350,
+                        'height' => 100,
                         'type' => 'bar',
                     ],
                     'legend' => [
@@ -84,7 +111,7 @@ class DashboardController extends Controller
                         'colors' => ['transparent']
                     ],
                     'xaxis' => [
-                        'categories' => [''],
+                        'categories' => $offers->pluck('name')->toArray(),
                     ],
                 ],
             ]
@@ -92,18 +119,18 @@ class DashboardController extends Controller
         return response()->json($data, 200);
     }
 
-    public function chartOffersorders()
+    public function chartOffersAnalytics()
     {
         $offers  = Offer::whereHas('report')->with(['report'])->orderBy('id', 'desc')->get();
         $totalNumbers  = totalNumbers();
         $totalGrossMargin = $totalNumbers->revenue - $totalNumbers->payout;
         $orders = DB::table('pivot_reports')
         ->select(
-            DB::raw('SUM(pivot_reports.orders) / '.$totalNumbers->orders.' * 100 as orders'), 
-            DB::raw('SUM(pivot_reports.sales) / '.$totalNumbers->sales.' * 100 as sales'), 
-            DB::raw('SUM(pivot_reports.revenue) / '.$totalNumbers->revenue.' * 100 as revenue'),  
-            DB::raw('SUM(pivot_reports.payout) / '.$totalNumbers->payout.' * 100 as payout'),
-            DB::raw('(SUM(pivot_reports.revenue) - SUM(pivot_reports.payout))  / '.$totalGrossMargin.' * 100 as grossmargin')
+            DB::raw('TRUNCATE(SUM(pivot_reports.orders) / '.$totalNumbers->orders.' * 100 ,2) as orders'), 
+            DB::raw('TRUNCATE(SUM(pivot_reports.sales) / '.$totalNumbers->sales.' * 100 ,2) as sales'), 
+            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) / '.$totalNumbers->revenue.' * 100 ,2) as revenue'),  
+            DB::raw('TRUNCATE(SUM(pivot_reports.payout) / '.$totalNumbers->payout.' * 100 ,2) as payout'),
+            DB::raw('TRUNCATE((SUM(pivot_reports.revenue) - SUM(pivot_reports.payout))  / '.$totalGrossMargin.' * 100 ,2) as grossmargin')
         )
         ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
         ->orderBy('offers.id', 'desc')
