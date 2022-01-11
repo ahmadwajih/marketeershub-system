@@ -39,7 +39,7 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <label>* {{ __('Upload File') }} :</label>
                                                 <input type="file" name="publishers" class="form-control"  value="{{old('publishers')}}" required />
                                                 @if ($errors->has('publishers'))
@@ -49,7 +49,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" required>
                                                     <option value="influencer">{{ __('Influencer') }}</option>
@@ -62,7 +62,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <br>
                                                 <a href="{{ asset('dashboard/excel-sheets-examples/inflenucers.xlsx') }}" class="btn btn-info mt-2" download>{{ __('Download Influencers Example') }}</a>
                                                 <a href="{{ asset('dashboard/excel-sheets-examples/affiliates.xlsx') }}" class="btn btn-info mt-2" download>{{ __('Download Affiliate Example') }}</a>

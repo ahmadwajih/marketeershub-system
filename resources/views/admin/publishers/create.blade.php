@@ -128,6 +128,7 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Belongs To') }} :</label>
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" required>
+                                                    <option value="">{{ __('None') }}</option>
                                                     @foreach ($users as $user)
                                                         <option {{ old('parent_id')==$user->id?'selected':'' }} value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
                                                     @endforeach
@@ -490,7 +491,7 @@
                     $("#kt_select_parent_id").html(res)
                 });
                 if(team == 'affiliate' || team == 'media_buying'){
-                    $('.affiliates').fadeIn('slow');
+                    $('.affiliates').fadeIn('slow'); 
                     $('.influncers').fadeOut('slow');
                 }
                 if(team == 'influencer' || team == 'prepaid'){

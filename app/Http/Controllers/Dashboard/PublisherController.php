@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Extended\MhDataTables;
 use App\Imports\InfluencerImport;
 use App\Imports\PublisherImportV2;
+use App\Imports\PublishersImport;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\Category;
 use App\Models\City;
@@ -405,6 +406,7 @@ class PublisherController extends Controller
         if($publisher->socialMediaLinks){
             $publisher->socialMediaLinks()->delete();
         }
+
         userActivity('User', $publisher->id, 'update', $data, $publisher);
         $publisher->update($data);
 
@@ -542,7 +544,7 @@ class PublisherController extends Controller
         ]);
     }
 
-
+    /** Upload Publishers */
     /**
      * Show the form for creating a new resource.
      *
@@ -571,7 +573,7 @@ class PublisherController extends Controller
         if($request->team = 'affiliate'){
             Excel::import(new PublishersImport($request->team),request()->file('publishers'));
         }
-        if($request->team = 'affiliate'){
+        if($request->team = 'influencer'){
             Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
         }
 
@@ -580,7 +582,8 @@ class PublisherController extends Controller
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.publishers.index');
+
+        return redirect()->route('admin.publishers.index')->with($notification);
     }
 
     public function uploadUpdateHasOfferIdByEmail()

@@ -25,9 +25,7 @@ class DashboardController extends Controller
         $this->authorize('view_dashboard');
 
         // Get all offers that have coupons and report
-        $offers  = Offer::whereHas('report')->with(['report'])->get();    
-
-        
+        $offers  = Offer::whereHas('report')->with(['report'])->get(); 
 
         return view('admin.index', [
             'offers' => $offers,
@@ -213,40 +211,27 @@ class DashboardController extends Controller
 
     public function test(){
 
-        // UpdateUsersPassword::dispatch();
+       // Team Performance 
 
-        $users = User::where('password', null)->count();
-        dd($users);
-        $totalNumbers = DB::table('offers')
-        ->join('coupons', 'offers.id', '=', 'coupons.offer_id')
-        ->join('pivot_reports', 'coupons.id', '=', 'pivot_reports.coupon_id')
-        ->select(DB::raw('pivot_reports.orders, (SELECT pivot_reports.sales FROM pivot_reports  WHERE pivot_reports.coupon_id = coupons.id) AS orders '))
+       $test  = DB::table('pivot_reports')
+       ->select('users.name', 'pivot_reports.sales as sales', 'pivot_reports.date as date')
+       ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+       ->join('users', 'coupons.user_id', '=', 'users.id')
+    //    ->orderBy('date', 'desc')
+    //    ->groupBy('date')
+       ->orderBy('users.name', 'asc')
+       ->groupBy('users.name')
+       ->get();
 
-        // ->select('offers.name_en', DB::raw('IFNULL(pivot_reports.orders, 0) as orders'), DB::raw('IFNULL(pivot_reports.sales, 0) as sales'), DB::raw('IFNULL(pivot_reports.revenue, 0) as revenue'), DB::raw('IFNULL(pivot_reports.payout, 0) as payout'))
-        ->orderBy('pivot_reports.date', 'desc')
-        ->get();
+       dd($test);
 
-        dd($totalNumbers);
+       dd([
+           'totalNumbers' => totalNumbers(),
+           'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
+           'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
+           'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
+       ]);
 
-
-
-
-      
-        $totalNumbers = DB::table('pivot_reports')
-        ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
-        ->join('users', 'coupons.user_id', '=', 'users.id')
-        ->join('offers', 'coupons.offer_id', '=', 'offers.id')
-        ->select('offers.name_en', DB::raw('IFNULL(pivot_reports.orders, 0) as orders'), DB::raw('IFNULL(pivot_reports.sales, 0) as sales'), DB::raw('IFNULL(pivot_reports.revenue, 0) as revenue'), DB::raw('IFNULL(pivot_reports.payout, 0) as payout'))
-        ->orderBy('pivot_reports.date', 'desc')
-        // ->where('users.team', '=', $team)
-        ->first();
-            dd( json_decode(json_encode($totalNumbers), true) );
-
-
-
-        // $report = PivotReport::get()[0];
-        // $report->forceDelete();
-        dd(PivotReport::get()[0]);
     }
 }
 
