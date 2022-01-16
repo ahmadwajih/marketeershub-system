@@ -39,7 +39,7 @@
                                 <div class="mb-3">
                                     <div class="mb-2">
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <label>* {{ __('Coupon code') }} :</label>
                                                 <input type="file" name="coupons" class="form-control"  value="{{old('coupons')}}" required />
                                                 @if ($errors->has('coupons'))
@@ -49,7 +49,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <label>* {{ _('Offer') }} :</label>
                                                 <select class="form-control select2" id="kt_select_offer_id" name="offer_id" required >
                                                     @foreach($offers as $offer)
@@ -63,7 +63,21 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
+                                                <label>* {{ __('Team') }} :</label>
+                                                <select class="form-control select2" id="kt_select_team" name="team" required>
+                                                    <option value="influencer">{{ __('Influencer') }}</option>
+                                                    <option value="affiliate">{{ __('Affiliate') }}</option>
+                                                    <option value="media_buying">{{ __('Media Buying') }}</option>
+                                                </select>
+                                                @if ($errors->has('team'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('team') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-lg-3">
                                                 <br>
                                                 <a href="{{ asset('dashboard/excel-sheets-examples/coupons.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
                                             </div>
@@ -97,6 +111,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_user_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_team').select2({
             placeholder: "Select Option",
         });
     </script>

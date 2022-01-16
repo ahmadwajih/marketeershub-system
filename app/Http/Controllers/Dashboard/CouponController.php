@@ -163,7 +163,13 @@ class CouponController extends Controller
     public function upload(Request $request)
     {
         $this->authorize('create_coupons');
-        Excel::import(new CouponImport($request->offer_id),request()->file('coupons'));
+        $request->validate([
+            'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
+            'offer_id'   => 'required|exists:offers,id',
+            'coupons'    => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new CouponImport($request->offer_id, $request->team),request()->file('coupons'));
         userActivity('Coupon',null , 'upload');
         
         $notification = [

@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\Validator;
 class CouponImport implements ToCollection
 {
     public $offerId;
+    public $team;
 
-    public function __construct($offerId)
+    public function __construct($offerId, $team)
     {
         $this->offerId = $offerId;
+        $this->team = $team;
     }
     /**
     * @param Collection $collection
@@ -23,22 +25,24 @@ class CouponImport implements ToCollection
         // unset($collection[0]);
         foreach ($collection as $col) 
         {
-            if(!is_null($col[0])){
-                // $userId = null;
-                // if(!is_null($col[0])){
-                //     $publisher = User::where('ho_id', $col[0])->first();
-                //     if($publisher){
-                //         $userId = $publisher->id;
-                //     }
-                // }
-    
+            if(!is_null($col[1])){
+                $userId = null;
+                if(!is_null($col[0])){
+                    $publisher = User::where('ho_id', $col[0])->where('team', $this->team)->first();
+                    // dd($publisher);
+                    if($publisher){
+                        $userId = $publisher->id;
+                    }
+                }
+                
                 Coupon::updateOrCreate(
                     [
-                        'coupon' => $col[0],
+                        'coupon' => $col[1],
                         'offer_id' => $this->offerId,
+                        
                     ],
                     [
-                        
+                        'user_id' => $userId,
                     ]);
             }
             

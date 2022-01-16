@@ -96,7 +96,7 @@ class OfferRequestController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.offerRequests.index');
+        return redirect()->route('admin.offerRequests.index')->with($notification);
     }
 
 
@@ -190,7 +190,7 @@ class OfferRequestController extends Controller
         ];
         userActivity('OfferRequest', $offerRequest->id, 'update');
 
-        return redirect()->route('admin.offerRequests.index');
+        return redirect()->route('admin.offerRequests.index')->with($notification);
     }
 
     /**

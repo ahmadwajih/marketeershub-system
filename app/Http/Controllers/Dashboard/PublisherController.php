@@ -570,10 +570,10 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-        if($request->team = 'affiliate'){
+        if($request->team == 'affiliate'){
             Excel::import(new PublishersImport($request->team),request()->file('publishers'));
         }
-        if($request->team = 'influencer'){
+        if($request->team == 'influencer'){
             Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
         }
 

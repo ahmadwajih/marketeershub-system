@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Coupon;
+use App\Models\Offer;
 use Illuminate\Database\Seeder;
 
 class CouponSeeder extends Seeder
@@ -14,35 +15,16 @@ class CouponSeeder extends Seeder
      */
     public function run()
     {
-        Coupon::create([
-            'coupon' => 'MH1',
-            'offer_id' => 1,
-            'user_id' => 11,
-        ]);
-        Coupon::create([
-            'coupon' => 'MH2',
-            'offer_id' => 1,
-            'user_id' => 12,
-        ]);
-        Coupon::create([
-            'coupon' => 'MH3',
-            'offer_id' => 1,
-            'user_id' => 13,
-        ]);
-        Coupon::create([
-            'coupon' => 'MH4',
-            'offer_id' => 2,
-            'user_id' => 11,
-        ]);
-        Coupon::create([
-            'coupon' => 'MH5',
-            'offer_id' => 2,
-            'user_id' => 12,
-        ]);
-        Coupon::create([
-            'coupon' => 'MH6',
-            'offer_id' => 2,
-            'user_id' => 13,
-        ]);
+        $offers = Offer::all();
+        foreach($offers as $offer){
+            // Add 6 coupons for one offer
+            for($i = 1; $i <= 6; $i++){
+                Coupon::create([
+                    'coupon' => 'MH'.$i.$offer->id,
+                    'offer_id' => $offer->id,
+                    'user_id' => ($i == 1 || $i == 2) ? 11 : ($i == 3 || $i == 4 ? 12 : ($i == 5 || $i == 6 ? 13 : null))
+                ]);
+            }
+        }
     }
 }

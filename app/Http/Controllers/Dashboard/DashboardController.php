@@ -213,17 +213,29 @@ class DashboardController extends Controller
 
        // Team Performance 
 
-       $test  = DB::table('pivot_reports')
-       ->select('users.name', 'pivot_reports.sales as sales', 'pivot_reports.date as date')
-       ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
-       ->join('users', 'coupons.user_id', '=', 'users.id')
-    //    ->orderBy('date', 'desc')
-    //    ->groupBy('date')
-       ->orderBy('users.name', 'asc')
-       ->groupBy('users.name')
-       ->get();
+       /**
+        *   ->select('users.name as name', 'users.team as team', 'pivot_reports.sales as sales', 'pivot_reports.date as date')
+        *   ->join('users', 'coupons.user_id', '=', 'users.id')
+        */
 
-       dd($test);
+       $data  = DB::table('pivot_reports')
+       ->select(
+            DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
+            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+            'pivot_reports.date as date',
+            'users.team as team',
+        )
+        ->rightJoin('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+        ->rightJoin('users', function($join) {
+            $join->on('coupons.user_id', '=', 'users.id')
+            ->groupBy('users.team');
+        })
+        ->groupBy('team')
+        ->orderByRaw('orders DESC')
+        ->groupBy('date')
+        ->get();
+
+       dd($data);
 
        dd([
            'totalNumbers' => totalNumbers(),

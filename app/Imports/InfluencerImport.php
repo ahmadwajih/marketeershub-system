@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
@@ -36,22 +37,21 @@ class InfluencerImport implements ToCollection
         unset($collection[0]);
         foreach ($collection as $index => $col) 
         {
-            // dd($col);
-
+            if(isset($col[3]) && isset($col[1])){
                 // Get Account Manager 
                 $accountManager = User::select('id')->where('email',$col[4])->first();
                 if($accountManager){
                     $this->accouManagerId = $accountManager->id;
                 }
-                
+
                 // Get Country Id
-                $country = Country::select('id')->where('name_en', 'like', '%'.$col[7].'%')->orWhere('name_ar', 'like', '%'.$col[7].'%')->first();
+                
+                $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();
                 if($country){
                     $this->countryId = $country->id;
                 }
-
                 // Get City Id
-                $city = City::select('id')->where('name_en', 'like', '%'.$col[8].'%')->orWhere('name_ar', 'like', '%'.$col[8].'%')->first();
+                $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
                 if($city){
                     $this->cityId = $city->id;
                 }
@@ -67,14 +67,17 @@ class InfluencerImport implements ToCollection
                 }
 
                 // Get Cerrency Id 
-                $currency = Currency::select('id')->where('name_en', 'like', '%'.$col[15].'%')
-                    ->orWhere('name_ar', 'like', '%'.$col[15].'%')
-                    ->orWhere('code', $col[15])
-                    ->orWhere('sign', $col[15])
+                $currency = Currency::select('id')->where('name_en', 'like', '%'.trim($col[16]).'%')
+                    ->orWhere('name_ar', 'like', '%'.trim($col[16]).'%')
+                    ->orWhere('code', trim($col[16]))
+                    ->orWhere('sign', trim($col[16]))
                     ->first();
                     if($currency){
                         $this->currrencyId = $currency->id;
                     }
+
+                // Get Category Id 
+                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
 
                 $publisher = User::updateOrCreate(
                     ['email' => $col[3]],
@@ -88,18 +91,19 @@ class InfluencerImport implements ToCollection
                         'status' => $this->status,
                         'country_id' => $this->countryId,  
                         'city_id' => $this->cityId,  
-                        'address' => $col[9],
-                        'account_title' => $col[11],
+                        'address' => $col[9] ?? null,
+                        'account_title' => $col[10],
                         'bank_name' => $col[12],
-                        'iban' => $col[13],
-                        'bank_branch_code' => $col[14],
-                        'swift_code' => $col[15],
+                        'iban' => $col[15],
+                        'bank_branch_code' => $col[13],
+                        'swift_code' => $col[14],
                         'currency_id' => $this->currrencyId,
                         'team' => $this->team,
                     ]
                 );
 
                 $publisher->roles()->sync(4);
+                $publisher->categories()->sync($category->id);
 
                 // Facebook
                 if(!is_null($col[17])){
@@ -109,60 +113,65 @@ class InfluencerImport implements ToCollection
                     ],
                     [
                         'link' => $col[17],
-                        'followers' => $col[18],
+                        'followers' => $col[18] ?? 0,
                     ]);
                 }
+                 // Instagram
+                 if(!is_null($col[19])){
+                    SocialMediaLink::updateOrCreate([
+                        'platform' => 'instagram',
+                        'user_id' => $publisher->id
+                    ],[
+                        'link' => $col[19],
+                        'followers' => $col[20] ?? 0,
+                    ]);
+                }
+
+                // Twitter
+                if(!is_null($col[21])){
+                    SocialMediaLink::updateOrCreate([
+                        'platform' => 'twitter',
+                        'user_id' => $publisher->id
+                    ],[
+                        'link' => $col[21],
+                        'followers' => $col[22] ?? 0,
+                    ]);
+                }
+
                 // Snapchat
-                if(!is_null($col[19])){
+                if(!is_null($col[23])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'snapchat',
                         'user_id' => $publisher->id,
                     ],
                     [
-                        'link' => $col[19],
-                        'followers' => $col[20],
-                    ]);
-                }
-                // Instagram
-                if(!is_null($col[21])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'instagram',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[21],
-                        'followers' => $col[22],
-                    ]);
-                }
-                // Twitter
-                if(!is_null($col[23])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'twitter',
-                        'user_id' => $publisher->id
-                    ],[
                         'link' => $col[23],
-                        'followers' => $col[24],
+                        'followers' => $col[24] ?? 0,
                     ]);
                 }
-                // Youtube
-                if(!is_null($col[25])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'youtube',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[25],
-                        'followers' => $col[26],
-                    ]);
-                }
+               
                 // Tiktok
-                if(!is_null($col[26])){
+                if(!is_null($col[25])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'tiktok',
                         'user_id' => $publisher->id
                     ],[
-                        'link' => $col[26],
-                        'followers' => $col[27],
+                        'link' => $col[25],
+                        'followers' => $col[26] ?? 0,
                     ]);
                 }
+                // Youtube
+                if(!is_null($col[27])){
+                    SocialMediaLink::updateOrCreate([
+                        'platform' => 'youtube',
+                        'user_id' => $publisher->id
+                    ],[
+                        'link' => $col[27],
+                        'followers' => $col[28] ?? 0,
+                    ]);
+                }
+                
+            }
 
         }
     }

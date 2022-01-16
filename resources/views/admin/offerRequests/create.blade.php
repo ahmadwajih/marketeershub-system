@@ -69,8 +69,8 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" required>
-                                                    <option {{ old('status')=="pending"?"selected":"" }} value="pending">{{ __('Pending') }}</option>
                                                     <option {{ old('status')=="approved"?"selected":"" }} value="approved">{{ __('Approved') }}</option>
+                                                    <option {{ old('status')=="pending"?"selected":"" }} value="pending">{{ __('Pending') }}</option>
                                                     <option {{ old('status')=="rejected"?"selected":"" }} value="rejected">{{ __('Rejected') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))

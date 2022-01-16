@@ -1,4 +1,4 @@
- <h3 class="card-title align-items-start flex-column">
+<h3 class="card-title align-items-start flex-column">
 <span class="card-label font-weight-bolder text-dark">{{ __('Main Dashboard') }}</span>
 <span class="text-muted mt-3 font-weight-bold font-size-sm"> {{ __('More than ') . App\Models\Offer::count() . __(' offer ') .  __('ًWith More than ')  . $offers->count() . __(' offer') }} </span>
 </h3>
