@@ -122,7 +122,7 @@
                                             @endif
                                             @else
                                                 @if($offer->type == 'link_tracking')
-                                                    <button class="rounded requestOffer btn btn-warning btn-xs mr-2" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Link') }}</button>
+                                                    <button class="rounded requestOffer btn btn-warning btn-xs mr-2" data-offer="{{ $offer->id }}" data-modal="{{ 'modal'.$offer->id }}">{{ __('Request Link') }}</button>
                                                 @elseif($offer->type == 'coupon_tracking')
                                                     <button class="rounded requestOffer btn btn-warning btn-xs mr-2 request-coupons" data-offer="{{ $offer->id }}">{{ __('Request Coupons') }}</button>
                                                 @endif
@@ -223,10 +223,10 @@
 
         $(document).ready(function () {
             // Loade MOdal
-            $(".requestOffer").click(function () {
-                var modal = $(this).data('modal');
-                $('#' + modal).fadeIn('slow');
-            });
+            // $(".requestOffer").click(function () {
+            //     var modal = $(this).data('modal');
+            //     $('#' + modal).fadeIn('slow');
+            // });
 
             // Close Modal
             $("body").on('click', '.close-modal', function ()  {
@@ -234,7 +234,7 @@
             });
 
             // Send CouponsRequest
-            $(".request-coupons").click(function () {
+            $(".requestOffer").click(function () {
                 var $self = $(this);
                 var offerId = $self.data('offer');
                 $.ajax({
@@ -262,7 +262,7 @@
                 method: "POST",
                 cache: false,
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url: "{{route('admin.ajax.view.coupons')}}",
+                url: "{{route('admin.offerRequest.ajax.view.coupons')}}",
                 data: {
                     offer_id: offerId,
                 },

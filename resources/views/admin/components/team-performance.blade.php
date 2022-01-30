@@ -19,62 +19,33 @@
             </tr>
             </thead>
             <tbody>
+                @foreach($teamPerformance as $team)
                 <tr>
-                    <td rowspan="4">
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ __('Influencer') }}</span>
+                    <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
+                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ Str::headline($team->team)}}</span>
                     </td>
-                    <td rowspan="4">
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1</span>
+                    <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
+                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $team->orders }}</span>
                     </td>
-                    <td rowspan="4">
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
+                    <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
+                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $team->revenue }}$</span>
                     </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">Account Manager 1</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                </tr>
-                <tr>
 
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">Account Manager 2</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
                 </tr>
-                <tr>
-
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">Account Manager 3</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                </tr>
-                <tr>
-
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">Account Manager 4</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                    <td>
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">1$</span>
-                    </td>
-                </tr>
+                    @foreach(publisherPerformanceBasedOnTeam($team->team)->groupBy('user') as $publisher)
+                    <tr>
+                        <td>
+                            <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $publisher->first()->user }}</span>
+                        </td>
+                        <td>
+                            <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $publisher->first()->revenue }}$</span>
+                        </td>
+                        <td>
+                            <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $publisher->first()->orders }}$</span>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endforeach
             </tbody>
         </table>
     </div>

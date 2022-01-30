@@ -71,6 +71,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('ajax/offerRequests/form', 'OfferRequestController@offerRequestAjaxForm')->name('offerRequest.ajax.form');
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
+        Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
+
+
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
@@ -87,7 +90,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         // Ajax requests
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
-        Route::post('ajax/view-coupons', 'AjaxController@viewCoupons')->name('ajax.view.coupons');
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
 

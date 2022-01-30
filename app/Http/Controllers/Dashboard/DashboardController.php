@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\Offer;
+use App\Models\Order;
 use App\Models\PivotReport;
 use App\Models\PublisherCategory;
 use App\Models\User;
@@ -27,12 +28,34 @@ class DashboardController extends Controller
         // Get all offers that have coupons and report
         $offers  = Offer::whereHas('report')->with(['report'])->get(); 
 
+        // Team Performance data 
+        $teamPerformance  = DB::table('pivot_reports')
+        ->select(
+                DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
+                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+                'pivot_reports.date as date',
+                'users.team as team',
+            )
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->orderBy('orders',  'DESC')
+            ->groupBy('team', 'date')
+            ->having('orders', '>', 0)
+            ->get();
+
+            // dd(publisherPerformanceBasedOnTeam('affiliate')->groupBy('user'));
+            foreach(publisherPerformanceBasedOnTeam('affiliate')->groupBy('user') as $pub){
+                // dd($pub->first());
+            }
+        
+
         return view('admin.index', [
             'offers' => $offers,
             'totalNumbers' => totalNumbers(),
             'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
             'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
             'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
+            'teamPerformance' => $teamPerformance->groupBy('date')->first()
         ]);
 
         return view('admin.index');
@@ -211,38 +234,8 @@ class DashboardController extends Controller
 
     public function test(){
 
-       // Team Performance 
-
-       /**
-        *   ->select('users.name as name', 'users.team as team', 'pivot_reports.sales as sales', 'pivot_reports.date as date')
-        *   ->join('users', 'coupons.user_id', '=', 'users.id')
-        */
-
-       $data  = DB::table('pivot_reports')
-       ->select(
-            DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
-            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
-            'pivot_reports.date as date',
-            'users.team as team',
-        )
-        ->rightJoin('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
-        ->rightJoin('users', function($join) {
-            $join->on('coupons.user_id', '=', 'users.id')
-            ->groupBy('users.team');
-        })
-        ->groupBy('team')
-        ->orderByRaw('orders DESC')
-        ->groupBy('date')
-        ->get();
-
-       dd($data);
-
-       dd([
-           'totalNumbers' => totalNumbers(),
-           'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
-           'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
-           'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
-       ]);
+      $history = Order::latest()->first();
+      dd($history);
 
     }
 }

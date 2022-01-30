@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Imports\OfferCouponImport;
 use App\Models\Advertiser;
 use App\Models\Category;
 use App\Models\Country;
@@ -15,6 +16,7 @@ use App\Notifications\NewOffer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OfferController extends Controller
 {
@@ -160,11 +162,14 @@ class OfferController extends Controller
             }
 
         }
+        // if($request->coupons){
+        //     Excel::import(new OfferCouponImport($offer->id, $request->team),request()->file('coupons'));
+        // }
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.offers.index');
+        return redirect()->route('admin.offers.index')->with($notification);
     }
 
     /**

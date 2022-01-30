@@ -25,7 +25,7 @@ class AdvertiserSeeder extends Seeder
             'currency_id' => 1,
             'city_id' => 1,
             'address' => 'Riayd SAudia Arabia',
-            'status' => 'approved',
+            'status' => 'active',
         ]);
     }
 }

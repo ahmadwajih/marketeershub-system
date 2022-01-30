@@ -38,14 +38,14 @@ class InfluencerImport implements ToCollection
         foreach ($collection as $index => $col) 
         {
             if(isset($col[3]) && isset($col[1])){
+
                 // Get Account Manager 
-                $accountManager = User::select('id')->where('email',$col[4])->first();
+                $accountManager = User::select('id')->where('email',trim($col[4]))->first();
                 if($accountManager){
                     $this->accouManagerId = $accountManager->id;
                 }
 
                 // Get Country Id
-                
                 $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();
                 if($country){
                     $this->countryId = $country->id;
@@ -77,7 +77,7 @@ class InfluencerImport implements ToCollection
                     }
 
                 // Get Category Id 
-                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
+                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
 
                 $publisher = User::updateOrCreate(
                     ['email' => $col[3]],
@@ -92,7 +92,7 @@ class InfluencerImport implements ToCollection
                         'country_id' => $this->countryId,  
                         'city_id' => $this->cityId,  
                         'address' => $col[9] ?? null,
-                        'account_title' => $col[10],
+                        'account_title' => $col[11],
                         'bank_name' => $col[12],
                         'iban' => $col[15],
                         'bank_branch_code' => $col[13],
@@ -103,7 +103,7 @@ class InfluencerImport implements ToCollection
                 );
 
                 $publisher->roles()->sync(4);
-                $publisher->categories()->sync($category->id);
+                $category ? $publisher->categories()->sync($category->id) : '';
 
                 // Facebook
                 if(!is_null($col[17])){

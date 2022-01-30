@@ -484,6 +484,18 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                                <div class="form-group row">
+                                                    <div class="col-lg-12">
+                                                        <label>{{ __('Coupon code') }} :</label>
+                                                        <input type="file" name="coupons" class="form-control"  value="{{old('coupons')}}" required />
+                                                        @if ($errors->has('coupons'))
+                                                            <div>
+                                                                <p class="invalid-input">{{ $errors->first('coupons') }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

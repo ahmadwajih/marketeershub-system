@@ -281,4 +281,20 @@ class OfferRequestController extends Controller
         ]);
     }
 
+    public function viewOfferCoupons(Request $request)
+    {
+        if ($request->ajax()){
+            $coupons = [];
+            $link = '';
+
+            $offer = Offer::findOrFail($request->offer_id);
+            if($offer->type == 'coupon_tracking'){
+                $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offer_id)->get();
+            }else{
+                $link = $offer->offer_url.'?utm_affiliate_id='.auth()->user()->id.'&utm_offer_id='.$offer->id; 
+            }
+            return view('admin.modals.coupons', ['coupons' => $coupons, 'link' => $link]);
+        }
+    }
+
 }

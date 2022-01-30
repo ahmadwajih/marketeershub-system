@@ -135,9 +135,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // dd($request->all());
         $this->authorize('update_users');
         $data = $request->validate([
+            'ho_id'                 => 'nullable|max:255|unique:users,ho_id,'.$user->id,
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,
             'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
@@ -176,7 +176,7 @@ class UserController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->back();
+        return redirect()->back()->with($notification);
         return redirect()->route('admin.users.index');
     }
 

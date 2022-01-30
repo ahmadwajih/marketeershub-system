@@ -5,11 +5,14 @@
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
-
+            
             <!--begin::Card-->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
+                        @if(session()->has('message'))
+                        @include('admin.temps.success')
+                        @endif
                         <div class="card-header">
                             <h2 class="card-title"> {{ __('User Name') }} {{ $user->name }}</h2>
                         </div>
@@ -107,7 +110,7 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" >
                                                     <option {{ $user->team=='management'?'selected':'' }} value="management">{{ __('Management') }}</option>
@@ -124,7 +127,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Position') }} :</label>
                                                 <select class="form-control select2" id="kt_select_position" name="position" >
                                                     <option {{ $user->position=='employee'?'selected':'' }} value="employee">{{ __('Employee') }}</option>
@@ -140,22 +143,10 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-4">
-                                                <label>* {{ _('Role') }} :</label>
-                                                <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
-                                                    @foreach($roles as $role)
-                                                        <option value="{{$role->id}}"  @if($user->roles->contains($role)) selected @endif>{{$role->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('roles'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('roles') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
+                                            
                                         </div>
                                         <div class="form-group row">
-                                            <div class="col-lg-12">
+                                            <div class="col-lg-6">
                                                 <label>* {{ __('Belongs To') }} :</label>
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
                                                     <option {{  $user->parent_id==null?'selected':''  }} value="null">{{ __('No one') }}</option>
@@ -166,6 +157,19 @@
                                                 @if ($errors->has('parent_id'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('parent_id') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>* {{ _('Role') }} :</label>
+                                                <select class="form-control select2" id="kt_select_role_id" name="roles[]" required multiple>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{$role->id}}"  @if($user->roles->contains($role)) selected @endif>{{$role->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('roles'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('roles') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -248,6 +252,18 @@
                                                 @endif
                                             </div>
 
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>*{{ __('Old ID') }} :</label>
+                                                <input type="text" name="ho_id" class="form-control" value="{{old('ho_id') ?? $user->ho_id}}" />
+                                                @if ($errors->has('ho_id'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('ho_id') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
