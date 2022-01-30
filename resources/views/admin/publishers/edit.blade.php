@@ -114,6 +114,7 @@
                                                 <label>{{ __('Password') }} :</label>
                                                 <input type="password" name="password" class="form-control"  value="{{old('password')}}" />
                                                 <b>{{ __('If you don`t need to change password don`t write any thing here.') }}</b>
+                                                <b >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol') }}</b>
                                                 @if ($errors->has('password'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('password') }}</p>

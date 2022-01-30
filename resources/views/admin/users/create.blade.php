@@ -94,6 +94,8 @@
                                             <div class="col-lg-6">
                                                 <label>*  {{ __('Password') }} :</label>
                                                 <input type="password" name="password" class="form-control"  value="{{old('password')}}" />
+                                                <b >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol') }}</b>
+
                                                 @if ($errors->has('password'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('password') }}</p>
