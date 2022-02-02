@@ -103,8 +103,49 @@
                         </div>
                         <!--end::Details-->
                         <div class="separator separator-solid"></div>
-                        <!--begin::Items-->
+                        <!--begin::Items Totals -->
                         <div class="d-flex align-items-center flex-wrap mt-8">
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                <span class="mr-4">
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                </span>
+                                <div class="d-flex flex-column text-dark-75">
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Orders') }}</span>
+                                    <span class="font-weight-bolder font-size-h5">
+                                    {{ $totalNumbers->orders ?? 0 }} {{ __('Order') }}</span>
+                                    
+                                </div>
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                <span class="mr-4">
+                                    <i class="fas fa-donate fa-2x"></i>
+                                </span>
+                                <div class="d-flex flex-column text-dark-75">
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Sales') }}</span>
+                                    <span class="font-weight-bolder font-size-h5">
+                                    <span class="text-dark-50 font-weight-bold">$</span>{{ $totalNumbers->sales ?? 0 }}</span>
+                                </div>
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                <span class="mr-4">
+                                    <i class="flaticon-piggy-bank display-4 text-muted font-weight-bold"></i>
+                                </span>
+                                <div class="d-flex flex-column text-dark-75">
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Revenue') }}</span>
+                                    <span class="font-weight-bolder font-size-h5">
+                                    <span class="text-dark-50 font-weight-bold">$</span>{{ $totalNumbers->revenue ?? 0 }}</span>
+                                </div>
+                            </div>
+                            <!--end::Item-->
+                        </div>
+                        <!--begin::Items-->
+                        <!--begin::Items-->
+                        {{-- <div class="d-flex align-items-center flex-wrap mt-8">
                             <!--begin::Item-->
                             <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
                                 <span class="mr-4">
@@ -179,7 +220,7 @@
                                 </div>
                             </div>
                             <!--end::Item-->
-                        </div>
+                        </div> --}}
                         <!--begin::Items-->
                         
                     </div>
@@ -231,8 +272,8 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($publisher->offers as $offer)
-                                                    {{-- @dd($offer); --}}
+                                                    @if($activeOffers)
+                                                    @foreach($activeOffers as $offer)
                                                     <tr>
                                                         <td class="pl-0 py-5">
                                                             <div class="symbol symbol-50 symbol-light mr-2">
@@ -242,13 +283,13 @@
                                                             </div>
                                                         </td>
                                                         <td class="pl-0">
-                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->name }}</a>
-                                                            <span class="text-muted font-weight-bold d-block">{{ $offer->description }}</span>
+                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->offer_name }}</a>
+                                                            {{-- <span class="text-muted font-weight-bold d-block">{{ $offer->description }}</span> --}}
                                                         </td>
                                                         <td>
                                                             <div class="d-flex flex-column w-100 mr-2">
                                                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $publisher->sumOrdersCount->sum('orders') }}</span>
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->orders }}</span>
                                                                     {{-- <span class="text-muted font-size-sm font-weight-bold">Progress</span> --}}
                                                                 </div>
                                                                 {{ __('order') }}
@@ -257,7 +298,7 @@
                                                         <td>
                                                             <div class="d-flex flex-column w-100 mr-2">
                                                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $publisher->sumOrdersCount->sum('v_sales') }} {{ $offer->currency?$offer->currency->sign:__('SAR') }}</span>
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->sales }} $</span>
                                                                     {{-- <span class="text-muted font-size-sm font-weight-bold">Progress</span> --}}
                                                                 </div>
                                                                 {{ __('sales') }}
@@ -266,7 +307,7 @@
                                                         <td>
                                                             <div class="d-flex flex-column w-100 mr-2">
                                                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $publisher->sumOrdersCount->sum('v_payout') }} {{ $offer->currency?$offer->currency->sign:__('SAR') }}</span>
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->revenue }} $</span>
                                                                 </div>
                                                                 {{ __('revenue') }}
                                                             </div>
@@ -274,6 +315,13 @@
 
                                                     </tr>
                                                     @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td colspan='5'>
+                                                            <div class="alert alert-warning text-center m-5">No Avalible Offers</div>
+                                                        </td>
+                                                    </tr>
+                                                    @endif
     
                                                 </tbody>
                                             </table>
@@ -448,7 +496,7 @@
                     </div>
                 </div> --}}
 
-                @if(auth()->user()->position == 'account_manager')
+                @if($publisher->position == 'account_manager')
 
                 <!--end::Profile 4-->
                 <div class="">
@@ -490,7 +538,7 @@
                                                         <div class="symbol-label" style="background-image: url('{{ getImagesPath('Users', $singlePublisher->image) }}')"></div>
                                                     </div>
                                                     <div>
-                                                        <a href="javascript:void(0)" class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $singlePublisher->name }}</a>
+                                                        <a href="{{ route('admin.publisher.profile', $singlePublisher->id) }}" class="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $singlePublisher->name }}</a>
                                                         {{-- <span class="text-muted font-weight-bold d-block">{{ $singlePublisher->name }}</span> --}}
                                                     </div>
                                                 </div>

@@ -75,6 +75,7 @@ class OfferController extends Controller
         $data = $request->validate([
             'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
+            'partener' => 'required|in:none,salla',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_ar' => 'nullable',
             'description_en' => 'nullable',
@@ -101,6 +102,10 @@ class OfferController extends Controller
             'currency_id' => 'nullable',
             'discount' => 'required|numeric',
             'discount_type' => 'required|in:flat,percentage',
+            'slaps.*.from' => 'required_if:cps_type,slaps',
+            'slaps.*.to' => 'required_if:cps_type,slaps',
+            'slaps.*.revenue' => 'required_if:cps_type,slaps',
+            'slaps.*.payout' => 'required_if:cps_type,slaps',
         ]);
 
         $thumbnail = '';
@@ -108,6 +113,7 @@ class OfferController extends Controller
             $thumbnail = time() . rand(11111, 99999) . '.' . $request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/', $thumbnail, 'public');
         }
+        unset($data['slaps']);
         unset($data['categories']);
         unset($data['countries']);
         unset($data['new_payout']);
@@ -145,7 +151,6 @@ class OfferController extends Controller
                 'offer_id' => $offer->id,
             ]);
         }
-
         // If cps is slaps
         if ($request->cps_type == 'slaps') {
             if ($request->slaps && count($request->slaps) > 0) {
@@ -216,6 +221,7 @@ class OfferController extends Controller
         $data      = $request->validate([
             'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
+            'partener' => 'required|in:none,salla',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_ar' => 'nullable',
             'description_en' => 'nullable',

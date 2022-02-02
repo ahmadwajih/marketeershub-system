@@ -95,6 +95,19 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-md-12">
+                                                        <label>* {{ __('Partener') }} :</label>
+                                                        <select class="form-control select2" id="kt_select_partener" name="partener">
+                                                            <option {{ old('partener')=='none'?'selected':''  }} value="none"" >{{ __('No one') }}</option>
+                                                            <option {{ old('partener')=='salla'?'selected':''  }} value="salla">{{ __('Salla') }}</option>
+                                                        </select>
+                                                        @if ($errors->has('partener'))
+                                                            <div>
+                                                                <p class="invalid-input">{{ $errors->first('partener') }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="col-md-12">
                                                         <label>* {{ __('Advertiser') }} :</label>
                                                         <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id">
                                                             <option selected value="">{{ __('No one') }}</option>
@@ -484,7 +497,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                <div class="form-group row">
+                                                {{-- <div class="form-group row">
                                                     <div class="col-lg-12">
                                                         <label>{{ __('Coupon code') }} :</label>
                                                         <input type="file" name="coupons" class="form-control"  value="{{old('coupons')}}" required />
@@ -494,7 +507,7 @@
                                                             </div>
                                                         @endif
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                             </div>
                                         </div>
@@ -524,6 +537,9 @@
     <script>
 
         $('#kt_select_status').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_partener').select2({
             placeholder: "Select Option",
         });
         $('#kt_select_advertiser_id').select2({

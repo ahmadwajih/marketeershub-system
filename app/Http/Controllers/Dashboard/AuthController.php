@@ -71,7 +71,7 @@ class AuthController extends Controller
         if(session('reset_password_code') && session('email') && session('reset_password_code') == $request->code){
             $request->validate([
                 'code' => 'required',
-                'password' => 'required|min:6|confirmed'
+                'password' => ['required','confirmed', 'min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/']
             ]);
 
             $user = User::whereEmail(session('email'))->first();

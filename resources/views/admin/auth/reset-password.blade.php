@@ -77,6 +77,7 @@
 								</div>
 								<div class="form-group">
 									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="New Password" name="password" />
+									<b >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number') }}</b>
 								</div>
 								<div class="form-group">
 									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Confirm New Password" name="password_confirmation" />

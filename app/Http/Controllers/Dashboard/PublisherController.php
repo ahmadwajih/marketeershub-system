@@ -499,11 +499,11 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function profile()
+    public function profile(int $id = null)
     {
-        $publisher = auth()->user();
-        $userId  = auth()->user()->id;
-        $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+        $userId = ($id == null) ? auth()->user()->id : $id;
+        $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
+        $childrens = $publisher->childrens()->pluck('id')->toArray();
         array_push($childrens, $userId);
 
         $offers = Offer::whereHas('users', function($q) use($childrens) {
@@ -511,36 +511,42 @@ class PublisherController extends Controller
         })->with(['users' => function($q) use($childrens){
             $q->whereIn('users.id', $childrens);
         },
-            'coupons' => function($q) use($childrens){
-                $q->whereIn('coupons.user_id', $childrens);
-            }])->get();
-        $pendingTotalOrders = 0;
-        $pendingTotalSales = 0;
-        $pendingTotalPayout = 0;
-        $totalOrders = 0;
-        $totalSales = 0;
-        $totalPayout = 0;
-        foreach($offers as $offer){
-            foreach($offer->coupons as $coupon){
-                if($coupon->report){
-                    $pendingTotalOrders += $coupon->report->orders;
-                    $pendingTotalSales += $coupon->report->sales;
-                    $pendingTotalPayout += $coupon->report->payout;
-                    $totalOrders += $coupon->report->v_orders;
-                    $totalSales += $coupon->report->v_sales;
-                    $totalPayout += $coupon->report->v_payout;
-                }
-            }
-        }
+        'coupons' => function($q) use($childrens){
+            $q->whereIn('coupons.user_id', $childrens);
+        }])->get();
+
+        $activeOffers = DB::table('pivot_reports')
+        ->select(
+                DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
+                DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+                'offers.name_en as offer_name',
+                'offers.thumbnail as thumbnail',
+                'offers.description_en as description',
+                'pivot_reports.date as date',
+            )
+            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->whereIn('coupons.user_id', $childrens)
+            ->orderBy('date',  'DESC')
+            ->groupBy('offer_name', 'date')
+            ->get();
+        
+            $totalNumbers = DB::table('pivot_reports')
+            ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'))
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->whereIn('coupons.user_id', $childrens)
+            ->orderBy('date',  'DESC')
+            ->groupBy('date')
+            ->first();
+            
         return view('admin.publishers.profile', [
             'publisher' => $publisher,
             'offers' => $offers,
-            'pendingTotalOrders' => $pendingTotalOrders,
-            'pendingTotalSales' => $pendingTotalSales,
-            'pendingTotalPayout' => $pendingTotalPayout,
-            'totalOrders' => $totalOrders,
-            'totalSales' => $totalSales,
-            'totalPayout' => $totalPayout,
+            'activeOffers' => $activeOffers->groupBy('date')->first(), 
+            'totalNumbers' => $totalNumbers
         ]);
     }
 

@@ -7,20 +7,20 @@
 @endpush
 @php
     $columns = [
-        ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true,],
-        ['label' => __('Name'),'data'=> 'name', 'disabled'=> true,],
-        ['label' => __('Email'),'data'=> 'email'],
-        //['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true],
-        ['label' => __('Account Manager'),'data'=> 'parent_id',  'checked' => true],
-        ['label' => __('Offers'), 'data'=> 'offersCount' ],
-        ['label' => __('Category'), 'data'=> 'category'],
-        ['label' => __('Country'), 'data'=> 'country_name'],
-        ['label' => __('City'), 'data'=> 'city_name'],
-        ['label' => __('Phone'), 'data'=> 'phone'],
-        ['label' => __('Referral AM'), 'data'=> 'referral_account_manager', 'checked' => true],
-        ['label' => __('Join Date'), 'data'=> 'created_at', 'checked' => true],
-        ['label' => __('Status'), 'data'=> 'status'],
-        ['label' => __('Action'), 'data'=> 'action', 'disabled'=> true, 'checked' => true],
+        ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true, 'bSearchable' => true],
+        ['label' => __('Name'),'data'=> 'name', 'disabled'=> true, 'bSearchable' => true],
+        ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true],
+        // ['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true, 'bSearchable' => false],
+        ['label' => __('Account Manager'),'data'=> 'parent_id',  'checked' => true, 'bSearchable' => true],
+        ['label' => __('Offers'), 'data'=> 'offersCount', 'bSearchable' => true, 'bSearchable' => false],
+        ['label' => __('Category'), 'data'=> 'category','bSearchable' => true],
+        ['label' => __('Country'), 'data'=> 'country_name','bSearchable' => false],
+        ['label' => __('City'), 'data'=> 'city_name','bSearchable' => false],
+        ['label' => __('Phone'), 'data'=> 'phone','bSearchable' => true],
+        ['label' => __('Referral AM'), 'data'=> 'referral_account_manager', 'checked' => true, 'bSearchable' => true],
+        ['label' => __('Join Date'), 'data'=> 'created_at', 'checked' => true, 'bSearchable' => true],
+        ['label' => __('Status'), 'data'=> 'status', 'bSearchable' => true],
+        ['label' => __('Action'), 'data'=> 'action', 'disabled'=> true, 'checked' => true, 'bSearchable' => false],
     ];
 //dd(json_encode($columns));
     $thead = '';
@@ -69,6 +69,7 @@
                                                  $dtColumns[] = [
                                                      'name' =>$column['data'],
                                                      'data' =>$column['data'],
+                                                     'bSearchable' =>$column['bSearchable'],
                                                      ];
                                                 @endphp
 
@@ -104,7 +105,7 @@
                             </button>
                             <div id="parent-dropdown" class="dropdown-menu float-right w-100" style="width: 300px !important;">
                                 <!--begin: Search Form-->
-                                <form class="px-4 py-3" action="{{ route('admin.publishers.search') }}" method="GET">
+                                <form class="px-4 py-3" action="{{ route('admin.publishers.index') }}" method="GET">
                                     <div class="form-group">
                                         <label>{{ __('Team') }}</label> <select class="form-control " id="" name="team">
                                             <option selected value="">{{ __('All') }}</option>
