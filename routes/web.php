@@ -36,6 +36,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
     Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
+
+
+
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         // Charts
@@ -73,7 +76,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
 
-
+        
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
@@ -99,6 +102,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         });
     });
 });
+
+
+// Salla Routes
+Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.'], function(){
+
+    Route::get('install', 'SallaInfoController@installApp');
+    Route::view('success', 'admin.salla.install-success')->name('installed.successfully');
+    Route::view('failed', 'admin.salla.install-failed')->name('installed.failed');
+
+});
+
 
 Route::get('test', 'Dashboard\DashboardController@test');
 

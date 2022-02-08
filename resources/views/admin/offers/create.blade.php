@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')@section('title','Offers')
 @push('styles')
     <style>
-        #oldNew, #slaps {
+        #oldNew, #slaps{
             display: none;
         }
     </style>
@@ -107,6 +107,16 @@
                                                         @endif
                                                     </div>
 
+                                                    <div class="col-md-12" id='sallaUserEmail' @if(old('partener')!='salla') style="display: none" @endif>
+                                                        <label>* {{ __('Your email in salla') }} :</label>
+                                                        <input type="text" name="salla_user_email" class="form-control" placeholder="Add the email that you registerd by it in Salla" value="{{old('salla_user_email')}}"/>
+                                                        @if ($errors->has('salla_user_email'))
+                                                            <div>
+                                                                <p class="invalid-input">{{ $errors->first('salla_user_email') }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
                                                     <div class="col-md-12">
                                                         <label>* {{ __('Advertiser') }} :</label>
                                                         <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id">
@@ -197,8 +207,8 @@
                                                     <div class="col-md-12">
                                                         <label>* {{ _('Type') }} :</label>
                                                         <select class="form-control select2" id="kt_select_type" name="type">
-                                                            <option value="coupon_tracking">{{ __('Coupon Tracking') }}</option>
-                                                            <option value="link_tracking">{{ __('Link Tracking') }}</option>
+                                                            <option  {{ old('type')=='coupon_tracking'?'selected':''  }} value="coupon_tracking">{{ __('Coupon Tracking') }}</option>
+                                                            <option  {{ old('type')=='link_tracking'?'selected':''  }} value="link_tracking">{{ __('Link Tracking') }}</option>
                                                         </select>
                                                         @if ($errors->has('type'))
                                                             <div>
@@ -636,6 +646,15 @@
                     $('#static').fadeOut();
                     $('#slaps').fadeIn();
                     $('#oldNew').fadeOut();
+                }
+            });
+
+
+            $("#kt_select_partener").change(function () {
+                if ($(this).val() == 'salla') {
+                    $('#sallaUserEmail').fadeIn();
+                }else{
+                    $('#sallaUserEmail').fadeOut();
                 }
             });
         });

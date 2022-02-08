@@ -626,7 +626,13 @@ class PublisherController extends Controller
                 'accountManager' => $accountManager,
             ]);
         }
-        return redirect()->withErrors(['message' => __('You do not have account manager')]);
+        
+        try {
+            return redirect()->back()->withErrors(['message' => __('You do not have account manager')]);
+        } catch (\Throwable $th) {
+            return redirect()->route('admin.publisher.profile');
+
+        }
     }
 
 

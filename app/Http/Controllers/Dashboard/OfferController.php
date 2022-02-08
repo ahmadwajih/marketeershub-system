@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Imports\OfferCouponImport;
 use App\Models\Advertiser;
@@ -76,6 +77,7 @@ class OfferController extends Controller
             'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
             'partener' => 'required|in:none,salla',
+            'salla_user_email' => 'required_if:partener,salla|email',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_ar' => 'nullable',
             'description_en' => 'nullable',
@@ -167,6 +169,11 @@ class OfferController extends Controller
             }
 
         }
+
+        // If this offer is with salla partener 
+        if($request->partener == 'salla'){
+            SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
+        }
         // if($request->coupons){
         //     Excel::import(new OfferCouponImport($offer->id, $request->team),request()->file('coupons'));
         // }
@@ -222,6 +229,7 @@ class OfferController extends Controller
             'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
             'partener' => 'required|in:none,salla',
+            'salla_user_email' => 'required_if:partener,salla|email',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_ar' => 'nullable',
             'description_en' => 'nullable',
@@ -306,6 +314,11 @@ class OfferController extends Controller
                     'offer_id' => $offer->id,
                 ]);
             }
+        }
+
+        // If this offer is with salla partener 
+        if($request->partener == 'salla'){
+            SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
 
         $notification = [

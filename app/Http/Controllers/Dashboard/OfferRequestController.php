@@ -150,12 +150,15 @@ class OfferRequestController extends Controller
         $data = $request->validate([
             'status' => 'required|in:pending,rejected,approved',
         ]);
-        $userCoupons = Coupon::where([
-            ['user_id', '=', $offerRequest->user_id],
-            ['offer_id', '=', $offerRequest->offer_id],
-        ])->pluck('id')->toArray();
-        // dd($request->coupons);
-        if($request->coupons ){
+
+        // Check if request has coupons 
+        if($request->coupons){
+            // Get user coupons
+            $userCoupons = Coupon::where([
+                ['user_id', '=', $offerRequest->user_id],
+                ['offer_id', '=', $offerRequest->offer_id],
+            ])->pluck('id')->toArray();
+
             // For loop to unassign un exists coupons 
             foreach($userCoupons as $userCoupon){
                 if(!in_array($userCoupon, $request->coupons)){
@@ -175,14 +178,17 @@ class OfferRequestController extends Controller
             Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));
         }
 
+        // Check status 
         if($request->status =='approved'){
             if(!$offerRequest->user->offers->contains($offerRequest->offer_id)){
                 $offerRequest->user->assignOffer($offerRequest->offer);
             }
+
+
         }else{
             $offerRequest->user->unAssignOffer($offerRequest->offer_id);
         }
-
+        // Update offer status 
         $offerRequest->update($data);
         $notification = [
             'message' => 'Updated successfully',

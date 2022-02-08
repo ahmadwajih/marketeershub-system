@@ -74,7 +74,7 @@
                                             <div class="mb-2">
                                                 <div class="form-group row">
                                                     <div class="col-md-12">
-                                                        <label>* سم العرض باللغة العربية :</label>
+                                                        <label>* اسم العرض باللغة العربية :</label>
                                                         <input type="text" name="name_ar" class="form-control" value="{{old('name_ar') ?? $offer->name_ar}}"/>
                                                         @if ($errors->has('name_ar'))
                                                             <div>
@@ -91,11 +91,12 @@
                                                             </div>
                                                         @endif
                                                     </div>
+
                                                     <div class="col-md-12">
                                                         <label>* {{ __('Partener') }} :</label>
                                                         <select class="form-control select2" id="kt_select_partener" name="partener">
-                                                            <option {{ old('partener')=='none'||$offer->partener=='none'?'selected':''  }} value="none">{{  __('No One') }}</option>
-                                                            <option {{ old('partener')=='salla'||$offer->partener=='salla'?'selected':''  }} value="salla">{{  __('Salla') }}</option>
+                                                            <option {{ old('partener')=='none' || $offer->partener=='none'?'selected':''  }} value="none">{{  __('No One') }}</option>
+                                                            <option {{ old('partener')=='salla'|| $offer->partener=='salla'?'selected':''  }} value="salla">{{  __('Salla') }}</option>
                                                         </select>
                                                         @if ($errors->has('partener'))
                                                             <div>
@@ -103,6 +104,17 @@
                                                             </div>
                                                         @endif
                                                     </div>
+
+                                                    <div class="col-md-12" id='sallaUserEmail' @if(old('partener') == null && $offer->partener != 'salla') style="display: none" @endif @if(old('partener') != null && old('partener') != 'salla') style="display: none" @endif>
+                                                        <label>* {{ __('Your email in salla') }} :</label>
+                                                        <input type="text" name="salla_user_email" class="form-control" placeholder="Add the email that you registerd by it in Salla" value="{{old('salla_user_email') ?? $offer->salla_user_email}}"/>
+                                                        @if ($errors->has('salla_user_email'))
+                                                            <div>
+                                                                <p class="invalid-input">{{ $errors->first('salla_user_email') }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
                                                     <div class="col-md-12">
                                                         <label>* {{ __('Advertiser') }} :</label>
                                                         <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id">
@@ -191,8 +203,8 @@
                                                     <div class="col-lg-4">
                                                         <label>* {{ _('Type') }} :</label>
                                                         <select class="form-control select2" id="kt_select_type" name="type">
-                                                            <option value="coupon_tracking">{{ __('Coupon Tracking') }}</option>
-                                                            <option value="link_tracking">{{ __('Link Tracking') }}</option>
+                                                            <option {{ old('type')=='coupon_tracking' || $offer->type=='coupon_tracking'?'selected':''  }} value="coupon_tracking">{{ __('Coupon Tracking') }}</option>
+                                                            <option {{ old('type')=='link_tracking' || $offer->type=='link_tracking'?'selected':''  }} value="link_tracking">{{ __('Link Tracking') }}</option>
                                                         </select>
                                                         @if ($errors->has('type'))
                                                             <div>
@@ -485,7 +497,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-lg-12">
-                                                        <label>* {{ __('Note') }} :</label>
+                                                        <label>{{ __('Note') }} :</label>
                                                         <textarea class="form-control" name="note" cols="30" rows="10">{{old('note') ?? $offer->note}}</textarea>
                                                         @if ($errors->has('note'))
                                                             <div>
@@ -497,7 +509,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-lg-12">
-                                                        <label>* {{ __('Terms And Conditions') }} :</label>
+                                                        <label> {{ __('Terms And Conditions') }} :</label>
                                                         <textarea class="form-control" name="terms_and_conditions" cols="30" rows="10">{{old('terms_and_conditions') ?? $offer->terms_and_conditions}}</textarea>
                                                         @if ($errors->has('terms_and_conditions'))
                                                             <div>
@@ -632,6 +644,14 @@
                     $('#slaps').fadeIn();
                     $('#static').fadeOut();
                     $('#oldNew').fadeOut();
+                }
+            });
+
+            $("#kt_select_partener").change(function () {
+                if ($(this).val() == 'salla') {
+                    $('#sallaUserEmail').fadeIn();
+                }else{
+                    $('#sallaUserEmail').fadeOut();
                 }
             });
         });

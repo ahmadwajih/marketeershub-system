@@ -19,6 +19,7 @@
             </tr>
             </thead>
             <tbody>
+                @if($teamPerformance)
                 @foreach($teamPerformance as $team)
                 <tr>
                     <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
@@ -46,6 +47,13 @@
                     </tr>
                     @endforeach
                 @endforeach
+                @else
+                    <tr>
+                        <td colspan="6">
+                            <div class="alert alert-warning">No Data</div>
+                        </td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>

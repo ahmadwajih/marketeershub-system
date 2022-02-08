@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Jobs\UpdateUsersPassword;
 use Illuminate\Http\Request;
@@ -12,12 +13,15 @@ use App\Models\Offer;
 use App\Models\Order;
 use App\Models\PivotReport;
 use App\Models\PublisherCategory;
+use App\Models\SallaInfo;
 use App\Models\User;
 use App\Notifications\NewOffer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -232,10 +236,27 @@ class DashboardController extends Controller
     }
 
 
-    public function test(){
+    public function test(Request $request){
 
-      $history = Order::latest()->first();
-      dd($history);
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer 8ro2tEOyeFDA1A0fOjzKf4-est68U6WLXB-2vVF5JUk.9qwfh2lTuwFVyxCwAh8eaHsFcad76GXsWFeQ51M8HQ4',
+            'Content-Type' => 'application/json',
+            'CF-Access-Client-Id' => env('SALLA_CLIENT_ID'),
+            'CF-Access-Client-Secret' => env('SALLA_CLIENT_SECRET'),
+        ])->post('https://api.salla.dev/admin/v2/affiliates', [
+            'marketer_name' => 'Marketeers Hub',
+            'marketer_city' => 'Riyadh',
+            'commission_type' => 'fixed',
+            'amount' => '10',
+            'apply_to' => 'first_order',
+            'notes' => 'notes',
+        ]);
+
+        dd($response->json());
+        
+        $data = $response->json();
+
 
     }
 }
