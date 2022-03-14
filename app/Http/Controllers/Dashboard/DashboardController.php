@@ -239,23 +239,7 @@ class DashboardController extends Controller
     public function test(Request $request){
 
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer 8ro2tEOyeFDA1A0fOjzKf4-est68U6WLXB-2vVF5JUk.9qwfh2lTuwFVyxCwAh8eaHsFcad76GXsWFeQ51M8HQ4',
-            'Content-Type' => 'application/json',
-            'CF-Access-Client-Id' => env('SALLA_CLIENT_ID'),
-            'CF-Access-Client-Secret' => env('SALLA_CLIENT_SECRET'),
-        ])->post('https://api.salla.dev/admin/v2/affiliates', [
-            'marketer_name' => 'Marketeers Hub',
-            'marketer_city' => 'Riyadh',
-            'commission_type' => 'fixed',
-            'amount' => '10',
-            'apply_to' => 'first_order',
-            'notes' => 'notes',
-        ]);
-
-        dd($response->json());
-        
-        $data = $response->json();
+        dd('test');
 
 
     }

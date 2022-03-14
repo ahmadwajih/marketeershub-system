@@ -3,6 +3,7 @@
 namespace App\Facades;
 
 use App\Models\Offer;
+use App\Models\SallaAffiliate;
 use Illuminate\Support\Facades\Facade;
 use App\Models\SallaInfo;
 use Illuminate\Support\Facades\Http;
@@ -113,5 +114,69 @@ class SallaFacade extends Facade{
         ]);
         return false;
     }
+
+
+    static function storeAffiliate(string $token, int $ammount, string $note, int $offerId, int $userId){
+
+
+        [
+            [
+                'code' => 'c2',
+                'name' => 'ahmed 2'
+            ],
+            [
+                'code' => 'c2', 
+                'score' => 50
+            ],
+            [
+                'code' => 'c1',
+                'name' => 'ahmed 1'
+            ],
+            [
+                'code' => 'c1', 
+                'score' => 50
+            ]
+        ]
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer '. $token,
+            'Content-Type' => 'application/json',
+            'CF-Access-Client-Id' => env('SALLA_CLIENT_ID'),
+            'CF-Access-Client-Secret' => env('SALLA_CLIENT_SECRET'),
+        ])->post('https://api.salla.dev/admin/v2/affiliates', [
+            'marketer_name' => 'Marketeers Hub',
+            'marketer_city' => 'Riyadh',
+            'commission_type' => 'fixed',
+            'amount' => $ammount,
+            'apply_to' => 'first_order',
+            'notes' => $note,
+        ]);
+
+        $affiliate = $response->json()['data'];
+
+        $publisher = SallaAffiliate::create([
+            'affiliate_id' => $affiliate['id'],
+            'code' => $affiliate['code'],
+            'marketer_name' => $affiliate['marketer_name'],
+            'marketer_city' => $affiliate['marketer_city'],
+            'commission_type' => $affiliate['commission_type'],
+            'amount_amount' => $affiliate['amount']['amount'],
+            'amount_currency' => $affiliate['amount']['currency'],
+            'profit_amount' => $affiliate['profit']['amount'],
+            'profit_currency' => $affiliate['profit']['currency'],
+            'link_affiliate' => $affiliate['links']['affiliate'],
+            'link_statistics' => $affiliate['links']['statistics'],
+            'apply_to' => $affiliate['apply_to'],
+            'visits_count' => $affiliate['visits_count'],
+            'notes' => $affiliate['notes'],
+            'status' => $affiliate['status'],
+            'offer_id' => $offerId,
+            'user_id' => $userId,
+        ]);
+
+        return $publisher;
+    }
+
+
 
 }

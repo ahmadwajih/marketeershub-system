@@ -131,7 +131,9 @@ class Offer extends Model
             ->groupBy('date')->orderBy('date', 'desc');
     }
 
-
+    public function sallaInfo(){
+        return $this->hasOne(SallaInfo::class);
+    }
 
 
 }

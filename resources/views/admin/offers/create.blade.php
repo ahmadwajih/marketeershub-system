@@ -216,6 +216,19 @@
                                                             </div>
                                                         @endif
                                                     </div>
+
+                                                </div>
+
+                                                <div class="form-group row" id="uploadCoupons" @if(old('type') != null && old('type')!='coupon_tracking') style="display: none" @endif>
+                                                    <div class="col-lg-12">
+                                                        <label>{{ __('Coupon code') }} :</label>
+                                                        <input type="file" name="coupons" class="form-control"  value="{{old('coupons')}}" />
+                                                        @if ($errors->has('coupons'))
+                                                            <div>
+                                                                <p class="invalid-input">{{ $errors->first('coupons') }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group row">
@@ -507,18 +520,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                {{-- <div class="form-group row">
-                                                    <div class="col-lg-12">
-                                                        <label>{{ __('Coupon code') }} :</label>
-                                                        <input type="file" name="coupons" class="form-control"  value="{{old('coupons')}}" required />
-                                                        @if ($errors->has('coupons'))
-                                                            <div>
-                                                                <p class="invalid-input">{{ $errors->first('coupons') }}</p>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div> --}}
-
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -655,6 +657,14 @@
                     $('#sallaUserEmail').fadeIn();
                 }else{
                     $('#sallaUserEmail').fadeOut();
+                }
+            });
+
+            $("#kt_select_type").change(function () {
+                if ($(this).val() == 'link_tracking') {
+                    $('#uploadCoupons').fadeOut();
+                }else{
+                    $('#uploadCoupons').fadeIn();
                 }
             });
         });

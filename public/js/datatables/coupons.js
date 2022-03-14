@@ -23,8 +23,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                             if (typeof raw.data !== 'undefined') {
                                 dataSet = raw.data;
                             }
-                            console.log('start');
-                            console.log(dataSet);
                             return dataSet;
                         },
                     },
@@ -34,7 +32,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                 serverFiltering: true,
                 serverSorting: true,
                 saveState: false,
-
             },
 
             // layout definition
@@ -132,6 +129,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 field: 'offer.name_en',
                 title: "Offer Name",
                 selector: false,
+                search:true,
                 textAlign: 'center',
             },{
                 field: 'user.name',
@@ -182,15 +180,15 @@ var KTDatatableRemoteAjaxDemo = function() {
 
         });
 
-        $('#kt_datatable_search_status').on('change', function() {
-            datatable.search($(this).val().toLowerCase(), 'Status');
+        $('#kt_datatable_search_offer').on('change', function() {
+            datatable.search($(this).val(), 'offer_id');
         });
 
         $('#kt_datatable_search_type').on('change', function() {
             datatable.search($(this).val().toLowerCase(), 'Type');
         });
 
-        $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
+        $('#kt_datatable_search_offer, #kt_datatable_search_type').selectpicker();
     };
 
     return {

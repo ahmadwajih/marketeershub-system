@@ -29,6 +29,11 @@ class CreateSallaAffiliatesTable extends Migration
             $table->string('apply_to')->nullable();
             $table->integer('visits_count')->nullable();
             $table->string('notes')->nullable();
+            $table->string('status')->nullable();
+            $table->unsignedBigInteger('offer_id');
+            $table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

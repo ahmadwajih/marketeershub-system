@@ -70,6 +70,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('categories', CategoryController::class);
         Route::resource('offers', OfferController::class);
         Route::get('my-offers', 'OfferController@myOffers')->name('my-offers');
+        Route::get('upload/offers', 'OfferController@upload')->name('upload.offers');
         Route::resource('offerRequests', OfferRequestController::class);
         Route::get('ajax/offerRequests/form', 'OfferRequestController@offerRequestAjaxForm')->name('offerRequest.ajax.form');
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');

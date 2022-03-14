@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Offer;
 use Illuminate\Http\Request;
 use App\Models\OfferRequest;
+use App\Models\SallaAffiliate;
 use App\Models\User;
 use App\Notifications\NewAssigenCoupon;
 use Illuminate\Support\Facades\Notification;
@@ -146,6 +148,15 @@ class OfferRequestController extends Controller
      */
     public function update(Request $request, OfferRequest $offerRequest)
     {
+
+         // If offer partener is Salla 
+         if($offerRequest->offer->partener == 'salla'){
+             $offer = $offerRequest->offer;
+             $sallaInfo = $offer->sallaInfo;
+            $res = SallaFacade::storeAffiliate($sallaInfo->access_token, $offer->revenue, $offer->note, $offerRequest->offer_id, $offerRequest->user_id);
+           
+        }
+
         $this->authorize('update_offer_requests');
         $data = $request->validate([
             'status' => 'required|in:pending,rejected,approved',
@@ -184,6 +195,7 @@ class OfferRequestController extends Controller
                 $offerRequest->user->assignOffer($offerRequest->offer);
             }
 
+           // Salla partener code here
 
         }else{
             $offerRequest->user->unAssignOffer($offerRequest->offer_id);
@@ -289,6 +301,7 @@ class OfferRequestController extends Controller
 
     public function viewOfferCoupons(Request $request)
     {
+
         if ($request->ajax()){
             $coupons = [];
             $link = '';
@@ -298,6 +311,10 @@ class OfferRequestController extends Controller
                 $coupons = Coupon::where('user_id', auth()->user()->id)->where('offer_id', $request->offer_id)->get();
             }else{
                 $link = $offer->offer_url.'?utm_affiliate_id='.auth()->user()->id.'&utm_offer_id='.$offer->id; 
+
+                if($offer->partener == 'salla'){
+                    $link =  SallaAffiliate::whereUserId(auth()->user()->id)->first()->link_affiliate;
+                }
             }
             return view('admin.modals.coupons', ['coupons' => $coupons, 'link' => $link]);
         }

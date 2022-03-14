@@ -19,14 +19,13 @@ class OfferCouponImport implements ToCollection
 */
     public function collection(Collection $collection)
     {
-        // unset($collection[0]);
+        unset($collection[0]);
         foreach ($collection as $col) 
         {
-            if(!is_null($col[1])){
+            if(!is_null($col[0])){
                 Coupon::create([
-                    'coupon' => $col[1],
+                    'coupon' => $col[0],
                     'offer_id' => $this->offerId,
-                    
                 ]);
             }
             

@@ -44,24 +44,23 @@
                                         <div class="input-icon">
                                             <input type="text" class="form-control" placeholder="بــحــث ..." id="kt_datatable_search_query" />
                                             <span>
-																	<i class="flaticon2-search-1 text-muted"></i>
-																</span>
+                                                <i class="flaticon2-search-1 text-muted"></i>
+                                            </span>
                                         </div>
                                     </div>
-                                    {{-- <div class="col-md-4 my-2 my-md-0">
+                                   <div class="col-md-4 my-2 my-md-0">
                                         <div class="d-flex align-items-center">
-                                            <label class="mr-3 mb-0 d-none d-md-block">الـحـاله</label>
-                                            <select class="form-control" id="kt_datatable_search_status">
-                                                <option value="">الجمـيـع</option>
-                                                <option value="1">Pending</option>
-                                                <option value="2">Delivered</option>
-                                                <option value="3">Canceled</option>
-                                                <option value="4">Success</option>
-                                                <option value="5">Info</option>
-                                                <option value="6">Danger</option>
+                                            <label class="mr-3 mb-0 d-none d-md-block">{{ __('Offer') }}</label>
+                                            <select class="form-control" id="kt_datatable_search_offer" name="offer_id">
+                                                <option value="">{{ __('All') }}</option>
+                                                @foreach ($offers as $offer)
+                                                    <option value="{{ $offer->id }}">{{ $offer->name }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
+
+                                     {{-- 
                                     <div class="col-md-4 my-2 my-md-0">
                                         <div class="d-flex align-items-center">
                                             <label class="mr-3 mb-0 d-none d-md-block">الـنـوع:</label>
@@ -99,4 +98,5 @@
 </script>
 
 <script src="{{asset('js/datatables/coupons.js')}}"></script>
+
 @endpush

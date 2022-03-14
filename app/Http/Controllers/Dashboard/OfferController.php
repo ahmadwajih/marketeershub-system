@@ -77,7 +77,7 @@ class OfferController extends Controller
             'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
             'partener' => 'required|in:none,salla',
-            'salla_user_email' => 'required_if:partener,salla|email',
+            'salla_user_email' => 'required_if:partener,salla|email|nullable',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_ar' => 'nullable',
             'description_en' => 'nullable',
@@ -86,6 +86,7 @@ class OfferController extends Controller
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
             'type' => 'required|in:coupon_tracking,link_tracking',
+            'coupons' => 'required_if:type,coupon_tracking|file',
             'cps_type' => 'required|in:static,new_old,slaps',
             'payout_type' => 'required_if:cps_type,static|in:flat,percentage',
             'revenue_type' => 'required_if:cps_type,static|in:flat,percentage',
@@ -115,6 +116,7 @@ class OfferController extends Controller
             $thumbnail = time() . rand(11111, 99999) . '.' . $request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/', $thumbnail, 'public');
         }
+        unset($data['coupons']);
         unset($data['slaps']);
         unset($data['categories']);
         unset($data['countries']);
@@ -174,9 +176,11 @@ class OfferController extends Controller
         if($request->partener == 'salla'){
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
-        // if($request->coupons){
-        //     Excel::import(new OfferCouponImport($offer->id, $request->team),request()->file('coupons'));
-        // }
+
+         // Check of offer type is link tracking to upload coupons
+        if($request->coupons){
+            Excel::import(new OfferCouponImport($offer->id),request()->file('coupons'));
+        }
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'

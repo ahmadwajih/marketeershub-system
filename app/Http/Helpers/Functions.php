@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 if(!function_exists('getModelData')){
     function getModelData($model, Request $request , $relations = [], $where = array( ['id', '!=', 0]), $trashed = false)
     {
+   
         $model = app('\\App\Models\\' . $model);
         $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
         $model   = $model->query();
@@ -54,6 +55,11 @@ if(!function_exists('getModelData')){
             foreach ($columns as $column){
                 $model->orWhere($column, 'LIKE', "%" . $params['query']['generalSearch'] . "%");
             }
+        }
+
+        // Set the search filter
+        if(isset($request['query']['offer_id'])) {
+            $model->orWhere('offer_id', $request['query']['offer_id']);
         }
 
 

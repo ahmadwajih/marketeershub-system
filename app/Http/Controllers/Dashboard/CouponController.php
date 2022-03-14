@@ -23,7 +23,8 @@ class CouponController extends Controller
             $coupons = getModelData('Coupon', $request, ['offer', 'user']);
             return response()->json($coupons);
         }
-        return view('admin.coupons.index');
+        $offers = Offer::whereHas('coupons')->get();
+        return view('admin.coupons.index', ['offers' => $offers]);
 
     }
 
