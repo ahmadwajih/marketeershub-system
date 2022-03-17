@@ -229,15 +229,14 @@
                                                 @endif
                                             </div>
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Categories') }} :</label>
-                                                <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
-                                                    @foreach ($categories as $category)
-                                                        <option {{ old('categories') ? (in_array($category->id, old('categories')) ? 'selected':'') : (in_array($category->id, $publisher->categories->pluck('id')->toArray())?'selected':'')  }} value="{{ $category->id }}">{{  $category->title }}</option>
-                                                    @endforeach
+                                                <label>* {{ __('Gender') }} :</label>
+                                                <select class="form-control select2" id="kt_select_gender" name="gender" >
+                                                    <option {{ $publisher->gender=='male'?'selected':'' }} value="male">{{ __('Male') }}</option>
+                                                    <option {{ $publisher->gender=='female'?'selected':'' }} value="female">{{ __('female') }}</option>
                                                 </select>
-                                                @if ($errors->has('categories'))
+                                                @if ($errors->has('gender'))
                                                     <div>
-                                                        <p class="invalid-input">{{ $errors->first('categories') }}</p>
+                                                        <p class="invalid-input">{{ $errors->first('gender') }}</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -288,29 +287,7 @@
                                                 </div>
                                                 
                                             </div>
-                                            <div class="form-group row">
-                                                <div class="col-lg-6">
-                                                    <label>* {{ __('Gender') }} :</label>
-                                                    <select class="form-control select2" id="kt_select_gender" name="gender" >
-                                                        <option {{ $publisher->gender=='male'?'selected':'' }} value="male">{{ __('Male') }}</option>
-                                                        <option {{ $publisher->gender=='female'?'selected':'' }} value="female">{{ __('female') }}</option>
-                                                    </select>
-                                                    @if ($errors->has('gender'))
-                                                        <div>
-                                                            <p class="invalid-input">{{ $errors->first('gender') }}</p>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <label> {{ __('Referral Account Manager') }} :</label>
-                                                    <input type="text" readonly disabled name="referral_account_manager" class="form-control" value="{{old('referral_account_manager') ?? $publisher->referral_account_manager}}" />
-                                                    @if ($errors->has('referral_account_manager'))
-                                                        <div>
-                                                            <p class="invalid-input">{{ $errors->first('referral_account_manager') }}</p>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                         {{-- Influncers --}}
                                         <div class="influncers">
@@ -409,7 +386,32 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        @if($publisher->position == 'publisher')
+                                        <div class="form-group row">
+                                                
+                                            <div class="col-lg-6">
+                                                <label>* {{ __('Categories') }} :</label>
+                                                <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
+                                                    @foreach ($categories as $category)
+                                                        <option {{ old('categories') ? (in_array($category->id, old('categories')) ? 'selected':'') : (in_array($category->id, $publisher->categories->pluck('id')->toArray())?'selected':'')  }} value="{{ $category->id }}">{{  $category->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('categories'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('categories') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label> {{ __('Referral Account Manager') }} :</label>
+                                                <input type="text" readonly disabled name="referral_account_manager" class="form-control" value="{{old('referral_account_manager') ?? $publisher->referral_account_manager}}" />
+                                                @if ($errors->has('referral_account_manager'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('referral_account_manager') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                         {{-- Bank Account Details --}}
                                         <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
                                         <div class="form-group row">
@@ -477,6 +479,8 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        {{-- End Bank Account Details --}}
+                                        @endif
                                     </div>
                                 </div>
                             </div>

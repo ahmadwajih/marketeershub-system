@@ -15,7 +15,9 @@ use App\Models\PivotReport;
 use App\Models\PublisherCategory;
 use App\Models\SallaInfo;
 use App\Models\User;
+use App\Notifications\NewAssigenCoupon;
 use App\Notifications\NewOffer;
+use App\Notifications\UpdateValidation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\App;
@@ -238,8 +240,10 @@ class DashboardController extends Controller
 
     public function test(Request $request){
 
-
-        dd('test');
+        $offer = Offer::first();
+        $user = User::first();
+        return (new UpdateValidation($offer))
+                ->toMail($user);
 
 
     }

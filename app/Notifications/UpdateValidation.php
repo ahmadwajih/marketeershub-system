@@ -30,7 +30,7 @@ class UpdateValidation extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail','database'];
     }
 
     /**
@@ -42,9 +42,8 @@ class UpdateValidation extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                ->line('New validation update check it now.')
+                ->action('Visit Your Profile', route('admin.publisher.profile'));
     }
 
     /**

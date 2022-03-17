@@ -373,13 +373,13 @@ class PublisherController extends Controller
             'traffic_sources'           => 'nullable|max:255',
             'affiliate_networks'        => 'nullable|max:255',
             'owened_digital_assets'     => 'nullable|max:255',
-            'account_title'             => 'required|max:255',
-            'bank_name'                 => 'required|max:255',
-            'bank_branch_code'          => 'required|max:255',
-            'swift_code'                => 'required|max:255',
-            'iban'                      => 'required|max:255',
-            'currency_id'               => 'required|exists:currencies,id',
-            'categories'                => 'array|required|exists:categories,id',
+            'account_title'             => 'nullable|required_if:position,publisher|max:255',
+            'bank_name'                 => 'nullable|required_if:position,publisher|max:255',
+            'bank_branch_code'          => 'nullable|required_if:position,publisher|max:255',
+            'swift_code'                => 'nullable|required_if:position,publisher|max:255',
+            'iban'                      => 'nullable|required_if:position,publisher|max:255',
+            'currency_id'               => 'nullable|required_if:position,publisher|exists:currencies,id',
+            'categories'                => 'nullable|array|required_if:position,publisher|exists:categories,id',
             'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
@@ -410,13 +410,16 @@ class PublisherController extends Controller
         userActivity('User', $publisher->id, 'update', $data, $publisher);
         $publisher->update($data);
 
-        // Unasign categories
-        $publisher->categories()->detach();
-        // Assign Categories
-        foreach($request->categories as $categoryId){
-            $category = Category::findOrFail($categoryId);
-            $publisher->assignCategory($category);
+        if($request->categories){
+            // Unasign categories
+            $publisher->categories()->detach();
+            // Assign Categories
+            foreach($request->categories as $categoryId){
+                $category = Category::findOrFail($categoryId);
+                $publisher->assignCategory($category);
+            }
         }
+        
 
         // Asign Role
         if($request['roles']){

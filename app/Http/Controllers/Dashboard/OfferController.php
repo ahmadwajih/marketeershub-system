@@ -86,7 +86,7 @@ class OfferController extends Controller
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
             'type' => 'required|in:coupon_tracking,link_tracking',
-            'coupons' => 'required_if:type,coupon_tracking|file',
+            'coupons' => 'nullable|file',
             'cps_type' => 'required|in:static,new_old,slaps',
             'payout_type' => 'required_if:cps_type,static|in:flat,percentage',
             'revenue_type' => 'required_if:cps_type,static|in:flat,percentage',
@@ -198,8 +198,14 @@ class OfferController extends Controller
     {
         $this->authorize('show_offers');
         $offer = Offer::withTrashed()->findOrFail($id);
+        $offerRequest = OfferRequest::where([
+            ['user_id', '=',auth()->user()->id],
+            ['offer_id', '=',$offer->id]
+            
+        ])->first();
+
         userActivity('Offer', $offer->id, 'create');
-        return view('admin.offers.show', ['offer' => $offer]);
+        return view('admin.offers.show', ['offer' => $offer, 'offerRequest' => $offerRequest]);
     }
 
     /**
@@ -233,7 +239,7 @@ class OfferController extends Controller
             'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
             'partener' => 'required|in:none,salla',
-            'salla_user_email' => 'required_if:partener,salla|email',
+            'salla_user_email' => 'nullable|required_if:partener,salla|email',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_ar' => 'nullable',
             'description_en' => 'nullable',

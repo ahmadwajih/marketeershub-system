@@ -116,7 +116,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $this->authorize('show_users');
+        $this->authorize('update_users');
         return view('admin.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),
