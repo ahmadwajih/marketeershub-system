@@ -94,6 +94,10 @@ class User extends Authenticatable
         return $this->offers()->save($offerId);
     }
 
+    public function payments(){
+        return $this->hasMany(Payment::class, 'publisher_id', 'id');
+    }
+
     public function unAssignOffer($offerId)
     {
         return $this->offers()->detach($offerId);

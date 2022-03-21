@@ -540,6 +540,62 @@
                 {{--  End Pivot Report --}}
                 @endcan
 
+                @can('view_payments') 
+                {{-- Start Payments  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='payments'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-dollar-sign"></i>                        
+                        </span>
+                        <span class="menu-text">{{ __('Payments') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Payments') }}</span>
+                                </span>
+                            </li>
+                            @can('view_payments')
+                            <li class="menu-item {{ Request::segment(2)=='payments'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.payments.index')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('All Payments') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_payments')
+                            <li class="menu-item {{ Request::segment(2)=='payments'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.payments.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Add New Payment') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                            @can('create_payments')
+                            <li class="menu-item {{ Request::segment(2)=='payments'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.payments.upload.form')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Upload Payments Sheet') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Payments --}}
+                @endcan
+
                 @can('view_roles')
                 {{-- Start Roles --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='roles'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">

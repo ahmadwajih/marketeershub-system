@@ -242,7 +242,7 @@ class DashboardController extends Controller
 
         $offer = Offer::first();
         $user = User::first();
-        return (new UpdateValidation($offer))
+        return (new NewPaymentPaid($offer))
                 ->toMail($user);
 
 

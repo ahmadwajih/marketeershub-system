@@ -31,7 +31,7 @@
                                     {{ __('Showing Offer') }}
                                     <small class="ml-2">{{$offer->name}}</small>
                                 </h3>
-                        </div>
+                            </div>
                             @can('update_offers')
                                 <div class="card-toolbar">
                                     <a href="{{ route('admin.offers.edit', $offer->id) }}" class="btn btn-xs btn-success font-weight-bold">{{ __('Edit') }}</a>

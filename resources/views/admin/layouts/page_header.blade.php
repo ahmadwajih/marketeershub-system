@@ -98,7 +98,7 @@
                                                 <!--end::Symbol-->
                                                 <!--begin::Text-->
                                                 <div class="d-flex flex-column font-weight-bold">
-                                                    <a href="{{ route('admin.offers.show', $notification->data['id'] ) }}" data-notification="{{ $notification->id }}" class="text-dark text-hover-primary mb-1 font-size-lg notification">{{ $notification->data['subject'] }}  {{ $notification->data['title'] }}</a>
+                                                    <a href="{{ route('admin.'.Str::plural(Str::lower($notification->data['model'])).'.show', $notification->data['id'] ) }}" data-notification="{{ $notification->id }}" class="text-dark text-hover-primary mb-1 font-size-lg notification">{{ $notification->data['subject'] }}  {{ $notification->data['title'] }}</a>
                                                     <span class="text-muted">{{$notification->created_at->diffForHumans()}}</span>
                                                 </div>
                                                 <!--end::Text-->

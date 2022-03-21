@@ -44,9 +44,9 @@
                                                         <option value="{{$role->id}}" {{old('role_id') == $role->id?'selected':''}}>{{$role->name}}</option>
                                                     @endforeach
                                                 </select>
-                                                @if ($errors->has('city_id'))
+                                                @if ($errors->has('role_id'))
                                                 <div>
-                                                    <p class="invalid-input">{{ $errors->first('city_id') }}</p>
+                                                    <p class="invalid-input">{{ $errors->first('role_id') }}</p>
                                                 </div>
                                                 @endif
                                             </div>
@@ -58,9 +58,9 @@
                                                         <option value="{{$permission->id}}" {{old('permission_id') == $permission->id?'selected':''}}>{{$permission->name}}</option>
                                                     @endforeach
                                                 </select>
-                                                @if ($errors->has('city_id'))
+                                                @if ($errors->has('permission_id'))
                                                 <div>
-                                                    <p class="invalid-input">{{ $errors->first('city_id') }}</p>
+                                                    <p class="invalid-input">{{ $errors->first('permission_id') }}</p>
                                                 </div>
                                                 @endif
                                             </div>

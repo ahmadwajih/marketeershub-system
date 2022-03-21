@@ -64,6 +64,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('publishers/upload/update-hasoffer-id-by-email/form', 'PublisherController@uploadUpdateHasOfferIdByEmail')->name('publishers.upload.update.hasoffer.id.by.email.form');
         Route::post('publishers/upload/update-hasoffer-id-by-email', 'PublisherController@storeUploadUpdateHasOfferIdByEmail')->name('publishers.upload.update.hasoffer.id.by.email.store');
 
+        Route::resource('payments', PaymentController::class);
+        Route::get('payments/upload/form', 'PaymentController@uploadForm')->name('payments.upload.form');
+        Route::post('payments/upload/form', 'PaymentController@upload')->name('payments.upload');
+
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
         Route::resource('advertisers', AdvertiserController::class);

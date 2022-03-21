@@ -13,7 +13,7 @@
 @endpush
 @section('content')
 
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <!--begin::Entry-->
         <div class="d-flex flex-column-fluid">
             <!--begin::Container-->
@@ -233,6 +233,100 @@
                     <div class="flex-row-fluid ">
                         <!--begin::Row-->
                         <div class="row">
+                            {{-- Start Payments --}}
+                            <div class="col-lg-12">
+                                <!--begin::Base Table Widget 1-->
+                                <div class="card card-custom card-stretch gutter-b">
+                                    <!--begin::Header-->
+                                    <div class="card-header border-0 pt-5">
+                                        <h3 class="card-title align-items-start flex-column">
+                                            <span class="card-label font-weight-bolder text-dark">{{ __('My Payments') }}</span>
+                                            <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ __('More than') }} {{ count($publisher->payments) }} {{ __('Payment') }}</span>
+                                        </h3>
+                                    </div>
+                                    <!--end::Header-->
+                                    <!--begin::Body-->
+                                    <div class="card-body pt-2 pb-0">
+                                        <!--begin::Table-->
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless table-vertical-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="p-0">#{{ __('ID') }}</th>
+                                                        <th class="p-0">{{ __('Slip') }}</th>
+                                                        <th class="p-0">{{ __('Amount Paid') }}</th>
+                                                        <th class="p-0">{{ __('From Date') }}</th>
+                                                        <th class="p-0">{{ __('To Date') }}</th>
+                                                        <th class="p-0">{{ __('Note') }}</th>
+                                                        <th class="p-0">{{ __('Created At') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if(count($publisher->payments) > 0)
+                                                    @foreach($publisher->payments as $payment)
+                                                    <tr>
+                                                        <td class="pl-0">
+                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $payment->id }}</a>
+                                                        </td>
+                                                        <td class="pl-0 py-5">
+                                                            <div class="symbol symbol-50 symbol-light mr-2">
+                                                                <span class="symbol-label">
+                                                                    <img src="{{ getImagesPath('Payments', $payment->slip) }}" class="h-50 align-self-center" alt="" />
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                        <td class="pl-0">
+                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $payment->amount_paid }}$</a>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column w-100 mr-2">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->from }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column w-100 mr-2">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->to }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column w-100 mr-2">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->note }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex flex-column w-100 mr-2">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->created_at->diffForHumans() }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+
+                                                    </tr>
+                                                    @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td colspan='7'>
+                                                            <div class="alert alert-warning text-center m-5">{{ __('No Avalible Payments') }}</div>
+                                                        </td>
+                                                    </tr>
+                                                    @endif
+    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!--end::Table-->
+                                    </div>
+                                </div>
+                                <!--end::Base Table Widget 1-->
+                            </div>
+                            {{-- End Payments --}}
                             <div class="col-lg-12">
                                 <!--begin::Base Table Widget 1-->
                                 <div class="card card-custom card-stretch gutter-b">
