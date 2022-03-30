@@ -233,6 +233,7 @@
                     <div class="flex-row-fluid ">
                         <!--begin::Row-->
                         <div class="row">
+                            @if($publisher->position == 'publisher')
                             {{-- Start Payments --}}
                             <div class="col-lg-12">
                                 <!--begin::Base Table Widget 1-->
@@ -327,6 +328,7 @@
                                 <!--end::Base Table Widget 1-->
                             </div>
                             {{-- End Payments --}}
+                            @endif
                             <div class="col-lg-12">
                                 <!--begin::Base Table Widget 1-->
                                 <div class="card card-custom card-stretch gutter-b">

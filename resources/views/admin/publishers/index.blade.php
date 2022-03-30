@@ -9,7 +9,7 @@
     $columns = [
         ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true, 'bSearchable' => true],
         ['label' => __('Name'),'data'=> 'name', 'disabled'=> true, 'bSearchable' => true],
-        ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true],
+        ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true, 'disabled'=> true,],
         // ['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true, 'bSearchable' => false],
         ['label' => __('Account Manager'),'data'=> 'parent_id',  'checked' => true, 'bSearchable' => true],
         ['label' => __('Offers'), 'data'=> 'offersCount', 'bSearchable' => true, 'bSearchable' => false],
@@ -88,7 +88,8 @@
                             </div>
                         </div>
                         <!--end::Dropdown-->
-                        <!--begin::Dropdown-->
+                         {{-- Start Sorting  --}}
+                         <!--begin::Dropdown-->
                         <div class="dropdown dropdown-inline mr-2">
                             <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="svg-icon svg-icon-md">
@@ -105,23 +106,76 @@
                             </button>
                             <div id="parent-dropdown" class="dropdown-menu float-right w-100" style="width: 300px !important;">
                                 <!--begin: Search Form-->
-                                <form class="px-4 py-3" action="{{ route('admin.publishers.index') }}" method="GET">
+                                <form class="px-4 py-3" action="{{ route('admin.publishers.index', request()->all()) }}" method="GET">
+                                    <div class="form-group">
+                                        <label>{{ __('Sort By') }}</label> 
+                                        <select class="form-control " id="" name="sort_by">
+                                            <option selected value="">{{ __('All') }}</option>
+                                            <option {{ isset(request()->sort_by)&&request()->sort_by=='id'?'selected':'' }} value="id">{{ __('ID') }}</option>
+                                            <option {{ isset(request()->sort_by)&&request()->sort_by=='orders_number'?'selected':'' }} value="orders_number">{{ __('Orders') }}</option>
+                                            <option {{ isset(request()->sort_by)&&request()->sort_by=='revenue_number'?'selected':'' }} value="revenue_number">{{ __('Revenue') }}</option>
+                                            <option {{ isset(request()->sort_by)&&request()->sort_by=='sales_number'?'selected':'' }} value="sales_number">{{ __('Sales') }}</option>
+                                            <option {{ isset(request()->sort_by)&&request()->sort_by=='payout_number'?'selected':'' }} value="payout_number">{{ __('Payout') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>{{ __('Sort Type') }}</label>
+                                        <select class="form-control " id="kt_datatable_search_sort_type" name="sort_type">
+                                            <option {{isset(request()->sort_type)&&request()->sort_type=='asc'?'selected':'' }} value="asc">{{ __('ASC') }}</option>
+                                            <option {{isset(request()->sort_type)&&request()->sort_type=='desc'?'selected':'' }} value="desc">{{ __('DESC') }}</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <button type="submit" class="btn btn-light-primary px-6 font-weight-bold btn-block">{{ __('Search') }}</button>
+                                    </div>
+                                </form>
+                                <!--begin::Search Form-->
+                            </div>
+                        </div>
+                        <!--end::Dropdown-->
+                         {{-- End Sorting  --}}
+                        {{-- Start Search --}}
+                        <!--begin::Dropdown-->
+                        <div class="dropdown dropdown-inline mr-2">
+                            <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="svg-icon svg-icon-md">
+                                    <!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect x="0" y="0" width="24" height="24"/>
+                                            <path d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z" fill="#000000" opacity="0.3"/>
+                                            <path d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z" fill="#000000"/>
+                                        </g>
+                                    </svg>
+                                    <!--end::Svg Icon-->
+                                </span> <span class="m-2">{{ __('Advanced Search') }}</span>
+                            </button>
+                            <div id="parent-dropdown" class="dropdown-menu float-right w-100" style="width: 300px !important;">
+                                <!--begin: Search Form-->
+                                <form class="px-4 py-3" action="{{ route('admin.publishers.index', request()->all()) }}" method="GET">
+                                    <div class="form-group">
+                                        <label>{{ __('Weak Performance') }}</label> <select class="form-control " id="" name="performance">
+                                            <option selected value="">{{ __('All') }}</option>
+                                            <option {{ isset(request()->performance)&&request()->performance=='1'?'selected':'' }} value="1">{{ __('Weak Performance') }}</option>
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <label>{{ __('Team') }}</label> <select class="form-control " id="" name="team">
                                             <option selected value="">{{ __('All') }}</option>
-                                            <option {{ isset($team)&&$team=='affiliate'?'selected':'' }} value="affiliate">{{ __('Affiliate') }}</option>
-                                            <option {{ isset($team)&&$team=='media_buying'?'selected':'' }} value="media_buying">{{ __('Media Buying') }}</option>
-                                            <option {{ isset($team)&&$team=='influencer'?'selected':'' }} value="influencer">{{ __('Influencer') }}</option>
-                                            <option {{ isset($team)&&$team=='prepaid'?'selected':'' }} value="prepaid">{{ __('Prepaid') }}</option>
+                                            <option {{ isset(request()->team)&&request()->team=='affiliate'?'selected':'' }} value="affiliate">{{ __('Affiliate') }}</option>
+                                            <option {{ isset(request()->team)&&request()->team=='media_buying'?'selected':'' }} value="media_buying">{{ __('Media Buying') }}</option>
+                                            <option {{ isset(request()->team)&&request()->team=='influencer'?'selected':'' }} value="influencer">{{ __('Influencer') }}</option>
+                                            <option {{ isset(request()->team)&&request()->team=='prepaid'?'selected':'' }} value="prepaid">{{ __('Prepaid') }}</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label>{{ __('Status') }}</label>
                                         <select class="form-control " id="kt_datatable_search_status" name="status">
                                             <option value="">{{ __('All') }}</option>
-                                            <option {{isset($status)&&$status=='active'?'selected':'' }} value="active">{{ __('Live') }}</option>
-                                            <option {{isset($status)&&$status=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
-                                            <option {{isset($status)&&$status=='pending'?'selected':'' }} value="pending">{{ __('Paused') }}</option>
+                                            <option {{isset(request()->status)&&request()->status=='active'?'selected':'' }} value="active">{{ __('Live') }}</option>
+                                            <option {{isset(request()->status)&&request()->status=='closed'?'selected':'' }} value="closed">{{ __('Closed') }}</option>
+                                            <option {{isset(request()->status)&&request()->status=='pending'?'selected':'' }} value="pending">{{ __('Paused') }}</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -129,7 +183,7 @@
                                         <select class="form-control " data-live-search="true" id="" name="category_id">
                                             <option selected value="">{{ __('All') }}</option>
                                             @foreach($categories as $category)
-                                                <option {{isset($category_id)&&$category_id==$category->id?'selected':'' }} value="{{ $category->id }}">{{ $category->title }}</option>
+                                                <option {{isset(request()->category_id)&&request()->category_id==$category->id?'selected':'' }}  value="{{ $category->id }}">{{ $category->title }} </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -137,13 +191,13 @@
                                         <label>{{ __('Social Media') }}</label>
                                         <select class="form-control " data-live-search="true" id="" name="platform">
                                             <option value="">{{ __('All') }}</option>
-                                            <option {{isset($platform)&&$platform=='facebook'?'selected':'' }} value="facebook">{{ __('Facebook') }}</option>
-                                            <option {{isset($platform)&&$platform=='instagram'?'selected':'' }} value="instagram">{{ __('Instagram') }}</option>
-                                            <option {{isset($platform)&&$platform=='twitter'?'selected':'' }} value="twitter">{{ __('Twitter') }}</option>
-                                            <option {{isset($platform)&&$platform=='snapchat'?'selected':'' }} value="snapchat">{{ __('Snapchat') }}</option>
-                                            <option {{isset($platform)&&$platform=='tiktok'?'selected':'' }} value="tiktok">{{ __('Tiktok') }}</option>
-                                            <option {{isset($platform)&&$platform=='youtube'?'selected':'' }} valuothere="youtube">{{ __('Youtube') }}</option>
-                                            <option {{isset($platform)&&$platform=='other'?'selected':'' }} valuothere="other">{{ __('Other') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='facebook'?'selected':'' }} value="facebook">{{ __('Facebook') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='instagram'?'selected':'' }} value="instagram">{{ __('Instagram') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='twitter'?'selected':'' }} value="twitter">{{ __('Twitter') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='snapchat'?'selected':'' }} value="snapchat">{{ __('Snapchat') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='tiktok'?'selected':'' }} value="tiktok">{{ __('Tiktok') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='youtube'?'selected':'' }} valuothere="youtube">{{ __('Youtube') }}</option>
+                                            <option {{isset(request()->platform)&&request()->platform=='other'?'selected':'' }} valuothere="other">{{ __('Other') }}</option>
                                         </select>
                                     </div>
 
@@ -152,7 +206,7 @@
                                         <select class="form-control " data-live-search="true" id="country_id" name="country_id">
                                             <option value="">{{ __('All') }}</option>
                                             @foreach($countries as $country)
-                                                <option  {{ old('country_id')==$country->id?'selected':'' }} value="{{$country->id}}">{{$country->name}}</option>
+                                                <option  {{isset(request()->country_id)&&request()->country_id==$country->id?'selected':'' }} value="{{$country->id}}">{{$country->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -172,6 +226,7 @@
                             </div>
                         </div>
                         <!--end::Dropdown-->
+                        {{-- End Search --}}
 
                         <a href="{{route('admin.publishers.create')}}" class="btn btn-primary font-weight-bolder ">
                             <span class="svg-icon svg-icon-md">
@@ -191,7 +246,7 @@
                 </div>
 
                 <div class="card-body table-loading position-relative">
-                    <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($dtColumns)) !!}" data-action="{{ route('admin.publishers.index') }}">
+                    <table id="publisherTable" class="display dataTable no-footer" data-columns="{!! htmlspecialchars(json_encode($dtColumns)) !!}" data-action="{{ route('admin.publishers.index', request()->all()) }}">
                         <thead>
                         <tr>
                             {!! $thead !!}

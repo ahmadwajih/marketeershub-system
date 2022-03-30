@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Jobs\UpdateUsersPassword;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
@@ -240,11 +241,8 @@ class DashboardController extends Controller
 
     public function test(Request $request){
 
-        $offer = Offer::first();
-        $user = User::first();
-        return (new NewPaymentPaid($offer))
-                ->toMail($user);
-
+        $contry = Country::first();
+        dd($contry);
 
     }
 }

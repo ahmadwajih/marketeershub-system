@@ -36,6 +36,40 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
+        $where = [
+            ['users.id', '!=', null]
+        ];
+        $sortBy = 'id';
+        $sortType = 'desc';
+
+        if(isset($request->team) && $request->team != null){
+            $where[] = ['users.team', '=', $request->team];
+        }
+        if(isset($request->status) && $request->status != null){
+            $where[] = ['users.status', '=', $request->status];
+        }
+        if(isset($request->country_id) && $request->country_id != null){
+            $where[] = ['users.country_id', '=', $request->country_id];
+        }
+        if(isset($request->city_id) && $request->city_id != null){
+            $where[] = ['users.city_id', '=', $request->city_id];
+        }
+        if(isset($request->category_id) && $request->category_id != null){
+            $where[] = ['categories.id', '=', $request->category_id];
+        }
+        if(isset($request->platform) && $request->platform != null){
+            $where[] = ['social_media_links.platform', '=', $request->platform];
+        }
+        // if(isset($request->performance) && $request->performance != null){
+        //     $where[] = ['orders_number', '<=', 10];
+        // }
+        
+        if(isset($request->sort_by) && $request->sort_by != null){
+            $sortBy = $request->sort_by;
+        }
+        if(isset($request->sort_type) && $request->sort_type != null){
+            $sortType = $request->sort_type;
+        }
 
         if ($request->ajax()) {
             try {
@@ -43,7 +77,7 @@ class PublisherController extends Controller
                     'users.id',
                     'users.name',
                     'users.email',
-                    DB::raw('COUNT(offers.id) AS offersCount'),
+                    DB::raw('COUNT(offer_user.offer_id) AS offersCount'),
                     'users.category',
                     'users.phone',
                     'users.parent_id',
@@ -51,23 +85,26 @@ class PublisherController extends Controller
                     'users.created_at',
                     'users.status',
                     'countries.name_en as country_name',
-                    'cities.name_en as city_name'
+                    'cities.name_en as city_name',
+                    DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders_number'), 
+                    DB::raw('TRUNCATE(SUM(pivot_reports.sales),2) as sales_number'), 
+                    DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue_number'),
+                    DB::raw('TRUNCATE(SUM(pivot_reports.payout) ,2) as payout_number'),
                 ])
-                    ->leftJoin('offer_user as ou', function ($join) {
-                        $join->on('users.id', '=', 'ou.user_id');
-                    })
-                    ->leftJoin('offers', function ($join) {
-                        $join->on('offers.id', '=', 'ou.offer_id');
-                    })
-                    ->leftJoin('countries', function ($join) {
-                        $join->on('countries.id', '=', 'users.country_id');
-                    })
-                    ->leftJoin('cities', function ($join) {
-                        $join->on('cities.id', '=', 'users.city_id');
-                    })
-                    ->wherePosition('publisher')
-                    ->with('parent', 'categories', 'socialMediaLinks');
 
+                    ->leftJoin('countries', 'countries.id', '=', 'users.country_id')
+                    ->leftJoin('cities', 'cities.id', '=', 'users.city_id')
+                    ->leftJoin('category_user', 'category_user.user_id', '=', 'users.id')
+                    ->leftJoin('categories', 'categories.id', '=', 'category_user.category_id')
+                    ->leftJoin('social_media_links', 'social_media_links.user_id', '=', 'users.id')
+                    ->leftJoin('coupons', 'coupons.user_id', '=', 'users.id')
+                    ->leftJoin('pivot_reports', 'pivot_reports.coupon_id', '=', 'coupons.id')
+                    ->leftJoin('offer_user', 'offer_user.user_id', '=', 'users.id')
+                    ->wherePosition('publisher')
+                    ->with('parent', 'categories', 'socialMediaLinks')
+                    ->where($where)
+                    ->groupBy('users.id');
+                    $publishers->orderBy($sortBy, $sortType);
                 if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])) {
                     $data = $publishers->where(function ($query) {
                         $query
@@ -83,6 +120,7 @@ class PublisherController extends Controller
                     ->editColumn('parent_id', function ($row) {
                         return !empty($row->parent->name) ? $row->parent->name : '';
                     })
+             
                     ->addColumn('action', function ($row) {
                         $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
                         $btn .= '<a href="' . route('admin.publishers.edit', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-pen"></i></a>';
@@ -96,10 +134,11 @@ class PublisherController extends Controller
             }
         }
 
+        
         return view('admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' => User::wherePosition('account_manager')->get(),
-            'countries' => Country::all()
+            'countries' => Country::all(),
         ]);
     }
 
