@@ -45,6 +45,9 @@ class PublisherController extends Controller
         if(isset($request->team) && $request->team != null){
             $where[] = ['users.team', '=', $request->team];
         }
+        if(isset($request->account_manager) && $request->account_manager != null){
+            $where[] = ['users.parent_id', '=', $request->account_manager];
+        }
         if(isset($request->status) && $request->status != null){
             $where[] = ['users.status', '=', $request->status];
         }
@@ -73,6 +76,7 @@ class PublisherController extends Controller
 
         if ($request->ajax()) {
             try {
+                
                 $publishers = User::select([
                     'users.id',
                     'users.name',
@@ -105,10 +109,12 @@ class PublisherController extends Controller
                     ->where($where)
                     ->groupBy('users.id');
                     $publishers->orderBy($sortBy, $sortType);
-                if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])) {
+                if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
                     $data = $publishers->where(function ($query) {
+                        $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+                         array_push($childrens, auth()->user()->id);
                         $query
-                            ->where('parent_id', '=', auth()->user()->id)
+                            ->whereIn('parent_id', $childrens)
                             ->orWhere('parent_id', '=', null);
                     });
                 } else {
@@ -124,7 +130,7 @@ class PublisherController extends Controller
                     ->addColumn('action', function ($row) {
                         $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
                         $btn .= '<a href="' . route('admin.publishers.edit', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-pen"></i></a>';
-                        $btn .= $row->parent ? $row->parent->name : " <button class='btn badge btn-success assignToMe' onclick='assignToMe(" . $row->id . ")'>" . __('Assign To Me') . "</button>";
+                        $btn .= $row->parent ? $row->parent->name : " <button class='btn badge btn-success ' onclick='assignToMe(" . $row->id . ")'>" . __('Assign To Me') . "</button>";
                         return $btn;
                     })
                     ->rawColumns(['action'])
@@ -134,10 +140,14 @@ class PublisherController extends Controller
             }
         }
 
-        
+        if(auth()->user()->position == 'super_admin'){
+            $accountManagers = User::where('position', 'account_manager')->get();
+        }else{
+            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
+        }
         return view('admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
-            'accountManagers' => User::wherePosition('account_manager')->get(),
+            'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
         ]);
     }
@@ -506,6 +516,14 @@ class PublisherController extends Controller
         $publisher = User::whereId($request->affiliateId)->first();
         if($publisher){
             $publisher->parent_id = auth()->user()->id;
+            if( auth()->user()->position == 'super_admin' || auth()->user()->position == 'head'){
+                
+                $accountManager = User::whereId($request->accountManagerId)->first();
+                if($request->accountManagerId != null && $accountManager){
+
+                    $publisher->parent_id =  $request->accountManagerId;
+                }
+            }
             $publisher->save();
             return response()->json([
                 'code' => 200,

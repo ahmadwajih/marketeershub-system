@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Coupon;
 use App\Models\Currency;
+use App\Models\LoginUser;
 use App\Models\Offer;
 use App\Models\Order;
 use App\Models\PivotReport;
@@ -239,6 +240,16 @@ class DashboardController extends Controller
     }
 
 
+    public function loginUsers(Request $request){
+
+        if ($request->ajax()){
+            $users = getModelData('LoginUser' , $request);
+            return response()->json($users);
+        }
+        return view('admin.login-users');
+
+    }
+    
     public function test(Request $request){
 
         $contry = Country::first();

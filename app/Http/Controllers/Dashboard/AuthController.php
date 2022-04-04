@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPassword;
+use App\Models\LoginUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            LoginUser::create([
+                'user_id' => auth()->user()->id,
+                'name' => auth()->user()->name,
+                'email' => auth()->user()->email,
+            ]);
             if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
                 return redirect()->route('admin.publisher.profile');
             }
@@ -45,6 +51,17 @@ class AuthController extends Controller
         return back()->withErrors([
             'message' => __('The provided credentials do not match our records.'),
         ]);
+    }
+
+    public function loginAs($userId){
+
+        Auth::loginUsingId($userId);
+
+        if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+            return redirect()->route('admin.publisher.profile');
+        }
+        return redirect()->route('admin.user.profile');
+    
     }
 
     public function forgotPassword(Request $request){

@@ -42,25 +42,27 @@
                                         <div class="row align-items-center">
                                             <div class="col-md-4 my-2 my-md-0">
                                                 <div class="input-icon">
-                                                    <input type="text" class="form-control" placeholder="{{ __('Search') }} ..." id="kt_datatable_search_query" />
+                                                    <input type="text" class="form-control" placeholder="بــحــث ..." id="kt_datatable_search_query" />
                                                     <span>
-                                                        <i class="flaticon2-search-1 text-muted"></i>
-                                                    </span>
+                                                                            <i class="flaticon2-search-1 text-muted"></i>
+                                                                        </span>
                                                 </div>
                                             </div>
                                             {{-- <div class="col-md-4 my-2 my-md-0">
                                                 <div class="d-flex align-items-center">
-                                                    <label class="mr-3 mb-0 d-none d-md-block">{{ __('Type') }}</label>
-                                                    <select class="form-control" id="kt_datatable_search_team">
-                                                        <option value="">All</option>
-                                                        <option value="influencer">Influencer</option>
-                                                        <option value="affiliate">Affiliate</option>
-                                                        <option value="media_buying">Media buying</option>
-                                                        <option value="digital_operation">Digital operation</option>
+                                                    <label class="mr-3 mb-0 d-none d-md-block">الـحـاله</label>
+                                                    <select class="form-control" id="kt_datatable_search_status">
+                                                        <option value="">الجمـيـع</option>
+                                                        <option value="1">Pending</option>
+                                                        <option value="2">Delivered</option>
+                                                        <option value="3">Canceled</option>
+                                                        <option value="4">Success</option>
+                                                        <option value="5">Info</option>
+                                                        <option value="6">Danger</option>
                                                     </select>
                                                 </div>
-                                            </div> --}}
-                                            {{-- <div class="col-md-4 my-2 my-md-0">
+                                            </div>
+                                            <div class="col-md-4 my-2 my-md-0">
                                                 <div class="d-flex align-items-center">
                                                     <label class="mr-3 mb-0 d-none d-md-block">الـنـوع:</label>
                                                     <select class="form-control" id="kt_datatable_search_type">
@@ -92,11 +94,8 @@
 @endsection
 @push('scripts')
 <script>
-     $('#kt_datatable_search_team').select2({
-            placeholder: "Select Option",
-        });
-    var route = "{{ route('admin.users.index') }}";
+    var route = "{{ route('login.users') }}";
 </script>
 
-<script src="{{asset('js/datatables/users.js')}}"></script>
+<script src="{{asset('js/datatables/login-users.js')}}"></script>
 @endpush

@@ -7,19 +7,19 @@
 @endpush
 @php
     $columns = [
-        ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true, 'bSearchable' => true],
-        ['label' => __('Name'),'data'=> 'name', 'disabled'=> true, 'bSearchable' => true],
-        ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true, 'disabled'=> true,],
+        ['label' => __('ID'), 'data'=> 'id', 'disabled'=> true, 'checked' => true, 'bSearchable' => true],
+        ['label' => __('Name'),'data'=> 'name', 'disabled'=> true, 'checked' => true, 'bSearchable' => true],
+        ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true, 'checked' => true, 'disabled'=> true,],
         // ['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true, 'bSearchable' => false],
         ['label' => __('Account Manager'),'data'=> 'parent_id',  'checked' => true, 'bSearchable' => true],
-        ['label' => __('Offers'), 'data'=> 'offersCount', 'bSearchable' => true, 'bSearchable' => false],
-        ['label' => __('Category'), 'data'=> 'category','bSearchable' => true],
-        ['label' => __('Country'), 'data'=> 'country_name','bSearchable' => false],
-        ['label' => __('City'), 'data'=> 'city_name','bSearchable' => false],
-        ['label' => __('Phone'), 'data'=> 'phone','bSearchable' => true],
+        ['label' => __('Offers'), 'data'=> 'offersCount', 'checked' => true,'bSearchable' => true, 'bSearchable' => false],
+        ['label' => __('Category'), 'data'=> 'category','checked' => true,'bSearchable' => true],
+        ['label' => __('Country'), 'data'=> 'country_name','checked' => true,'bSearchable' => false],
+        ['label' => __('City'), 'data'=> 'city_name','checked' => true,'bSearchable' => false],
+        ['label' => __('Phone'), 'data'=> 'phone','checked' => true,'bSearchable' => true],
         ['label' => __('Referral AM'), 'data'=> 'referral_account_manager', 'checked' => true, 'bSearchable' => true],
         ['label' => __('Join Date'), 'data'=> 'created_at', 'checked' => true, 'bSearchable' => true],
-        ['label' => __('Status'), 'data'=> 'status', 'bSearchable' => true],
+        ['label' => __('Status'), 'data'=> 'status', 'checked' => true, 'bSearchable' => true],
         ['label' => __('Action'), 'data'=> 'action', 'disabled'=> true, 'checked' => true, 'bSearchable' => false],
     ];
 //dd(json_encode($columns));
@@ -170,6 +170,15 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        <label>{{ __('Account Manager') }}</label> 
+                                        <select class="form-control " id="" name="account_manager">
+                                            <option selected value="">{{ __('All') }}</option>
+                                            @foreach ($accountManagers as $accountManager)
+                                                <option {{isset(request()->account_manager)&&request()->account_manager==$accountManager->id?'selected':'' }}  value="{{ $accountManager->id }}">{{ $accountManager->name }} </option>                                            
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label>{{ __('Status') }}</label>
                                         <select class="form-control " id="kt_datatable_search_status" name="status">
                                             <option value="">{{ __('All') }}</option>
@@ -280,17 +289,25 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
     <script>
-        $(document).ready(function () {
-            $('.assignToMe').on('click', function () {
+        // $(document).ready(function () {
+            function assignToMe(affiliateId) {
                 console.log('start')
                 var assignToMe = $(this);
-                var affiliateId = $(this).data('affiliate');
+                // var affiliateId = $(this).data('affiliate');
                 Swal.fire({
                     title: "{{ __('Are you sure?') }}",
                     text: '{{ "You won`t be able to revert this!" }}',
                     icon: 'warning',
+                    @if(auth()->user()->position == 'head' || auth()->user()->position == 'super_admin')
+                    input: 'select',
+                    inputPlaceholder: 'Select Account Manager',
+                    inputOptions: {
+                        @foreach($accountManagers->pluck('name', 'id')->toArray() as $key=>$accountManager)
+                            "{{ $key }}" : "{{ $accountManager }}"
+                        @endforeach
+                    },
+                    @endif
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#dd3333',
@@ -302,7 +319,8 @@
                             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                             url: "{{ route('admin.publishers.updateAccountManager') }}",
                             data: {
-                                affiliateId: affiliateId
+                                affiliateId: affiliateId, 
+                                accountManagerId:result.value
                             },
                             error: function (err) {
                                 if (err.hasOwnProperty('responseJSON')) {
@@ -329,8 +347,8 @@
 
                     }
                 })
-            })
-        })
+            }
+        // })
     </script>
 
 <script>

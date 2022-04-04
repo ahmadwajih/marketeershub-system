@@ -31,6 +31,7 @@ Route::get('/', function () {
 Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.'], function(){
 
     Route::get('change-lang/{lang}', 'DashboardController@changeLang')->name('change.lang');
+    Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
@@ -119,5 +120,6 @@ Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.']
 });
 
 
+Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
 Route::get('test', 'Dashboard\DashboardController@test');
 

@@ -138,6 +138,7 @@ class UserController extends Controller
         $this->authorize('update_users');
         $data = $request->validate([
             'ho_id'                 => 'nullable|max:255|unique:users,ho_id,'.$user->id,
+            'parent_id'             => 'nullable|exists:users,id|nullable',
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,
             'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
