@@ -124,6 +124,11 @@ var KTDatatableRemoteAjaxDemo = function() {
                 textAlign: 'center',
 
             },{
+                field: 'user_id',
+                title: "User ID",
+                selector: false,
+                textAlign: 'center',
+            },{
                 field: 'name',
                 title: "Full Name",
                 selector: false,

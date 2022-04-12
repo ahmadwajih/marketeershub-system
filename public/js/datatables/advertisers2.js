@@ -15,7 +15,6 @@ var KTDatatableRemoteAjaxDemo = function() {
                     read: {
                         url:route,
                         method:'GET',
-                        data:{id:1},
                         // sample custom headers
                         // headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
                         map: function(raw) {
@@ -40,8 +39,19 @@ var KTDatatableRemoteAjaxDemo = function() {
 
             // layout definition
             layout: {
-                scroll: false,
+                scroll: true,
                 footer: false,
+                icons:{
+                    pagination:{
+                        pagination: {
+                            next: 'la la-angle-right',
+                            prev: 'la la-angle-left',
+                            first: 'la la-angle-double-left',
+                            last: 'la la-angle-double-right',
+                            more: 'la la-ellipsis-h'
+                          }
+                    }
+                }
             },
 
             // column sorting
@@ -92,7 +102,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                                 }).done(function (res) {
                                     swal.fire({
                                         text: "Deleted successfully ",
-                                        confirmButtonText: "موافق",
+                                        confirmButtonText: "Accept",
                                         icon: "success",
                                         confirmButtonClass: "btn font-weight-bold btn-primary",
                                     });
@@ -182,15 +192,15 @@ var KTDatatableRemoteAjaxDemo = function() {
 
         });
 
-        $('#kt_datatable_search_status').on('change', function() {
-            datatable.search($(this).val().toLowerCase(), 'Status');
+        $('#kt_datatable_search_team').on('change', function() {
+            datatable.search($(this).val().toLowerCase(), 'team');
         });
 
         $('#kt_datatable_search_type').on('change', function() {
             datatable.search($(this).val().toLowerCase(), 'Type');
         });
 
-        $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
+        $('#kt_datatable_search_team, #kt_datatable_search_type').selectpicker();
     };
 
     return {

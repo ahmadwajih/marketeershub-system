@@ -148,13 +148,13 @@
             </div>
             <!--end::Notifications-->
             <!--begin::Languages-->
-            <div class="topbar-item">
+            {{-- <div class="topbar-item">
                 <a class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1" href="{{ route('admin.change.lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}">
                     <span class="svg-icon svg-icon-xl svg-icon-primary">
                         {{ app()->getLocale() == 'ar' ? 'English' : 'العربية' }}
                     </span>
                 </a>
-            </div>
+            </div> --}}
         </div>
         <!--end::Topbar-->
 

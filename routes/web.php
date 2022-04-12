@@ -93,7 +93,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('targets', TargetController::class);
         // User Activites
         Route::get('user-activities', 'UserActivityController@index')->name('user.activities.index');
-
+        // Chat routes
+        Route::get('chat', 'ChatController@index')->name('chat');
+        Route::post('chat/message', 'ChatController@messageReceived')->name('chat.message');
+        Route::post('chat/single/{user?}', 'ChatController@singleChat')->name('chat.single');
         Route::post('logout', 'AuthController@logout')->name('logout');
 
         // Ajax requests

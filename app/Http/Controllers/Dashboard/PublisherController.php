@@ -128,7 +128,7 @@ class PublisherController extends Controller
                     })
              
                     ->addColumn('action', function ($row) {
-                        $btn = '<a href="' . route('admin.publishers.show', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
+                        $btn = '<a href="' . route('admin.publisher.profile', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
                         $btn .= '<a href="' . route('admin.publishers.edit', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-pen"></i></a>';
                         $btn .= $row->parent ? $row->parent->name : " <button class='btn badge btn-success ' onclick='assignToMe(" . $row->id . ")'>" . __('Assign To Me') . "</button>";
                         return $btn;

@@ -116,7 +116,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $this->authorize('update_users');
+        if($user->id != auth()->user()->id){
+            $this->authorize('update_users');
+        }
         return view('admin.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),

@@ -264,7 +264,43 @@
                     <h4 class="menu-text">{{ __('Work environment') }}</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                 </li>
+                @can('view_pivot_report') 
+                {{-- Start Pivot Report  --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='pivot-report'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="far fa-chart-bar"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Updates Reports') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Updates Reports') }}</span>
+                                </span>
+                            </li>
 
+
+                            @can('create_pivot_report')
+                            <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.pivot-report.create')}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">{{ __('Upload New') }}</span>
+                                </a>
+                            </li>
+                            @endcan
+
+                        </ul>
+                    </div>
+                </li>
+                {{--  End Pivot Report --}}
+                @endcan
+                
                 @can('view_categories') 
                 {{-- Start Categories  --}}
                 <li class="menu-item menu-item-submenu {{ Request::segment(2)=='categories'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
@@ -503,42 +539,6 @@
                 {{--  End Coupons --}}
                 @endcan
 
-                @can('view_pivot_report') 
-                {{-- Start Pivot Report  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='pivot-report'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
-                    <a href="javascript:;" class="menu-link menu-toggle">
-                        <span class="svg-icon menu-icon">
-                            <i class="far fa-chart-bar"></i>
-                        </span>
-                        <span class="menu-text">{{ __('Pivot Report') }}</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="menu-submenu">
-                        <i class="menu-arrow"></i>
-                        <ul class="menu-subnav">
-                            <li class="menu-item menu-item-parent" aria-haspopup="true">
-                                <span class="menu-link">
-                                    <span class="menu-text">{{ __('Pivot Report') }}</span>
-                                </span>
-                            </li>
-
-
-                            @can('create_pivot_report')
-                            <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.pivot-report.create')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('Upload New') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-
-                        </ul>
-                    </div>
-                </li>
-                {{--  End Pivot Report --}}
-                @endcan
 
                 @can('view_payments') 
                 {{-- Start Payments  --}}
@@ -752,6 +752,14 @@
                 </li>
                 @endcan
 
+                <li class="menu-item {{ Request::segment(2)=='chat'?'menu-item-active':'' }}" aria-haspopup="true">
+                    <a href="{{route('admin.chat')}}" class="menu-link">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-comment"></i>                      
+                      </span>
+                        <span class="menu-text">{{ __('Chat') }}</span>
+                    </a>
+                </li>
    
                 {{-- Start Currencies --}}
                 {{-- <li class="menu-item menu-item-submenu  {{ Request::segment(2)=='currencies'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">

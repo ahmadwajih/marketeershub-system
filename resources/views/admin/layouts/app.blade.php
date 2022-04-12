@@ -51,16 +51,23 @@
 
         <!--end::Layout Themes-->
 		<link rel="shortcut icon" href="{{ asset('dashboard') }}/media/logos/favicon.ico" />
-        <script src="{{ mix('js/app.js') }}?id={{ assetsId() }}" defer></script>
+        <script src="{{ mix('js/app.js') }}?id={{ assetsId() }}"></script>
         @stack('headers')
         @stack('styles')
     </head>
     <body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading">
+		{{-- Start Sounds  --}}
+		<audio controls id="messageSound" style="display: none">
+			<source src="{{asset('dashboard/sounds/message.mp3')}}" type="audio/ogg">
+			<source src="{{asset('dashboard/sounds/message.mp3')}}" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		{{-- Start Sounds  --}}
         <!--begin::Main-->
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 			<!--begin::Logo-->
-			<a href="{{route('admin.index')}}">
+			<a href="#">
                 <img src="{{ asset('dashboard') }}/images/logo.png?d=<?php echo time()?>" alt="Logo" />
 			</a>
 			<!--end::Logo-->
@@ -124,7 +131,7 @@
                         </div>
                         <!--end::Subheader-->
 						<div id="history"></div>
-
+						<div id="notifications" class="alert mx-3 invisible"> test Notifications</div>
                         @yield('content')
 
 					</div>
@@ -212,6 +219,86 @@
 		</script>
 		{{-- End::read notifications  --}}
         @stack('scripts')
+
+		{{-- Chat Scripts  --}}
+		<script>
+			const messagesElement = document.getElementById('messages');
+		
+			Echo.join('chat')
+				.here((users) => {
+					// users.forEach((user, index) => {
+					// 	const userElement = document.getElementById('online'+user.id);
+					// 	// userElement.classList.add("online-user");
+						
+					// })
+				})
+				.joining((user) => {
+					const userElement = document.getElementById('online'+user.id);
+					userElement.classList.add("online-user");
+				})
+				.leaving((user) => {
+					const userElement = document.getElementById('online'+user.id);
+					userElement.classList.remove("online-user");
+				})
+				.listen('MessageSend', (e) => {
+					// let element = document.createElement('p');
+		
+					// element.innerText = e.user.name + ': ' + e.message;
+		
+					// messagesElement.appendChild(element);
+					// If i'm the sender 
+					var myNode = document.createElement("div");
+					KTUtil.addClass(myNode, 'd-flex flex-column mb-5 align-items-end');
+		
+					var html = '';
+					html += '<div class="d-flex align-items-center">';
+					html += '	<div>';
+					html += '		<span class="text-muted font-size-sm">2 Hours</span>';
+					html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>';
+					html += '	</div>';
+					html += '	<div class="symbol symbol-circle symbol-40 ml-3">';
+					html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/default.png"/>';
+					html += '	</div>';
+					html += '</div>';
+					html += '<div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">' + e.message + '</div>';
+		
+					KTUtil.setHTML(myNode, html);
+				   
+					
+					// If i'm not the sender 
+		
+					var senderNode = document.createElement("div");
+					KTUtil.addClass(senderNode, 'd-flex flex-column mb-5 align-items-start');
+		
+					var html = '';
+					html += '<div class="d-flex align-items-center">';
+					html += '	<div class="symbol symbol-circle symbol-40 mr-3">';
+					html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/default.png"/>';
+					html += '	</div>';
+					html += '	<div>';
+					html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">'+e.user.name+'</a>';
+					html += '		<span class="text-muted font-size-sm">Just now</span>';
+					html += '	</div>';
+					html += '</div>';
+					html += '<div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">';
+					html +=  e.message ;
+					html += '</div>';
+		
+					KTUtil.setHTML(senderNode, html);
+					if("{{ auth()->user()->id }}" == e.user.id){
+						messagesElement.appendChild(myNode);
+					}else{
+						messagesElement.appendChild(senderNode);
+					}
+		
+					scrollEl.scrollTop = parseInt(KTUtil.css(messagesElement, 'height'));
+		
+		
+		
+				});
+		
+		</script>
+
 	</body>
 	<!--end::Body -->
 </html>

@@ -53,6 +53,7 @@ class AdvertiserController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->authorize('create_advertisers');
         $data = $request->validate([
             'name'                  => 'nullable|max:255',
@@ -74,11 +75,27 @@ class AdvertiserController extends Controller
             'language'              => 'required|in:ar,en,ar_en',
             'access_username'       => 'nullable|max:255',
             'access_password'       => 'nullable|max:255',
+            'contract'              => 'nullable|file|mimetypes:application/pdf|max:1024',
+            'nda'                   => 'nullable|file|mimetypes:application/pdf|max:1024',
+            'io'                    => 'nullable|file|mimetypes:application/pdf|max:1024',
         ]);
 
         $data['exclusive'] = isset($request->exclusive)&&$request->exclusive == 'on' ? true : false;
         $data['broker'] = isset($request->broker)&&$request->broker == 'on' ? true : false;
         unset($data['categories']);
+        unset($data['contract']);
+        unset($data['nda']);
+        unset($data['io']);
+
+        if($request->hasFile('contract')){
+            $data['contract'] = uploadImage($request->file('contract'), "Advertisers");
+        }
+        if($request->hasFile('nda')){
+            $data['nda'] = uploadImage($request->file('nda'), "Advertisers");
+        }
+        if($request->hasFile('io')){
+            $data['io'] = uploadImage($request->file('io'), "Advertisers");
+        }
 
         $advertiser = Advertiser::create($data);
         $advertiser->categories()->attach($request->categories);
@@ -154,12 +171,33 @@ class AdvertiserController extends Controller
             'language'              => 'required|in:ar,en,ar_en',
             'access_username'       => 'nullable|max:255',
             'access_password'       => 'nullable|max:255',
+            'contract'              => 'nullable|file|mimetypes:application/pdf|max:1024',
+            'nda'                   => 'nullable|file|mimetypes:application/pdf|max:1024',
+            'io'                    => 'nullable|file|mimetypes:application/pdf|max:1024',
         ]);
 
         $data['exclusive'] = isset($request->exclusive)&&$request->exclusive == 'on' ? true : false;
         $data['broker'] = isset($request->broker)&&$request->broker == 'on' ? true : false;
         unset($data['categories']);
+        unset($data['contract']);
+        unset($data['nda']);
+        unset($data['io']);
+
+        if($request->hasFile('contract')){
+            deleteImage($advertiser->contract, "Advertisers");
+            $data['contract'] = uploadImage($request->file('contract'), "Advertisers");
+        }
+        if($request->hasFile('nda')){
+            deleteImage($advertiser->nda, "Advertisers");
+            $data['nda'] = uploadImage($request->file('nda'), "Advertisers");
+        }
+        if($request->hasFile('io')){
+            deleteImage($advertiser->contract, "Advertisers");
+            $data['io'] = uploadImage($request->file('io'), "Advertisers");
+        }
+
         userActivity('Advertiser', $advertiser->id, 'update', $data, $advertiser);
+
 
         $advertiser->update($data);
         $advertiser->categories()->sync($request->categories);

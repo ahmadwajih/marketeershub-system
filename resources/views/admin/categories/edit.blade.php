@@ -63,8 +63,9 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Category Type') }} :</label>
                                                 <select class="form-control select2" id="kt_select_type" name="type" >
+                                                    <option {{ old('type')=="affiliate"?"selected":($category->type=='affiliate'?"selected":'') }} value="affiliate">{{ __('Affiliate') }}</option>
+                                                    <option {{ old('type')=="influencer"?"selected":($category->type=='influencer'?"selected":'') }} value="influencer">{{ __('Influencer') }}</option>
                                                     <option {{ old('type')=="advertisers"?"selected":($category->type=='advertisers'?"selected":'') }} value="advertisers">{{ __('Advertisers') }}</option>
-                                                    <option {{ old('type')=="publishers"?"selected":($category->type=='publishers'?"selected":'') }} value="publishers">{{ __('Publishers') }}</option>
                                                     <option {{ old('type')=="offers"?"selected":($category->type=='offers'?"selected":'') }} value="offers">{{ __('Offers') }}</option>
                                                     <option {{ old('type')=="other"?"selected":($category->type=='other'?"selected":'') }} value="other">{{ __('Other') }}</option>
                                                 </select>

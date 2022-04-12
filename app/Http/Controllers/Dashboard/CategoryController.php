@@ -47,7 +47,7 @@ class CategoryController extends Controller
         $data = $request->validate([
             'title_en' => 'required|unique:categories|max:255',
             'title_ar' => 'required|unique:categories|max:255',
-            'type'     => 'required|in:advertisers,publishers,offers,other'
+            'type'     => 'required|in:affiliate,influencer,advertisers,offers,other'
         ]);
 
         $category = Category::create($data);
@@ -101,7 +101,7 @@ class CategoryController extends Controller
         $data = $request->validate([
             'title_ar' => 'required|max:255|unique:categories,title_ar,'.$category->id,
             'title_en' => 'required|max:255|unique:categories,title_en,'.$category->id,    
-            'type'     => 'required|in:advertisers,publishers,offers,other'
+            'type'     => 'required|in:affiliate,influencer,advertisers,offers,other'
         ]);
         userActivity('Category', $category->id, 'update', $data, $category);
        

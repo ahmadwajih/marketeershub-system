@@ -284,6 +284,39 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-lg-12">
+                                                <label>{{ __('Contract') }} :</label>
+                                                <input type="file" name="contract" class="form-control" value="{{old('contract')}}" />
+                                                @if ($errors->has('contract'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('contract') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <label>{{ __('NDA') }} :</label>
+                                                <input type="file" name="nda" class="form-control" value="{{old('nda')}}" />
+                                                @if ($errors->has('nda'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('nda') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <label>{{ __('IO') }} :</label>
+                                                <input type="file" name="io" class="form-control" value="{{old('io')}}" />
+                                                @if ($errors->has('io'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('io') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
                                                 <label>* {{ __('Note') }} :</label>
                                                 <textarea name="note"  class="form-control" id="" cols="30" rows="10">{{old('note')}}</textarea>
                                                 @if ($errors->has('note'))

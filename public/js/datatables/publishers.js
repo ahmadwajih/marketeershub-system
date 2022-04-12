@@ -90,7 +90,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                                             if (err.responseJSON.hasOwnProperty('message')) {
                                                 swal.fire({
                                                     title: "Error !",
-                                                    text: err.responseJSON.message,
+                                                text: err.responseJSON.message,
                                                     confirmButtonText: "Ok",
                                                     icon: "error",
                                                     confirmButtonClass: "btn font-weight-bold btn-primary",

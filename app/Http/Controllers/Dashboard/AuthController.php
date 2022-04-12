@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Events\UserSessionChanged;
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPassword;
 use App\Models\LoginUser;

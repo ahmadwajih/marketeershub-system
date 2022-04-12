@@ -154,6 +154,18 @@
 
                                         </div>
                                         <div class="form-group row">
+                                            <div class="col-lg-4">
+                                                <a href="{{ getImagesPath('Advertisers', $advertiser->contract) }}" class="btn btn-info mt-2" download>{{ __('Download Contract') }}</a>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <a href="{{ getImagesPath('Advertisers', $advertiser->nda) }}" class="btn btn-info mt-2" download>{{ __('Download NDA') }}</a>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <a href="{{ getImagesPath('Advertisers', $advertiser->io) }}" class="btn btn-info mt-2" download>{{ __('Download IO') }}</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
                                             <div class="col-lg-12">
                                                 <label>* {{ __('Note') }} :</label>
                                                 <textarea name="note"  class="form-control" id="" cols="30" rows="10" disabled readonly>{{$advertiser->note}}</textarea>
