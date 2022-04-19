@@ -66,11 +66,11 @@
                                                     <img alt="Pic" src="{{ getImagesPath('Users', $user->image) }}" />
                                                 </div>
                                                 <div class="d-flex flex-column">
-                                                    <a href="javascript:void(0)" onclick="singleUser({{ $user->id }})" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg">{{ $user->name }}</a>
-                                                    <span class="text-muted font-weight-bold font-size-sm">{{ ucwords(str_replace('_', ' ', $user->position)) }} - {{ ucwords(str_replace('_', ' ', $user->team)) }}</span>
+                                                    <a href="javascript:void(0)" onclick="singleUser({{ $user->id }})" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg">{{ $user->name }}   </a>
+                                                    <span class="text-muted font-weight-bold font-size-sm">{{ ucwords(str_replace('_', ' ', $user->position)) }} - {{ ucwords(str_replace('_', ' ', $user->team)) }} </span>
                                                 </div>
                                             </div>
-                                            <div id="userMessagesNumber{{ $user->id }}"></div>
+                                            <div id="userMessagesNumber{{ $user->id }}">  @if($user->unSeenChats->count() > 0)<span class="label label-sm label-danger mt-1 " id="unSeenUserMessageCount{{ $user->id }}"> {{ $user->unSeenChats->count() }}</span> @endif </div>
                                             {{-- <div class="d-flex flex-column align-items-end">
                                                 <span class="text-muted font-weight-bold font-size-sm">3 hrs</span>
                                                 <span class="label label-sm label-danger">5</span>

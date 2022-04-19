@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Jobs\UpdateUsersPassword;
+use App\Models\Category;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -252,8 +253,15 @@ class DashboardController extends Controller
     
     public function test(Request $request){
 
-        $contry = Country::first();
-        dd($contry);
+        // $categories = Category::get();
+        // // foreach($categories as $cat){
+        // //     $cat->type = 'influencer';
+        // //     $cat->save();
+        // // }
+        // dd([
+        //     'categories' => $categories,
+        //     'count' => $categories->count()
+        // ]);
 
     }
 }

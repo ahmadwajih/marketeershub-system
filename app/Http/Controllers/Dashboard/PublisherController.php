@@ -264,7 +264,7 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         return view('admin.publishers.create',[
             'countries' => Country::all(),
-            'categories' => Category::whereType('publishers')->get(),
+            'categories' => Category::whereType('influencer')->get(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
             'currencies' => Currency::all(),
         ]);
@@ -306,7 +306,6 @@ class PublisherController extends Controller
             'currency_id'               => 'required|exists:currencies,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
-
         ]);
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
@@ -335,12 +334,15 @@ class PublisherController extends Controller
         if($request->team == 'influencer' || $request->team == 'prepaid'){
             if($request->social_media && count($request->social_media) > 0){
                 foreach($request->social_media as $link){
-                    SocialMediaLink::create([
-                        'link' => $link['link'],
-                        'platform' => $link['platform'],
-                        'followers' => $link['followers'],
-                        'user_id' => $publisher->id,
-                    ]);
+                    if(!is_null($link['link'])){
+                        SocialMediaLink::create([
+                            'link' => $link['link'],
+                            'platform' => $link['platform'],
+                            'followers' => $link['followers'],
+                            'user_id' => $publisher->id,
+                        ]);
+                    }
+                    
                 }
 
             }
@@ -384,7 +386,7 @@ class PublisherController extends Controller
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
             'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
-            'categories' => Category::whereType('publishers')->get(),
+            'categories' => Category::whereType('influencer')->get(),
             'roles' => Role::all(),
             'currencies' => Currency::all(),
         ]);
@@ -637,10 +639,10 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         if($request->team == 'affiliate'){
-            Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+            Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
         }
         if($request->team == 'influencer'){
-            Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
+            Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
         }
 
         userActivity('User', null , 'upload', 'Upload Publishers');

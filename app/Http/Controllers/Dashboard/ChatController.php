@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Cache;
 class ChatController extends Controller
 {
      /**
@@ -20,9 +20,8 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $users = DB::table('users')
-            ->select('id','name', 'email', 'image', 'team', 'position')
-            ->get();
+        $users = User::with('unSeenChats')->get();
+       
         return view('admin.chat', [
             'users' => $users
         ]);
@@ -58,6 +57,10 @@ class ChatController extends Controller
             ['receiver_id', '=', auth()->user()->id],
         ])->get();
 
+        Chat::where([
+            ['sender_id', '=', $user->id],
+            ['receiver_id', '=', auth()->user()->id],
+        ])->update(['seen' => true]);
         $data = [
             'user' => $user,
             'chats' => $chats->toArray(),

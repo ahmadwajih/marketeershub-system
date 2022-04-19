@@ -2,6 +2,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Chat;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
@@ -310,4 +311,18 @@ if(!function_exists('assetsId')) {
         return $id;
     }
 }
+
+
+if(!function_exists('unSeenMessages')) {
+    function unSeenMessages()
+    {
+        $unSeenMessagesCount = Chat::where([
+            ['receiver_id', '=',auth()->user()->id],
+            ['seen', '=',false],
+        ])->count();
+        return $unSeenMessagesCount;
+    }
+}
+
+
 

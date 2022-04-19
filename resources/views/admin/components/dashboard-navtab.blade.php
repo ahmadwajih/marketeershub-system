@@ -107,10 +107,10 @@ $i = 1;
                                 </table>
 
                             </div>
-                            <div class="tab-pane fade" id="overall" role="tabpanel" aria-labelledby="db-tabnav-tab-2">
+                            <div class="tab-pane active" id="overall" role="tabpanel" aria-labelledby="db-tabnav-tab-2">
                                 @include('admin.components.overall')
                             </div>
-                            <div class="tab-pane active" id="teamPerformance" role="tabpanel" aria-labelledby="db-tabnav-tab-3">
+                            <div class="tab-pane fade" id="teamPerformance" role="tabpanel" aria-labelledby="db-tabnav-tab-3">
                                 @include('admin.components.team-performance')
                             </div>
                             <div class="tab-pane fade" id="publishersAnalytics" role="tabpanel" aria-labelledby="db-tabnav-tab-4">

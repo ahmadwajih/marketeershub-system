@@ -13,7 +13,10 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-class PublishersImport implements ToCollection
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class PublishersImport implements ToCollection, ShouldQueue, WithChunkReading
 {
     public $team;
     public $status;
@@ -112,5 +115,10 @@ class PublishersImport implements ToCollection
                 $category ? $publisher->categories()->sync($category->id) : '';
             }
         }
+    }
+
+    public function chunkSize(): int
+    {
+        return 100;
     }
 }

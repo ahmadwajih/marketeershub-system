@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class NewOffer extends Notification
 {
@@ -41,9 +42,14 @@ class NewOffer extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('We have added new offe check it now.')
-                    ->action('View Offer', route('admin.offers.show', $this->offer->id));
+        try {
+            return (new MailMessage)
+            ->line('We have added new offe check it now.')
+            ->action('View Offer', route('admin.offers.show', $this->offer->id));
+        } catch (\Throwable $th) {
+            Log::debug($th);
+        }
+        
     }
 
     /**

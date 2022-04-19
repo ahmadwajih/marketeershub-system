@@ -15,8 +15,10 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class InfluencerImport implements ToCollection
+class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $team;
     public $status;
@@ -77,7 +79,7 @@ class InfluencerImport implements ToCollection
                     }
 
                 // Get Category Id 
-                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
+                $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
 
                 $publisher = User::updateOrCreate(
                     ['email' => $col[3]],
@@ -87,7 +89,7 @@ class InfluencerImport implements ToCollection
                         'phone' => $col[2],
                         'password' => Hash::make('12345678'),
                         'parent_id' => $this->accouManagerId,
-                        'gender' => $col[5],
+                        'gender' => $col[5] ?? 'male',
                         'status' => $this->status,
                         'country_id' => $this->countryId,  
                         'city_id' => $this->cityId,  
@@ -174,5 +176,9 @@ class InfluencerImport implements ToCollection
             }
 
         }
+    }
+    public function chunkSize(): int
+    {
+        return 100;
     }
 }

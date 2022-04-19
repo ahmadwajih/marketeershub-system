@@ -757,7 +757,8 @@
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-comment"></i>                      
                       </span>
-                        <span class="menu-text">{{ __('Chat') }}</span>
+                        <span class="menu-text">{{ __('Chat') }}  </span>
+                        @if(unSeenMessages()  > 0)<span class="label label-sm label-danger mt-1"> {{ unSeenMessages()  }}</span> @endif
                     </a>
                 </li>
    

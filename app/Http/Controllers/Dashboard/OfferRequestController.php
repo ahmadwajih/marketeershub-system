@@ -46,9 +46,14 @@ class OfferRequestController extends Controller
     public function create()
     {
         $this->authorize('create_offer_requests');
+        if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+            $users =  auth()->user()->childrens()->get();
+        }else{
+            $users =  User::wherePosition('publisher')->get();
+        }
         return view('admin.offerRequests.create', [
             'offers' => Offer::whereStatus('active')->get(),
-            'users' => User::wherePosition('publisher')->get()
+            'users' => $users
         ]);
     }
 

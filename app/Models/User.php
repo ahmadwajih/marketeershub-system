@@ -182,4 +182,8 @@ class User extends Authenticatable
             }
         }
     }
+
+    public function unSeenChats(){
+        return $this->hasMany(Chat::class, 'sender_id', 'id')->where('receiver_id', auth()->user()->id)->where('seen', false);
+    }
 }

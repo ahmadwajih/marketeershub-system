@@ -15,6 +15,7 @@ use App\Models\OfferSlap;
 use App\Models\User;
 use App\Notifications\NewOffer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -131,7 +132,11 @@ class OfferController extends Controller
         $offer = Offer::create($data);
         userActivity('Offer', $offer->id, 'create');
         $publishers = User::wherePosition('publisher')->get();
-        Notification::send($publishers, new NewOffer($offer));
+        try {
+            Notification::send($publishers, new NewOffer($offer));
+        } catch (\Throwable $th) {
+            Log::debug($th);
+        }
 
         if ($request->categories) {
             $offer->categories()->attach($request->categories);
