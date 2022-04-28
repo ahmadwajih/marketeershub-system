@@ -1,11 +1,13 @@
 @extends('admin.layouts.app')
 @section('title','Publishers')
 @push('styles')
-    <style>
-        .influncers{
-            display: none;
-        }
-    </style>
+<style>
+    .influncers, 
+    .other-platform-name, 
+    .other-traffic-source-name{
+        display: none;
+    }
+</style>
 @endpush
 @section('content')
     <!--begin::Entry-->
@@ -228,20 +230,39 @@
                                             
                                         </div>
 
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label>{{ __('Referral account manager') }} :</label>
+
+                                                <select class="form-control select2" id="kt_select_referral_account_manager" name="referral_account_manager" >
+                                                    <option value="">{{ __('None') }}</option>
+                                                    @foreach ($users as $user)
+                                                        <option {{ old('referral_account_manager')==$user->id?'selected':'' }} value="{{ $user->id }}">{{  $user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('referral_account_manager'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('referral_account_manager') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+
                                         {{-- Affiliates Data  --}}
 
                                         <div class="affiliates">
                                             <div class="form-group row">
+                                                    
                                                 <div class="col-lg-6">
-                                                    <label>{{ __('Owened Digital Assets') }} :</label>
-                                                    <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets')}}" />
-                                                    @if ($errors->has('owened_digital_assets'))
+                                                    <label> {{ __('Affiliate Networks') }} :</label>
+                                                    <input type="text" name="affiliate_networks" class="form-control" value="{{old('affiliate_networks')}}" />
+                                                    @if ($errors->has('affiliate_networks'))
                                                         <div>
-                                                            <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
+                                                            <p class="invalid-input">{{ $errors->first('affiliate_networks') }}</p>
                                                         </div>
                                                     @endif
                                                 </div>
-                                               
                                                 <div class="col-lg-6">
                                                     <label>{{ __('Years Of Experience') }} :</label>
                                                     <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience')}}" />
@@ -253,34 +274,75 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-12">
                                                     <label>{{ __('Traffic Sources') }} :</label>
-                                                    <input type="text" name="traffic_sources" class="form-control" value="{{old('traffic_sources')}}" />
+                                                    <select class="form-control select2" id="kt_select_traffic_sources" name="traffic_sources[]" multiple>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('website', old('traffic_sources'))) ? 'selected':'' }} value="google_ad_words">{{ __('Google Ad words.') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('website', old('traffic_sources'))) ? 'selected':'' }} value="facebook_ig_ads">{{ __('Facebook & IG Ads.') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('instagram', old('traffic_sources'))) ? 'selected':'' }} value="instagram">{{ __('Instagram') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('twitter', old('traffic_sources'))) ? 'selected':'' }} value="twitter">{{ __('Twitter') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('snapchat', old('traffic_sources'))) ? 'selected':'' }} value="snapchat">{{ __('Snapchat') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('tiktok', old('traffic_sources'))) ? 'selected':'' }} value="tiktok">{{ __('Tiktok') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('youtube', old('traffic_sources'))) ? 'selected':'' }} value="youtube">{{ __('Youtube') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('pinterest', old('traffic_sources'))) ? 'selected':'' }} value="pinterest">{{ __('Pinterest') }}</option>
+                                                        <option {{ (old('traffic_sources') !== null && in_array('other', old('traffic_sources'))) ? 'selected':'' }} value="other">{{ __('Other') }}</option>
+                                                    </select>
                                                     @if ($errors->has('traffic_sources'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('traffic_sources') }}</p>
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <div class="col-lg-6">
-                                                    <label> {{ __('Affiliate Networks') }} :</label>
-                                                    <input type="text" name="affiliate_networks" class="form-control" value="{{old('affiliate_networks')}}" />
-                                                    @if ($errors->has('affiliate_networks'))
-                                                        <div>
-                                                            <p class="invalid-input">{{ $errors->first('affiliate_networks') }}</p>
-                                                        </div>
-                                                    @endif
-                                                </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <div class="col-lg-6">
-                                                    <label> {{ __('Referral Account Manager') }} :</label>
-                                                    <input type="text" name="referral_account_manager" class="form-control" value="{{old('referral_account_manager')}}" />
-                                                    @if ($errors->has('referral_account_manager'))
-                                                        <div>
-                                                            <p class="invalid-input">{{ $errors->first('referral_account_manager') }}</p>
+
+                                            <div class="form-group row d-block" id="digital_asset">
+                                                <div id="kt_repeater_2">
+                                                    <div class="form-group row" id="kt_repeater_2">
+                                                        <label class="col-form-label text-right ml-9"><b>{{ __('Digital Asset') }}</b></label>
+                                                        <div data-repeater-list="digital_asset" class="col-lg-12">
+                                                            <div data-repeater-item class="form-group row align-items-center">
+                                                                <div class="col-md-2">
+                                                                    <label>{{__('Platform') }}</label>
+                                                                    <select class="form-control form-select digital-asset-platform" name="platform" style="display: block" >
+                                                                        <option value="website">{{ __('Website') }}</option>
+                                                                        <option value="mobile_app">{{ __('Mobile App') }}</option>
+                                                                        <option value="facebook">{{ __('Facebook') }}</option>
+                                                                        <option value="instagram">{{ __('Instagram') }}</option>
+                                                                        <option value="twitter">{{ __('Twitter') }}</option>
+                                                                        <option value="snapchat">{{ __('Snapchat') }}</option>
+                                                                        <option value="tiktok">{{ __('Tiktok') }}</option>
+                                                                        <option value="youtube">{{ __('Youtube') }}</option>
+                                                                        <option value="pinterest">{{ __('Pinterest') }}</option>
+                                                                        <option value="other">{{ __('Other') }}</option>
+                                                                    </select>
+                                                                    
+                                                                    <div class="other-platform-name mt-2 ">
+                                                                        <label>{{__('Other Platform name') }}</label>
+                                                                        <input type="text" name="other_platform_name" class="form-control" />
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="col-md-6 ">
+                                                                    <label>{{ __('Link') }}</label>
+                                                                    <input type="url" name="link" class="form-control" />
+                                                                    <div class="d-md-none mb-2"></div>
+                                                                </div>
+                            
+                                                                <div class="col-md-2">
+                                                                    <br>
+                                                                    <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
+                                                                        <i class="la la-trash-o"></i>Delete
+                                                                    </a>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    @endif
+        
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary btn-block">
+                                                            <i class="la la-plus"></i>Add 
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
     
@@ -327,7 +389,7 @@
                                                                 <div class="col-md-2">
                                                                     <br>
                                                                     <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
-                                                                        <i class="la la-trash-o"></i>حذف
+                                                                        <i class="la la-trash-o"></i>Delete
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -337,7 +399,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary btn-block">
-                                                            <i class="la la-plus"></i>إضافة
+                                                            <i class="la la-plus"></i>Add
                                                         </a>
                                                     </div>
                                                 </div>
@@ -463,6 +525,12 @@
         $('#kt_select_currency_id').select2({
             placeholder: "Select Option",
         });
+        $('#kt_select_referral_account_manager').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_traffic_sources').select2({
+            placeholder: "Select Option",
+        });
     </script>
     <script>
         $(document).ready(function(){
@@ -500,6 +568,19 @@
                     $('.affiliates').fadeOut('slow');
                 }
             });
+
+            $(".digital-asset-platform").on("change",function(){
+                var platform =$(this).val();
+                var el = $(this).siblings('.other-platform-name');
+
+                if(platform == 'other'){
+                    el.fadeIn('slow'); 
+                }else{
+                    el.fadeOut('slow');
+                }
+            });
+
+
         });
 
 
@@ -539,4 +620,39 @@
             KTFormRepeater.init();
         });
     </script>
+    
+<script>
+    // Class definition
+    var KTFormRepeater2 = function() {
+    // Private functions
+    var demo12 = function() {
+        $('#kt_repeater_2').repeater({
+            initEmpty: false,
+
+            defaultValues: {
+                'text-input': 'foo'
+            },
+
+            show: function () {
+                $(this).slideDown();
+            },
+
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+    }
+
+    return {
+        // public functions
+        init: function() {
+            demo12();
+        }
+    };
+    }();
+
+    jQuery(document).ready(function() {
+        KTFormRepeater2.init();
+    });
+</script>
 @endpush

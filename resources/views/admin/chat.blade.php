@@ -351,7 +351,7 @@
                     html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>';
                     html += '	</div>';
                     html += '	<div class="symbol symbol-circle symbol-40 ml-3">';
-                    html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/default.png"/>';
+                    html += '		<img alt="Pic" src="https://system.marketeershub.com/storage/Images/Users/default.png"/>';
                     html += '	</div>';
                     html += '</div>';
                     html += '<div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">' + chat.message + '</div>';
@@ -364,7 +364,7 @@
                     var html = '';
                     html += '<div class="d-flex align-items-center">';
                     html += '	<div class="symbol symbol-circle symbol-40 mr-3">';
-                    html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/default.png"/>';
+                    html += '		<img alt="Pic" src="https://system.marketeershub.com/storage/Images/Users/default.png"/>';
                     html += '	</div>';
                     html += '	<div>';
                     html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Sender</a>';
@@ -393,7 +393,7 @@
             var html = '';
 			html += '<div class="d-flex align-items-center">';
 			html += '	<div class="symbol symbol-circle symbol-40 mr-3">';
-			html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/'+userImage+'"/>';
+			html += '		<img alt="Pic" src="{{ getImagesPath("Users", '+userImage+') }}"/>';
 			html += '	</div>';
 			html += '	<div>';
 			html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">'+response.data.user.name+'</a>';
@@ -438,7 +438,7 @@
         html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>';
         html += '	</div>';
         html += '	<div class="symbol symbol-circle symbol-40 ml-3">';
-        html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/default.png"/>';
+        html += '		<img alt="Pic" src="https://system.marketeershub.com/storage/Images/Users/default.png"/>';
         html += '	</div>';
         html += '</div>';
         html += '<div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">' + messageElement.value + '</div>';
@@ -469,7 +469,7 @@
 			var html = '';
 			html += '<div class="d-flex align-items-center">';
 			html += '	<div class="symbol symbol-circle symbol-40 mr-3">';
-			html += '		<img alt="Pic" src="http://127.0.0.1:8000/storage/Images/Users/'+userImage+'"/>';
+			html += '		<img alt="Pic" src="https://system.marketeershub.com/storage/Images/Users/'+userImage+'"/>';
 			html += '	</div>';
 			html += '	<div>';
 			html += '		<a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">'+e.sender.name+'</a>';

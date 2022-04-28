@@ -34,6 +34,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
+    Route::post('register', 'AuthController@register')->name('register');
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
     Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
@@ -56,6 +57,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
+        Route::get('publisher/payments/{id?}', 'PublisherController@payments')->name('publisher.payments');
         Route::get('publisher/my-account-manager', 'PublisherController@myAccountManager')->name('publisher.account.manager');
         // Upload Publishers
         Route::get('publishers/upload/form', 'PublisherController@upload')->name('publishers.upload.form');
@@ -93,6 +95,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('targets', TargetController::class);
         // User Activites
         Route::get('user-activities', 'UserActivityController@index')->name('user.activities.index');
+        Route::post('user-activities/update-uproval', 'UserActivityController@updateUserActivityApproval')->name('user.activities.update.approval');
         // Chat routes
         Route::get('chat', 'ChatController@index')->name('chat');
         Route::post('chat/message', 'ChatController@messageReceived')->name('chat.message');
@@ -124,5 +127,6 @@ Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.']
 
 
 Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
-Route::get('test', 'Dashboard\DashboardController@test');
+Route::get('test', 'Dashboard\DashboardController@test')->name("test");
+
 

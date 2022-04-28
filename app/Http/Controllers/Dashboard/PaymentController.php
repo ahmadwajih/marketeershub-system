@@ -85,10 +85,11 @@ class PaymentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Payment $payment)
     {
-        $this->authorize('show_payments');
-        $payment = Payment::findOrFail($id);
+        if($payment->publisher_id  != auth()->user()->id){
+            $this->authorize('show_payments');
+        }
         userActivity('Payment', $payment->id, 'show');
         return view('admin.payments.show', ['payment' => $payment]);
     }

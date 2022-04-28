@@ -34,6 +34,8 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('view_roles');
+
         if($request->ajax()){
             $roles = getModelData('Role', $request);
             return response()->json($roles);
@@ -48,6 +50,8 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $this->authorize('create_roles');
+
         return view('admin.roles.create',[
             'models' => $this->models,
             'abilities'=> Ability::all(),
@@ -62,6 +66,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create_roles');
+
         $role = Role::create(
             $this->validate($request, [
                 'name' => 'required|string|unique:roles',
@@ -89,6 +95,8 @@ class RoleController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('show_roles');
+
         $role = Role::withTrashed()->findOrFail($id);
         return view('admin.roles.show',[
             'role' => $role,
@@ -106,6 +114,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        $this->authorize('update_roles');
 
         return view('admin.roles.edit',[
             'role' => $role,
@@ -124,6 +133,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        $this->authorize('update_roles');
         $abilities = Ability::get();
         foreach($abilities as $ability){
             if (request($ability->name) == "on" && !$role->abilities->contains($ability)){
@@ -151,6 +161,8 @@ class RoleController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $this->authorize('delete_roles');
+
         if($request->ajax())
         {
             userActivity('Role', $id, 'delete');

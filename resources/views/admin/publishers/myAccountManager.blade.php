@@ -25,7 +25,7 @@
                         <div class="d-flex mb-9">
                             <!--begin: Pic-->
                             <div class="flex-shrink-0 mr-7 mt-lg-0 mt-3">
-                                <div class="symbol symbol-50 symbol-lg-120">
+                                <div class="symbol symbol-50 symbol-lg-120 symbol-primary">
                                     <img src="{{ getImagesPath('Users', $accountManager->image) }}" alt="image" />
                                 </div>
                                 <div class="symbol symbol-50 symbol-lg-120 symbol-primary d-none">

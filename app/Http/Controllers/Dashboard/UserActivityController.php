@@ -15,14 +15,42 @@ class UserActivityController extends Controller
      */
     public function index(Request $request)
     {
-        // $activities = UserActivity::all();
-        // dd($activities[0]->element);
         $this->authorize('view_user_activities');
         if($request->ajax()){
             $activities = getModelData('UserActivity', $request, ['user']);
             return response()->json($activities);
         }
         return view('admin.activities.index');
+
+    }
+
+    public function updateUserActivityApproval(Request $request){
+        $this->authorize('update_user_activities');
+        $request->validate([
+            "object" => 'required|max:255',
+            "object_id" => 'required|numeric',
+            "user_id" => 'required|numeric',
+            "activity_id" => 'required|numeric',
+            "keys" => 'required|array',
+            "values" => 'required|array',
+            "keys.*" => 'required',
+            "values.*" => 'required',
+        ]);
+
+        $model = "App\Models\\".$request->object;
+        $object = $model::findOrFail($request->object_id);
+       
+        $data = [];
+        foreach($request->keys as $index => $key){
+            $data[$key] = $request->values[$index];
+        }
+        $object->update($data);
+
+        $activity = UserActivity::findOrFail($request->activity_id);
+        $activity->approved = true;
+        $activity->approved_by = auth()->user()->id;
+        $activity->save();
+        return redirect()->back();
 
     }
 }

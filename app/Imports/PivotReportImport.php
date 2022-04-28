@@ -12,12 +12,17 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class PivotReportImport implements ToCollection
 {
     public $offerId;
+    public $type;
+    public $date;
+    public $team;
+    public $completeMission;
 
-    public function __construct($offerId, $type, $date)
+    public function __construct($offerId, $type, $date, $team)
     {
         $this->offerId = $offerId;
         $this->type = $type;
         $this->date = $date;
+        $this->team = $team;
     }
 
     /**
@@ -40,10 +45,23 @@ class PivotReportImport implements ToCollection
             
 
             if(!is_null($col[0])){
-                $coupon  = Coupon::firstOrCreate([
-                    'coupon' => $col[0],
-                    'offer_id' => $this->offerId,
-                ]);
+                $coupon  = Coupon::where([
+                    ['coupon', '=', $col[0]],
+                    ['offer_id', '=', $this->offerId]
+                ])->first();
+                // Check if this coupons is belong to user in the same team 
+                if($coupon){
+                    if($this->team == $coupon->user->team){
+                        $this->completeMission = true;
+                    }
+                }else{
+                    $coupon = Coupon::create([
+                        'coupon' => $col[0],
+                        'offer_id' => $this->offerId,
+                        'user_id' => 2 // here add marketeers hub affiliate default publisher account 
+                    ]);
+                    $this->completeMission = true;
+                }
 
                 $pivotReport  = PivotReport::where([
                     ['coupon_id', '=',$coupon->id],

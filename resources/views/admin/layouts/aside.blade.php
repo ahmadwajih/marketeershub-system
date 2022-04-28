@@ -33,25 +33,57 @@
                     </a>
                 </li>
                 @endcan
-                @if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']))
-                    <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
-                        <a href="{{route('admin.publisher.profile')}}" class="menu-link">
-                            <span class="svg-icon menu-icon">
-                                <i class="fas fa-id-badge"></i>
-                            </span>
-                            <span class="menu-text">{{ __('Profile') }}</span>
-                        </a>
-                    </li>
-                @else
-                    <li class="menu-item {{ Request::segment(2)=='user'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
-                        <a href="{{route('admin.user.profile')}}" class="menu-link">
-                            <span class="svg-icon menu-icon">
-                                <i class="fas fa-id-badge"></i>
-                            </span>
-                            <span class="menu-text">{{ __('Profile') }}</span>
-                        </a>
-                    </li>
-                @endif
+
+                {{-- Start Profile --}}
+                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='users' || Request::segment(2)=='publisher' ?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript:;" class="menu-link menu-toggle">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-id-badge"></i>
+                        </span>
+                        <span class="menu-text">{{ __('Profile') }}</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                <span class="menu-link">
+                                    <span class="menu-text">{{ __('Profile') }}</span>
+                                </span>
+                            </li>
+                            @if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']))
+                                <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
+                                    <a href="{{route('admin.publisher.profile')}}" class="menu-link">
+                                        <i class="menu-bullet menu-bullet-dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="menu-text">{{ __('My Profile') }}</span>
+                                    </a>
+                                </li>
+
+                                <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='payments'?'menu-item-active':'' }}" aria-haspopup="true">
+                                    <a href="{{route('admin.publisher.payments')}}" class="menu-link">
+                                        <i class="menu-bullet menu-bullet-dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="menu-text">{{ __('My Payments') }}</span>
+                                    </a>
+                                </li>
+                            @else
+                                <li class="menu-item {{ Request::segment(2)=='user'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
+                                    <a href="{{route('admin.user.profile')}}" class="menu-link">
+                                        <i class="menu-bullet menu-bullet-dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="menu-text">{{ __('My Profile') }}</span>
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                </li>
+                {{-- End Profile --}}
+
                 <li class="menu-section">
                     <h4 class="menu-text">{{ __('Persons') }}</h4>
                     <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
@@ -346,42 +378,6 @@
                 {{--  End Categories --}}
                 @endcan
                 
-                @can('view_reports') 
-                {{-- Start Reports  --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='reports'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
-                    <a href="javascript:;" class="menu-link menu-toggle">
-                        <span class="svg-icon menu-icon">
-                            <i class="fas fa-tags"></i>
-                        </span>
-                        <span class="menu-text">{{ __('Reports') }}</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="menu-submenu">
-                        <i class="menu-arrow"></i>
-                        <ul class="menu-subnav">
-                            <li class="menu-item menu-item-parent" aria-haspopup="true">
-                                <span class="menu-link">
-                                    <span class="menu-text">{{ __('Reports') }}</span>
-                                </span>
-                            </li>
-                            @can('view_reports')
-                            <li class="menu-item {{ Request::segment(2)=='reports'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.reports.index')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('All Reports') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-
-
-
-                        </ul>
-                    </div>
-                </li>
-                {{--  End Reports --}}
-                @endcan
 
                 @can('view_offers') 
                 {{-- Start Offers  --}}

@@ -170,7 +170,7 @@ if(!function_exists('deleteImage')){
  * parameters : object_name, object_id
  */
 if(!function_exists('userActivity')){
-    function userActivity($object, $objectId, $mission, $data = [], $oldObject = null,  $note = null, $userId=null){
+    function userActivity($object, $objectId, $mission, $data = [], $oldObject = null,  $note = null, $approved = true, $userId=null){
 
         if(!$userId){
             $userId = auth()->user()->id;
@@ -191,6 +191,7 @@ if(!function_exists('userActivity')){
             ['mission' , '=', $mission],
             ['object' , '=', $object],
             ['object_id' , '=', $objectId],
+            ['approved' , '=', $approved],
             ['history' , '=', serialize($fieldsistory)],
         ])->first();
         if(!$exists){
@@ -200,6 +201,7 @@ if(!function_exists('userActivity')){
                 'object' => $object,
                 'object_id' => $objectId,
                 'note' => $note,
+                'approved' => $approved,
                 'history' => serialize($fieldsistory),
             ]);
         }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Events\UserSessionChanged;
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPassword;
+use App\Models\Country;
 use App\Models\LoginUser;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +23,10 @@ class AuthController extends Controller
             }
             return redirect()->route('admin.user.profile');
         }
-        return view('admin.auth.login');
+        $accountManagers = User::where('position', 'account_manager')->get();
+        return view('admin.auth.login', [
+            'accountManagers' => $accountManagers
+        ]);
     }
 
     
@@ -52,6 +57,42 @@ class AuthController extends Controller
         return back()->withErrors([
             'message' => __('The provided credentials do not match our records.'),
         ]);
+    }
+
+    public function register(Request $request){
+        // dd($request->all());
+        $data = $this->validate($request, [
+            'name'              => 'required|max:255',
+            'email'             => 'required|email|max:255|unique:users,email',
+            'phone'             => 'required|unique:users|max:255',
+            // 'password'          => ['required','min:8','confirmed','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
+            'team'              => 'required|in:media_buying,influencer,affiliate,prepaid',
+            'account_title'     => 'required|max:255',
+            'bank_name'         => 'required|max:255',
+            'bank_branch_code'  => 'required|max:255',
+            'swift_code'        => 'required|max:255',
+            'iban'              => 'required|max:255',
+            'account_manager'   => 'nullable|exists:users,id'
+        ]);
+        $publisher = User::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'team' => $request->team,
+            'position' => 'publisher',
+            'referral_account_manager' => $request->account_manager,
+            'account_title' => $request->account_title,
+            'bank_name' => $request->bank_name,
+            'bank_branch_code' => $request->bank_branch_code,
+            'swift_code' => $request->swift_code,
+            'iban' => $request->iban,
+        ]);
+        $role = Role::findOrFail(4);
+        $publisher->assignRole($role);
+        Auth::login($publisher);
+        return redirect()->route('admin.publisher.profile');
+        
     }
 
     public function loginAs($userId){

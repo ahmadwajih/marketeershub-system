@@ -81,7 +81,7 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <div class="col-lg-9">
+                                            <div class="col-lg-4">
                                                 <label>* {{ __('Upload Pivot Report') }} :</label>
                                                 <input type="file" name="report" class="form-control"  value="{{old('report')}}" required />
                                                 @if ($errors->has('report'))
@@ -91,7 +91,22 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-lg-3">
+                                            <div class="col-lg-4">
+                                                <label>* {{ _('Team') }} :</label>
+                                                <select class="form-control select2" id="kt_select_team" name="team" required >
+                                                    <option {{old('team')=="affiliate"?"selected":""}} value="affiliate">{{ __('Affiliate')}}</option>
+                                                    <option {{old('team')=="influencer"?"selected":""}} value="influencer">{{ __('Influencer')}}</option>
+                                                    <option {{old('team')=="prepaid"?"selected":""}} value="prepaid">{{ __('Prepaid')}}</option>
+                                                    <option {{old('team')=="media_buying"?"selected":""}} value="media_buying">{{ __('Media Buying')}}</option>
+                                                </select>
+                                                @if ($errors->has('team'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('team') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-lg-4">
                                                 <br>
                                                 <a href="{{ asset('dashboard/excel-sheets-examples/pivot.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
                                             </div>
@@ -125,6 +140,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_type').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_team').select2({
             placeholder: "Select Option",
         });
     </script>

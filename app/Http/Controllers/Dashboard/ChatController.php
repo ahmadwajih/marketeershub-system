@@ -20,8 +20,12 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $users = User::with('unSeenChats')->get();
-       
+        $users = User::select('users.*')
+            ->leftJoin('chats', 'users.id', 'chats.receiver_id')
+            ->orderBy('chats.created_at', 'desc')
+            ->groupBy('users.id')
+            ->get();
+
         return view('admin.chat', [
             'users' => $users
         ]);

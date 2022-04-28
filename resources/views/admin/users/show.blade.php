@@ -115,7 +115,7 @@
                                                     <td>{{ $activity->created_at }}</td>
                                                     <td>
                                                         @if(unserialize($activity->history))
-                                                        <button class="btn btn-success show-history" data-id="{{ $activity->id }}">{{ __('Show') }}</button>
+                                                        <button type="button" class="btn btn-success show-history" data-id="{{ $activity->id }}">{{ __('Show') }}</button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -124,6 +124,8 @@
                                       </table>
                                 </div>
                             </div>
+
+                            
                             @endcan
 
                             <div class="card-footer">

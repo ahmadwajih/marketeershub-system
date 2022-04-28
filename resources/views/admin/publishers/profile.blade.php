@@ -25,7 +25,7 @@
                         <div class="d-flex mb-9">
                             <!--begin: Pic-->
                             <div class="flex-shrink-0 mr-7 mt-lg-0 mt-3">
-                                <div class="symbol symbol-50 symbol-lg-120">
+                                <div class="symbol symbol-50 symbol-lg-120 symbol-primary">
                                     <img src="{{ getImagesPath('Users', $publisher->image) }}" alt="image" />
                                 </div>
                                 <div class="symbol symbol-50 symbol-lg-120 symbol-primary d-none">
@@ -55,12 +55,10 @@
                                 <div class="d-flex flex-wrap justify-content-between mt-1">
                                     <div class="d-flex flex-column flex-grow-1 pr-8">
                                         <div class="d-flex flex-wrap mb-4">
-                                            <a href="#" class="text-dark-50 text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                            <i class="flaticon2-new-email mr-2 font-size-lg"></i>{{ $publisher->email }}</a>
-                                            <a href="#" class="text-dark-50 text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                            <i class="flaticon2-calendar-3 mr-2 font-size-lg"></i>{{ $publisher->updated_position }}</a>
-                                            <a href="#" class="text-dark-50 text-hover-primary font-weight-bold">
-                                            <i class="flaticon2-placeholder mr-2 font-size-lg"></i> {{ $publisher->updated_team }}</a>
+                                            <span  class="text-dark-50 text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
+                                            <i class="flaticon2-new-email mr-2 font-size-lg"></i>{{ $publisher->email }}</span>
+                                            <span  class="text-dark-50 text-hover-primary font-weight-bold">
+                                            <i class="flaticon2-placeholder mr-2 font-size-lg"></i> {{ $publisher->updated_team }}</span>
                                         </div>
                                         <div class="pt-8 pb-6">
                                             <div class="d-flex align-items-center justify-content-left mb-2">
@@ -103,6 +101,35 @@
                         </div>
                         <!--end::Details-->
                         <div class="separator separator-solid"></div>
+                        <div class="date m-4">
+                           <form action="{{ route('admin.publisher.profile', request()->id ?? null) }}" method="get">
+                            <div class="row">
+                                <div class="col-5">
+                                    <label for="from">{{ __('From Date') }}</label>
+                                    <input class="form-control" name="from" id="from" type="date" value="{{ request()->from }}">
+                                    @if ($errors->has('from'))
+                                        <div>
+                                            <p class="invalid-input">{{ $errors->first('from') }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="col-5">
+                                    <label for="to">{{ __('To Date') }}</label>
+                                    <input class="form-control" name="to" id="to" type="date" value="{{ request()->to }}">
+                                    @if ($errors->has('to'))
+                                        <div>
+                                            <p class="invalid-input">{{ $errors->first('to') }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="col-2">
+                                    <label></label>
+                                    <button type="submit" class="btn btn-primary btn-block mt-2">{{ __('Go') }}</button>
+                                </div>
+                            </div>
+                           </form>
+                        </div>
+                        <div class="separator separator-solid"></div>
                         <!--begin::Items Totals -->
                         <div class="d-flex align-items-center flex-wrap mt-8">
                             <!--begin::Item-->
@@ -136,7 +163,7 @@
                                     <i class="flaticon-piggy-bank display-4 text-muted font-weight-bold"></i>
                                 </span>
                                 <div class="d-flex flex-column text-dark-75">
-                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Revenue') }}</span>
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Commission') }}</span>
                                     <span class="font-weight-bolder font-size-h5">
                                     <span class="text-dark-50 font-weight-bold">$</span>{{ $totalNumbers->revenue ?? 0 }}</span>
                                 </div>
@@ -152,7 +179,7 @@
                                     <i class="flaticon-piggy-bank display-4 text-muted font-weight-bold"></i>
                                 </span>
                                 <div class="d-flex flex-column text-dark-75">
-                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Revenue') }}</span>
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Commission') }}</span>
                                     <span class="font-weight-bolder font-size-h5">
                                     <span class="text-dark-50 font-weight-bold">$</span>{{ $totalPayout }}</span>
                                 </div>
@@ -233,102 +260,6 @@
                     <div class="flex-row-fluid ">
                         <!--begin::Row-->
                         <div class="row">
-                            @if($publisher->position == 'publisher')
-                            {{-- Start Payments --}}
-                            <div class="col-lg-12">
-                                <!--begin::Base Table Widget 1-->
-                                <div class="card card-custom card-stretch gutter-b">
-                                    <!--begin::Header-->
-                                    <div class="card-header border-0 pt-5">
-                                        <h3 class="card-title align-items-start flex-column">
-                                            <span class="card-label font-weight-bolder text-dark">{{ __('My Payments') }}</span>
-                                            <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ __('More than') }} {{ count($publisher->payments) }} {{ __('Payment') }}</span>
-                                        </h3>
-                                    </div>
-                                    <!--end::Header-->
-                                    <!--begin::Body-->
-                                    <div class="card-body pt-2 pb-0">
-                                        <!--begin::Table-->
-                                        <div class="table-responsive">
-                                            <table class="table table-borderless table-vertical-center">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="p-0">#{{ __('ID') }}</th>
-                                                        <th class="p-0">{{ __('Slip') }}</th>
-                                                        <th class="p-0">{{ __('Amount Paid') }}</th>
-                                                        <th class="p-0">{{ __('From Date') }}</th>
-                                                        <th class="p-0">{{ __('To Date') }}</th>
-                                                        <th class="p-0">{{ __('Note') }}</th>
-                                                        <th class="p-0">{{ __('Created At') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if(count($publisher->payments) > 0)
-                                                    @foreach($publisher->payments as $payment)
-                                                    <tr>
-                                                        <td class="pl-0">
-                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $payment->id }}</a>
-                                                        </td>
-                                                        <td class="pl-0 py-5">
-                                                            <div class="symbol symbol-50 symbol-light mr-2">
-                                                                <span class="symbol-label">
-                                                                    <img src="{{ getImagesPath('Payments', $payment->slip) }}" class="h-50 align-self-center" alt="" />
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        
-                                                        <td class="pl-0">
-                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $payment->amount_paid }}$</a>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex flex-column w-100 mr-2">
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->from }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex flex-column w-100 mr-2">
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->to }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex flex-column w-100 mr-2">
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->note }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex flex-column w-100 mr-2">
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $payment->created_at->diffForHumans() }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
-                                                    @endforeach
-                                                    @else
-                                                    <tr>
-                                                        <td colspan='7'>
-                                                            <div class="alert alert-warning text-center m-5">{{ __('No Avalible Payments') }}</div>
-                                                        </td>
-                                                    </tr>
-                                                    @endif
-    
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!--end::Table-->
-                                    </div>
-                                </div>
-                                <!--end::Base Table Widget 1-->
-                            </div>
-                            {{-- End Payments --}}
-                            @endif
                             <div class="col-lg-12">
                                 <!--begin::Base Table Widget 1-->
                                 <div class="card card-custom card-stretch gutter-b">
@@ -362,9 +293,8 @@
                                                     <tr>
                                                         <th class="p-0">{{ __('Thumbnail') }}</th>
                                                         <th class="p-0">{{ __('Offer') }}</th>
-                                                        <th class="p-0">{{ __('Total Orders') }}</th>
-                                                        <th class="p-0">{{ __('Total Sales') }}</th>
-                                                        <th class="p-0">{{ __('Total Revenue') }}</th>
+                                                        <th class="p-0">{{ __('Status') }}</th>
+                                                        <th class="p-0">{{ __('Codes No') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -379,41 +309,27 @@
                                                             </div>
                                                         </td>
                                                         <td class="pl-0">
-                                                            <a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->offer_name }}</a>
-                                                            {{-- <span class="text-muted font-weight-bold d-block">{{ $offer->description }}</span> --}}
+                                                            <a href="{{ route('admin.offers.show', $offer->offer_id) }}" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->offer_name }}</a>
+                                                        </td>
+                                                        <td class="pl-0">
+                                                            <span  class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->offer_status }}</span>
                                                         </td>
                                                         <td>
                                                             <div class="d-flex flex-column w-100 mr-2">
                                                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->orders }}</span>
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->user->coupons->count() }}</span>
                                                                     {{-- <span class="text-muted font-size-sm font-weight-bold">Progress</span> --}}
                                                                 </div>
-                                                                {{ __('order') }}
+                                                                {{ __('code') }}
                                                             </div>
                                                         </td>
-                                                        <td>
-                                                            <div class="d-flex flex-column w-100 mr-2">
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->sales }} $</span>
-                                                                    {{-- <span class="text-muted font-size-sm font-weight-bold">Progress</span> --}}
-                                                                </div>
-                                                                {{ __('sales') }}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex flex-column w-100 mr-2">
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->revenue }} $</span>
-                                                                </div>
-                                                                {{ __('revenue') }}
-                                                            </div>
-                                                        </td>
+
 
                                                     </tr>
                                                     @endforeach
                                                     @else
                                                     <tr>
-                                                        <td colspan='5'>
+                                                        <td colspan='4'>
                                                             <div class="alert alert-warning text-center m-5">No Avalible Offers</div>
                                                         </td>
                                                     </tr>

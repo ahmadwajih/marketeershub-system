@@ -56,9 +56,10 @@ class PivotReportController extends Controller
             'offer_id' => 'required|numeric|exists:offers,id',
             'type' => 'required|in:update,validation',
             'date' => 'required|date',
+            'team'  => 'required|in:affiliate,influencer,prepaid,media_buying',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new PivotReportImport($request->offer_id, $request->type, $request->date),request()->file('report'));
+        Excel::import(new PivotReportImport($request->offer_id, $request->type, $request->date, $request->team),request()->file('report'));
 
         if($request->type=='validation'){
             $offer = Offer::findOrFail($request->offer_id);

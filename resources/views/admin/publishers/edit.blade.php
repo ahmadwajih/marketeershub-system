@@ -247,15 +247,7 @@
                                         {{-- Affiliates --}}
                                         <div class="affiliates">
                                             <div class="form-group row">
-                                                <div class="col-lg-6">
-                                                    <label>{{ __('Owened Digital Assets') }} :</label>
-                                                    <input type="text" name="owened_digital_assets" class="form-control" value="{{old('owened_digital_assets') ?? $publisher->owened_digital_assets}}" />
-                                                    @if ($errors->has('owened_digital_assets'))
-                                                        <div>
-                                                            <p class="invalid-input">{{ $errors->first('owened_digital_assets') }}</p>
-                                                        </div>
-                                                    @endif
-                                                </div>
+
                                                 <div class="col-lg-6">
                                                     <label>{{ __('Years Of Experience') }} :</label>
                                                     <input type="text" name="years_of_experience" class="form-control" value="{{old('years_of_experience') ?? $publisher->years_of_experience}}" />
@@ -270,7 +262,17 @@
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
                                                     <label>{{ __('Traffic Sources') }} :</label>
-                                                    <input type="text" name="traffic_sources" class="form-control" value="{{old('traffic_sources') ?? $publisher->traffic_sources}}" />
+                                                    <select class="form-control select2" id="kt_select_traffic_sources" name="traffic_sources[]" multiple>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('website', old('traffic_sources')) ? 'selected' : '') : (in_array('google_ad_words', $publisher->traffic_sources) ? "selected":"") }} value="google_ad_words">{{ __('Google Ad words.') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('website', old('traffic_sources')) ? 'selected' : '') : (in_array('facebook_ig_ads', $publisher->traffic_sources) ? "selected" :"") }} value="facebook_ig_ads">{{ __('Facebook & IG Ads.') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('instagram', old('traffic_sources')) ? 'selected' : '') : (in_array('instagram', $publisher->traffic_sources) ? "selected" :"") }} value="instagram">{{ __('Instagram') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('twitter', old('traffic_sources')) ? 'selected' : '') : (in_array('twitter', $publisher->traffic_sources) ? "selected" :"") }} value="twitter">{{ __('Twitter') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('snapchat', old('traffic_sources')) ? 'selected' : '') : (in_array('snapchat', $publisher->traffic_sources) ? "selected" :"") }} value="snapchat">{{ __('Snapchat') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('tiktok', old('traffic_sources')) ? 'selected' : '') : (in_array('tiktok', $publisher->traffic_sources) ? "selected" :"") }} value="tiktok">{{ __('Tiktok') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('youtube', old('traffic_sources')) ? 'selected' : '') :( in_array('youtube', $publisher->traffic_sources) ? "selected" :"") }} value="youtube">{{ __('Youtube') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('pinterest', old('traffic_sources')) ? 'selected' : '') : (in_array('pinterest', $publisher->traffic_sources) ? "selected" :"") }} value="pinterest">{{ __('Pinterest') }}</option>
+                                                        <option {{ old('traffic_sources') !== null ? (in_array('other', old('traffic_sources')) ? 'selected' : '') : (in_array('other', $publisher->traffic_sources) ? "selected" :"") }} value="other">{{ __('Other') }}</option>
+                                                    </select>
                                                     @if ($errors->has('traffic_sources'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('traffic_sources') }}</p>
@@ -288,6 +290,89 @@
                                                 </div>
                                                 
                                             </div>
+
+                                            <div class="form-group row d-block" id="digital_asset">
+                                                <div id="kt_repeater_2">
+                                                    <div class="form-group row" id="kt_repeater_2">
+                                                        <label class="col-form-label text-right m-4"><b>{{ __('Owened Digital Assets') }}</b></label>
+                                                        <div data-repeater-list="digital_asset" class="col-lg-12">
+                                                            @if($publisher->team == 'affiliate' && count($publisher->digitalAssets) > 0)
+                                                                @foreach($publisher->digitalAssets as $item)
+                                                                <div data-repeater-item class="form-group row align-items-center">
+                                                                   
+                                                                    <div class="col-md-2">
+                                                                        <label>{{__('Platform') }}</label>
+                                                                        <select class="form-control form-select" name="platform" style="display: block" >
+                                                                            <option {{ $item->platform == 'website' ? 'selected' : '' }}  value="website">{{ __('Website') }}</option>
+                                                                            <option {{ $item->platform == 'mobile_app' ? 'selected' : '' }}  value="mobile_app">{{ __('Mobile App') }}</option>
+                                                                            <option {{ $item->platform == 'facebook' ? 'selected' : '' }}  value="facebook">{{ __('Facebook') }}</option>
+                                                                            <option {{ $item->platform == 'instagram' ? 'selected' : '' }}  value="instagram">{{ __('Instagram') }}</option>
+                                                                            <option {{ $item->platform == 'twitter' ? 'selected' : '' }}  value="twitter">{{ __('Twitter') }}</option>
+                                                                            <option {{ $item->platform == 'snapchat' ? 'selected' : '' }}  value="snapchat">{{ __('Snapchat') }}</option>
+                                                                            <option {{ $item->platform == 'tiktok' ? 'selected' : '' }}  value="tiktok">{{ __('Tiktok') }}</option>
+                                                                            <option {{ $item->platform == 'youtube' ? 'selected' : '' }}  value="youtube">{{ __('Youtube') }}</option>
+                                                                            <option {{ $item->platform == 'pinterest' ? 'selected' : '' }}  value="pinterest">{{ __('Pinterest') }}</option>
+                                                                            <option {{ $item->platform == 'other' ? 'selected' : '' }}  value="other">{{ __('Other') }}</option>
+                                                                        </select>
+                                                                    </div>
+                              
+                                                                    <div class="col-md-6">
+                                                                        <label>{{ __('Link') }}</label>
+                                                                        <input type="url" name="link" class="form-control" value="{{ $item->link }}"/>
+                                                                        <div class="d-md-none mb-2"></div>
+                                                                    </div>
+
+                                                                    <div class="col-md-2">
+                                                                        <br>
+                                                                        <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
+                                                                            <i class="la la-trash-o"></i>Delete
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                @endforeach
+                                                            @else
+                                                            <div data-repeater-item class="form-group row align-items-center">
+                                                                <div class="col-md-2">
+                                                                    <label>{{__('Platform') }}</label>
+                                                                    <select class="form-control form-select digital-asset-platform" name="platform" style="display: block" >
+                                                                        <option value="website">{{ __('Website') }}</option>
+                                                                        <option value="mobile_app">{{ __('Mobile App') }}</option>
+                                                                        <option value="facebook">{{ __('Facebook') }}</option>
+                                                                        <option value="instagram">{{ __('Instagram') }}</option>
+                                                                        <option value="twitter">{{ __('Twitter') }}</option>
+                                                                        <option value="snapchat">{{ __('Snapchat') }}</option>
+                                                                        <option value="tiktok">{{ __('Tiktok') }}</option>
+                                                                        <option value="youtube">{{ __('Youtube') }}</option>
+                                                                        <option value="pinterest">{{ __('Pinterest') }}</option>
+                                                                        <option value="other">{{ __('Other') }}</option>
+                                                                    </select>
+                                                                
+                                                                </div>
+                                                                <div class="col-md-6 ">
+                                                                    <label>{{ __('Link') }}</label>
+                                                                    <input type="url" name="link" class="form-control" />
+                                                                    <div class="d-md-none mb-2"></div>
+                                                                </div>
+                            
+                                                                <div class="col-md-2">
+                                                                    <br>
+                                                                    <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-block">
+                                                                        <i class="la la-trash-o"></i>Delete
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            @endif
+                                                        </div>
+        
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary btn-block">
+                                                            <i class="la la-plus"></i>Add
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             
                                         </div>
                                         {{-- Influncers --}}
@@ -403,9 +488,15 @@
                                                     </div>
                                                 @endif
                                             </div>
+
                                             <div class="col-lg-6">
-                                                <label> {{ __('Referral Account Manager') }} :</label>
-                                                <input type="text" readonly disabled name="referral_account_manager" class="form-control" value="{{old('referral_account_manager') ?? $publisher->referral_account_manager}}" />
+                                                <label>* {{ __('Referral Account Manager') }} :</label>
+                                                <select class="form-control select2" id="kt_select_referral_account_manager" name="referral_account_manager" >
+                                                    <option value=" ">{{ __('No One') }}</option>
+                                                    @foreach ($accountManagers as $accountManager)
+                                                        <option value="{{ $accountManager->id }}" {{ old('referral_account_manager') ? (old('referral_account_manager') == $accountManager->id ? "selected" : '') : ($publisher->referral_account_manager == $accountManager->id ? "selected" : "")  }}>{{ $accountManager->name }}</option>
+                                                    @endforeach
+                                                </select>
                                                 @if ($errors->has('referral_account_manager'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('referral_account_manager') }}</p>
@@ -413,74 +504,74 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        {{-- Bank Account Details --}}
-                                        <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>*{{ __('Account Title') }} :</label>
-                                                <input type="text" name="account_title" class="form-control" value="{{old('account_title') ?? $publisher->account_title}}" required />
-                                                @if ($errors->has('account_title'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('account_title') }}</p>
-                                                    </div>
-                                                @endif
+                                            {{-- Bank Account Details --}}
+                                            <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>*{{ __('Account Title') }} :</label>
+                                                    <input type="text" name="account_title" class="form-control" value="{{old('account_title') ?? $publisher->account_title}}" required />
+                                                    @if ($errors->has('account_title'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('account_title') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Bank Name') }} :</label>
+                                                    <input type="text" name="bank_name" class="form-control" value="{{old('bank_name') ?? $publisher->bank_name}}" required />
+                                                    @if ($errors->has('bank_name'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('bank_name') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Bank Name') }} :</label>
-                                                <input type="text" name="bank_name" class="form-control" value="{{old('bank_name') ?? $publisher->bank_name}}" required />
-                                                @if ($errors->has('bank_name'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('bank_name') }}</p>
-                                                    </div>
-                                                @endif
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>*{{ __('Bank Branch Code') }} :</label>
+                                                    <input type="text" name="bank_branch_code" class="form-control" value="{{old('bank_branch_code') ?? $publisher->bank_branch_code}}" required />
+                                                    @if ($errors->has('bank_branch_code'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('bank_branch_code') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Swift Code') }} :</label>
+                                                    <input type="text" name="swift_code" class="form-control" value="{{old('swift_code') ?? $publisher->swift_code}}" required />
+                                                    @if ($errors->has('swift_code'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('swift_code') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>*{{ __('Bank Branch Code') }} :</label>
-                                                <input type="text" name="bank_branch_code" class="form-control" value="{{old('bank_branch_code') ?? $publisher->bank_branch_code}}" required />
-                                                @if ($errors->has('bank_branch_code'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('bank_branch_code') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Swift Code') }} :</label>
-                                                <input type="text" name="swift_code" class="form-control" value="{{old('swift_code') ?? $publisher->swift_code}}" required />
-                                                @if ($errors->has('swift_code'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('swift_code') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
 
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>*{{ __('Iban') }} :</label>
-                                                <input type="text" name="iban" class="form-control" value="{{old('iban') ?? $publisher->iban}}" required />
-                                                @if ($errors->has('iban'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('iban') }}</p>
-                                                    </div>
-                                                @endif
+                                            <div class="form-group row">
+                                                <div class="col-lg-6">
+                                                    <label>*{{ __('Iban') }} :</label>
+                                                    <input type="text" name="iban" class="form-control" value="{{old('iban') ?? $publisher->iban}}" required />
+                                                    @if ($errors->has('iban'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('iban') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>* {{ __('Currency') }} :</label>
+                                                    <select class="form-control select2" id="kt_select_currency_id" name="currency_id">
+                                                        @foreach ($currencies as $currency)
+                                                            <option {{ old('currency_id')?($currency->id == old('currency_id') ?'selected': ($publisher->currency_id == $currency->id ? 'selected' : '')):''  }} value="{{ $currency->id }}">{{  $currency->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @if ($errors->has('currency_id'))
+                                                        <div>
+                                                            <p class="invalid-input">{{ $errors->first('currency_id') }}</p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label>* {{ __('Currency') }} :</label>
-                                                <select class="form-control select2" id="kt_select_currency_id" name="currency_id">
-                                                    @foreach ($currencies as $currency)
-                                                        <option {{ old('currency_id')?($currency->id == old('currency_id') ?'selected': ($publisher->currency_id == $currency->id ? 'selected' : '')):''  }} value="{{ $currency->id }}">{{  $currency->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('currency_id'))
-                                                    <div>
-                                                        <p class="invalid-input">{{ $errors->first('currency_id') }}</p>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        {{-- End Bank Account Details --}}
+                                            {{-- End Bank Account Details --}}
                                         @endif
                                     </div>
                                 </div>
@@ -541,6 +632,12 @@
             placeholder: "Select Option",
         });
         $('#kt_select_currency_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_referral_account_manager').select2({
+            placeholder: "Select Referral Account Manager",
+        });
+        $('#kt_select_traffic_sources').select2({
             placeholder: "Select Option",
         });
     </script>
@@ -618,6 +715,40 @@
 
         jQuery(document).ready(function() {
             KTFormRepeater.init();
+        });
+    </script>
+    <script>
+        // Class definition
+        var KTFormRepeater2 = function() {
+        // Private functions
+        var demo2 = function() {
+            $('#kt_repeater_2').repeater({
+                initEmpty: false,
+
+                defaultValues: {
+                    'text-input': 'foo'
+                },
+
+                show: function () {
+                    $(this).slideDown();
+                },
+
+                hide: function (deleteElement) {
+                    $(this).slideUp(deleteElement);
+                }
+            });
+        }
+
+        return {
+            // public functions
+            init: function() {
+                demo2();
+            }
+        };
+        }();
+
+        jQuery(document).ready(function() {
+            KTFormRepeater2.init();
         });
     </script>
 @endpush

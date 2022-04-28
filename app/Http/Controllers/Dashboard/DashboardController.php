@@ -18,6 +18,7 @@ use App\Models\PivotReport;
 use App\Models\PublisherCategory;
 use App\Models\SallaInfo;
 use App\Models\User;
+use App\Models\UserActivity;
 use App\Notifications\NewAssigenCoupon;
 use App\Notifications\NewOffer;
 use App\Notifications\UpdateValidation;
@@ -252,16 +253,33 @@ class DashboardController extends Controller
     }
     
     public function test(Request $request){
+        
+        $request->validate([
+            "object" => 'required|max:255',
+            "object_id" => 'required|numeric',
+            "user_id" => 'required|numeric',
+            "activity_id" => 'required|numeric',
+            "keys" => 'required|array',
+            "values" => 'required|array',
+            "keys.*" => 'required',
+            "values.*" => 'required',
+        ]);
+        $user = User::findOrFail($request->user_id);
+        
+        $model = "App\Models\\".$request->object;
+        $object = $model::findOrFail($request->object_id);
+       
+        $data = [];
+        foreach($request->keys as $index => $key){
+            $data[$key] = $request->values[$index];
+        }
+        $object->update($data);
 
-        // $categories = Category::get();
-        // // foreach($categories as $cat){
-        // //     $cat->type = 'influencer';
-        // //     $cat->save();
-        // // }
-        // dd([
-        //     'categories' => $categories,
-        //     'count' => $categories->count()
-        // ]);
+        $activity = UserActivity::findOrFail($request->activity_id);
+        $activity->approved = true;
+        $activity->approved_by = auth()->user()->id;
+        $activity->save();
+        return redirect()->back();
 
     }
 }

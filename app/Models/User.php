@@ -128,6 +128,10 @@ class User extends Authenticatable
     public function socialMediaLinks(){
         return $this->hasMany(SocialMediaLink::class);
     }
+    
+    public function digitalAssets(){
+        return $this->hasMany(DigitalAsset::class);
+    }
 
     public function getSocialLinksAttribute(){
         $links = [];

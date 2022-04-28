@@ -24,6 +24,7 @@ class OfferRequestController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_offer_requests');
+
         if ($request->ajax()){
         if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
             $offerRequests = getModelData('OfferRequest' , $request, ['user', 'offer'], function ($query) {

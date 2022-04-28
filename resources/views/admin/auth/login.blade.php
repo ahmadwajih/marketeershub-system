@@ -44,6 +44,26 @@
 								<img src="{{ asset('dashboard') }}/images/logo.png?d=<?php echo time()?>" class="max-h-75px" alt="" />
 							</a>
 						</div>
+						@if ($errors->any())
+						<div class="alert alert-custom alert-light-danger" role="alert" id="kt_form_2_msg" >
+							<div class="alert-icon">
+								<i class="flaticon2-bell-5"></i>
+							</div>
+							<div class="alert-text font-weight-bold">{{ __('Validation error') }}</div>
+							<ul>
+								@foreach ($errors->all() as $error)
+									<li>{{ $error }}</li>
+								@endforeach
+							</ul>
+							<div class="alert-close">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span>
+										<i class="ki ki-close"></i>
+									</span>
+							</button>
+							</div>
+						</div>
+						@endif
 						<!--end::Login Header-->
 						<!--begin::Login Sign in form-->
 						<div class="login-signin">
@@ -80,10 +100,10 @@
 									<button type="submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3">Sign In</button>
 								</div>
 							</form>
-							<!-- <div class="mt-10">
+							<div class="mt-10">
 								<span class="opacity-40 mr-4">Don't have an account yet?</span>
 								<a href="javascript:;" id="kt_login_signup" class="text-white opacity-30 font-weight-normal">Sign Up</a>
-							</div> -->
+							</div>
 						</div>
 						<!--end::Login Sign in form-->
 						<!--begin::Login Sign up form-->
@@ -92,29 +112,69 @@
 								<h3 class="opacity-40 font-weight-normal">Sign Up</h3>
 								<p class="opacity-40">Enter your details to create your account</p>
 							</div>
-							<form class="form text-center">
+							<form class="form text-center" method="POST" action="{{ route('admin.register') }}">
+								@csrf
 								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Fullname" name="fullname" />
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Fullname" name="name" />
+								</div>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Phone" name="phone" />
 								</div>
 								<div class="form-group">
 									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Email" name="email" autocomplete="off" />
 								</div>
 								<div class="form-group">
 									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Password" name="password" />
+									<b >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol') }}</b>
+
 								</div>
 								<div class="form-group">
-									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Confirm Password" name="rpassword" />
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="password" placeholder="Confirm Password" name="confirmation_password" />
 								</div>
-								<div class="form-group text-left px-8">
+
+								<div class="form-group">
+									<select class="form-control h-auto text-gray bg-white-o-5 rounded-pill border-0 py-4 px-8" name="team">
+										<option  value="" disabled>{{ __('Select Team') }}</option>
+										<option value="influencer">{{ __('Influencers') }}</option>
+										<option value="affiliate">{{ __('Affiliates') }}</option>
+										<option value="media_buying">{{ __('Media Buying') }}</option>
+									</select>
+								</div>
+
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Bank Account Title" name="account_title" />
+								</div>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Bank Name" name="bank_name" />
+								</div>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Bank branch code" name="bank_branch_code" />
+								</div>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="Swift code" name="swift_code" />
+								</div>
+								<div class="form-group">
+									<input class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" type="text" placeholder="IBAN" name="iban" />
+								</div>
+								<div class="form-group">
+									<select class="form-control h-auto text-gray bg-white-o-5 rounded-pill border-0 py-4 px-8" name="account_manager">
+										<option  value="" selected>{{ __('Select Referral Account Manager') }}</option>
+										@foreach ($accountManagers as $accountManager)
+											<option value="{{ $accountManager->id }}">{{ $accountManager->name }}</option>
+										@endforeach
+									</select>
+								</div>
+								{{-- <div class="form-group text-left px-8">
 									<label class="checkbox checkbox-outline checkbox-white opacity-60 text-white m-0">
 									<input type="checkbox" name="agree" />I Agree the
 									<a href="#" class="text-white font-weight-bold">terms and conditions</a>.
 									<span></span></label>
 									<div class="form-text text-muted text-center"></div>
-								</div>
+								</div> --}}
+
 								<div class="form-group">
-									<button id="kt_login_signup_submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3 m-2">Sign Up</button>
-									<button id="kt_login_signup_cancel" class="btn btn-pill btn-outline-white opacity-70 px-15 py-3 m-2">Cancel</button>
+									<button  type="submit" class="btn btn-pill btn-primary opacity-90 px-15 py-3 m-2">Sign Up</button>
+									<button id="kt_login_signup_cancel" type="reset" class="btn btn-pill btn-outline-white opacity-70 px-15 py-3 m-2">Cancel</button>
 								</div>
 							</form>
 						</div>

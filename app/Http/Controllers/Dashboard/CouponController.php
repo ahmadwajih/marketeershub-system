@@ -7,7 +7,10 @@ use App\Imports\CouponImport;
 use App\Models\Coupon;
 use App\Models\Offer;
 use App\Models\User;
+use App\Notifications\CodeRecycled;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
 class CouponController extends Controller
 {
@@ -38,7 +41,7 @@ class CouponController extends Controller
         $this->authorize('create_coupons');
         return view('admin.coupons.create',[
             'offers' => Offer::whereStatus("active")->get(),
-            'users' => User::whereStatus("active")->whereIn('position', ['publisher'])->whereIn('team', ['media_buying','influencer','affiliate', 'prepaid'])->get(),
+            'users' => User::whereIn('position', ['publisher'])->whereIn('team', ['media_buying','influencer','affiliate', 'prepaid'])->get(),
         ]);
     }
 
@@ -58,7 +61,17 @@ class CouponController extends Controller
             'user_id'        => 'nullable|numeric|exists:users,id',
         ]);
         $data['coupon'] = strtolower(trim(str_replace(' ','', trim($request->coupon))));
+       
         $coupon = Coupon::create($data);
+        // dd($coupon->user);/
+         if($request->user_id){
+            try {
+                Notification::send($coupon->user, new CodeRecycled($coupon));
+            } catch (\Throwable $th) {
+                Log::debug($th);
+            }
+            
+        }
         userActivity('Coupon', $coupon->id, 'create');
 
         $notification = [
@@ -118,7 +131,14 @@ class CouponController extends Controller
 
         $coupon->update($data);
         userActivity('Coupon', $coupon->id, 'update');
-
+        if($request->user_id){
+            try {
+                Notification::send($coupon->user, new CodeRecycled($coupon));
+            } catch (\Throwable $th) {
+                Log::debug($th);
+            }
+            
+        }
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'

@@ -8,26 +8,38 @@
           </button>
         </div>
         <div class="modal-body">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">{{ __('Field') }}</th>
-                <th scope="col">{{ __('Old Value') }}</th>
-                <th scope="col">{{ __('New Value') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach(unserialize($activity->history) as $key => $history)
+          <form action="{{ route('admin.user.activities.update.approval') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <table class="table table-bordered">
+              <thead>
                 <tr>
-                  <td>{{ $key }}</td>
-                  <td>{{ $history['old']??'' }}</td>
-                  <td>{{ $history['new']??'' }}</td>
+                  <th scope="col">{{ __('Field') }}</th>
+                  <th scope="col">{{ __('Old Value') }}</th>
+                  <th scope="col">{{ __('New Value') }}</th>
                 </tr>
-              @endforeach
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <input type="hidden" name="object" value="{{ $activity->object }}">
+                <input type="hidden" name="object_id" value="{{ $activity->object_id }}">
+                <input type="hidden" name="user_id" value="{{ $activity->user_id }}">
+                <input type="hidden" name="activity_id" value="{{ $activity->id }}">
+                @foreach(unserialize($activity->history) as $key => $history)
+                  <tr>
+                    <td>{{ $key }}</td>
+                    <td>{{ $history['old']??'' }}</td>
+                    <td>{{ $history['new']??'' }}</td>
+                  </tr>
+                  <input type="hidden" name="keys[]" value="{{ $key }}">
+                  <input type="hidden" name="values[]" value="{{ $history['new']??'' }}">
+                @endforeach
+              </tbody>
+            </table>
+            @if(!$activity->approved)
+              <button class="btn btn-primary btn-block" type="submit"> Approve </button>
+            @endif
+          </form>
         </div>
-
+        
       </div>
     </div>
   </div>  
@@ -37,6 +49,8 @@
   $(".close-modal").click(function(){
       $('.modal').removeClass('d-block');
   });
+
+
 
 </script>
 

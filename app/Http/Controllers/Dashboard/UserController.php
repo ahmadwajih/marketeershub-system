@@ -101,7 +101,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_users');
+        if(auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
+            $this->authorize('show_users');
+        }
         $user = User::withTrashed()->findOrFail($id);
         userActivity('User', $user->id, 'show');
         $activites = getActivity('User',$id );
@@ -116,9 +118,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if($user->id != auth()->user()->id){
+        if($user->id != auth()->user()->id || !in_array($user->id, auth()->user()->childrens()->pluck('id')->toArray())){
             $this->authorize('update_users');
         }
+  
         return view('admin.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),
