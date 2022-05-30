@@ -300,3 +300,9 @@ table.dataTable td.dataTables_empty {
 .new-form .form-group {
     margin-bottom: 0;
 }
+
+.profile-image{
+    width: 120px !important;
+    height:  100% !important;
+}
+

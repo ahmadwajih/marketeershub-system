@@ -22,17 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['namespace' => 'Api'], function () {
     
     Route::post('login','AuthController@login');
-
     Route::get('order', 'OrderController@store');
     Route::get('order-update-status', 'OrderController@updateStatus');
     
-    Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('register-merchant', 'UserController@registerAdvertiser');
         Route::post('register-affiliate', 'UserController@registerAffiliate');
         Route::post('register-influencer', 'UserController@registerInfluencer');
         Route::post('logout','AuthController@logout');
 
-    });
+    // });
 
 });
 

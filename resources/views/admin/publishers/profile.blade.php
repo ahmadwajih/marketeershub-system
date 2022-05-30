@@ -26,7 +26,7 @@
                             <!--begin: Pic-->
                             <div class="flex-shrink-0 mr-7 mt-lg-0 mt-3">
                                 <div class="symbol symbol-50 symbol-lg-120 symbol-primary">
-                                    <img src="{{ getImagesPath('Users', $publisher->image) }}" alt="image" />
+                                    <img class="profile-image"  src="{{ getImagesPath('Users', $publisher->image) }}" alt="image" />
                                 </div>
                                 <div class="symbol symbol-50 symbol-lg-120 symbol-primary d-none">
                                     <span class="font-size-h3 symbol-label font-weight-boldest">JM</span>
@@ -39,11 +39,11 @@
                                 <div class="d-flex justify-content-between flex-wrap mt-1">
                                     <div class="d-flex mr-3">
                                         <a href="#" class="text-dark-75 text-hover-primary font-size-h5 font-weight-bold mr-3">{{ $publisher->name }}</a>
-                                        @if($publisher->parent)
+                                        {{-- @if($publisher->parent)
                                         <a href="#">
                                             <i class="flaticon2-correct text-success font-size-h5"></i>
                                         </a>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                     {{-- <div class="my-lg-0 my-3">
                                         <a href="#" class="btn btn-sm btn-light-success font-weight-bolder text-uppercase mr-3">ask</a>
@@ -59,23 +59,29 @@
                                             <i class="flaticon2-new-email mr-2 font-size-lg"></i>{{ $publisher->email }}</span>
                                             <span  class="text-dark-50 text-hover-primary font-weight-bold">
                                             <i class="flaticon2-placeholder mr-2 font-size-lg"></i> {{ $publisher->updated_team }}</span>
+                                            @if ($publisher->position != 'publisher')
+                                            <span  class="text-dark-50 text-hover-primary font-weight-bold ml-4">
+                                                <i class=" flaticon-presentation mr-2 font-size-lg"></i> {{ $publisher->updated_position }}</span>
+                                            @endif
                                         </div>
-                                        <div class="pt-8 pb-6">
-                                            <div class="d-flex align-items-center justify-content-left mb-2">
-                                                <span class="font-weight-bold mr-2">{{ __('Account Manager') }}:</span>
-                                                <a href="{{ route('admin.publisher.account.manager') }}" class="text-muted text-hover-primary">{{ $publisher->parent?$publisher->parent->name:'' }}</a>
-                                            </div>
+                                        @if ($publisher->position == 'publisher')
+                                            <div class="pt-8 pb-6">
+                                                <div class="d-flex align-items-center justify-content-left mb-2">
+                                                    <span class="font-weight-bold mr-2">{{ __('Account Manager') }}:</span>
+                                                    <a href="{{ route('admin.publisher.account.manager') }}" class="text-muted text-hover-primary">{{ $publisher->parent?$publisher->parent->name:'' }}</a>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-left">
+                                                    <span class="font-weight-bold mr-2">{{ __('Location') }}:</span>
+                                                    <span class="text-muted">{{ $publisher->country?$publisher->country->name_en:'' }}</span>
+                                                </div>
 
-                                            <div class="d-flex align-items-center justify-content-left">
-                                                <span class="font-weight-bold mr-2">{{ __('Location') }}:</span>
-                                                <span class="text-muted">{{ $publisher->country?$publisher->country->name_en:'' }}</span>
+                                                <div class="d-flex align-items-center justify-content-left ">
+                                                    <span class="font-weight-bold mr-2">{{ __('Categories') }}:</span>
+                                                    <span class="text-muted">@foreach($publisher->categories as $category) {{ $category->title }} @if(!$loop->last) , @endif @endforeach</span>
+                                                </div>
                                             </div>
+                                        @endif
 
-                                            <div class="d-flex align-items-center justify-content-left">
-                                                <span class="font-weight-bold mr-2">{{ __('Categories') }}:</span>
-                                                <span class="text-muted">@foreach($publisher->categories as $category) {{ $category->title }} @if(!$loop->last) , @endif @endforeach</span>
-                                            </div>
-                                        </div>
                                         <div class="d-flex flex-wrap mb-4">
                                             @foreach($publisher->socialLinks as $link)
                                                 <a href="{{ $link->link }}" class="btn btn-sm btn-clean btn-icon" target="_blank" title="{{ $link->platform }}">
@@ -312,12 +318,21 @@
                                                             <a href="{{ route('admin.offers.show', $offer->offer_id) }}" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->offer_name }}</a>
                                                         </td>
                                                         <td class="pl-0">
-                                                            <span  class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{ $offer->offer_status }}</span>
+                                                            
+                                                            
+                                                            
+                                                            @if($offer->offer_status == 'active')
+                                                                <span  class="label label-lg label-light-primary label-inline">{{ __('Active') }}</span>
+                                                            @elseif ($offer->offer_status == 'pused' || $offer->offer_status == 'expire' )
+                                                                <span  class="label label-lg label-light-danger label-inline">{{ __('Pused') }}</span>
+                                                            @else
+                                                                <span  class="label label-lg label-light-warning label-inline">{{ __('Pending') }}</span>
+                                                            @endif
                                                         </td>
                                                         <td>
                                                             <div class="d-flex flex-column w-100 mr-2">
                                                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->user->coupons->count() }}</span>
+                                                                    <span class="text-muted mr-2 font-size-sm font-weight-bold">{{ $offer->coupons }}</span>
                                                                     {{-- <span class="text-muted font-size-sm font-weight-bold">Progress</span> --}}
                                                                 </div>
                                                                 {{ __('code') }}
@@ -409,7 +424,7 @@
                                 </div> --}}
                             </div>
                             <!--end::Header-->
-                            <div class="card-body">
+                            <div class="card-body" style="height: 500px; overflow: scroll;">
                                 <div id="accordion">
                                     @foreach($offers as $offer)
                                         <div class="card">
@@ -424,7 +439,7 @@
                                         <div id="collapse{{ $offer->id }}" class="collapse" aria-labelledby="heading{{ $offer->id }}" data-parent="#accordion">
                                             <div class="card-body pt-0 pb-3">
                                                 <!--begin::Table-->
-                                                <div class="table-responsive">
+                                                <div class="table-responsive" style="height: 500px;">
                                                     <table class="table table-head-custom table-head-bg table-vertical-center table-borderless">
                                                         <thead>                                            
                                                             
@@ -443,8 +458,11 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach($offer->coupons  as $coupon)
+                                                            @foreach($offer->coupons  as $index => $coupon)
                                                             <tr>
+                                                                <td>
+                                                                    <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $index+1 }}</span>
+                                                                </td>
                                                                 <td class="pl-0 py-8">
                                                                     <div class="d-flex align-items-center">
                                                                         <div class="symbol symbol-50 flex-shrink-0 mr-4">
@@ -524,7 +542,7 @@
                         <!--end::Header-->
                             <div class="card-body">
                                 <!--begin::Table-->
-                                <div class="table-responsive">
+                                <div class="table-responsive"  style="height: 500px;">
                                 <table class="table table-head-custom table-head-bg table-vertical-center table-borderless">
                                     <thead>                                            
                                         
@@ -542,8 +560,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($publisher->childrens  as $singlePublisher)
+                                        @foreach($publisher->childrens  as $index=>$singlePublisher)
                                         <tr>
+                                            <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $index+1 }}</span></td>
+
                                             <td class="pl-0 py-8">
                                                 <div class="d-flex align-items-center">
                                                     <div class="symbol symbol-50 flex-shrink-0 mr-4">

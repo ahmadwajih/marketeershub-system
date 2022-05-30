@@ -668,6 +668,7 @@
                 })
                 .done(function(res) {
                     $("#kt_select_parent_id").html(res)
+                    $("#kt_select_referral_account_manager").html(res)
                 });
                 if(team == 'affiliate' || team == 'media_buying'){
                     $('.affiliates').fadeIn('slow');

@@ -10,4 +10,8 @@ class PivotReport extends Model
     use HasFactory;
     protected $guarded = [];
     
+    public function coupon(){
+        return $this->belongsTo(Coupon::class);
+    }
+
 }

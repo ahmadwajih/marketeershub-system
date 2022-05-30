@@ -133,6 +133,7 @@
                                                 <label>* {{ __('Position') }} :</label>
                                                 <select class="form-control select2" id="kt_select_position" name="position" >
                                                     <option {{ $user->position=='employee'?'selected':'' }} value="employee">{{ __('Employee') }}</option>
+                                                    <option {{ $user->position=='publisher'?'selected':'' }} value="publisher">{{ __('Publisher') }}</option>
                                                     <option {{ $user->position=='account_manager'?'selected':'' }} value="account_manager">{{ __('Account Manager') }}</option>
                                                     <option {{ $user->position=='team_leader'?'selected':'' }} value="team_leader">{{ __('Team Leader') }}</option>
                                                     <option {{ $user->position=='head'?'selected':'' }} value="head">{{ __('Head') }}</option>

@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -51,10 +52,27 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'parent_id')->with('parent');
     }
 
-    public function childrens(){
+    public function users()
+    {
         return $this->hasMany(User::class, 'parent_id');
     }
 
+    public function childrens(){
+        // return $this->hasMany(User::class, 'parent_id');
+        return $this->hasMany(User::class, 'parent_id')->with('childrens');
+
+    }
+
+    public function childrenss(){
+        return DB::table('users as u')
+        ->join('users as c', 'u.id', '=', 'c.parent_id')
+        ->select('u.id')
+        ->where('u.id', auth()->user()->id)
+        ->pluck('id')->toArray();
+        // return $this->hasMany(User::class, 'parent_id');
+        return $this->hasMany(User::class, 'parent_id')->with('childrens');
+
+    }
 
     public function assignRole($role_id)
     {

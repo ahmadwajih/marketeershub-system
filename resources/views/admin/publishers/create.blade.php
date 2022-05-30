@@ -233,7 +233,6 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>{{ __('Referral account manager') }} :</label>
-
                                                 <select class="form-control select2" id="kt_select_referral_account_manager" name="referral_account_manager" >
                                                     <option value="">{{ __('None') }}</option>
                                                     @foreach ($users as $user)
@@ -558,6 +557,7 @@
                 })
                 .done(function(res) {
                     $("#kt_select_parent_id").html(res)
+                    $("#kt_select_referral_account_manager").html(res)
                 });
                 if(team == 'affiliate' || team == 'media_buying'){
                     $('.affiliates').fadeIn('slow'); 

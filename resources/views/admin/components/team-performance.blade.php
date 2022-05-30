@@ -19,8 +19,8 @@
             </tr>
             </thead>
             <tbody>
-                @if($teamPerformance)
-                @foreach($teamPerformance as $team)
+                {{-- @if($teamPerformance) --}}
+                {{-- @foreach($teamPerformance as $team)
                 <tr>
                     <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
                         <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ Str::headline($team->team)}}</span>
@@ -53,7 +53,7 @@
                             <div class="alert alert-warning">No Data</div>
                         </td>
                     </tr>
-                @endif
+                @endif --}}
             </tbody>
         </table>
     </div>

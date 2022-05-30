@@ -16,7 +16,7 @@
                         <!--begin: Pic-->
                         <div class="flex-shrink-0 mr-7 mt-lg-0 mt-3">
                             <div class="symbol symbol-50 symbol-lg-120 symbol-primary">
-                                <img src="{{ getImagesPath('Users', $user->image) }}" alt="image" />
+                                <img class="profile-image" src="{{ getImagesPath('Users', $user->image) }}" alt="image" />
                             </div>
                             <div class="symbol symbol-50 symbol-lg-120 symbol-primary d-none">
                                 <span class="font-size-h3 symbol-label font-weight-boldest">JM</span>

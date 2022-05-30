@@ -96,6 +96,7 @@
             placeholder: "Select Option",
         });
     var route = "{{ route('admin.users.index') }}";
+    var publishers = "{{ route('admin.publisher.profile') }}";
 </script>
 
 <script src="{{asset('js/datatables/users.js')}}"></script>

@@ -209,7 +209,7 @@ class OfferController extends Controller
             
         ])->first();
 
-        userActivity('Offer', $offer->id, 'create');
+        // userActivity('Offer', $offer->id, 'view');
         return view('admin.offers.show', ['offer' => $offer, 'offerRequest' => $offerRequest]);
     }
 

@@ -24,6 +24,7 @@ class ChatController extends Controller
             ->leftJoin('chats', 'users.id', 'chats.receiver_id')
             ->orderBy('chats.created_at', 'desc')
             ->groupBy('users.id')
+            ->where('position', '!=', 'publisher')
             ->get();
 
         return view('admin.chat', [

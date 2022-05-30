@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\OfferRequest;
+use App\Models\User;
 use App\Models\UserActivity;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -323,6 +324,42 @@ if(!function_exists('unSeenMessages')) {
             ['seen', '=',false],
         ])->count();
         return $unSeenMessagesCount;
+    }
+}
+
+if(!function_exists('marketersHubPublisherInfo')) {
+    function marketersHubPublisherInfo()
+    {
+        $marketersHubPublisherInfo = User::whereEmail('info@marketeershub.com')->first();
+        return $marketersHubPublisherInfo;
+    }
+}
+
+if(!function_exists('userChildrens')) {
+    function userChildrens($user = null, $childrens = [], bool $provideMyId = true)
+    {
+        $user = ($user == null) ? auth()->user() : $user;
+
+        $index = 0;
+        if($user->childrens->count() > 0)
+        {
+            while ( $index < $user->childrens->count() )
+            {
+                $childrens[] = $user->childrens[$index]['id'];
+                userChildrens( $user->childrens[$index]) ?  $childrens = array_merge($childrens, userChildrens( $user->childrens[$index])) : '';
+                $index++;
+            }
+        }else
+        {
+            return [];
+        }
+
+
+        if($provideMyId){
+            array_push($childrens, auth()->user()->id);
+        }
+        
+        return $childrens;
     }
 }
 

@@ -140,7 +140,7 @@
                                                                     <b>{{ $offer->name }}</b> name or any of its variations in pop-ups and pop-unders, as the name of your newsletter, in retargeting campaigns, in your app push notifications ads, or in wrong or misleading messages.
                                                                 </li>
                                                                 <li>You may not use methods such as cookie stuffing.</li>
-                                                                <li>ou may not promote
+                                                                <li>You may not promote
                                                                     <b>{{ $offer->name }}</b> in any sexually explicit materials, violent materials, libelous or defamatory materials, or any illegal activities.
                                                                 </li>
                                                                 <li>You may not promote

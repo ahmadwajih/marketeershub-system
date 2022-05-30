@@ -170,7 +170,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                 template: function(row) {
                     return '\
                         <div class="dropdown dropdown-inline">\
-                            <a href="' + route + '/' + row.id  + '" class="btn btn-sm btn-clean btn-icon" title="Show">\
+                            <a href="' + publishers + '/' + row.id  + '" class="btn btn-sm btn-clean btn-icon" title="Show">\
                              \<i class="flaticon-eye"></i>\
                             </a>\
                         </div>\

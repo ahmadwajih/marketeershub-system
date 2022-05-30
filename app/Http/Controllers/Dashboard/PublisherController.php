@@ -18,11 +18,13 @@ use App\Models\Payment;
 use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
+use App\Models\Coupon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Matrix\Exception;
@@ -125,9 +127,9 @@ class PublisherController extends Controller
                         $query->where('users.team', auth()->user()->team);
                     });
                 } else {
-                    $data = $data = $publishers->groupBy('users.id');
+                    $data = $publishers->groupBy('users.id');
                 }
-
+                // return $data;
                 return DataTables::of($data)
                     ->addIndexColumn()
                     ->editColumn('parent_id', function ($row) {
@@ -143,7 +145,7 @@ class PublisherController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
             } catch (Exception $exception) {
-                dd($exception->getMessage());
+                Log::error($exception->getMessage());
             }
         }
 
@@ -314,7 +316,9 @@ class PublisherController extends Controller
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
         ]);
-        $data['traffic_sources'] = implode(",",$request->traffic_sources);
+        if($request->traffic_sources){
+            $data['traffic_sources'] = implode(",",$request->traffic_sources);
+        }
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
         unset($data['social_media']);
@@ -428,6 +432,9 @@ class PublisherController extends Controller
         }
         $accountManagers = User::where('position', 'account_manager')->get();
         $publisher = User::findOrFail($id);
+        if($publisher->position != 'publisher'){
+            return redirect()->route('admin.users.edit', $id);
+        }
         $publisher->traffic_sources = explode(',', $publisher->traffic_sources);
 
         return view('admin.publishers.edit', [
@@ -460,7 +467,7 @@ class PublisherController extends Controller
             'name'                      => 'required|max:255',
             'email'                     => 'required|max:255|unique:users,email,'.$id,
             'phone'                     => 'required|max:255|unique:users,phone,'.$id,
-            // 'password'                  => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password'                  => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'country_id'                => 'required|exists:countries,id',
             'city_id'                   => 'required|exists:cities,id',
             'gender'                    => 'required|in:male,female',
@@ -483,8 +490,9 @@ class PublisherController extends Controller
             'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
-
-        $data['traffic_sources'] = implode(",",$request->traffic_sources);
+        if($request->traffic_sources){
+            $data['traffic_sources'] = implode(",",$request->traffic_sources);
+        }
         unset($data['password']);
         unset($data['social_media']);
         unset($data['categories']);
@@ -636,6 +644,8 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
     public function profile(Request $request, int $id = null)
     {
        
@@ -645,13 +655,17 @@ class PublisherController extends Controller
         ]);
         $userId = ($id == null) ? auth()->user()->id : $id;
         $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
-        $childrens = $publisher->childrens()->pluck('id')->toArray();
+        
+        $childrens = userChildrens($publisher);
+        
+        // $childrens = userChildrens($id) ?? [0=>0];
+        // $childrens = $publisher->childrens()->pluck('id')->toArray();
         array_push($childrens, $userId);
-
+        // dd($childrens);
         // Chaeck if login user team and check publisher team to make sure there is in the same team
         if(isset($id) && in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
             if(auth()->user()->team == $publisher->team){
-                if(!in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
+                if(!in_array($id, userChildrens())){
                     abort(401);
                 }
             }else{
@@ -661,8 +675,8 @@ class PublisherController extends Controller
       
 
         $startDate = Carbon::now(); //returns current day
-        $firstDay = $startDate->firstOfMonth();
-        $lastDay = $startDate->lastOfMonth();
+        $firstDay = $startDate->firstOfMonth()->format('Y-m-d');
+        $lastDay = $startDate->lastOfMonth()->format('Y-m-d');
         // Date 
         $where = [
             ['pivot_reports.date', '>=', $firstDay],
@@ -674,6 +688,7 @@ class PublisherController extends Controller
             $where[1] = ['pivot_reports.date', '<=', $request->to];
         }
 
+        
         $offers = Offer::whereHas('coupons', function($q) use($childrens) {
             $q->whereIn('user_id', $childrens);
         })->with(['users' => function($q) use($childrens){
@@ -693,8 +708,9 @@ class PublisherController extends Controller
                 'offers.name_en as offer_name',
                 'offers.status as offer_status',
                 'offers.thumbnail as thumbnail',
-                'offers.description_en as description',
+                // 'offers.description_en as description',
                 'pivot_reports.date as date',
+                DB::raw('COUNT(coupons.id) as coupons')
             )
             ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
             ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
@@ -791,9 +807,13 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         if($request->team == 'affiliate'){
-            Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
+            Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+            // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
+
         }
         if($request->team == 'influencer'){
+            // Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
+
             Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
         }
 

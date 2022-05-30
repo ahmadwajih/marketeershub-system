@@ -58,7 +58,7 @@ $i = 1;
                         <ul class="nav nav-tabs" style="margin-top: -41px;">
                             @foreach($tabNavs as $nav)
                                 <li class="nav-item">
-                                    <a class="nav-link @if($i === 3) active @endif" id="db-tabnav-{{$i}}" data-toggle="tab" href="#{{ $nav['id']  }}">
+                                    <a class="nav-link @if($i === 2) active @endif" id="db-tabnav-{{$i}}" data-toggle="tab" href="#{{ $nav['id']  }}">
                                 <span class="nav-icon">
                                     <i class="{{ $nav['icon']  }}"></i>
                                 </span> <span class="nav-text">{{ $nav['label']  }}</span> </a>

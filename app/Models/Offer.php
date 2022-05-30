@@ -135,5 +135,7 @@ class Offer extends Model
         return $this->hasOne(SallaInfo::class);
     }
 
-
+    public function authUserCoupons(){
+        return $this->coupons();
+    }
 }

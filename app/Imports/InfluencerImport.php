@@ -17,7 +17,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-
 class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $team;
@@ -84,10 +83,10 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                 $publisher = User::updateOrCreate(
                     ['email' => $col[3]],
                     [
-                        'ho_id' => $col[0],
+                        'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
                         'name' => $col[1],
                         'phone' => $col[2],
-                        'password' => Hash::make('12345678'),
+                        'password' => Hash::make('00000000'),
                         'parent_id' => $this->accouManagerId,
                         'gender' => $col[5] ?? 'male',
                         'status' => $this->status,
@@ -172,6 +171,11 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                         'followers' => $col[28] ?? 0,
                     ]);
                 }
+
+                $this->countryId = null;
+                $this->cityId = null;
+                $this->accouManagerId = null;
+                $this->currrencyId = null;
                 
             }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\PivotReportExport;
 use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Jobs\UpdateUsersPassword;
@@ -28,6 +29,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
@@ -41,8 +44,8 @@ class DashboardController extends Controller
         // Team Performance data 
         $teamPerformance  = DB::table('pivot_reports')
         ->select(
-                DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
-                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+                DB::raw('pivot_reports.orders as orders'), 
+                DB::raw('pivot_reports.revenue as revenue'),
                 'pivot_reports.date as date',
                 'users.team as team',
             )
@@ -52,12 +55,6 @@ class DashboardController extends Controller
             ->groupBy('team', 'date')
             ->having('orders', '>', 0)
             ->get();
-
-            // dd(publisherPerformanceBasedOnTeam('affiliate')->groupBy('user'));
-            foreach(publisherPerformanceBasedOnTeam('affiliate')->groupBy('user') as $pub){
-                // dd($pub->first());
-            }
-        
 
         return view('admin.index', [
             'offers' => $offers,
@@ -252,35 +249,126 @@ class DashboardController extends Controller
 
     }
     
-    public function test(Request $request){
+    public function test(Request $request)
+    {
         
+
+        $id = 7807;
         $request->validate([
-            "object" => 'required|max:255',
-            "object_id" => 'required|numeric',
-            "user_id" => 'required|numeric',
-            "activity_id" => 'required|numeric',
-            "keys" => 'required|array',
-            "values" => 'required|array',
-            "keys.*" => 'required',
-            "values.*" => 'required',
+            'from' => "nullable|before:to",
+            'to' => "nullable|after:from",
         ]);
-        $user = User::findOrFail($request->user_id);
+        $userId = ($id == null) ? auth()->user()->id : $id;
+        $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
         
-        $model = "App\Models\\".$request->object;
-        $object = $model::findOrFail($request->object_id);
-       
-        $data = [];
-        foreach($request->keys as $index => $key){
-            $data[$key] = $request->values[$index];
+        $childrens = userChildrens($publisher);
+        // $childrens = userChildrens($id) ?? [0=>0];
+        // $childrens = $publisher->childrens()->pluck('id')->toArray();
+        array_push($childrens, $userId);
+        // dd($childrens);
+        
+        // Chaeck if login user team and check publisher team to make sure there is in the same team
+        if(isset($id) && in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+            if(auth()->user()->team == $publisher->team){
+                if(!in_array($id, userChildrens())){
+                    abort(401);
+                }
+            }else{
+                abort(401);
+            }
         }
-        $object->update($data);
+      
 
-        $activity = UserActivity::findOrFail($request->activity_id);
-        $activity->approved = true;
-        $activity->approved_by = auth()->user()->id;
-        $activity->save();
-        return redirect()->back();
+        $startDate = Carbon::now(); //returns current day
+        $firstDay = $startDate->firstOfMonth()->format('Y-m-d');
+        $lastDay = $startDate->lastOfMonth()->format('Y-m-d');
+        // Date 
+        $where = [
+            ['pivot_reports.date', '>=', $firstDay],
+            ['pivot_reports.date', '<=', $lastDay]
+        ];
 
+        if(isset($request->from) && $request->from != null && isset($request->to) && $request->to != null){
+            $where[0] = ['pivot_reports.date', '>=', $request->from];
+            $where[1] = ['pivot_reports.date', '<=', $request->to];
+        }
+
+        
+        $offers = Offer::whereHas('coupons', function($q) use($childrens) {
+            $q->whereIn('user_id', $childrens);
+        })->with(['users' => function($q) use($childrens){
+            $q->whereIn('users.id', $childrens);
+        },
+        'coupons' => function($q) use($childrens){
+            $q->whereIn('coupons.user_id', $childrens);
+        }])->get();
+
+
+        $activeOffers = DB::table('pivot_reports')
+        ->select(
+                DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
+                DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+                'offers.id as offer_id',
+                'offers.name_en as offer_name',
+                'offers.status as offer_status',
+                'offers.thumbnail as thumbnail',
+                // 'offers.description_en as description',
+                'pivot_reports.date as date',
+                DB::raw('COUNT(coupons.id) as coupons')
+            )
+            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->whereIn('coupons.user_id', $childrens)
+            ->where($where)
+            ->orderBy('date',  'DESC')
+            ->groupBy('offer_name', 'date')
+            ->get();
+        
+            $totalNumbers = DB::table('pivot_reports')
+            ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'))
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->whereIn('coupons.user_id', $childrens)
+            ->where($where)
+            ->orderBy('date',  'DESC')
+            ->groupBy('date')
+            ->first();
+            
+        return view('admin.publishers.profile', [
+            'publisher' => $publisher,
+            'offers' => $offers,
+            'activeOffers' => $activeOffers->groupBy('date')->first(), 
+            'totalNumbers' => $totalNumbers
+        ]);
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $reports = PivotReport::where('date', '2022-05-25')->get();
+        // return Excel::download(new PivotReportExport, 'report.csv');
+
+        return view('admin.test', ['reports' => $reports]);
     }
+
 }
 

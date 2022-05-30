@@ -76,24 +76,28 @@
                                 <li class="text-dark-50">{{ __('Name') }} : <strong class="text-dark">{{$offer->name}}</strong></li>
                                 <li class="text-dark-50">{{ __('Advertiser') }} : <strong class="text-dark">{{$offer->advertiser?$offer->advertiser->company_name:''}}</strong></li>
                                 <li class="text-dark-50">{{ __('Description') }} : <strong class="text-dark">{{$offer->description}}</strong></li>
-                                <li class="text-dark-50">{{ __('Website') }} : <a href="{{$offer->website}}"><strong class="text-dark">{{ $offer->website}}</strong></a></li>
-                                <li class="text-dark-50">{{ __('Offer URL') }} : <a href="{{$offer->offer_url}}"><strong class="text-dark">{{ $offer->offer_url}}</strong></a></li>
+                                @if($offer->website)<li class="text-dark-50">{{ __('Website') }} : <a href="{{$offer->website}}"><strong class="text-dark">{{ $offer->website}}</strong></a></li>@endif
+                                @if($offer->offer_url)<li class="text-dark-50">{{ __('Offer URL') }} : <a href="{{$offer->offer_url}}"><strong class="text-dark">{{ $offer->offer_url}}</strong></a></li>@endif
+                                @if($offer->categories->count() > 0)
                                 <li class="text-dark-50">{{ __('Category') }} : 
                                     @foreach($offer->categories as $category)
                                         <span class="badge badge-light m-1">{{ $category->title }}</span>
                                     @endforeach
                                 </li>
+                                @endif
+                                @if($offer->countries->count() > 0)
                                 <li class="text-dark-50">{{ __('Country') }} : 
                                     @foreach($offer->countries as $country)
                                         <span class="badge badge-light m-1">{{ $country->name }}</span>
                                     @endforeach
                                 </li>
-                                <li class="text-dark-50">{{ __('Payout Type') }} : <strong class="text-dark">{{$offer->payout_type}}</strong></li>
-                                <li class="text-dark-50">{{ __('Payout Default') }} : <strong class="text-dark">{{$offer->default_payout}}</strong></li>
-                                <li class="text-dark-50">{{ __('Expire Date') }} : <strong class="text-dark">{{$offer->expire_date}}</strong></li>
-                                <li class="text-dark-50">{{ __('Status') }} : <strong class="text-dark">{{$offer->status}}</strong></li>
-                                <li class="text-dark-50">{{ __('Note') }} :  <strong class="text-dark">{{$offer->note}}</strong></li>
-                                <li class="text-dark-50">{{ __('Terms And Conditions') }} :{{$offer->terms_and_conditions}}</li></li>
+                                @endif
+                                @if($offer->payout_type)<li class="text-dark-50">{{ __('Payout Type') }} : <strong class="text-dark">{{$offer->payout_type}}</strong></li>@endif
+                                @if($offer->default_payout)<li class="text-dark-50">{{ __('Payout Default') }} : <strong class="text-dark">{{$offer->default_payout}}</strong></li>@endif
+                                @if($offer->expire_date)<li class="text-dark-50">{{ __('Expire Date') }} : <strong class="text-dark">{{$offer->expire_date}}</strong></li>@endif
+                                @if($offer->status)<li class="text-dark-50">{{ __('Status') }} : <strong class="text-dark">{{$offer->status}}</strong></li>@endif
+                                @if($offer->note)<li class="text-dark-50">{{ __('Note') }} :  <strong class="text-dark">{{$offer->note}}</strong></li>@endif
+                                @if($offer->terms_and_conditions)<li class="text-dark-50">{{ __('Terms And Conditions') }} :{{$offer->terms_and_conditions}}</li></li>@endif
                             </ul>
                         <!--begin::Form-->
                         <!--end::Form-->

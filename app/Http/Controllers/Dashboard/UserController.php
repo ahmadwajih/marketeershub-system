@@ -21,9 +21,17 @@ class UserController extends Controller
     {
         $this->authorize('view_users');
         if ($request->ajax()){
-            $users = getModelData('User' , $request, ['parent','country'], array(
-                ['position', '!=', 'publisher']
-            ));
+            if(auth()->user()->position == 'super_admin'){
+                $users = getModelData('User' , $request, ['parent','country'], array(
+                    ['position', '!=', 'publisher']
+                ));
+            }else{
+                $users = getModelData('User' , $request, ['parent','country'], array(
+                    ['position', '!=', 'publisher'],
+                    ['parent_id', '=', auth()->user()->id],
+                ));
+            }
+            
             return response()->json($users);
         }
         return view('admin.users.index');
@@ -118,7 +126,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if($user->id != auth()->user()->id || !in_array($user->id, auth()->user()->childrens()->pluck('id')->toArray())){
+        if(!in_array($user->id, userChildrens())){
             $this->authorize('update_users');
         }
   
@@ -140,9 +148,11 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $this->authorize('update_users');
+        if(!in_array($user->id, userChildrens())){
+            $this->authorize('update_users');
+        }
         $data = $request->validate([
-            'ho_id'                 => 'nullable|max:255|unique:users,ho_id,'.$user->id,
+            'ho_id'                 => 'nullable|max:255',
             'parent_id'             => 'nullable|exists:users,id|nullable',
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,

@@ -22,8 +22,8 @@
                         <!--begin::User-->
                         <div class="topbar-item">
                             <div class="topbar-item" data-toggle="dropdown">
-                                <div class="btn btn-icon btn-clean btn-dropdown btn-lg">
-                                    <img class="h-45px w-45px rounded-sm"   src="{{ getImagesPath('Users', Auth::guard('web')->user()->image) }}" alt="" />
+                                <div class="">
+                                    <img class="h-45px w-45px rounded-sm profile-image" src="{{ getImagesPath('Users', Auth::guard('web')->user()->image) }}" alt="" />
                                 </div>
                             </div>
                         </div>
