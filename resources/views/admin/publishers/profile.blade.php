@@ -13,7 +13,7 @@
 @endpush
 @section('content')
 
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid">
         <!--begin::Entry-->
         <div class="d-flex flex-column-fluid">
             <!--begin::Container-->
@@ -21,6 +21,9 @@
                 <!--begin::Card-->
                 <div class="card card-custom gutter-b">
                     <div class="card-body">
+                        @if(session()->has('message'))
+                            @include('admin.temps.success')
+                        @endif
                         <!--begin::Details-->
                         <div class="d-flex mb-9">
                             <!--begin: Pic-->
@@ -99,6 +102,9 @@
                                     </div>
                                     <div class="">
                                         <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-success">{{ __('Edit Profile') }}</a>
+                                        @if($publisher->parent_id == null)
+                                            <button class='btn  btn-warning' onclick='assignToMe({{ $publisher->id }})'>{{  __('Assign To Me') }}</button>
+                                        @endif
                                     </div>
                                 </div>
                                 <!--end::Content-->
@@ -259,10 +265,11 @@
                     </div>
                 </div>
                 <!--end::Card-->
-
+             
                 <!--begin::Profile 4-->
                 <div class="d-flex flex-row">
                     <!--begin::Content-->
+                    
                     <div class="flex-row-fluid ">
                         <!--begin::Row-->
                         <div class="row">
@@ -629,5 +636,65 @@
 
 @endsection
 @push('scripts')
+<script>
+    // $(document).ready(function () {
+        function assignToMe(affiliateId) {
+            console.log('start')
+            var assignToMe = $(this);
+            // var affiliateId = $(this).data('affiliate');
+            Swal.fire({
+                title: "{{ __('Are you sure?') }}",
+                text: '{{ "You won`t be able to revert this!" }}',
+                icon: 'warning',
+                @if(auth()->user()->position == 'head' || auth()->user()->position == 'super_admin')
+                input: 'select',
+                inputPlaceholder: 'Select Account Manager',
+                inputOptions: {
+                    @foreach(App\Models\User::where('position', 'account_manager')->pluck('name', 'id')->toArray() as $key => $accountManager)
+                        "{{ $key }}" : "{{ $accountManager }}",
+                    @endforeach
+                },
+                @endif
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#dd3333',
+                confirmButtonText: '{{ __("Yes, assign!") }}'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method: 'post',
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        url: "{{ route('admin.publishers.updateAccountManager') }}",
+                        data: {
+                            affiliateId: affiliateId, 
+                            accountManagerId:result.value
+                        },
+                        error: function (err) {
+                            if (err.hasOwnProperty('responseJSON')) {
+                                if (err.responseJSON.hasOwnProperty('message')) {
+                                    swal.fire({
+                                        title: "Error !",
+                                        text: err.responseJSON.message,
+                                        confirmButtonText: "Ok",
+                                        icon: "error",
+                                        confirmButtonClass: "btn font-weight-bold btn-primary",
+                                    });
+                                }
+                            }
+                            console.log(err);
+                        }
+                    }).done(function (res) {
+                        console.log(res)
+                        assignToMe.parent().html('<span class="btn btn-success">{{ __("Done") }}</span>');
+                        Swal.fire(
+                            '{{ __("Assigned Successfully!") }}',
+                            'success'
+                        )
+                    });
 
+                }
+            })
+        }
+    // })
+</script>
 @endpush

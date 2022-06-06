@@ -757,66 +757,18 @@
                         @if(unSeenMessages()  > 0)<span class="label label-sm label-danger mt-1"> {{ unSeenMessages()  }}</span> @endif
                     </a>
                 </li>
-   
-                {{-- Start Currencies --}}
-                {{-- <li class="menu-item menu-item-submenu  {{ Request::segment(2)=='currencies'?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
-                    <a href="javascript:;" class="menu-link menu-toggle">
-                        <span class="svg-icon menu-icon">
-                          <i class="fas fa-dollar-sign"></i>
-                        </span>
-                        <span class="menu-text">العملات</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="menu-submenu">
-                        <i class="menu-arrow"></i>
-                        <ul class="menu-subnav">
-                            <li class="menu-item menu-item-parent" aria-haspopup="true">
-                                <span class="menu-link">
-                                    <span class="menu-text">العملات</span>
-                                </span>
-                            </li>
-                            @can('view_currencies')
-                            <li class="menu-item {{ Request::segment(2)=='currencies'&&Request::segment(3)!='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.currencies.index')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">عرض جميع العملات</span>
-       
-                                </a>
-                            </li>
-                            @endcan
-                            @can('create_currencies')
-                            <li class="menu-item {{ Request::segment(2)=='currencies'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.currencies.create')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">إضافة عملة جديد</span>
-                                    
-                    
-                                        
-                                </a>
-                            </li>
-                            @endcan
 
-                        </ul>
-                    </div>
-                </li> --}}
-                {{--  End Currencies --}}
-
-             
-                {{-- <li class="menu-item  {{ Request::segment(2)=='settings'?'menu-item-active':'' }}" aria-haspopup="true">
-                    <a href="{{route('admin.settings.edit',1)}}" class="menu-link">
+                @can('view_helps')
+                <li class="menu-item {{ Request::segment(2)=='helps'?'menu-item-active':'' }}" aria-haspopup="true">
+                    <a href="{{route('admin.helps.index')}}" class="menu-link">
                         <span class="svg-icon menu-icon">
-                          <span class="svg-icon menu-icon">
-								<i class="flaticon-settings-1"></i>
-                        </span>
-                        <span class="menu-text">الاعدادات</span>
-                        </span>
+                            <i class="fas fa-question-circle"></i>
+                      </span>
+                        <span class="menu-text">{{ __('Help & Support') }}</span>
                     </a>
-                </li> --}}
-         
+                </li>
+                @endcan
+                
                 <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
                     <a onclick="document.getElementById('logout-form').submit();" href="javascript:" class="menu-link menu-toggle">
                 	<span class="svg-icon menu-icon">

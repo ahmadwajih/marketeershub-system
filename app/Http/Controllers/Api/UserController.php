@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Role;
+use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -17,10 +18,10 @@ class UserController extends Controller
 
     public function registerAdvertiser(Request $request)
     {
-        
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'full_name'             => 'required|string',
-            'mobile'                => 'required|numeric',
+            'mobile'                => 'required',
             'email'                 => 'required|email|unique:advertisers,email',
             'country'               => 'required|string',
             'city'                  => 'required|string',
@@ -32,11 +33,6 @@ class UserController extends Controller
             'business_full_name'    => 'required|string',
             'business_mobile'       => 'required|string',
             'business_industry'     => 'required|string',
-            'bank_country'          => 'required|string',
-            'bank_address'          => 'required|string',
-            'bank_account_title'    => 'required|string',
-            'bank_swift'            => 'required|string',
-            'iban'                  => 'required|string',
         ]);
 
         $response = [];
@@ -47,6 +43,7 @@ class UserController extends Controller
             $response['success']  = false;
             return response()->json($response, 422);
         }
+
         $data = [
             'name'                  => $request->full_name,
             'phone'                 => $request->mobile,
@@ -54,22 +51,16 @@ class UserController extends Controller
             'company_name_ar'       => $request->company,
             'company_name_en'       => $request->company,
             'website'               => $request->website,
-            'country_id'            => getCountryId($request->country) ,
-            'bank_country_id'       => getCountryId($request->bank_country) ,
             'city_id'               => getCityId($request->city)??null,
+            'country_id'            => getCountryId($request->country)??null,
             'account_manager'       => $request->account_manager,
             'orders_avg_monthly'    => $request->orders_avg_monthly,
             'orders_avg_size'       => $request->orders_avg_size,
             'business_full_name'    => $request->business_full_name,
             'business_mobile'       => $request->business_mobile,
-            'business_industry'     => $request->business_industry,
-            'bank_country'          => $request->bank_country,
-            'bank_address'          => $request->bank_address,
-            'bank_account_title'    => $request->bank_account_title,
-            'bank_swift'            => $request->bank_swift,
-            'iban'                  => $request->iban,
+            'business_industry'     => $request->business_industry
         ];
-
+        // return $data;
         $advertiser = Advertiser::create($data);
         if(getCategoryId($request->business_industry)){
             $advertiser->categories()->attach(getCategoryId($request->business_industry));
@@ -154,7 +145,6 @@ class UserController extends Controller
 
     public function registerInfluencer(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'full_name'             => 'required|string',
             'mobile'                => 'required|string',
@@ -164,7 +154,6 @@ class UserController extends Controller
             'nationality'           => 'required|string',
             'content_category'      => 'required|string',
             'account_manager'       => 'required|string',
-            'digital_platforms'     => 'required|string',
             'bank_country'          => 'required|string',
             'bank_address'          => 'required|string',
             'bank_account_title'    => 'required|string',
@@ -172,6 +161,7 @@ class UserController extends Controller
             'currency'              => 'required|string',
             'iban'                  => 'required|string',
         ]);
+       
 
         $response = [];
 
@@ -190,7 +180,6 @@ class UserController extends Controller
             'gender'                    => $request->gender ? $request->gender : 'male',
             'nationality'               => $request->nationality,
             'referral_account_manager'  => $request->account_manager,
-            'digital_platforms'         => $request->digital_platforms,
             'owened_digital_assets'     => $request->digital_assets,
             'account_title'             => $request->bank_account_title,
             'bank_name'                 => $request->bank_name,
@@ -204,10 +193,30 @@ class UserController extends Controller
         ];
 
         $user = User::create($data);
+
         $user->roles()->attach(Role::findOrFail(4));
         if(getCategoryId($request->content_category)){
             $user->categories()->attach(getCategoryId($request->content_category));
         }
+
+        if($request->digital_platforms && count($request->digital_platforms) > 0){
+            foreach($request->digital_platforms as $link){
+                if(!is_null($link['link'])){
+                    SocialMediaLink::create([
+                        'link' => $link['link'],
+                        'platform' => $link['platform'],
+                        'followers' => $link['follower'],
+                        'viewers' => $link['viewer'] ?? 0,
+                        'user_id' => $user->id,
+                    ]);
+                }
+                
+            }
+
+        }
+        
+
+
         $response['success']  = true;
 
         return response()->json($response);

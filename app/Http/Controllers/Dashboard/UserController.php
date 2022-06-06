@@ -19,6 +19,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+
         $this->authorize('view_users');
         if ($request->ajax()){
             if(auth()->user()->position == 'super_admin'){
@@ -126,7 +127,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if(!in_array($user->id, userChildrens())){
+        $childrens = userChildrens();
+        $childrens[] =  auth()->user()->id;
+        
+        if(!in_array($user->id, $childrens)){
             $this->authorize('update_users');
         }
   
@@ -148,7 +152,10 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if(!in_array($user->id, userChildrens())){
+        $childrens = userChildrens();
+        $childrens[] =  auth()->user()->id;
+        
+        if(!in_array($user->id, $childrens)){
             $this->authorize('update_users');
         }
         $data = $request->validate([

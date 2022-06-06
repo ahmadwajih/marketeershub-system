@@ -23,7 +23,7 @@
                         <div class="topbar-item">
                             <div class="topbar-item" data-toggle="dropdown">
                                 <div class="">
-                                    <img class="h-45px w-45px rounded-sm profile-image" src="{{ getImagesPath('Users', Auth::guard('web')->user()->image) }}" alt="" />
+                                    <img class="h-45px w-45px rounded-sm" src="{{ getImagesPath('Users', Auth::guard('web')->user()->image) }}" alt="" />
                                 </div>
                             </div>
                         </div>

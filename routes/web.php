@@ -84,6 +84,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
 
+        Route::resource('helps', HelpController::class);
+        Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');
+        Route::post('helps-search', 'HelpController@search')->name('helps.search');
+
         
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);
@@ -128,5 +132,3 @@ Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.']
 
 Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
 Route::get('test', 'Dashboard\DashboardController@test')->name("test");
-
-

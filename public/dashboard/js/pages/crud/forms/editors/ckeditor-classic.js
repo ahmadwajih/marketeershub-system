@@ -41,7 +41,11 @@ var KTCkeditor = function () {
 			} );
 
 		ClassicEditor
-			.create( document.querySelector( '#kt-ckeditor-5' ) )
+			.create( document.querySelector( '#kt-ckeditor-5' ) , {
+				ckfinder: {
+					uploadUrl: '/admin/helps-upload-image?command=&QuickUploadtype=Files&responseType=json'
+				}
+			} )
 			.then( editor => {
 				console.log( editor );
 			} )

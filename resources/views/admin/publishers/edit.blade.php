@@ -20,7 +20,9 @@
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
         <div class="container">
-
+            @if(session()->has('message'))
+                @include('admin.temps.success')
+            @endif
             <!--begin::Card-->
             <div class="row">
                 <div class="col-lg-12">

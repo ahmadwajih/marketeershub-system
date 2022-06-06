@@ -32,7 +32,8 @@ class AbilitySeeder extends Seeder
             // 'offer_requests',
             // 'user_activities',
             // 'targets',
-            'payments'
+            // 'payments',
+            'helps',
         ];
 
         $names = 

@@ -19,6 +19,7 @@ use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
 use App\Models\Coupon;
+use App\Notifications\PublisherNeedToUpdateHisInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Matrix\Exception;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Notification;
 
 class PublisherController extends Controller
 {
@@ -88,6 +90,7 @@ class PublisherController extends Controller
                     'users.ho_id',
                     'users.name',
                     'users.email',
+                    'users.team',
                     DB::raw('COUNT(offer_user.offer_id) AS offersCount'),
                     'users.category',
                     'users.phone',
@@ -292,7 +295,7 @@ class PublisherController extends Controller
             'name'                      => 'required|max:255',
             'email'                     => 'required|unique:users|max:255',
             'phone'                     => 'required|unique:users|max:255',
-            // 'password'                  => ['required','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password'                  => ['required','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'required|exists:countries,id',
             'city_id'                   => 'required|exists:cities,id',
@@ -302,17 +305,17 @@ class PublisherController extends Controller
             'skype'                     => 'nullable|max:255',
             'address'                   => 'nullable|max:255',
             'category'                  => 'nullable|max:255',
-            'years_of_experience'       => 'required_if:team,affiliate|nullable|numeric',
+            'years_of_experience'       => 'nullable|numeric',
             // 'traffic_sources'           => 'required_if:team,affiliate|max:255',
             'affiliate_networks'        => 'required_if:team,affiliate|max:255',
             // 'digital_asset'            => 'required_if:team,affiliate|max:255',
             'referral_account_manager'  => 'nullable|max:255',
-            'account_title'             => 'required|max:255',
-            'bank_name'                 => 'required|max:255',
-            'bank_branch_code'          => 'required|max:255',
-            'swift_code'                => 'required|max:255',
-            'iban'                      => 'required|max:255',
-            'currency_id'               => 'required|exists:currencies,id',
+            'account_title'             => 'nullable|max:255',
+            'bank_name'                 => 'nullable|max:255',
+            'bank_branch_code'          => 'nullable|max:255',
+            'swift_code'                => 'nullable|max:255',
+            'iban'                      => 'nullable|max:255',
+            'currency_id'               => 'nullable|exists:currencies,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
         ]);
@@ -524,8 +527,29 @@ class PublisherController extends Controller
         if(auth()->user()->position == 'account_manager' || auth()->user()->position == 'publisher'){
             userActivity('User', $publisher->id, 'update', $data, $publisher, null, false);
             $message = 'A request to update the data has been sent to your direct head';
+            // Check if publisher have AM
+            if($publisher->parent_id != null){
+                // Get AM
+                $accountManager = User::where('id', $publisher->parent_id)->first();
+                // Check if AM exists 
+                if($accountManager){
+                    // Send notification to AM
+                     Notification::send($accountManager, new PublisherNeedToUpdateHisInfo($publisher));
+                     // Check if AM has head
+                     if($accountManager->parent_id != null){
+                         // Get Head Info
+                        $head = User::where('id', $accountManager->parent_id)->first();
+                        // Check if head exists
+                        if($head){
+                            // Send notification to head
+                            Notification::send($head, new PublisherNeedToUpdateHisInfo($publisher));
+                        }
+                     }  
+                }
+            }
 
         }else{
+            $message = __('Data updated successfully');
             userActivity('User', $publisher->id, 'update', $data, $publisher);
             $publisher->update($data);
         }
@@ -585,9 +609,9 @@ class PublisherController extends Controller
             'alert-type' => 'success'
         ];
         if(auth()->user()->id == $id){
-            return redirect()->route('admin.publisher.profile');
+            return redirect()->route('admin.publisher.profile')->with($notification);
         }
-        return redirect()->route('admin.publishers.index');
+        return redirect()->route('admin.publishers.index')->with($notification);
     }
 
     /**
@@ -665,7 +689,7 @@ class PublisherController extends Controller
         // Chaeck if login user team and check publisher team to make sure there is in the same team
         if(isset($id) && in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
             if(auth()->user()->team == $publisher->team){
-                if(!in_array($id, userChildrens())){
+                if(!in_array($id, userChildrens()) && $publisher->parent_id != null){
                     abort(401);
                 }
             }else{

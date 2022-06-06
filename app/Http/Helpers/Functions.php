@@ -241,7 +241,7 @@ if(!function_exists('getCountryId')){
 }
 
 if(!function_exists('getCategoryId')){
-    function getCategoryId($categoryName):int
+    function getCategoryId($categoryName)
     {
         $category = Category::where('title_en', 'like', '%'.$categoryName.'%')->orWhere('title_ar', 'like', '%'.$categoryName.'%')->first();
         if($category){

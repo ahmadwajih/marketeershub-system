@@ -25,7 +25,8 @@ class RoleController extends Controller
         'currencies',
         'user_activities',
         'targets',
-        'payments'
+        'payments',
+        'helps'
     ];
     /**
      * Display a listing of the resource.

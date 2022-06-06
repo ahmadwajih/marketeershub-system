@@ -11,6 +11,7 @@
         ['label' => __('P_ID'), 'data'=> 'parent_id', 'disabled'=> false, 'checked' => true, 'bSearchable' => true],
         ['label' => __('Name'),'data'=> 'name', 'disabled'=> true, 'checked' => true, 'bSearchable' => true],
         ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true, 'checked' => true, 'disabled'=> true,],
+        ['label' => __('Team'),'data'=> 'team', 'bSearchable' => true, 'checked' => true, 'disabled'=> true,],
         // ['label' => __('SM Platform'), 'data'=> 'sm_platform',  'checked' => true, 'bSearchable' => false],
         ['label' => __('Account Manager'),'data'=> 'parent_id',  'checked' => true, 'bSearchable' => true],
         ['label' => __('Offers'), 'data'=> 'offersCount', 'checked' => true,'bSearchable' => true, 'bSearchable' => false],
