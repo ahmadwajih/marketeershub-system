@@ -55,7 +55,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-12">
                                                 <label>* {{ __('Content') }} :</label>
-                                                <textarea  id="kt-ckeditor-1" name="content">{!! old('content') ?? $help->content !!}</textarea >
+                                                    <textarea class="summernote" id="kt_summernote_1" name="content">{!! old('content') ?? $help->content !!}</textarea>
                                                 @if ($errors->has('content'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('content') }}</p>
@@ -89,15 +89,30 @@
 
 @push('scripts')
 
-    {{-- <script src="{{ asset('dashboard') }}/plugins/custom/ckeditor/ckeditor-classic.bundle.js?v=7.2.9"></script> --}}
-    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+    <script>
+        // Class definition
 
-    {{-- <script src="{{ asset('dashboard') }}/js/pages/crud/forms/editors/ckeditor-classic.js?v=7.2.9"></script> --}}
+        var KTSummernoteDemo = function() {
+            // Private functions
+            var demos = function() {
+                $('.summernote').summernote({
+                    height: 150
+                });
+            }
 
-{{-- <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/balloon-block/ckeditor.js"></script> --}}
+            return {
+                // public functions
+                init: function() {
+                    demos();
+                }
+            };
+        }();
 
-@include('admin.helps.js')
-
+        // Initialization
+        jQuery(document).ready(function() {
+            KTSummernoteDemo.init();
+        });
+    </script>
 @endpush
 
 

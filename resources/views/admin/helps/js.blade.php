@@ -111,8 +111,13 @@
         var demos = function () {
             ClassicEditor
                 .create( document.querySelector( '#kt-ckeditor-1' ) , {
-                    extraPlugins: [ SimpleUploadAdapterPlugin ]
-    
+                    extraPlugins: [ SimpleUploadAdapterPlugin ],
+                    codeBlock: {
+                    languages: [
+                        { language: 'css', label: 'CSS' },
+                        { language: 'html', label: 'HTML' }
+                    ]
+                }
                 } )
                 .then( editor => {
                     console.log( editor );

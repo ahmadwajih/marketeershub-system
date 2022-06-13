@@ -17,7 +17,7 @@ class HelpController extends Controller
     {
         $this->authorize('view_helps');
 
-        $helps = Help::all();
+        $helps = Help::get();
         return view('admin.helps.index', ['helps' => $helps]);
     }
 
@@ -48,12 +48,7 @@ class HelpController extends Controller
             'content' => 'required',
         ]);
 
-        $data['content'] = str_replace('/oembed', '/iframe' ,$request->content);
-        $data['content'] = str_replace('oembed', 'iframe width="100%" height="100%"' ,$data['content']);
-        $data['content'] = str_replace('url', 'src' ,$data['content']);
-        // $data['content'] = str_replace('figure', 'div' ,$data['content']);
-    
-        $helps = Help::create($data);
+        Help::create($data);
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'

@@ -67,6 +67,9 @@
                                         <i class="flaticon2-trash"></i>
                                     </button>
                                 @endcan
+                                <a href="{{ route('admin.helps.show', $help->id) }}" class="btn btn-icon btn-secondary  m-1">
+                                    <i class="flaticon-eye"></i>
+                                </a>
                                 </div>
                                 
                             </div>
@@ -85,6 +88,8 @@
             <!--end::Card-->
         </div>
         <!--end::Container-->
+    </div>
+    </div>
     </div>
     <!--end::Entry-->
 @endsection

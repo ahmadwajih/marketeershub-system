@@ -158,7 +158,7 @@
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
                                                     <option selected value="">{{ __('No one') }}</option>
                                                     @foreach ($users as $user)
-                                                        <option value="{{ $user->id }}">{{  $user->name }} from team {{  $user->team }} position {{  $user->position }}</option>
+                                                        <option value="{{ $user->id }}">{{  $user->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('parent_id'))

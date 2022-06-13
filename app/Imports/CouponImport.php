@@ -32,7 +32,7 @@ class CouponImport implements ToCollection
             if(!is_null($col[1])){
                 $userId = null;
                 if(!is_null($col[0])){
-                    if($col[0] == 1000 || $col[0] == 'inf-100' || $col[0] == 'aff-1000'){
+                    if($col[0] == 1000 || $col[0] == 'inf-1000' || $col[0] == 'aff-1000' || $this->team == 'media_buying'){
                         $publisher = User::where('email', 'info@marketeershub.com')->first();
                         if($publisher){
                             $userId = $publisher->id;

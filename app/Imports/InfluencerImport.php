@@ -16,8 +16,9 @@ use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
+class InfluencerImport implements ToCollection
 {
     public $team;
     public $status;
@@ -38,8 +39,7 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
         unset($collection[0]);
         foreach ($collection as $index => $col) 
         {
-            if(isset($col[3]) && isset($col[1])){
-
+            if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager 
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
                 if($accountManager){
@@ -79,29 +79,79 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
 
                 // Get Category Id 
                 $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
+                
+                $publisher = User::whereEmail($col[3])->first();
+                if($publisher){
 
-                $publisher = User::updateOrCreate(
-                    ['email' => $col[3]],
-                    [
-                        'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
-                        'name' => $col[1],
-                        'phone' => $col[2],
-                        'password' => Hash::make('00000000'),
-                        'parent_id' => $this->accouManagerId,
-                        'gender' => $col[5] ?? 'male',
-                        'status' => $this->status,
-                        'country_id' => $this->countryId,  
-                        'city_id' => $this->cityId,  
-                        'address' => $col[9] ?? null,
-                        'account_title' => $col[11],
-                        'bank_name' => $col[12],
-                        'iban' => $col[15],
-                        'bank_branch_code' => $col[13],
-                        'swift_code' => $col[14],
-                        'currency_id' => $this->currrencyId,
-                        'team' => $this->team,
-                    ]
-                );
+                    $publisher->ho_id = $col[0] ? 'inf-' . $col[0] : null;
+                    $publisher->name = $publisher->name ??  $col[1];
+                    $publisher->phone = $publisher->phone ??  $col[2];
+                    $publisher->password = $publisher->password ??  Hash::make('00000000');
+                    $publisher->parent_id = $publisher->parent_id ??  $this->accouManagerId;
+                    $publisher->gender = $publisher->gender ??  $col[5] ?? 'male';
+                    $publisher->status = $this->status;
+                    $publisher->country_id = $publisher->country_id ??  $this->countryId;
+                    $publisher->city_id = $publisher->city_id ??  $this->cityId;
+                    $publisher->address = $publisher->address ??  $col[9] ?? null;
+                    $publisher->account_title = $publisher->account_title ??  $col[11];
+                    $publisher->bank_name = $publisher->bank_name ??  $col[12];
+                    $publisher->iban = $publisher->iban ??  $col[15];
+                    $publisher->bank_branch_code = $publisher->bank_branch_code ??  $col[13];
+                    $publisher->swift_code = $publisher->swift_code ??  $col[14];
+                    $publisher->currency_id = $publisher->currency_id ??  $this->currrencyId;
+                    $publisher->team = $publisher->team ??  $this->team;
+                    $publisher->save();
+                    Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
+                }else{
+                    $publisher = User::create(
+                        [
+                            'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
+                            'name' => $col[1],
+                            'phone' => $col[2],
+                            'email' => $col[3],
+                            'password' => Hash::make('00000000'),
+                            'parent_id' => $this->accouManagerId,
+                            'gender' => $col[5] ?? 'male',
+                            'status' => $this->status,
+                            'country_id' => $this->countryId,  
+                            'city_id' => $this->cityId,  
+                            'address' => $col[9] ?? null,
+                            'account_title' => $col[11],
+                            'bank_name' => $col[12],
+                            'iban' => $col[15],
+                            'bank_branch_code' => $col[13],
+                            'swift_code' => $col[14],
+                            'currency_id' => $this->currrencyId,
+                            'team' => $this->team,
+                        ]
+                        );
+                    Log::debug( ['status' => 'No_Exists', 'publisher' => $publisher]);
+
+                }
+
+
+                // $publisher = User::updateOrCreate(
+                //     ['email' => $col[3]],
+                //     [
+                //         'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
+                //         'name' => $col[1],
+                //         'phone' => $col[2],
+                //         'password' => Hash::make('00000000'),
+                //         'parent_id' => $this->accouManagerId,
+                //         'gender' => $col[5] ?? 'male',
+                //         'status' => $this->status,
+                //         'country_id' => $this->countryId,  
+                //         'city_id' => $this->cityId,  
+                //         'address' => $col[9] ?? null,
+                //         'account_title' => $col[11],
+                //         'bank_name' => $col[12],
+                //         'iban' => $col[15],
+                //         'bank_branch_code' => $col[13],
+                //         'swift_code' => $col[14],
+                //         'currency_id' => $this->currrencyId,
+                //         'team' => $this->team,
+                //     ]
+                // );
 
                 $publisher->roles()->sync(4);
                 $category ? $publisher->categories()->sync($category->id) : '';
@@ -181,8 +231,5 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
 
         }
     }
-    public function chunkSize(): int
-    {
-        return 100;
-    }
+
 }

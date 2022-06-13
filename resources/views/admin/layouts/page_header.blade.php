@@ -63,7 +63,7 @@
                             <!--begin::Title-->
                             <h4 class="d-flex flex-center rounded-top">
                                 <span class="text-white">{{ __('User Notifications') }}</span>
-                                <span class="btn btn-text btn-success btn-sm font-weight-bold btn-font-md ml-2">{{ auth()->user()->unreadNotifications->count() }} {{ __('New Notofocations') }}</span>
+                                <span class="btn btn-text btn-success btn-sm font-weight-bold btn-font-md ml-2">{{ auth()->user()->unreadNotifications->count() }} {{ __('New Notifications') }}</span>
                             </h4>
                             <!--end::Title-->
                             <!--begin::Tabs-->

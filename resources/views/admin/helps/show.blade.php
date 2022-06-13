@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title','City')
+@section('title','Help & Support')
 @section('content')
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
@@ -47,7 +47,7 @@
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-lg-12 text-center">
-                                        <a href="{{route('admin.cities.index')}}">
+                                        <a href="{{route('admin.helps.index')}}">
                                             <button type="button" class="btn btn-primary font-weight-bold mr-2">
                                                 {{ __('Back') }}
                                             </button>

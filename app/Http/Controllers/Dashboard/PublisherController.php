@@ -490,7 +490,7 @@ class PublisherController extends Controller
             'iban'                      => 'nullable|required_if:position,publisher|max:255',
             'currency_id'               => 'nullable|required_if:position,publisher|exists:currencies,id',
             'categories'                => 'nullable|array|required_if:position,publisher|exists:categories,id',
-            'social_media.*.link'       => 'required_if:team,influencer',
+            // 'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
         if($request->traffic_sources){
@@ -836,9 +836,9 @@ class PublisherController extends Controller
 
         }
         if($request->team == 'influencer'){
-            // Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
+            Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
 
-            Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
+            // Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
         }
 
         userActivity('User', null , 'upload', 'Upload Publishers');

@@ -146,7 +146,7 @@
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id">
                                                     <option value=" ">{{ __('None') }}</option>
                                                     @foreach ($parents as $parent)
-                                                        <option {{ $publisher->parent_id==$parent->id?'selected':'' }} value="{{ $parent->id }}">{{  $parent->name }} from team {{  $parent->team }} position {{  $parent->position }}</option>
+                                                        <option {{ $publisher->parent_id==$parent->id?'selected':'' }} value="{{ $parent->id }}">{{  $parent->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('parent_id'))
@@ -478,7 +478,7 @@
                                         <div class="form-group row">
                                                 
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Categories') }} :</label>
+                                                <label>{{ __('Categories') }} :</label>
                                                 <select class="form-control select2" id="kt_select_categories" name="categories[]"  multiple>
                                                     @foreach ($categories as $category)
                                                         <option {{ old('categories') ? (in_array($category->id, old('categories')) ? 'selected':'') : (in_array($category->id, $publisher->categories->pluck('id')->toArray())?'selected':'')  }} value="{{ $category->id }}">{{  $category->title }}</option>
@@ -492,7 +492,7 @@
                                             </div>
 
                                             <div class="col-lg-6">
-                                                <label>* {{ __('Referral Account Manager') }} :</label>
+                                                <label>{{ __('Referral Account Manager') }} :</label>
                                                 <select class="form-control select2" id="kt_select_referral_account_manager" name="referral_account_manager" >
                                                     <option value=" ">{{ __('No One') }}</option>
                                                     @foreach ($accountManagers as $accountManager)
@@ -510,8 +510,8 @@
                                             <h3 class="text-center mt-20 mb-15">{{ __('Bank Account Details') }}</h3>
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
-                                                    <label>*{{ __('Account Title') }} :</label>
-                                                    <input type="text" name="account_title" class="form-control" value="{{old('account_title') ?? $publisher->account_title}}" required />
+                                                    <label>{{ __('Account Title') }} :</label>
+                                                    <input type="text" name="account_title" class="form-control" value="{{old('account_title') ?? $publisher->account_title}}" />
                                                     @if ($errors->has('account_title'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('account_title') }}</p>
@@ -519,8 +519,8 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label>* {{ __('Bank Name') }} :</label>
-                                                    <input type="text" name="bank_name" class="form-control" value="{{old('bank_name') ?? $publisher->bank_name}}" required />
+                                                    <label>{{ __('Bank Name') }} :</label>
+                                                    <input type="text" name="bank_name" class="form-control" value="{{old('bank_name') ?? $publisher->bank_name}}" />
                                                     @if ($errors->has('bank_name'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('bank_name') }}</p>
@@ -530,8 +530,8 @@
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
-                                                    <label>*{{ __('Bank Branch Code') }} :</label>
-                                                    <input type="text" name="bank_branch_code" class="form-control" value="{{old('bank_branch_code') ?? $publisher->bank_branch_code}}" required />
+                                                    <label>{{ __('Bank Branch Code') }} :</label>
+                                                    <input type="text" name="bank_branch_code" class="form-control" value="{{old('bank_branch_code') ?? $publisher->bank_branch_code}}"  />
                                                     @if ($errors->has('bank_branch_code'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('bank_branch_code') }}</p>
@@ -539,8 +539,8 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label>* {{ __('Swift Code') }} :</label>
-                                                    <input type="text" name="swift_code" class="form-control" value="{{old('swift_code') ?? $publisher->swift_code}}" required />
+                                                    <label>{{ __('Swift Code') }} :</label>
+                                                    <input type="text" name="swift_code" class="form-control" value="{{old('swift_code') ?? $publisher->swift_code}}" />
                                                     @if ($errors->has('swift_code'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('swift_code') }}</p>
@@ -551,8 +551,8 @@
 
                                             <div class="form-group row">
                                                 <div class="col-lg-6">
-                                                    <label>*{{ __('Iban') }} :</label>
-                                                    <input type="text" name="iban" class="form-control" value="{{old('iban') ?? $publisher->iban}}" required />
+                                                    <label>{{ __('Iban') }} :</label>
+                                                    <input type="text" name="iban" class="form-control" value="{{old('iban') ?? $publisher->iban}}" />
                                                     @if ($errors->has('iban'))
                                                         <div>
                                                             <p class="invalid-input">{{ $errors->first('iban') }}</p>
@@ -560,7 +560,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label>* {{ __('Currency') }} :</label>
+                                                    <label>{{ __('Currency') }} :</label>
                                                     <select class="form-control select2" id="kt_select_currency_id" name="currency_id">
                                                         @foreach ($currencies as $currency)
                                                             <option {{ old('currency_id')?($currency->id == old('currency_id') ?'selected': ($publisher->currency_id == $currency->id ? 'selected' : '')):''  }} value="{{ $currency->id }}">{{  $currency->name }}</option>

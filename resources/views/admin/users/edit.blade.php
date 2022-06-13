@@ -154,7 +154,7 @@
                                                 <select class="form-control select2" id="kt_select_parent_id" name="parent_id" >
                                                     <option {{  $user->parent_id==null?'selected':''  }} value=" ">{{ __('No one') }}</option>
                                                     @foreach ($parents as $parent)
-                                                        <option {{ $user->parent_id==$parent->id?'selected':'' }} value="{{ $parent->id }}">{{  $parent->name }} from team {{  $parent->team }} position {{  $parent->position }}</option>
+                                                        <option {{ $user->parent_id==$parent->id?'selected':'' }} value="{{ $parent->id }}">{{  $parent->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('parent_id'))
@@ -259,7 +259,7 @@
 
                                         <div class="form-group row">
                                             <div class="col-lg-6">
-                                                <label>*{{ __('Old ID') }} :</label>
+                                                <label>{{ __('Old ID That Exists in Excel Sheets') }} :</label>
                                                 <input type="text" name="ho_id" class="form-control" value="{{old('ho_id') ?? $user->ho_id}}" />
                                                 @if ($errors->has('ho_id'))
                                                     <div>
