@@ -195,7 +195,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
-                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
+                                                <select class="form-control select2" id="kt_select_country_id" name="country_id">
                                                     @foreach($countries as $country)
                                                         <option {{$publisher->country_id==$country->id?'selected':''}} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
@@ -208,7 +208,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ _('City') }} :</label>
-                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" required >
+                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" >
                                                     @foreach($cities as $city)
                                                         <option {{$publisher->city_id==$city->id?'selected':''}} value="{{$city->id}}">{{$city->name_en}}</option>
                                                     @endforeach

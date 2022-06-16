@@ -42,6 +42,7 @@ class PublisherController extends Controller
      */
     public function index(Request $request)
     {
+        
         $this->authorize('view_publishers');
         $where = [
             ['users.id', '!=', null]
@@ -80,9 +81,12 @@ class PublisherController extends Controller
         if(isset($request->sort_type) && $request->sort_type != null){
             $sortType = $request->sort_type;
         }
-
+        if($request->account_status){
+            $where[] = ['account_status', '=', $request->account_status];
+        }
  
         if ($request->ajax()) {
+            
             try {
                 
                 $publishers = User::select([
@@ -297,8 +301,8 @@ class PublisherController extends Controller
             'phone'                     => 'required|unique:users|max:255',
             'password'                  => ['required','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'parent_id'                 => 'required|numeric|exists:users,id',
-            'country_id'                => 'required|exists:countries,id',
-            'city_id'                   => 'required|exists:cities,id',
+            'country_id'                => 'nullable|exists:countries,id',
+            'city_id'                   => 'nullable|exists:cities,id',
             'gender'                    => 'required|in:male,female',
             'status'                    => 'required|in:active,pending,closed',
             'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
@@ -471,8 +475,8 @@ class PublisherController extends Controller
             'email'                     => 'required|max:255|unique:users,email,'.$id,
             'phone'                     => 'required|max:255|unique:users,phone,'.$id,
             'password'                  => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
-            'country_id'                => 'required|exists:countries,id',
-            'city_id'                   => 'required|exists:cities,id',
+            'country_id'                => 'nullable|exists:countries,id',
+            'city_id'                   => 'nullable|exists:cities,id',
             'gender'                    => 'required|in:male,female',
             'parent_id'                 => 'nullable|numeric|exists:users,id',
             'status'                    => 'nullable|in:active,pending,closed',

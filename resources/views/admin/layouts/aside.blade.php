@@ -153,14 +153,43 @@
                             </li>
 
                             @can('view_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)==''?'menu-item-active':'' }}" aria-haspopup="true">
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == 'in_review'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.publishers.index', ['account_status' => 'in_review'])}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text justify-content-between">{{ __('In Review') }} 
+                                    <span class="menu-label">
+                                        <span class="label label-danger label-inline">{{ usersCounter()['in_review'] }}</span>
+                                    </span>
+                                </span>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == 'approved'?'menu-item-active':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.publishers.index',['account_status' => 'approved'])}}" class="menu-link">
+                                    <i class="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text justify-content-between">{{ __('Approved') }} 
+                                    <span class="menu-label">
+                                        <span class="label label-success label-inline">{{ usersCounter()['approved'] }}</span>
+                                    </span>
+                                </span>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == ''?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.publishers.index')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('All Publishers') }}</span>
+                                    <span class="menu-text justify-content-between">{{ __('All') }} 
+                                    <span class="menu-label">
+                                        <span class="label label-primary label-inline">{{ usersCounter()['all'] }}</span>
+                                    </span>
+                                </span>
                                 </a>
                             </li>
+
                             @endcan
 
                             @can('create_publishers')

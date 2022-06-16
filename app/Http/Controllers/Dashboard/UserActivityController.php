@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserActivity;
+use App\Notifications\ApprovedUserProfileUpdates;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class UserActivityController extends Controller
 {
@@ -50,6 +53,13 @@ class UserActivityController extends Controller
         $activity->approved = true;
         $activity->approved_by = auth()->user()->id;
         $activity->save();
+        try {
+            Notification::send($object, new ApprovedUserProfileUpdates($object));
+        } catch (\Throwable $th) {
+            Log::debug($th);
+        }
+        
+
         return redirect()->back();
 
     }

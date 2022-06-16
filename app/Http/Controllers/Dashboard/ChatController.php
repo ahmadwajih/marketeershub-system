@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 class ChatController extends Controller
 {
+    public $search;
      /**
      * Display a listing of the resource.
      *
@@ -27,7 +28,7 @@ class ChatController extends Controller
             ->where('position', '!=', 'publisher')
             ->get();
 
-        return view('admin.chat', [
+        return view('admin.chats.chat', [
             'users' => $users
         ]);
     }
@@ -72,5 +73,32 @@ class ChatController extends Controller
         ];
 
         return response()->json($data, 200);
+    }
+
+    public function usersSearch(Request $request){
+
+        if(is_null($request->search)){
+            $users = User::select('users.*')
+            ->leftJoin('chats', 'users.id', 'chats.receiver_id')
+            ->orderBy('chats.created_at', 'desc')
+            ->groupBy('users.id')
+            ->where('position', '!=', 'publisher')
+            ->get();
+        }else{
+            $this->search = $request->search;
+            $users = User::select('users.*')
+            ->leftJoin('chats', 'users.id', 'chats.receiver_id')
+            ->orderBy('chats.created_at', 'desc')
+            ->groupBy('users.id')
+            ->where('position', '!=', 'publisher')
+            ->where(function ($query) {
+                $query->where('name', 'LIKE', "%{$this->search}%")
+                        ->orWhere('email', 'LIKE', "%{$this->search}%");
+            })
+            ->get();
+
+        }
+        
+        return view('admin.chats.search', ['users' => $users]);
     }
 }

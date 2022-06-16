@@ -243,10 +243,12 @@ class OfferRequestController extends Controller
         $this->authorize('create_offer_requests');
         $data = $request->validate([
             'offerId' => 'required|integer|exists:offers,id',
+            'numberOfRequestedCoupons' => 'nullable|integer'
         ]);
-        
+        $couponsNumber = $request->numberOfRequestedCoupons ?? 1;
         $offerRequest = OfferRequest::create([
             'offer_id' => $request->offerId,
+            'number_of_coupons' => $couponsNumber,
             'user_id' => auth()->user()->id,
         ]);
         userActivity('OfferRequest', $offerRequest->id, 'create');

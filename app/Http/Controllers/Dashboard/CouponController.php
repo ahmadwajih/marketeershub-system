@@ -23,6 +23,7 @@ class CouponController extends Controller
     {
         $this->authorize('view_coupons');
         if($request->ajax()){
+            // return $request->all();
             $coupons = getModelData('Coupon', $request, ['offer', 'user']);
             return response()->json($coupons);
         }

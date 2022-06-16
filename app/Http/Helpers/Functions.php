@@ -363,5 +363,27 @@ if(!function_exists('userChildrens')) {
     }
 }
 
+if(!function_exists('usersCounter')) {
+    function usersCounter()
+    {
+        $secends = 60*60*15;
+        if(!cache('usersCount')){
+            $all =  User::count();
+            $inReview = User::where('account_status', 'in_review')->count();
+            $approved = User::where('account_status', 'approved')->count();
+            $rejected = User::where('account_status', 'rejected')->count();
+            $data = [
+                'all' => $all,
+                'in_review' => $inReview,
+                'approved' => $approved,
+                'rejected' => $rejected ,
+            ];
+            cache(['usersCount' => $data], $secends);
+        }
+        
+        return cache('usersCount');
+    }
+}
+
 
 

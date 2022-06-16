@@ -11,7 +11,7 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title"> {{ __('Request') }} {{ $offerRequest->id }}</h2>
+                            <h2 class="card-title"> {{ __('Request From') }} : {{ $offerRequest->user->name }}</h2>
                         </div>
                         <!--begin::Form-->
                         <form class="form" id="kt_form" action="{{route('admin.offerRequests.update',$offerRequest->id)}}" method = "POST" enctype="multipart/form-data">
@@ -41,6 +41,12 @@
                                 @endif
                                 <div class="mb-3">
                                     <div class="mb-2">
+                                        @if($offerRequest->number_of_coupons > 1)
+                                        <div class="alert alert-custom alert-warning " role="alert">
+                                            <div class="alert-icon"><i class="flaticon-warning"></i></div>
+                                            <div class="alert-text">{{ __('This user request ') . $offerRequest->number_of_coupons . __(' coupon.')}}</div>
+                                        </div>
+                                        @endif
                                         <div class="form-group row">
                                             <div class="col-lg-4">
                                                 <label>{{ _('User') }} :</label>

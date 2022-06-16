@@ -8,7 +8,7 @@
 @php
     $columns = [
         ['label' => __('ID'), 'data'=> 'ho_id', 'disabled'=> false, 'checked' => true, 'bSearchable' => true],
-        ['label' => __('P_ID'), 'data'=> 'parent_id', 'disabled'=> false, 'checked' => true, 'bSearchable' => true],
+        // ['label' => __('P_ID'), 'data'=> 'parent_id', 'disabled'=> false, 'checked' => true, 'bSearchable' => true],
         ['label' => __('Name'),'data'=> 'name', 'disabled'=> true, 'checked' => true, 'bSearchable' => true],
         ['label' => __('Email'),'data'=> 'email', 'bSearchable' => true, 'checked' => true, 'disabled'=> true,],
         ['label' => __('Team'),'data'=> 'team', 'bSearchable' => true, 'checked' => true, 'disabled'=> true,],

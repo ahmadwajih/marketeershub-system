@@ -87,6 +87,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');
         Route::post('helps-search', 'HelpController@search')->name('helps.search');
+        // Route::get('help/{slug}', 'HelpController@showBySlug')->name('helps.show.by.slug');
 
         
         Route::resource('coupons', CouponController::class);
@@ -104,6 +105,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('chat', 'ChatController@index')->name('chat');
         Route::post('chat/message', 'ChatController@messageReceived')->name('chat.message');
         Route::post('chat/single/{user?}', 'ChatController@singleChat')->name('chat.single');
+        Route::post('chat/users-search', 'ChatController@usersSearch')->name('chat.users.search');
+
         Route::post('logout', 'AuthController@logout')->name('logout');
 
         // Ajax requests

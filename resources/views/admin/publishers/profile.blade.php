@@ -454,7 +454,8 @@
                                                                 <th style="min-width: 50px" class="pl-7">
                                                                     <span class="text-dark-75">{{ __('Coupon') }}</span>
                                                                 </th>
-                                                                <th scope="col">{{ __('Coupon Status') }}</th>
+                                                                <th scope="col">{{ __('Coupon') }}</th>
+                                                                <th scope="col">{{ __('Status') }}</th>
                                                                 <th scope="col">{{ __('Discount') }}</th>
                                                                 <th scope="col">{{ __('Orders') }}</th>
                                                                 <th scope="col">{{ __('Sales') }}</th>

@@ -1,5 +1,6 @@
 @extends('admin.layouts.app')@section('title','Dashboard')
 @section('content')
+
     <div class="content d-flex flex-column flex-column-fluid" id="app">
         <!--begin::Subheader-->
         <div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">

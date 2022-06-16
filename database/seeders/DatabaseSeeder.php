@@ -15,14 +15,14 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // RoleSeeder::class,
-            AbilitySeeder::class,
+            // AbilitySeeder::class,
             // CountrySeeder::class,
             // CitySeeder::class,
             // CurrencySeeder::class,
             // UserSeeder::class,
             // AdvertiserSeeder::class,
             // OfferSeeder::class,
-            // CouponSeeder::class,
+            CouponSeeder::class,
             // PivotReportSeeder::class,
             // CategorySeeder::class,
             // AdvertiserCategorySeeder::class,

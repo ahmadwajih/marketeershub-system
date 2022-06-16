@@ -23,32 +23,24 @@ var KTDatatableRemoteAjaxDemo = function() {
                             if (typeof raw.data !== 'undefined') {
                                 dataSet = raw.data;
                             }
+                            console.log('start');
+                            console.log(dataSet);
                             return dataSet;
                         },
                     },
                 },
-                pageSize: 20,
+                pageSize: 10,
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
                 saveState: false,
+
             },
 
             // layout definition
             layout: {
                 scroll: false,
                 footer: false,
-                icons:{
-                    pagination:{
-                        pagination: {
-                            next: 'la la-angle-right',
-                            prev: 'la la-angle-left',
-                            first: 'la la-angle-double-left',
-                            last: 'la la-angle-double-right',
-                            more: 'la la-ellipsis-h'
-                          }
-                    }
-                }
             },
 
             // column sorting
@@ -137,6 +129,11 @@ var KTDatatableRemoteAjaxDemo = function() {
                 selector: false,
                 textAlign: 'center',
             },{
+                field: 'user.team',
+                title: "Team",
+                selector: false,
+                textAlign: 'center',
+            },{
                 field: 'Actions',
                 title: "Actions",
                 sortable: false,
@@ -184,11 +181,16 @@ var KTDatatableRemoteAjaxDemo = function() {
             datatable.search($(this).val(), 'offer_id');
         });
 
-        $('#kt_datatable_search_type').on('change', function() {
-            datatable.search($(this).val().toLowerCase(), 'Type');
+        $('#kt_datatable_search_team').on('change', function() {
+            datatable.search($(this).val(), 'user.team');
         });
+        
+        // $('#kt_datatable_search_team').on( 'change', function () {
+        //     datatable.columns( 3 ).search( this.value );
+        //     alert(this.value);
+        // } );
 
-        $('#kt_datatable_search_offer, #kt_datatable_search_type').selectpicker();
+        $('#kt_datatable_search_offer, #kt_datatable_search_type, #kt_datatable_search_team').selectpicker();
     };
 
     return {

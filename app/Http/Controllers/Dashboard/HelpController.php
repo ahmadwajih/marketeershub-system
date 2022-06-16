@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Help;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class HelpController extends Controller
 {
@@ -17,7 +18,7 @@ class HelpController extends Controller
     {
         $this->authorize('view_helps');
 
-        $helps = Help::get();
+        $helps = Help::orderBy('id', 'desc')->get();
         return view('admin.helps.index', ['helps' => $helps]);
     }
 
@@ -44,11 +45,15 @@ class HelpController extends Controller
         $this->authorize('create_helps');
 
         $data = $request->validate([
-            'title' => 'required|max:200',
+            'title' => 'required|max:200|unique:helps,title',
             'content' => 'required',
         ]);
 
-        Help::create($data);
+        $data['slug'] = Str::slug($request->title);
+        $help = Help::create($data);
+        
+        userActivity('Help', $help->id, 'create');
+
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -62,9 +67,24 @@ class HelpController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // public function showBySlug($slug)
+    // {
+    //     $help = Help::whereSlug($slug)->first();
+    //     userActivity('Help', $help->id, 'show');
+    //     return view('admin.helps.show', ['help' => $help]);
+    // }
+
     public function show($id)
     {
+
+        if(is_numeric($id)){
+            $help = Help::findOrFail($id);
+        }else{
+            $help = Help::whereSlug($id)->first();
+        }
         
+        userActivity('Help', $help->id, 'show');
+        return view('admin.helps.show', ['help' => $help]);
     }
 
     /**
@@ -92,13 +112,16 @@ class HelpController extends Controller
         $this->authorize('update_helps');
 
         $data = $request->validate([
-            'title' => 'required|max:200',
+            'title' => 'required|max:200|unique:helps,title,except,'.$help->id,
             'content' => 'required',
         ]);
 
         $help->title = $request->title;
+        $help->slug = Str::slug($request->title);
         $help->content = $request->content;
         $help->save();
+
+        userActivity('Help', $help->id, 'update', $data, $help);
 
         $notification = [
             'message' => 'Updated successfully',

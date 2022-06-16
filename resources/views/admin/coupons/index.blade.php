@@ -42,7 +42,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-4 my-2 my-md-0">
                                         <div class="input-icon">
-                                            <input type="text" class="form-control" placeholder="بــحــث ..." id="kt_datatable_search_query" />
+                                            <input type="text" class="form-control" placeholder="{{ __('Search...') }}" id="kt_datatable_search_query" />
                                             <span>
                                                 <i class="flaticon2-search-1 text-muted"></i>
                                             </span>
@@ -60,18 +60,19 @@
                                         </div>
                                     </div>
 
-                                     {{-- 
+                                     
                                     <div class="col-md-4 my-2 my-md-0">
                                         <div class="d-flex align-items-center">
-                                            <label class="mr-3 mb-0 d-none d-md-block">الـنـوع:</label>
-                                            <select class="form-control" id="kt_datatable_search_type">
-                                                <option value="">الجمـيـع</option>
-                                                <option value="1">Online</option>
-                                                <option value="2">Retail</option>
-                                                <option value="3">Direct</option>
+                                            <label class="mr-3 mb-0 d-none d-md-block">{{ __('Team') }}:</label>
+                                            <select class="form-control" id="kt_datatable_search_team">
+                                                <option value="">{{ __('All') }}</option>
+                                                <option value="affiliate">{{ __('Affiliate') }}</option>
+                                                <option value="media_buying">{{ __('Media Buying') }}</option>
+                                                <option value="influencer">{{ __('Influencer') }}</option>
+                                                <option value="prepaid">{{ __('Prepaid') }}</option>
                                             </select>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
                             {{-- <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">

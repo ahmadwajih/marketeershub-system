@@ -97,7 +97,11 @@
                                 @if($offer->expire_date)<li class="text-dark-50">{{ __('Expire Date') }} : <strong class="text-dark">{{$offer->expire_date}}</strong></li>@endif
                                 @if($offer->status)<li class="text-dark-50">{{ __('Status') }} : <strong class="text-dark">{{$offer->status}}</strong></li>@endif
                                 @if($offer->note)<li class="text-dark-50">{{ __('Note') }} :  <strong class="text-dark">{{$offer->note}}</strong></li>@endif
+                                @if($offer->report->orders)<li class="text-dark-50">{{ __('Orders') }} :<strong class="text-dark">{{$offer->report->orders}} order</strong></li></li>@endif
+                                @if($offer->report->sales)<li class="text-dark-50">{{ __('Sales') }} :<strong class="text-dark">{{$offer->report->sales}}$</strong></li></li>@endif
+                                @if($offer->report->revenue)<li class="text-dark-50">{{ __('Revenue') }} :<strong class="text-dark">{{$offer->report->revenue}}$</strong></li></li>@endif 
                                 @if($offer->terms_and_conditions)<li class="text-dark-50">{{ __('Terms And Conditions') }} :{{$offer->terms_and_conditions}}</li></li>@endif
+                                
                             </ul>
                         <!--begin::Form-->
                         <!--end::Form-->

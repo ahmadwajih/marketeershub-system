@@ -174,7 +174,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ _('Country') }} :</label>
-                                                <select class="form-control select2" id="kt_select_country_id" name="country_id" required>
+                                                <select class="form-control select2" id="kt_select_country_id" name="country_id">
                                                     @foreach($countries as $country)
                                                         <option  {{ old('country_id')==$country->id?'selected':'' }} value="{{$country->id}}">{{$country->name}}</option>
                                                     @endforeach
@@ -187,7 +187,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ _('City') }} :</label>
-                                                <select class="form-control select2" id="kt_select_city_id" name="city_id" required>
+                                                <select class="form-control select2" id="kt_select_city_id" name="city_id">
                                                     @if(old('country_id'))
                                                       @foreach(App\Models\Country::findOrFail(old('country_id'))->cities as $city)
                                                         <option {{ old('city_id')==$city->id?'selected':'' }} value="0">{{ $city->name }}</option>

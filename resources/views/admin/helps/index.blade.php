@@ -67,7 +67,7 @@
                                         <i class="flaticon2-trash"></i>
                                     </button>
                                 @endcan
-                                <a href="{{ route('admin.helps.show', $help->id) }}" class="btn btn-icon btn-secondary  m-1">
+                                <a href="{{ route('admin.helps.show', $help->slug) }}" class="btn btn-icon btn-secondary  m-1">
                                     <i class="flaticon-eye"></i>
                                 </a>
                                 </div>

@@ -11,36 +11,15 @@
                 <div class="col-lg-12">
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
-                            <h2 class="card-title">{{ __('City') . $city->name }} </h2>
+
+                            <h2 class="card-title"> {{ $help->title }} </h2>
                         </div>
                         <!--begin::Form-->
-                        <form class="form">
-                            @csrf
                             <div class="card-body">
                                 <div class="mb-3">
                                     <div class="mb-2">
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>اسم المدينة باللغة العربية</label>
-                                                <input class="form-control" disabled  value="{{$city->name_ar }}" />
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>City Name In English</label>
-                                                <input class="form-control" disabled  value="{{$city->name_en }}" />
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Code') }}</label>
-                                                <input class="form-control" disabled  value="{{$city->code }}" />
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>{{ __('Country') }}</label>
-                                                <input class="form-control" disabled  value="{{$city->country?$city->country->name:'' }}" />
-                                            </div>
-                                        </div>
-
+                                        {{-- Body  --}}
+                                        {!! $help->content !!}
                                     </div>
                                 </div>
                             </div>
@@ -55,11 +34,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
                         <!--end::Form-->
                     </div>
                     <!--end::Card-->
-                    @can('view_user_activities')
+                    {{-- @can('view_user_activities')
                         <div class="card card-custom example example-compact">
                             <div class="card-header">
                                 <h2 class="card-title">{{ __('User Activities') }} </h2>
@@ -75,7 +53,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach(getActivity('City',$city->id ) as $activity)
+                                        @foreach(getActivity('Help',$help->id ) as $activity)
                                             <tr>
                                                 <td>{{ $activity->mission }}</td>
                                                 <td> <a href="{{ route('admin.users.show',  $activity->user_id) }}" target="_blank" >{{ $activity->user->name }}</a> </td>
@@ -91,7 +69,7 @@
                                     </table>
                             </div>
                         </div>
-                    @endcan
+                    @endcan --}}
                 </div>
             </div>
         </div>
