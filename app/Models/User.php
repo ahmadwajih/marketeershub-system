@@ -166,7 +166,7 @@ class User extends Authenticatable
     public function getSumOrdersAttribute()
     {
         $orders = $this->coupons->map(function ($coupon){
-            return $coupon->report()->whereMonth(
+            return $coupon->report()->whereMonth( 
                 'created_at', '>', Carbon::now()->subMonth()->month
             )->get();
         })->flatten();

@@ -93,7 +93,8 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Phone') }} :</label>
-                                                <input type="text" name="phone" class="form-control" value="{{old('phone') ?? $publisher->phone}}" required />
+                                                <input type="text" name="phone" class="form-control check-phone-exists" value="{{old('phone') ?? $publisher->phone}}" required />
+                                                <div class="exists-phone-alert"></div>
                                                 @if ($errors->has('phone'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('phone') }}</p>
@@ -105,7 +106,8 @@
                                         <div class="form-group row">
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Email') }} :</label>
-                                                <input type="email" name="email" class="form-control"  value="{{old('email') ?? $publisher->email}}" required/>
+                                                <input type="email" name="email" class="form-control check-email-exists"  value="{{old('email') ?? $publisher->email}}" required/>
+                                                <div class="exists-email-alert"></div>
                                                 @if ($errors->has('email'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('email') }}</p>
@@ -681,6 +683,31 @@
                     $('.affiliates').fadeOut('slow');
                 }
             });
+
+            $('.check-phone-exists').on('focusout', function(){
+                var value = $(this).val();
+                $.ajax({
+                    method: "POST",
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: "{{route('admin.publishers.check.exists')}}",
+                    data: { column : value}, 
+                })
+                .done(function(res) {
+                    $(".exists-phone-alert").html(res)
+                });
+            })
+            $('.check-email-exists').on('focusout', function(){
+                var value = $(this).val();
+                $.ajax({
+                    method: "POST",
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: "{{route('admin.publishers.check.exists')}}",
+                    data: { column : value}, 
+                })
+                .done(function(res) {
+                    $(".exists-email-alert").html(res)
+                });
+            })
         });
 
 

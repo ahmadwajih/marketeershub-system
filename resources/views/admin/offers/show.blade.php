@@ -76,7 +76,6 @@
                                 <li class="text-dark-50">{{ __('Name') }} : <strong class="text-dark">{{$offer->name}}</strong></li>
                                 <li class="text-dark-50">{{ __('Advertiser') }} : <strong class="text-dark">{{$offer->advertiser?$offer->advertiser->company_name:''}}</strong></li>
                                 <li class="text-dark-50">{{ __('Description') }} : <strong class="text-dark">{{$offer->description}}</strong></li>
-                                @if($offer->website)<li class="text-dark-50">{{ __('Website') }} : <a href="{{$offer->website}}"><strong class="text-dark">{{ $offer->website}}</strong></a></li>@endif
                                 @if($offer->offer_url)<li class="text-dark-50">{{ __('Offer URL') }} : <a href="{{$offer->offer_url}}"><strong class="text-dark">{{ $offer->offer_url}}</strong></a></li>@endif
                                 @if($offer->categories->count() > 0)
                                 <li class="text-dark-50">{{ __('Category') }} : 
@@ -94,19 +93,122 @@
                                 @endif
                                 @if($offer->payout_type)<li class="text-dark-50">{{ __('Payout Type') }} : <strong class="text-dark">{{$offer->payout_type}}</strong></li>@endif
                                 @if($offer->default_payout)<li class="text-dark-50">{{ __('Payout Default') }} : <strong class="text-dark">{{$offer->default_payout}}</strong></li>@endif
+                                @if($offer->discount)<li class="text-dark-50">{{ __('Discount') }} : <strong class="text-dark">{{$offer->discount}} {{ $offer->discount_type =='percentage' ? '%' : ($offer->currency ? $offer->currency->code : '') }}</strong></li>@endif
                                 @if($offer->expire_date)<li class="text-dark-50">{{ __('Expire Date') }} : <strong class="text-dark">{{$offer->expire_date}}</strong></li>@endif
                                 @if($offer->status)<li class="text-dark-50">{{ __('Status') }} : <strong class="text-dark">{{$offer->status}}</strong></li>@endif
                                 @if($offer->note)<li class="text-dark-50">{{ __('Note') }} :  <strong class="text-dark">{{$offer->note}}</strong></li>@endif
-                                @if($offer->report->orders)<li class="text-dark-50">{{ __('Orders') }} :<strong class="text-dark">{{$offer->report->orders}} order</strong></li></li>@endif
-                                @if($offer->report->sales)<li class="text-dark-50">{{ __('Sales') }} :<strong class="text-dark">{{$offer->report->sales}}$</strong></li></li>@endif
-                                @if($offer->report->revenue)<li class="text-dark-50">{{ __('Revenue') }} :<strong class="text-dark">{{$offer->report->revenue}}$</strong></li></li>@endif 
+                                @if(isset($offer->report->orders))<li class="text-dark-50">{{ __('Orders') }} :<strong class="text-dark">{{$offer->report->orders}} order</strong></li></li>@endif
+                                @if(isset($offer->report->sales))<li class="text-dark-50">{{ __('Sales') }} :<strong class="text-dark">{{$offer->report->sales}}$</strong></li></li>@endif
+                                @if(isset($offer->report->revenue))<li class="text-dark-50">{{ __('Revenue') }} :<strong class="text-dark">{{$offer->report->revenue}}$</strong></li></li>@endif 
                                 @if($offer->terms_and_conditions)<li class="text-dark-50">{{ __('Terms And Conditions') }} :{{$offer->terms_and_conditions}}</li></li>@endif
                                 
                             </ul>
                         <!--begin::Form-->
                         <!--end::Form-->
                     </div>
+
+                    @if(isset($topPublishers) && $topPublishers->count() > 1)
+                    <div class="card card-custom example example-compact">
+                        <div class="card-header">
+                            <h2 class="card-title">{{ __('Ranking') }} </h2>
+                        </div>
+                        <div class="card-body">
+                            
+                            @if(positionRankCheck(auth()->user()->position, 'account_manager'))
+                                <div class="card card-custom gutter-b">
+                                    <div class="card-header card-header-tabs-line">
+                                        <div class="card-toolbar">
+                                            <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                                                @if(auth()->user()->team != 'affiliate')
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_4">
+                                                        <span class="nav-icon"><i class="flaticon2-chat-1"></i></span>
+                                                        <span class="nav-text">{{ __('Influncers') }}</span>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if(auth()->user()->team != 'influencer')
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_2_4">
+                                                        <span class="nav-icon"><i class="flaticon2-drop"></i></span>
+                                                        <span class="nav-text">{{ __('Affiliates') }}</span>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            @if(auth()->user()->team != 'influencer')
+                                            <div class="tab-pane fade show active" id="kt_tab_pane_1_4" role="tabpanel" aria-labelledby="kt_tab_pane_1_4">
+                                                <table id="influencer" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#ID</th>
+                                                            <th>{{ __('Name') }}</th>
+                                                            <th>{{ __('Orders') }}</th>
+                                                            <th>{{ __('Sales') }}</th>
+                                                            <th>{{ __('Payout') }}</th>
+                                                            <th>{{ __('Revenu') }}</th>
+                                                            <th>{{ __('Coupons') }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($topPublishers->where('user_team', 'influencer') as $topPublisher)
+                                                            <tr>
+                                                                <td>{{ $topPublisher->user_id}}</td>
+                                                                <td>{{ $topPublisher->user_name }}</td>
+                                                                <td>{{ $topPublisher->orders }}</td>
+                                                                <td>{{ $topPublisher->sales }}$</td>
+                                                                <td>{{ $topPublisher->payout }}$</td>
+                                                                <td>{{ $topPublisher->revenue }}$</td>
+                                                                <td>{{ $topPublisher->coupons }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            @endif
+                                            @if(auth()->user()->team != 'affiliate')
+                                            <div class="tab-pane fade" id="kt_tab_pane_2_4" role="tabpanel" aria-labelledby="kt_tab_pane_2_4">
+                                                <table id="affiliate" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#ID</th>
+                                                            <th>{{ __('Name') }}</th>
+                                                            <th>{{ __('Orders') }}</th>
+                                                            <th>{{ __('Sales') }}</th>
+                                                            <th>{{ __('Payout') }}</th>
+                                                            <th>{{ __('Revenu') }}</th>
+                                                            <th>{{ __('Coupons') }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($topPublishers->where('user_team', 'affiliate') as $topPublisher)
+                                                            <tr>
+                                                                <td>{{ $topPublisher->user_id}}</td>
+                                                                <td>{{ $topPublisher->user_name }}</td>
+                                                                <td>{{ $topPublisher->orders }}</td>
+                                                                <td>{{ $topPublisher->sales }}$</td>
+                                                                <td>{{ $topPublisher->payout }}$</td>
+                                                                <td>{{ $topPublisher->revenue }}$</td>
+                                                                <td>{{ $topPublisher->coupons }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            
+                        </div>
+                    </div>
                     <!--end::Card-->
+                    @endif
                     @can('view_user_activities')
                     <div class="card card-custom example example-compact">
                         <div class="card-header">
@@ -148,6 +250,23 @@
     <!--end::Entry-->
 @endsection
 @push('scripts')
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+
+{{-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script> --}}
+<script>
+    $(document).ready(function () {
+        $('#influencer').DataTable({
+            order: [[3, 'desc']],
+        });
+        $('#affiliate').DataTable({
+            order: [[3, 'desc']],
+        });
+    });
+</script>
 <script type="text/javascript">
 
     $(document).ready(function () {

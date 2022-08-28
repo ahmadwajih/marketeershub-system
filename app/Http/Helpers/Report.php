@@ -53,3 +53,28 @@ if(!function_exists('totalNumbers')){
 }
 
 
+ // User Performce Fucntions 
+ if(!function_exists('userPerformance')){
+    function userPerformance($user){
+
+        $childrens = userChildrens($user);
+        array_push($childrens, $user->id);
+        return DB::table('pivot_reports')
+        ->select(
+            DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
+            DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'),
+            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+            DB::raw('TRUNCATE(SUM(pivot_reports.payout) ,2) as payout'),
+                'pivot_reports.date as date',
+                'users.team as team',
+                DB::raw('COUNT(coupons.id) as coupons')
+            )
+            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->whereIn('coupons.user_id', $childrens)
+            ->first();
+        
+    }
+}
+

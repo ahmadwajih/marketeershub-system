@@ -62,6 +62,20 @@
                                                 @endif
                                             </div>
 
+                                            {{-- <div class="col-lg-4">
+                                                <label>* {{ __('AM') }} :</label>
+                                                <select class="form-control select2" id="kt_select_am" name="parent_id" required>
+                                                    @foreach(App\Models\User::where('position', 'account_manager')->get() as $accountManager)
+                                                        <option value="{{ $accountManager->id }}">{{$accountManager->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('team'))
+                                                    <div>
+                                                        <p class="invalid-input">{{ $errors->first('team') }}</p>
+                                                    </div>
+                                                @endif
+                                            </div> --}}
+
                                             <div class="col-lg-6">
                                                 <br>
                                                 <a href="{{ asset('dashboard/excel-sheets-examples/inflenucers.xlsx') }}" class="btn btn-info mt-2" download>{{ __('Download Influencers Example') }}</a>
@@ -97,6 +111,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_team').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_am').select2({
             placeholder: "Select Option",
         });
     </script>

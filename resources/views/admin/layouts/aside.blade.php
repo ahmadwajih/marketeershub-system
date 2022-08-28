@@ -35,7 +35,39 @@
                 @endcan
 
                 {{-- Start Profile --}}
-                <li class="menu-item menu-item-submenu {{ Request::segment(2)=='users' || Request::segment(2)=='publisher' ?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
+                <li class="menu-item menu-item-active {{ Request::segment(2)=='users' || Request::segment(2)=='publisher' ?'menu-item-open':'' }}" aria-haspopup="true">     
+                    @if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']))
+                            <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.publisher.profile')}}" class="menu-link">
+                                    <span class="svg-icon menu-icon">
+                                        <i class="fas fa-id-badge"></i>
+                                    </span>
+                                    <span class="menu-text">{{ __('My Profile') }}</span>
+                                </a>
+                            </li>
+                        @else
+                            <li class="menu-item {{ Request::segment(2)=='user'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
+                                <a href="{{route('admin.user.profile')}}" class="menu-link">
+                                    <span class="svg-icon menu-icon">
+                                        <i class="fas fa-id-badge"></i>
+                                    </span>
+                                    <span class="menu-text">{{ __('My Profile') }}</span>
+                                </a>
+                            </li>
+                        @endif
+                </li>
+                @can('view_my_offers')
+                <li class="menu-item menu-item-active {{ Request::segment(2)=='my-offers'?'menu-item-active':'' }}" aria-haspopup="true">
+                    <a href="{{route('admin.my-offers')}}" class="menu-link">
+                        <span class="svg-icon menu-icon">
+                            <i class="fas fa-tags"></i>
+                        </span>
+                        <span class="menu-text">{{ __('My Offers') }}</span>
+                    </a>
+                </li>
+                @endcan
+
+                {{-- <li class="menu-item menu-item-submenu {{ Request::segment(2)=='users' || Request::segment(2)=='publisher' ?'menu-item-open':'' }}" aria-haspopup="true" data-menu-toggle="hover">
                     <a href="javascript:;" class="menu-link menu-toggle">
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-id-badge"></i>
@@ -60,15 +92,16 @@
                                         <span class="menu-text">{{ __('My Profile') }}</span>
                                     </a>
                                 </li>
-
-                                <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='payments'?'menu-item-active':'' }}" aria-haspopup="true">
-                                    <a href="{{route('admin.publisher.payments')}}" class="menu-link">
-                                        <i class="menu-bullet menu-bullet-dot">
-                                            <span></span>
-                                        </i>
-                                        <span class="menu-text">{{ __('My Payments') }}</span>
-                                    </a>
-                                </li>
+                                @can('view_my_payments')
+                                    <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='payments'?'menu-item-active':'' }}" aria-haspopup="true">
+                                        <a href="{{route('admin.publisher.payments')}}" class="menu-link">
+                                            <i class="menu-bullet menu-bullet-dot">
+                                                <span></span>
+                                            </i>
+                                            <span class="menu-text">{{ __('My Payments') }}</span>
+                                        </a>
+                                    </li>
+                                @endcan
                             @else
                                 <li class="menu-item {{ Request::segment(2)=='user'&&Request::segment(3)=='profile'?'menu-item-open':'' }}" aria-haspopup="true">
                                     <a href="{{route('admin.user.profile')}}" class="menu-link">
@@ -81,7 +114,7 @@
                             @endif
                         </ul>
                     </div>
-                </li>
+                </li> --}}
                 {{-- End Profile --}}
 
                 <li class="menu-section">
@@ -96,7 +129,7 @@
                         <span class="svg-icon menu-icon">
                           <i class="fas fa-user-cog"></i>
                         </span>
-                        <span class="menu-text">{{ __('Employees') }}</span>
+                        <span class="menu-text">{{ __('Team Members') }}</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="menu-submenu">
@@ -104,7 +137,7 @@
                         <ul class="menu-subnav">
                             <li class="menu-item menu-item-parent" aria-haspopup="true">
                                 <span class="menu-link">
-                                    <span class="menu-text">{{ __('Employees') }}</span>
+                                    <span class="menu-text">{{ __('Team Members') }}</span>
                                 </span>
                             </li>
                             @can('view_users')
@@ -113,7 +146,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('All Employees') }}</span>
+                                    <span class="menu-text">{{ __('All Team Members') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -123,7 +156,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('Add New Employee') }}</span>
+                                    <span class="menu-text">{{ __('Add New Team Member') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -140,7 +173,15 @@
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-user-tag"></i>
                         </span>
-                        <span class="menu-text">{{ __('Publishers') }}</span>
+
+                        @if(auth()->user()->team == 'affiliate')
+                            <span class="menu-text">{{ __('Affiliates Database') }} </span>
+                        @elseif (auth()->user()->team == 'influencer')
+                            <span class="menu-text">{{ __('Influencers Database') }}</span>
+                        @else
+                            <span class="menu-text">{{ __('Publishers') }}</span>
+                        @endif
+                        
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="menu-submenu">
@@ -148,12 +189,12 @@
                         <ul class="menu-subnav">
                             <li class="menu-item menu-item-parent" aria-haspopup="true">
                                 <span class="menu-link">
-                                    <span class="menu-text">{{ __('Publishers') }}</span>
+                                <span class="menu-text">{{ __('Publishers') }}</span>
                                 </span>
                             </li>
 
                             @can('view_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == 'in_review'?'menu-item-active':'' }}" aria-haspopup="true">
+                            {{-- <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == 'in_review'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.publishers.index', ['account_status' => 'in_review'])}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
@@ -164,8 +205,8 @@
                                     </span>
                                 </span>
                                 </a>
-                            </li>
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == 'approved'?'menu-item-active':'' }}" aria-haspopup="true">
+                            </li> --}}
+                            {{-- <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == 'approved'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.publishers.index',['account_status' => 'approved'])}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
@@ -176,17 +217,19 @@
                                     </span>
                                 </span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='' && request()->account_status == ''?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.publishers.index')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text justify-content-between">{{ __('All') }} 
-                                    <span class="menu-label">
-                                        <span class="label label-primary label-inline">{{ usersCounter()['all'] }}</span>
+                                        
+                                        <span class="menu-text justify-content-between">{{ __('View All') }} 
+                                    
+                                        {{-- <span class="menu-label">
+                                            <span class="label label-primary label-inline">{{ usersCounter()['all'] }}</span>
+                                        </span> --}}
                                     </span>
-                                </span>
                                 </a>
                             </li>
 
@@ -198,27 +241,17 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('Add New Publisher') }}</span>
+                                    <span class="menu-text">{{ __('Add New') }}</span>
                                 </a>
                             </li>
                             @endcan
-                            @can('create_publishers')
+                            @can('view_bulk_upload_publishers')
                             <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.publishers.upload.form')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('Upload Publishers') }}</span>
-                                </a>
-                            </li>
-                            @endcan
-                            @can('update_publishers')
-                            <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='upload'&&Request::segment(4)=='update-hasoffer-id-by-email'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.publishers.upload.update.hasoffer.id.by.email.form')}}" class="menu-link">
-                                    <i class="menu-bullet menu-bullet-dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="menu-text">{{ __('Update Publishers Has Offer ID using Email') }}</span>
+                                    <span class="menu-text">{{ __('Bulk upload publishers') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -447,7 +480,7 @@
                                 </a>
                             </li>
                             @endcan 
-                            @if(auth()->user()->position != 'super_admin')
+                            @can('view_my_offers')
                             <li class="menu-item {{ Request::segment(2)=='my-offers'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.my-offers')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
@@ -456,7 +489,7 @@
                                     <span class="menu-text">{{ __('My Offers') }}</span>
                                 </a>
                             </li>
-                            @endif
+                            @endcan
                         </ul>
                     </div>
                 </li>
@@ -470,7 +503,7 @@
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-tasks"></i>
                         </span>
-                        <span class="menu-text">{{ __('Offer Requests') }}</span>
+                        <span class="menu-text">{{ __('Coupon Requests') }}</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="menu-submenu">
@@ -478,7 +511,7 @@
                         <ul class="menu-subnav">
                             <li class="menu-item menu-item-parent" aria-haspopup="true">
                                 <span class="menu-link">
-                                    <span class="menu-text">{{ __('Offer Requests') }}</span>
+                                    <span class="menu-text">{{ __('Coupon Requests') }}</span>
                                 </span>
                             </li>
                             @can('view_offer_requests')
@@ -487,7 +520,7 @@
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('All Offer Requests') }}</span>
+                                    <span class="menu-text">{{ __('All Coupon Requests') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -548,13 +581,13 @@
                             </li>
                             @endcan
 
-                            @can('create_coupons')
+                            @can('view_upload_coupons')
                             <li class="menu-item {{ Request::segment(2)=='coupons'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.coupons.upload.form')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
-                                    <span class="menu-text">{{ __('Upload Coupons') }}</span>
+                                    <span class="menu-text">{{ __('Bulk Upload Coupons') }}</span>
                                 </a>
                             </li>
                             @endcan
@@ -777,7 +810,7 @@
                 </li>
                 @endcan
 
-                <li class="menu-item {{ Request::segment(2)=='chat'?'menu-item-active':'' }}" aria-haspopup="true">
+                {{-- <li class="menu-item {{ Request::segment(2)=='chat'?'menu-item-active':'' }}" aria-haspopup="true">
                     <a href="{{route('admin.chat')}}" class="menu-link">
                         <span class="svg-icon menu-icon">
                             <i class="fas fa-comment"></i>                      
@@ -785,7 +818,7 @@
                         <span class="menu-text">{{ __('Chat') }}  </span>
                         @if(unSeenMessages()  > 0)<span class="label label-sm label-danger mt-1"> {{ unSeenMessages()  }}</span> @endif
                     </a>
-                </li>
+                </li> --}}
 
                 @can('view_helps')
                 <li class="menu-item {{ Request::segment(2)=='helps'?'menu-item-active':'' }}" aria-haspopup="true">

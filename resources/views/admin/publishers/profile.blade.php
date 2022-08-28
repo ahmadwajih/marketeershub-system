@@ -160,7 +160,7 @@
                             <!--begin::Item-->
                             <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
                                 <span class="mr-4">
-                                    <i class="fas fa-donate fa-2x"></i>
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
                                 </span>
                                 <div class="d-flex flex-column text-dark-75">
                                     <span class="font-weight-bolder font-size-sm">{{ __('Total Sales') }}</span>
@@ -172,12 +172,32 @@
                             <!--begin::Item-->
                             <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
                                 <span class="mr-4">
-                                    <i class="flaticon-piggy-bank display-4 text-muted font-weight-bold"></i>
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
                                 </span>
                                 <div class="d-flex flex-column text-dark-75">
-                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Commission') }}</span>
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Revenue') }}</span>
                                     <span class="font-weight-bolder font-size-h5">
                                     <span class="text-dark-50 font-weight-bold">$</span>{{ $totalNumbers->revenue ?? 0 }}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                <span class="mr-4">
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                </span>
+                                <div class="d-flex flex-column text-dark-75">
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Payout') }}</span>
+                                    <span class="font-weight-bolder font-size-h5">
+                                    <span class="text-dark-50 font-weight-bold">$</span>{{ $totalNumbers->payout ?? 0 }}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                <span class="mr-4">
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                </span>
+                                <div class="d-flex flex-column text-dark-75">
+                                    <span class="font-weight-bolder font-size-sm">{{ __('Total Gross Margin') }}</span>
+                                    <span class="font-weight-bolder font-size-h5">
+                                    <span class="text-dark-50 font-weight-bold">$</span>{{ (isset($totalNumbers->payout) && isset($totalNumbers->revenue)) ? $totalNumbers->revenue - $totalNumbers->payout : 0 }}</span>
                                 </div>
                             </div>
                             <!--end::Item-->

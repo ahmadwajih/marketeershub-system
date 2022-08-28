@@ -8,6 +8,7 @@ use App\Imports\OfferCouponImport;
 use App\Models\Advertiser;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\NewOldOffer;
 use App\Models\Offer;
 use App\Models\OfferRequest;
@@ -19,6 +20,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+use Matrix\Exception;
+use Yajra\DataTables\DataTables;
 
 class OfferController extends Controller
 {
@@ -61,6 +65,7 @@ class OfferController extends Controller
         return view('admin.offers.create', [
             'countries' => Country::all(),
             'categories' => Category::all(),
+            'currencies' => Currency::all(),
             'advertisers' => Advertiser::whereStatus('active')->get()
         ]);
     }
@@ -75,12 +80,10 @@ class OfferController extends Controller
     {
         $this->authorize('create_offers');
         $data = $request->validate([
-            'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
             'partener' => 'required|in:none,salla',
             'salla_user_email' => 'required_if:partener,salla|email|nullable',
             'advertiser_id' => 'nullable|exists:advertisers,id',
-            'description_ar' => 'nullable',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
@@ -98,12 +101,11 @@ class OfferController extends Controller
             'old_payout' => 'required_if:cps_type,new_old|nullable|numeric',
             'old_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
             'status' => 'required|in:active,pending,pused,expire',
-            'expire_date' => 'required|date|after:yesterday',
+            'expire_date' => 'nullable|date|after:yesterday',
             'note' => 'nullable',
-            'terms_and_conditions_ar' => 'nullable',
             'terms_and_conditions_en' => 'nullable',
             'countries' => 'array|required|exists:countries,id',
-            'currency_id' => 'nullable',
+            'currency_id' => 'nullable|exists:currencies,id',
             'discount' => 'required|numeric',
             'discount_type' => 'required|in:flat,percentage',
             'slaps.*.from' => 'required_if:cps_type,slaps',
@@ -128,15 +130,17 @@ class OfferController extends Controller
         $data['thumbnail'] = $thumbnail;
         $data['payout']    = $request->cps_type == 'static' ? $request->payout : null;
         $data['revenue']   = $request->cps_type == 'static' ? $request->revenue : null;
-
+        $data['name_ar']   = $request->name_en;
+        $data['description_ar']   = $request->description_en;
+        $data['terms_and_conditions_ar']   = $request->terms_and_conditions_en;
         $offer = Offer::create($data);
         userActivity('Offer', $offer->id, 'create');
         $publishers = User::wherePosition('publisher')->get();
-        try {
-            Notification::send($publishers, new NewOffer($offer));
-        } catch (\Throwable $th) {
-            Log::debug($th);
-        }
+        // try {
+        //     Notification::send($publishers, new NewOffer($offer));
+        // } catch (\Throwable $th) {
+        //     Log::debug($th);
+        // }
 
         if ($request->categories) {
             $offer->categories()->attach($request->categories);
@@ -174,17 +178,16 @@ class OfferController extends Controller
                     ]);
                 }
             }
-
         }
 
         // If this offer is with salla partener 
-        if($request->partener == 'salla'){
+        if ($request->partener == 'salla') {
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
 
-         // Check of offer type is link tracking to upload coupons
-        if($request->coupons){
-            Excel::import(new OfferCouponImport($offer->id),request()->file('coupons'));
+        // Check of offer type is link tracking to upload coupons
+        if ($request->coupons) {
+            Excel::import(new OfferCouponImport($offer->id), request()->file('coupons'));
         }
         $notification = [
             'message' => 'Created successfully',
@@ -199,18 +202,46 @@ class OfferController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $this->authorize('show_offers');
         $offer = Offer::withTrashed()->findOrFail($id);
         $offerRequest = OfferRequest::where([
-            ['user_id', '=',auth()->user()->id],
-            ['offer_id', '=',$offer->id]
-            
+            ['user_id', '=', auth()->user()->id],
+            ['offer_id', '=', $offer->id]
+
         ])->first();
 
+
+        $topPublishers = DB::table('pivot_reports')
+            ->select(
+                DB::raw('pivot_reports.orders as orders'),
+                DB::raw('pivot_reports.sales as sales'),
+                DB::raw('pivot_reports.payout as payout'),
+                DB::raw('pivot_reports.revenue as revenue'),
+                'users.id as user_id',
+                'users.ho_id as user_ho_id',
+                'users.name as user_name',
+                'users.team as user_team',
+                'pivot_reports.date as date',
+                DB::raw('COUNT(coupons.id) as coupons')
+            )
+            ->orderBy('orders',  'desc')
+            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
+            ->join('users', 'coupons.user_id', '=', 'users.id')
+            ->groupBy('user_name', 'date', 'orders')
+            
+            ->get();
+        
+
         // userActivity('Offer', $offer->id, 'view');
-        return view('admin.offers.show', ['offer' => $offer, 'offerRequest' => $offerRequest]);
+        //
+        return view('admin.offers.show', [
+            'offer' => $offer,
+            'offerRequest' => $offerRequest,
+            'topPublishers' => $topPublishers->groupBy('date')->first(), 
+        ]);
     }
 
     /**
@@ -226,6 +257,7 @@ class OfferController extends Controller
             'offer' => $offer,
             'countries' => Country::all(),
             'categories' => Category::all(),
+            'currencies' => Currency::all(),
             'advertisers' => Advertiser::whereStatus('active')->get()
         ]);
     }
@@ -241,12 +273,10 @@ class OfferController extends Controller
     {
         $this->authorize('update_offers');
         $data      = $request->validate([
-            'name_ar' => 'required|max:255',
             'name_en' => 'required|max:255',
             'partener' => 'required|in:none,salla',
             'salla_user_email' => 'nullable|required_if:partener,salla|email',
             'advertiser_id' => 'nullable|exists:advertisers,id',
-            'description_ar' => 'nullable',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
@@ -263,12 +293,11 @@ class OfferController extends Controller
             'old_payout' => 'required_if:cps_type,new_old|nullable|numeric',
             'old_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
             'status' => 'required|in:active,pending,pused,expire',
-            'expire_date' => 'required|date|after:yesterday',
+            'expire_date' => 'nullable|date|after:yesterday',
             'note' => 'nullable',
-            'terms_and_conditions_ar' => 'nullable',
             'terms_and_conditions_en' => 'nullable',
             'countries' => 'array|required|exists:countries,id',
-            'currency_id' => 'nullable',
+            'currency_id' => 'nullable|exists:currencies,id',
             'discount' => 'required|numeric',
             'discount_type' => 'required|in:flat,percentage',
         ]);
@@ -289,6 +318,9 @@ class OfferController extends Controller
         $data['thumbnail'] = $thumbnail;
         $data['payout']    = $request->cps_type == 'static' ? $request->payout : null;
         $data['revenue']   = $request->cps_type == 'static' ? $request->revenue : null;
+        $data['name_ar']   = $request->name_en;
+        $data['description_ar']   = $request->description_en;
+        $data['terms_and_conditions_ar']   = $request->terms_and_conditions_en;
 
         userActivity('Offer', $offer->id, 'update', $data, $offer);
         $offer->update($data);
@@ -332,7 +364,7 @@ class OfferController extends Controller
         }
 
         // If this offer is with salla partener 
-        if($request->partener == 'salla'){
+        if ($request->partener == 'salla') {
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
 
@@ -358,5 +390,4 @@ class OfferController extends Controller
             $offer->delete();
         }
     }
-
 }

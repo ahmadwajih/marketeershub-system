@@ -73,17 +73,9 @@
                                         <div class="mb-3">
                                             <div class="mb-2">
                                                 <div class="form-group row">
+          
                                                     <div class="col-md-12">
-                                                        <label>* اسم العرض باللغة العربية :</label>
-                                                        <input type="text" name="name_ar" class="form-control" value="{{old('name_ar') ?? $offer->name_ar}}"/>
-                                                        @if ($errors->has('name_ar'))
-                                                            <div>
-                                                                <p class="invalid-input">{{ $errors->first('name_ar') }}</p>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <label>* {{ __('Offer Name In English') }} :</label>
+                                                        <label>* {{ __('Offer Name') }} :</label>
                                                         <input type="text" name="name_en" class="form-control" value="{{old('name_en') ?? $offer->name_en}}"/>
                                                         @if ($errors->has('name_en'))
                                                             <div>
@@ -117,7 +109,7 @@
 
                                                     <div class="col-md-12">
                                                         <label>* {{ __('Advertiser') }} :</label>
-                                                        <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id">
+                                                        <select class="form-control select2" id="kt_select_advertiser_id" name="advertiser_id" required>
                                                             <option selected value="">{{ __('No one') }}</option>
                                                             @foreach ($advertisers as $advertiser)
                                                                 <option {{ old('advertiser_id')==$advertiser->id||$offer->advertiser_id==$advertiser->id?'selected':''  }} value="{{ $advertiser->id }}">{{  $advertiser->company_name }}</option>
@@ -132,16 +124,7 @@
                                                 </div>
                                                 <div class="form-group row">
                                                     <div class="col-lg-12">
-                                                        <label>الوصف باللغة العربية:</label>
-                                                        <textarea class="form-control" name="description_ar" cols="30" rows="10">{{old('description_ar') ?? $offer->description_ar}}</textarea>
-                                                        @if ($errors->has('description_ar'))
-                                                            <div>
-                                                                <p class="invalid-input">{{ $errors->first('description_ar') }}</p>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <label>Description In English :</label>
+                                                        <label>Description :</label>
                                                         <textarea class="form-control" name="description_en" cols="30" rows="10">{{old('description_en') ?? $offer->description_en}}</textarea>
                                                         @if ($errors->has('description_en'))
                                                             <div>
@@ -152,15 +135,6 @@
                                                 </div>
 
                                                 <div class="form-group row">
-                                                    <div class="col-md-12">
-                                                        <label>* {{ __('Website') }} :</label>
-                                                        <input type="url" name="website" class="form-control" value="{{old('website') ?? $offer->website}}"/>
-                                                        @if ($errors->has('website'))
-                                                            <div>
-                                                                <p class="invalid-input">{{ $errors->first('website') }}</p>
-                                                            </div>
-                                                        @endif
-                                                    </div>
                                                     <div class="col-md-12">
                                                         <label>* {{ __('Offer URL') }} :</label>
                                                         <input type="url" name="offer_url" class="form-control" value="{{old('offer_url') ?? $offer->offer_url}}"/>
@@ -174,7 +148,7 @@
                                                 </div>
 
                                                 <div class="form-group row">
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-12">
                                                         <label>* {{ __('Categories') }} :</label>
                                                         <select class="form-control select2" id="kt_select_categories" name="categories[]" multiple>
                                                             @foreach ($categories as $category)
@@ -187,8 +161,8 @@
                                                             </div>
                                                         @endif
                                                     </div>
-                                                    <div class="col-lg-4">
-                                                        <label>* {{ _('Country') }} :</label>
+                                                    <div class="col-lg-12">
+                                                        <label>* {{ _('Geo`s') }} :</label>
                                                         <select class="form-control select2" id="kt_select_countries" name="countries[]" multiple>
                                                             @foreach($countries as $country)
                                                                 <option {{ old('countries')?(in_array($country->id, old('countries'))?'selected':''):(in_array($country->id, $offer->countries->pluck('id')->toArray())?"selected":"")}} value="{{$country->id}}">{{$country->name_en}}</option>
@@ -200,7 +174,7 @@
                                                             </div>
                                                         @endif
                                                     </div>
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-12">
                                                         <label>* {{ _('Type') }} :</label>
                                                         <select class="form-control select2" id="kt_select_type" name="type">
                                                             <option {{ old('type')=='coupon_tracking' || $offer->type=='coupon_tracking'?'selected':''  }} value="coupon_tracking">{{ __('Coupon Tracking') }}</option>
@@ -471,7 +445,23 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-md-12">
-                                                        <label>* {{ __('Expire Date') }} :</label>
+                                                        <label>* {{ __('Currency') }} :</label>
+                                                        <select class="form-control select2" id="kt_select_currency_id" name="currency_id" required>
+                                                            <option selected value="">{{ __('No one') }}</option>
+                                                            @foreach ($currencies as $currency)
+                                                                <option {{ old('currency_id')==$currency->id||$offer->currency_id==$currency->id?'selected':''  }} value="{{ $currency->id }}">{{  $currency->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @if ($errors->has('currency_id'))
+                                                            <div>
+                                                                <p class="invalid-input">{{ $errors->first('currency_id') }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-12">
+                                                        <label>{{ __('Expire Date') }} :</label>
                                                         <input type="date" name="expire_date" class="form-control" value="{{old('expire_date') ?? $offer->expire_date}}"/>
                                                         @if ($errors->has('expire_date'))
                                                             <div>
@@ -484,8 +474,7 @@
                                                         <select class="form-control select2" id="kt_select_status" name="status">
                                                             <option {{ old('status')=="pending"||$offer->status=="pending"?"selected":"" }} value="pending">{{ __('Pending') }}</option>
                                                             <option {{ old('status')=="active"||$offer->status=="active"?"selected":"" }} value="active">{{ __('Active') }}</option>
-                                                            <option {{ old('status')=="pused"||$offer->status=="pused"?"selected":"" }} value="pused">{{ __('Pused') }}</option>
-                                                            <option {{ old('status')=="expire"||$offer->status=="expire"?"selected":"" }} value="expire">{{ __('Expire') }}</option>
+                                                            <option {{ old('status')=="pused"||$offer->status=="pused"?"selected":"" }} value="pused">{{ __('Paused') }}</option>
                                                         </select>
                                                         @if ($errors->has('status'))
                                                             <div>
@@ -509,11 +498,11 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-lg-12">
-                                                        <label> {{ __('Terms And Conditions') }} :</label>
-                                                        <textarea class="form-control" name="terms_and_conditions" cols="30" rows="10">{{old('terms_and_conditions') ?? $offer->terms_and_conditions}}</textarea>
-                                                        @if ($errors->has('terms_and_conditions'))
+                                                        <label>{{ __('Offer Restrictions') }} :</label>
+                                                        <textarea class="form-control" name="terms_and_conditions_en" cols="30" rows="10">{{old('terms_and_conditions_en') ?? $offer->terms_and_conditions_en}}</textarea>
+                                                        @if ($errors->has('terms_and_conditions_en'))
                                                             <div>
-                                                                <p class="invalid-input">{{ $errors->first('terms_and_conditions') }}</p>
+                                                                <p class="invalid-input">{{ $errors->first('terms_and_conditions_en') }}</p>
                                                             </div>
                                                         @endif
                                                     </div>
@@ -552,6 +541,9 @@
             placeholder: "Select Option",
         });
         $('#kt_select_advertiser_id').select2({
+            placeholder: "Select Option",
+        });
+        $('#kt_select_currency_id').select2({
             placeholder: "Select Option",
         });
         $('#kt_select_type').select2({

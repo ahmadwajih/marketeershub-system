@@ -68,44 +68,7 @@ $i = 1;
                         </ul>
                         <div class="tab-content min-h-300px pt-4" id="myTabContent5">
                             <div class="tab-pane fade show " id="kpis" role="tabpanel" aria-labelledby="db-tabnav-tab-1">
-
-                                <table class="table table-sm">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">First</th>
-                                        <th scope="col">Last</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Nick</td>
-                                        <td>Stone</td>
-                                        <td>
-                                            <span class="label label-inline label-light-primary font-weight-bold">Pending</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Ana</td>
-                                        <td>Jacobs</td>
-                                        <td>
-                                            <span class="label label-inline label-light-success font-weight-bold">Approved</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Larry</td>
-                                        <td>Pettis</td>
-                                        <td>
-                                            <span class="label label-inline label-light-danger font-weight-bold">New</span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
+                                @include('admin.components.kpis')
                             </div>
                             <div class="tab-pane active" id="overall" role="tabpanel" aria-labelledby="db-tabnav-tab-2">
                                 @include('admin.components.overall')

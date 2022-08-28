@@ -5,56 +5,64 @@
     </h3>
     
     <div class="table-responsive">
-        <table class="table table-head-custom table-head-bg  table-vertical-center text-center" border="1">
+        <table id="table_id" class="table table-head-custom table-head-bg  table-vertical-center text-center" border="1">
+
             <thead>
             <tr class="text-center text-uppercase">
-                <th style="min-width: 250px" class="pl-7">
-                    <span class="text-dark-75">{{ __('Team') }}</span>
-                </th>
+                <th style="min-width: 250px" class="pl-7">{{ __('AM Name') }}</th>
+                <th style="min-width: 100px">{{ __('Team') }}</th>
                 <th style="min-width: 100px">{{ __('Orders') }}</th>
+                <th style="min-width: 100px">{{ __('Sales') }}</th>
+                <th style="min-width: 100px">{{ __('payout') }}</th>
                 <th style="min-width: 100px">{{ __('Revenue') }}</th>
-                <th style="min-width: 100px">{{ __('AM') }}</th>
-                <th style="min-width: 100px">{{ __('Orders') }}</th>
-                <th style="min-width: 100px">{{ __('Revenue') }}</th>
+                <th style="min-width: 100px">{{ __('Publishers No') }}</th>
             </tr>
             </thead>
             <tbody>
-                {{-- @if($teamPerformance) --}}
-                {{-- @foreach($teamPerformance as $team)
-                <tr>
-                    <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ Str::headline($team->team)}}</span>
-                    </td>
-                    <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $team->orders }}</span>
-                    </td>
-                    <td rowspan="{{ publisherPerformanceBasedOnTeam($team->team)->groupBy('user')->count() + 1}}">
-                        <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $team->revenue }}$</span>
-                    </td>
-
-                </tr>
-                    @foreach(publisherPerformanceBasedOnTeam($team->team)->groupBy('user') as $publisher)
-                    <tr>
-                        <td>
-                            <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $publisher->first()->user }}</span>
-                        </td>
-                        <td>
-                            <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $publisher->first()->revenue }}$</span>
-                        </td>
-                        <td>
-                            <span class="text-dark-75 font-weight-bolder d-block font-size-lg">{{ $publisher->first()->orders }}$</span>
-                        </td>
-                    </tr>
-                    @endforeach
+                {{--  userPerformance($accountManager) --}}
+                @foreach($accountManagers as $accountManager)
+                    @php
+                        $userPerformance = userPerformance($accountManager);
+                    @endphp
+                    @if($userPerformance)
+                        <tr>
+                            <td>
+                                {{ $accountManager->name }}
+                            </td>
+                            <td>
+                                {{ $accountManager->updated_team }}
+                            </td>
+                            <td>
+                                {{ $userPerformance->orders ?? 0 }}
+                            </td>
+                            <td>
+                                {{ $userPerformance->sales ?? 0 }}$
+                            </td>
+                            <td>
+                                {{ $userPerformance->revenue ?? 0 }}$
+                            </td>
+                            <td>
+                                {{ $userPerformance->payout ?? 0 }}$
+                            </td>
+                            <td>
+                                {{ $accountManager->users->count() ?? 0 }}
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
-                @else
-                    <tr>
-                        <td colspan="6">
-                            <div class="alert alert-warning">No Data</div>
-                        </td>
-                    </tr>
-                @endif --}}
+     
             </tbody>
         </table>
     </div>
-    
+
+@push('scripts')
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>    <script>
+        $(document).ready( function () {
+            $('#table_id').DataTable({
+
+                order: [[2, 'desc']],
+            });
+        } );
+    </script>
+@endpush

@@ -65,14 +65,14 @@ class CouponController extends Controller
        
         $coupon = Coupon::create($data);
         // dd($coupon->user);/
-         if($request->user_id){
-            try {
-                Notification::send($coupon->user, new CodeRecycled($coupon));
-            } catch (\Throwable $th) {
-                Log::debug($th);
-            }
+        //  if($request->user_id){
+        //     try {
+        //         Notification::send($coupon->user, new CodeRecycled($coupon));
+        //     } catch (\Throwable $th) {
+        //         Log::debug($th);
+        //     }
             
-        }
+        // }
         userActivity('Coupon', $coupon->id, 'create');
 
         $notification = [
@@ -170,7 +170,7 @@ class CouponController extends Controller
      */
     public function uploadForm()
     {
-        $this->authorize('create_coupons');
+        $this->authorize('view_upload_coupons');
         return view('admin.coupons.upload',[
             'offers' => Offer::whereStatus("active")->get()
         ]);
@@ -184,7 +184,7 @@ class CouponController extends Controller
      */
     public function upload(Request $request)
     {
-        $this->authorize('create_coupons');
+        $this->authorize('view_upload_coupons');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'offer_id'   => 'required|exists:offers,id',

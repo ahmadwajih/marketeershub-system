@@ -7,6 +7,7 @@ use App\Http\Controllers\Extended\MhDataTables;
 use App\Imports\InfluencerImport;
 use App\Imports\PublisherImportV2;
 use App\Imports\PublishersImport;
+use App\Imports\PublishersImportNasedOnAcountManagerAndTeam;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\Category;
 use App\Models\City;
@@ -42,7 +43,6 @@ class PublisherController extends Controller
      */
     public function index(Request $request)
     {
-        
         $this->authorize('view_publishers');
         $where = [
             ['users.id', '!=', null]
@@ -89,37 +89,8 @@ class PublisherController extends Controller
             
             try {
                 
-                $publishers = User::select([
-                    'users.id',
-                    'users.ho_id',
-                    'users.name',
-                    'users.email',
-                    'users.team',
-                    DB::raw('COUNT(offer_user.offer_id) AS offersCount'),
-                    'users.category',
-                    'users.phone',
-                    'users.parent_id',
-                    'users.referral_account_manager',
-                    'users.created_at',
-                    'users.status',
-                    'countries.name_en as country_name',
-                    'cities.name_en as city_name',
-                    DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders_number'), 
-                    DB::raw('TRUNCATE(SUM(pivot_reports.sales),2) as sales_number'), 
-                    DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue_number'),
-                    DB::raw('TRUNCATE(SUM(pivot_reports.payout) ,2) as payout_number'),
-                ])
-
-                    ->leftJoin('countries', 'countries.id', '=', 'users.country_id')
-                    ->leftJoin('cities', 'cities.id', '=', 'users.city_id')
-                    ->leftJoin('category_user', 'category_user.user_id', '=', 'users.id')
-                    ->leftJoin('categories', 'categories.id', '=', 'category_user.category_id')
-                    ->leftJoin('social_media_links', 'social_media_links.user_id', '=', 'users.id')
-                    ->leftJoin('coupons', 'coupons.user_id', '=', 'users.id')
-                    ->leftJoin('pivot_reports', 'pivot_reports.coupon_id', '=', 'coupons.id')
-                    ->leftJoin('offer_user', 'offer_user.user_id', '=', 'users.id')
-                    ->wherePosition('publisher')
-                    ->with('parent', 'categories', 'socialMediaLinks')
+                $publishers = User::wherePosition('publisher')
+                    ->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city')
                     ->where($where)
                     ->groupBy('users.id');
                     $publishers->orderBy($sortBy, $sortType);
@@ -136,6 +107,7 @@ class PublisherController extends Controller
                 } else {
                     $data = $publishers->groupBy('users.id');
                 }
+
                 // return $data;
                 return DataTables::of($data)
                     ->addIndexColumn()
@@ -152,7 +124,7 @@ class PublisherController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
             } catch (Exception $exception) {
-                Log::error($exception->getMessage());
+                Log::debug($exception->getMessage());
             }
         }
 
@@ -494,7 +466,7 @@ class PublisherController extends Controller
             'iban'                      => 'nullable|required_if:position,publisher|max:255',
             'currency_id'               => 'nullable|required_if:position,publisher|exists:currencies,id',
             'categories'                => 'nullable|array|required_if:position,publisher|exists:categories,id',
-            // 'social_media.*.link'       => 'required_if:team,influencer',
+            'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
         if($request->traffic_sources){
@@ -582,12 +554,15 @@ class PublisherController extends Controller
         if($request->team == 'influencer' || $request->team == 'prepaid'){
             if($request->social_media && count($request->social_media) > 0){
                 foreach($request->social_media as $link){
-                    SocialMediaLink::create([
-                        'link' => $link['link'],
-                        'platform' => $link['platform'],
-                        'followers' => $link['followers'],
-                        'user_id' => $publisher->id,
-                    ]);
+                    if($link['link']){
+                        SocialMediaLink::create([
+                            'link' => $link['link'],
+                            'platform' => $link['platform'],
+                            'followers' => $link['followers'],
+                            'user_id' => $publisher->id,
+                        ]);
+                    }
+                    
                 }
 
             }
@@ -683,7 +658,6 @@ class PublisherController extends Controller
         ]);
         $userId = ($id == null) ? auth()->user()->id : $id;
         $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
-        
         $childrens = userChildrens($publisher);
         
         // $childrens = userChildrens($id) ?? [0=>0];
@@ -726,7 +700,7 @@ class PublisherController extends Controller
             $q->whereIn('coupons.user_id', $childrens);
         }])->get();
 
-
+       
         $activeOffers = DB::table('pivot_reports')
         ->select(
                 DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
@@ -750,7 +724,7 @@ class PublisherController extends Controller
             ->get();
         
             $totalNumbers = DB::table('pivot_reports')
-            ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'))
+            ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'), DB::raw('SUM(payout) as payout'))
             ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
             ->join('users', 'coupons.user_id', '=', 'users.id')
             ->whereIn('coupons.user_id', $childrens)
@@ -775,6 +749,8 @@ class PublisherController extends Controller
      */
     public function payments(Request $request, int $id = null)
     {
+        $this->authorize('view_my_payments');
+
         $userId = ($id == null) ? auth()->user()->id : $id;
         $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
         $childrens = $publisher->childrens()->pluck('id')->toArray();
@@ -816,7 +792,7 @@ class PublisherController extends Controller
      */
     public function upload()
     {
-        $this->authorize('create_publishers');
+        $this->authorize('view_bulk_upload_publishers');
         return view('admin.publishers.upload');
     }
 
@@ -829,19 +805,21 @@ class PublisherController extends Controller
     public function storeUpload(Request $request)
     {
 
-        $this->authorize('create_publishers');
+        $this->authorize('view_bulk_upload_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
+
+        // Excel::import(new InfluencerImport($request->team, $request->parent_id),request()->file('publishers'));
+
+
         if($request->team == 'affiliate'){
             Excel::import(new PublishersImport($request->team),request()->file('publishers'));
             // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
-
         }
         if($request->team == 'influencer'){
             Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
-
             // Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
         }
 
@@ -896,7 +874,19 @@ class PublisherController extends Controller
 
         }
     }
-
-
+// .  
+    public function checkIfExists(Request $request){
+        $user = User::where('phone', $request->column)->orWhere('email', $request->column)->first();
+        if($user){
+            $response = '<p class="invalid-input">'.__('Already exists his name is ').$user->name. __(' Team ') . $user->team . __(' Posiion ') . $user->position .' </p>';
+            if($user->parent){
+                $response .= '<p class="invalid-input">'.__('His account manager is '). $user->parent->name.'</p>';
+            }else{
+                $response .= '<p class="invalid-input">'.__('He dosn`t have account manager').'</p>';
+            }
+            return $response;
+        }
+        return null;
+    }
 
 }

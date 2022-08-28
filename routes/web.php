@@ -29,6 +29,7 @@ Route::get('/', function () {
 
 // Dashboard Routes
 Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.'], function(){
+    Route::post('mh-login', 'AuthController@login')->name('mh-login');
 
     Route::get('change-lang/{lang}', 'DashboardController@changeLang')->name('change.lang');
     Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
@@ -55,6 +56,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('publishers/type/{type}', 'PublisherController@getBasedOnType')->name('publishers.type');
         Route::get('publishers-search', 'PublisherController@search')->name('publishers.search');
         Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
+        Route::post('publishers-check-exists', 'PublisherController@checkIfExists')->name('publishers.check.exists');
+
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
         Route::get('publisher/payments/{id?}', 'PublisherController@payments')->name('publisher.payments');

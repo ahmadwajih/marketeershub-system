@@ -108,12 +108,12 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Team') }} :</label>
                                                 <select class="form-control select2" id="kt_select_team" name="team" >
-                                                    <option value="management">{{ __('Management') }}</option>
-                                                    <option value="digital_operation">{{ __('Digital Operation') }}</option>
-                                                    <option value="finance">{{ __('Finance') }}</option>
-                                                    <option value="media_buying">{{ __('Media Buying') }}</option>
-                                                    <option value="influencer">{{ __('Influencer') }}</option>
-                                                    <option value="affiliate">{{ __('Affiliate') }}</option>
+                                                    <option {{ old('team') == 'management' ? "selected" : '' }} value="management">{{ __('Management') }}</option>
+                                                    <option {{ old('team') == 'digital_operation' ? "selected" : '' }} value="digital_operation">{{ __('Digital Operation') }}</option>
+                                                    <option {{ old('team') == 'finance' ? "selected" : '' }} value="finance">{{ __('Finance') }}</option>
+                                                    <option {{ old('team') == 'media_buying' ? "selected" : '' }} value="media_buying">{{ __('Media Buying') }}</option>
+                                                    <option {{ old('team') == 'influencer' ? "selected" : '' }} value="influencer">{{ __('Influencer') }}</option>
+                                                    <option {{ old('team') == 'affiliate' ? "selected" : '' }} value="affiliate">{{ __('Affiliate') }}</option>
                                                 </select>
                                                 @if ($errors->has('team'))
                                                     <div>
@@ -125,11 +125,11 @@
                                             <div class="col-lg-4">
                                                 <label>* {{ __('Position') }} :</label>
                                                 <select class="form-control select2" id="kt_select_position" name="position" >
-                                                    <option value="employee">{{ __('Employee') }}</option>
-                                                    <option value="account_manager">{{ __('Account Manager') }}</option>
-                                                    <option value="team_leader">{{ __('Team Leader') }}</option>
-                                                    <option value="head">{{ __('Head') }}</option>
-                                                    <option value="super_admin">{{ __('Super Admin') }}</option>
+                                                    <option {{ old('position') == 'employee' ? "selected" : '' }} value="employee">{{ __('Employee') }}</option>
+                                                    <option {{ old('position') == 'account_manager' ? "selected" : '' }} value="account_manager">{{ __('Account Manager') }}</option>
+                                                    <option {{ old('position') == 'team_leader' ? "selected" : '' }} value="team_leader">{{ __('Team Leader') }}</option>
+                                                    <option {{ old('position') == 'head' ? "selected" : '' }} value="head">{{ __('Head') }}</option>
+                                                    <option {{ old('position') == 'super_admin' ? "selected" : '' }} value="super_admin">{{ __('Super Admin') }}</option>
                                                 </select>
                                                 @if ($errors->has('position'))
                                                     <div>
@@ -173,8 +173,8 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ __('Gender') }} :</label>
                                                 <select class="form-control select2" id="kt_select_gender" name="gender" >
-                                                    <option value="male">{{ __('Male') }}</option>
-                                                    <option value="female">{{ __('female') }}</option>
+                                                    <option {{ old('gender') == 'male' ? "selected" : '' }} value="male">{{ __('Male') }}</option>
+                                                    <option {{ old('gender') == 'female' ? "selected" : '' }} value="female">{{ __('female') }}</option>
                                                 </select>
                                                 @if ($errors->has('gender'))
                                                     <div>
@@ -202,7 +202,7 @@
                                                 <label>* {{ _('Country') }} :</label>
                                                 <select class="form-control select2" id="kt_select_country_id" name="country_id" >
                                                     @foreach($countries as $country)
-                                                        <option value="{{$country->id}}">{{$country->name_en}}</option>
+                                                        <option {{ old('country_id') == $country->id ? 'selected' : '' }} value="{{$country->id}}">{{$country->name_en}}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('country_id'))
@@ -214,7 +214,7 @@
                                             <div class="col-lg-6">
                                                 <label>* {{ _('City') }} :</label>
                                                 <select class="form-control select2" id="kt_select_city_id" name="city_id" >
-                                                    <option value="0">{{ __("Select Country") }}</option>
+                                                    <option {{ old('city_id') == $country->id ? 'selected' : '' }} value="0">{{ __("Select Country") }}</option>
                                                 </select>
                                                 @if ($errors->has('city_id'))
                                                     <div>

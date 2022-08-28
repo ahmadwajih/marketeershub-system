@@ -12,7 +12,7 @@ class CouponImport implements ToCollection
 {
     public $offerId;
     public $team;
-
+    public $oldId = null;
     public $test = [];
 
     public function __construct($offerId, $team)
@@ -25,10 +25,16 @@ class CouponImport implements ToCollection
 */
     public function collection(Collection $collection)
     {
-        // unset($collection[0]);
+        unset($collection[0]);
         foreach ($collection as $index => $col) 
         {
-        
+            if($this->team == 'influencer'){
+                $this->oldId = 'inf-'.$col[0];
+            }elseif($this->team == 'affiliate'){
+                $this->oldId = 'aff-'.$col[0];
+            }else{
+                $this->oldId = $col[0];
+            }
             if(!is_null($col[1])){
                 $userId = null;
                 if(!is_null($col[0])){
@@ -38,8 +44,7 @@ class CouponImport implements ToCollection
                             $userId = $publisher->id;
                         }
                     }else{
-                        $publisher = User::where('ho_id', $col[0])->where('team', $this->team)->first();
-                        // dd($publisher);
+                        $publisher = User::where('ho_id', $this->oldId)->where('team', $this->team)->first();
                         if($publisher){
                             $userId = $publisher->id;
                         }
@@ -56,6 +61,7 @@ class CouponImport implements ToCollection
                     [
                         'user_id' => $userId,
                     ]);
+                    $this->test[$index]['old_id'] = $this->oldId; 
                     if($coupon){
                         $this->test[$index]['code'] = $coupon->coupon; 
                         $this->test[$index]['user_id'] = $coupon->user_id; 

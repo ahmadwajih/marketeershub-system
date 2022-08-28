@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +41,7 @@ class PublishersImport implements ToCollection
         foreach ($collection as $index => $col) 
         {
       
-            $this->data['publisher_ho_id'] = $col[1];
+            $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
             
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com'){
@@ -51,7 +52,10 @@ class PublishersImport implements ToCollection
                     if($accountManager){
                         $this->accouManagerId = $accountManager->id;
                         $this->data['accountManager'] = $accountManager->id;
+                    }
 
+                    if(trim($col[20]) == 'MarketeersHub'){
+                        $this->accouManagerId = User::whereEmail('info@marketeershub.com')->orWhere('name', 'MarketeersHub')->first()->id;
                     }
                     // Get Country Id
                     $countryName = $col[6] ?? $col[7];
@@ -78,14 +82,14 @@ class PublishersImport implements ToCollection
                     }
 
                     // Get Cerrency Id 
-                    $currency = Currency::where('name_en', 'like', '%'.$col[14].'%')
-                        ->orWhere('name_ar', 'like', '%'.$col[14].'%')
+                    $currency = Currency::where('name_en', 'like', '%'.$col[11].'%')
+                        ->orWhere('name_ar', 'like', '%'.$col[11].'%')
                         ->orWhere('code', $col[14])
                         ->orWhere('sign', $col[14])
                         ->first();
 
                     // Get Category Id 
-                    $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[14]).'%')->orWhere('title_en', 'like', '%'.trim($col[14]).'%')->first();
+                    $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
 
 
                 } catch (\Throwable $th) {
@@ -178,7 +182,8 @@ class PublishersImport implements ToCollection
                 //     'parent_id' => $this->accouManagerId
                 // ]);
 
-                $publisher->roles()->sync(4);
+                $role = Role::whereLabel('publisher')->first();
+                $publisher->roles()->sync($role);
                 $category ? $publisher->categories()->sync($category->id) : '';
 
                 $this->countryId = null;

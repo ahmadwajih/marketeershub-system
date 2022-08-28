@@ -384,6 +384,23 @@ if(!function_exists('usersCounter')) {
         return cache('usersCount');
     }
 }
+if(!function_exists('positionRankCheck')) {
+    function positionRankCheck($position1 , $position2)
+    {
+        $super_admin = 0;
+        $head = -1;
+        $team_leader = -2;
+        $account_manager = -3;
+        $employee = -4;
+        $publisher = -5;
+
+        if($$position1 >= $$position2){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
 
 
 

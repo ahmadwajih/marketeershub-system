@@ -63,7 +63,7 @@ class PivotReportController extends Controller
 
         if($request->type=='validation'){
             $offer = Offer::findOrFail($request->offer_id);
-            Notification::send($offer->users, new UpdateValidation($offer));
+            // Notification::send($offer->users, new UpdateValidation($offer));
         }
         userActivity('PivotReport', null, 'upload');
 
