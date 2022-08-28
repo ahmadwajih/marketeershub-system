@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Notification;
 
 class PivotReportController extends Controller
 {
-    /**
+    /** Redesign
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
