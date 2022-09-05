@@ -42,10 +42,10 @@ class InfluencerImport implements ToCollection
         {
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager 
-                // $accountManager = User::select('id')->where('email',trim($col[4]))->first();
-                // if($accountManager){
-                //     $this->accouManagerId = $accountManager->id;
-                // }
+                $accountManager = User::select('id')->where('email',trim($col[4]))->first();
+                if($accountManager){
+                    $this->accouManagerId = $accountManager->id;
+                }
 
                 // Get Country Id
                 $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();

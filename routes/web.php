@@ -35,10 +35,16 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
+    Route::get('register', 'AuthController@registerForm')->name('register.form');
     Route::post('register', 'AuthController@register')->name('register');
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
     Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
+    //Start Auth ajax requests 
+    Route::get('ajax/acount-manager-based-on-team', 'AjaxController@getAccountManagersBasedOnTeam')->name('get.account.managers.based.on.team');
+    Route::get('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
+
+    //End Auth ajax requests 
 
 
 

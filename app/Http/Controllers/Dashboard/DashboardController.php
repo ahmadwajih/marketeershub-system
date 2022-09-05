@@ -35,20 +35,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
         $this->authorize('view_dashboard');
 
         // Get all offers that have coupons and report
-        $offers  = Offer::whereHas('report')->with(['report'])->get(); 
+        $offers  = Offer::whereHas('report')->with(['report'])->get();
 
         // Get all  account managers 
         $accountManagers = User::where('position', 'account_manager')->with('users')->has('users')->orderBy('team')->get();
-    
+
         // Team Performance data 
         $teamPerformance  = DB::table('pivot_reports')
-        ->select(
-                DB::raw('pivot_reports.orders as orders'), 
+            ->select(
+                DB::raw('pivot_reports.orders as orders'),
                 DB::raw('pivot_reports.revenue as revenue'),
                 'pivot_reports.date as date',
                 'users.team as team',
@@ -74,7 +75,8 @@ class DashboardController extends Controller
     }
 
 
-    public function changeLang($lang){
+    public function changeLang($lang)
+    {
         session(['lang' => $lang]);
         return redirect()->back();
     }
@@ -87,18 +89,18 @@ class DashboardController extends Controller
         $totalNumbers  = totalNumbers();
         $totalGrossMargin = $totalNumbers->revenue - $totalNumbers->payout;
         $orders = DB::table('pivot_reports')
-        ->select(
-            DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
-            DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'), 
-            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),  
-            DB::raw('TRUNCATE(SUM(pivot_reports.payout) ,2) as payout'),
-            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) - SUM(pivot_reports.payout) ,2) as grossmargin')
-        )
-        ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
-        ->orderBy('offers.id', 'desc')
-        ->groupBy('offers.id')
-        ->get();
-    
+            ->select(
+                DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.payout) ,2) as payout'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) - SUM(pivot_reports.payout) ,2) as grossmargin')
+            )
+            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+            ->orderBy('offers.id', 'desc')
+            ->groupBy('offers.id')
+            ->get();
+
         $data = [
             'orders' => [
                 'series' => [
@@ -148,7 +150,7 @@ class DashboardController extends Controller
                     ],
                 ],
             ]
-            ];
+        ];
         return response()->json($data, 200);
     }
 
@@ -158,17 +160,17 @@ class DashboardController extends Controller
         $totalNumbers  = totalNumbers();
         $totalGrossMargin = $totalNumbers->revenue - $totalNumbers->payout;
         $orders = DB::table('pivot_reports')
-        ->select(
-            DB::raw('TRUNCATE(SUM(pivot_reports.orders) / '.$totalNumbers->orders.' * 100 ,2) as orders'), 
-            DB::raw('TRUNCATE(SUM(pivot_reports.sales) / '.$totalNumbers->sales.' * 100 ,2) as sales'), 
-            DB::raw('TRUNCATE(SUM(pivot_reports.revenue) / '.$totalNumbers->revenue.' * 100 ,2) as revenue'),  
-            DB::raw('TRUNCATE(SUM(pivot_reports.payout) / '.$totalNumbers->payout.' * 100 ,2) as payout'),
-            DB::raw('TRUNCATE((SUM(pivot_reports.revenue) - SUM(pivot_reports.payout))  / '.$totalGrossMargin.' * 100 ,2) as grossmargin')
-        )
-        ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
-        ->orderBy('offers.id', 'desc')
-        ->groupBy('offers.id')
-        ->get();
+            ->select(
+                DB::raw('TRUNCATE(SUM(pivot_reports.orders) / ' . $totalNumbers->orders . ' * 100 ,2) as orders'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.sales) / ' . $totalNumbers->sales . ' * 100 ,2) as sales'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) / ' . $totalNumbers->revenue . ' * 100 ,2) as revenue'),
+                DB::raw('TRUNCATE(SUM(pivot_reports.payout) / ' . $totalNumbers->payout . ' * 100 ,2) as payout'),
+                DB::raw('TRUNCATE((SUM(pivot_reports.revenue) - SUM(pivot_reports.payout))  / ' . $totalGrossMargin . ' * 100 ,2) as grossmargin')
+            )
+            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
+            ->orderBy('offers.id', 'desc')
+            ->groupBy('offers.id')
+            ->get();
 
         $data = [
             'orders' => [
@@ -244,22 +246,33 @@ class DashboardController extends Controller
     }
 
 
-    public function loginUsers(Request $request){
+    public function loginUsers(Request $request)
+    {
 
-        if ($request->ajax()){
-            $users = getModelData('LoginUser' , $request);
+        if ($request->ajax()) {
+            $users = getModelData('LoginUser', $request);
             return response()->json($users);
         }
         return view('admin.login-users');
-
     }
-    
+
     public function test(Request $request)
     {
-        $users = User::all();
-        dd(count($users->where('parent_id', '!=', null)));
-        dd(count($users));
+        abort(404);
+        // $coupons = Coupon::get();
+        // $reports = PivotReport::all();
+        // foreach($coupons as $coupon){
+        //     echo "coupon id => " . $coupon->id;
+        //     echo "<br>";
+        //     $coupon->forceDelete();
+        // }
+        // foreach($reports as $report){
+        //     echo "report id => " . $report->id;
+        //     echo "<br>";
+        //     $report->forceDelete();
+        // }
+        // $accountManagers = User::select(['id', 'name', 'team'])->wherePosition('account_manager')->get();
+        // return view('new_admin.auth.login', ['accountManagers' => $accountManagers]);
+        // return view('new_admin.index');
     }
-
 }
-

@@ -23,6 +23,7 @@ class User extends Authenticatable
      *
      * @var string[]
      */
+
     protected $guarded = [];
     public $appends = ['socialLinks', 'offersCount', 'sumOrders'];
     /**

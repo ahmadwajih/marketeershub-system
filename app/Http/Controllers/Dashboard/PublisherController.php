@@ -318,7 +318,7 @@ class PublisherController extends Controller
         }
 
 
-        $role = Role::findOrFail(4);
+        $role = Role::whereLabel('publisher')->first();
         $publisher->assignRole($role);
 
         // Store Social Media Accounts

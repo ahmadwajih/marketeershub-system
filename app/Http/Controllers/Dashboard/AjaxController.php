@@ -14,23 +14,26 @@ use PhpOffice\PhpSpreadsheet\Calculation\Financial\Coupons;
 
 class AjaxController extends Controller
 {
-     /**
+    /**
      * return list of cities based on country id
      *
      * @return \Illuminate\Http\Response
      */
     public function cities(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $cities = City::where('country_id', $request->countryId)->get();
-            return view('admin.ajax.cities', ['cities' => $cities]);
+            return view('new_admin.components.option', [
+                'title' => "Select City",
+                "items" => $cities
+            ]);
         }
     }
 
 
     public function viewActivityHistory(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $activity = UserActivity::findOrFail($request->activityId);
             return view('admin.modals.activityHistory', ['activity' => $activity]);
         }
@@ -38,16 +41,27 @@ class AjaxController extends Controller
 
     public function accountManagers(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $users = User::where('position', 'account_manager')
-            ->whereStatus('active')
-            ->where('team', $request->team)->get();
+                ->whereStatus('active')
+                ->where('team', $request->team)->get();
             return view('admin.ajax.options', ['options' => $users]);
         }
     }
 
-    public function readNotifications(){
+    public function readNotifications()
+    {
         auth()->user()->unreadNotifications->markAsRead();
     }
 
+    public function getAccountManagersBasedOnTeam(Request $request)
+    {
+        if ($request->ajax()) {
+            $accountManagers = User::where('position', 'account_manager')->where('team', $request->team)->get();
+            return view('new_admin.components.option', [
+                'title' => "Select Referral",
+                "items" => $accountManagers
+            ]);
+        }
+    }
 }
