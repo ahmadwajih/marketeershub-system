@@ -815,12 +815,12 @@ class PublisherController extends Controller
 
 
         if($request->team == 'affiliate'){
-            Excel::import(new PublishersImport($request->team),request()->file('publishers'));
-            // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
+            // Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+            Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
         }
         if($request->team == 'influencer'){
-            Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
-            // Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
+            // Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
+            Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
         }
 
         userActivity('User', null , 'upload', 'Upload Publishers');
