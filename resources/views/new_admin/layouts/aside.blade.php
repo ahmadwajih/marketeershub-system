@@ -7,7 +7,7 @@
             <!--begin::Menu-->
             <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_aside_menu" data-kt-menu="true">
                 <!--begin:Menu item-->
-                <div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
+                <div data-kt-menu-trigger="click" class="menu-item  {{ Request::segment(2)=='index'?'here show':'' }}  menu-accordion">
                     <!--begin:Menu link-->
                     <span class="menu-link">
                         <span class="menu-icon">
@@ -22,7 +22,7 @@
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                        <span class="menu-title">Dashboards</span>
+                        <span class="menu-title">Dashboard</span>
                         <span class="menu-arrow"></span>
                     </span>
                     <!--end:Menu link-->
@@ -31,7 +31,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a class="menu-link active" href="{{ route('admin.index') }}">
+                            <a class="menu-link  {{ Request::segment(2)=='index'?'active':'' }} " href="{{ route('admin.index') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
@@ -55,7 +55,7 @@
                 <!--end:Menu item-->
 
                 <!--begin:Team Members-->
-                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Request::segment(2)=='users'?'here show':'' }}">
                     <!--begin:Menu link-->
                     <span class="menu-link">
                         <span class="menu-icon">
@@ -77,7 +77,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a class="menu-link" href="{{ route('admin.users.index') }}">
+                            <a class="menu-link {{ Request::segment(2)=='users'&&Request::segment(3)!='create'?'active':'' }}" href="{{ route('admin.users.index') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
@@ -93,7 +93,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a class="menu-link" href="{{ route('admin.users.create') }}">
+                            <a class="menu-link  {{ Request::segment(2)=='users'&&Request::segment(3)=='create'?'active':'' }}" href="{{ route('admin.users.create') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>

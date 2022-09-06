@@ -16,8 +16,8 @@ var KTUsersList = function () {
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            // order: [[5, 'desc']],
-            stateSave: false,
+            order: [[5, 'asc']],
+            stateSave: true,
             select: {
                 style: 'multi',
                 selector: 'td:first-child input[type="checkbox"]',
@@ -31,6 +31,7 @@ var KTUsersList = function () {
                 { data: 'id' },
                 { data: 'name' },
                 { data: 'email' },
+                { data: 'phone' },
                 { data: 'team' },
                 { data: null },
                 { data: null },
@@ -48,7 +49,7 @@ var KTUsersList = function () {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     orderable: false,
                     searchable:false,
                     render: function (data, type, row) {

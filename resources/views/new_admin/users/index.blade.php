@@ -80,7 +80,7 @@
                                 <!--begin::Input group-->
                                 <div class="mb-10">
                                     <label class="form-label fs-6 fw-semibold">Team:</label>
-                                    <select class="form-select form-select-solid fw-bold" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-user-table-filter="team" data-hide-search="true">
+                                    <select class="form-select form-select-solid fw-bold" name="team" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-user-table-filter="search" data-hide-search="true">
                                         <option></option>
                                         <option {{ old('team') == 'management' ? "selected" : '' }} value="management">{{ __('Management') }}</option>
                                         <option {{ old('team') == 'digital_operation' ? "selected" : '' }} value="digital_operation">{{ __('Digital Operation') }}</option>
@@ -116,7 +116,7 @@
                         <!--end::Svg Icon-->Export</button> --}}
                         <!--end::Export-->
                         <!--begin::Add user-->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_user">
+                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                         <span class="svg-icon svg-icon-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +124,7 @@
                                 <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
                             </svg>
                         </span>
-                        <!--end::Svg Icon-->Add User</button>
+                        <!--end::Svg Icon-->Add User</a>
                         <!--end::Add user-->
                     </div>
                     <!--end::Toolbar-->
@@ -235,6 +235,8 @@
                         <th>#</th>
                         <th>{{ __('Name') }}</th>
                         <th>{{ __('Email') }}</th>
+                        <th>{{ __('Phone') }}</th>
+                        <th>{{ __('Team') }}</th>
                         <th>{{ __('Belongs To') }}</th>
                         <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                     </tr>
@@ -256,6 +258,6 @@
 var route = "{{route('admin.users.index')}}";
 var publishersRoute = "{{route('admin.publisher.profile')}}";
 </script>
-<script src="{{ asset('new_dashboard') }}/js/datatables\users\table.js"></script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/users/table.js"></script>
 
 @endpush

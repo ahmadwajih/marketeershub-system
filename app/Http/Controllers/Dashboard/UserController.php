@@ -20,12 +20,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
+        // dd($request->all());
         $this->authorize('view_users');
         if ($request->ajax()){
-            $users = User::with('parent');
-
-            return DataTables::eloquent($users)->make(true);
 
             if(auth()->user()->position == 'super_admin'){
                 $users = User::with('parent')->where([
@@ -135,12 +132,13 @@ class UserController extends Controller
             $this->authorize('update_users');
         }
   
-        return view('admin.users.edit', [ 
+        return view('new_admin.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),
             'roles' => Role::all(),
             'cities' => City::whereCountryId($user->country_id)->get(),
             'parents' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
+            'users' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
         ]);
     }
 

@@ -5,7 +5,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Add New Team Member</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Edit Team Member</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -21,7 +21,7 @@
                 <li class="breadcrumb-item text-gray-600">Team Member</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Add New</li>
+                <li class="breadcrumb-item text-gray-500">Edit</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->
@@ -55,7 +55,7 @@
                             <div class="card-body text-center pt-0">
                                 <!--begin::Image input-->
                                 <!--begin::Image input placeholder-->
-                                <style>.image-input-placeholder { background-image: url('{{ asset("new_dashboard") }}/media/svg/files/blank-image.svg'); } [data-theme="dark"] .image-input-placeholder { background-image: url('{{ asset("new_dashboard") }}/media/svg/files/blank-image-dark.svg'); }</style>
+                                <style>.image-input-placeholder { background-image: url('{{ getImagesPath("Users", $user->image) }}'); } [data-theme="dark"] .image-input-placeholder { background-image: url('{{ asset("new_dashboard") }}/media/svg/files/blank-image-dark.svg'); }</style>
                                 <!--end::Image input placeholder-->
                                 <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true" style="&lt;br /&gt; &lt;b&gt;Warning&lt;/b&gt;: Undefined variable $imageBg in &lt;b&gt;C:\wamp64\www\keenthemes\core\html\dist\view\pages\apps\ecommerce\catalog\edit-product\_thumbnail.php&lt;/b&gt; on line &lt;b&gt;30&lt;/b&gt;&lt;br /&gt;">
                                     <!--begin::Preview existing avatar-->
@@ -87,7 +87,7 @@
                                 <!--end::Description-->
                                 @if ($errors->has('image'))
                                     <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('image') }}</div></div>
-                                @endif                            
+                                @endif
                             </div>
                             <!--end::Card body-->
                         </div>
@@ -112,11 +112,11 @@
                                             <label class="required form-label">Full Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="name" class="form-control mb-2" placeholder="Full name" value="{{ old('name') }}" />
+                                            <input type="text" name="name" class="form-control mb-2" placeholder="Full name" value="{{ old('name') ?? $user->name }}" required/>
+                                            <!--end::Input-->
                                             @if ($errors->has('name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('name') }}</div></div>
                                             @endif
-                                            <!--end::Input-->
                                         </div>
                                         <!--end::Input group-->
                                     </div>
@@ -128,7 +128,7 @@
                                             <label class="required form-label">Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Phone" value="{{ old('phone') }}" />
+                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Phone" value="{{ old('phone') ?? $user->phone }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('phone'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
@@ -144,7 +144,7 @@
                                             <label class="required form-label">Email</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" value="{{ old('email') }}" />
+                                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" value="{{ old('email') ?? $user->email }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('email'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('email') }}</div></div>
@@ -177,12 +177,12 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="team" aria-label="Select a Team" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
-                                                <option {{ old('team') == 'management' ? "selected" : '' }} value="management">{{ __('Management') }}</option>
-                                                <option {{ old('team') == 'digital_operation' ? "selected" : '' }} value="digital_operation">{{ __('Digital Operation') }}</option>
-                                                <option {{ old('team') == 'finance' ? "selected" : '' }} value="finance">{{ __('Finance') }}</option>
-                                                <option {{ old('team') == 'media_buying' ? "selected" : '' }} value="media_buying">{{ __('Media Buying') }}</option>
-                                                <option {{ old('team') == 'influencer' ? "selected" : '' }} value="influencer">{{ __('Influencer') }}</option>
-                                                <option {{ old('team') == 'affiliate' ? "selected" : '' }} value="affiliate">{{ __('Affiliate') }}</option>
+                                                <option {{ (old('team') && old('team')  == 'management' ) ? "selected" : ($user->team == 'management' ? "selected" : '') }} value="management">{{ __('Management') }}</option>
+                                                <option {{ (old('team') && old('team')  == 'digital_operation' ) ? "selected" : ($user->team == 'digital_operation' ? "selected" : '') }} value="digital_operation">{{ __('Digital Operation') }}</option>
+                                                <option {{ (old('team') && old('team')  == 'finance' ) ? "selected" : ($user->team == 'finance' ? "selected" : '') }} value="finance">{{ __('Finance') }}</option>
+                                                <option {{ (old('team') && old('team')  == 'media_buying' ) ? "selected" : ($user->team == 'media_buying' ? "selected" : '') }} value="media_buying">{{ __('Media Buying') }}</option>
+                                                <option {{ (old('team') && old('team')  == 'influencer' ) ? "selected" : ($user->team == 'influencer' ? "selected" : '') }} value="influencer">{{ __('Influencer') }}</option>
+                                                <option {{ (old('team') && old('team')  == 'affiliate' ) ? "selected" : ($user->team == 'affiliate' ? "selected" : '') }} value="affiliate">{{ __('Affiliate') }}</option>
                                             </select>
                                             <!--end::Input-->
                                             @if ($errors->has('team'))
@@ -200,11 +200,11 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="position" aria-label="Select a Position" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
-                                                <option {{ old('position') == 'employee' ? "selected" : '' }} value="employee">{{ __('Employee') }}</option>
-                                                <option {{ old('position') == 'account_manager' ? "selected" : '' }} value="account_manager">{{ __('Account Manager') }}</option>
-                                                <option {{ old('position') == 'team_leader' ? "selected" : '' }} value="team_leader">{{ __('Team Leader') }}</option>
-                                                <option {{ old('position') == 'head' ? "selected" : '' }} value="head">{{ __('Head') }}</option>
-                                                <option {{ old('position') == 'super_admin' ? "selected" : '' }} value="super_admin">{{ __('Super Admin') }}</option>
+                                                <option {{ (old('position') && old('position') == 'employee') ? "selected" : ($user->position == 'employee' ? "selected" : '') }} value="employee">{{ __('Employee') }}</option>
+                                                <option {{ (old('position') && old('position') == 'account_manager') ? "selected" : ($user->position == 'account_manager' ? "selected" : '') }} value="account_manager">{{ __('Account Manager') }}</option>
+                                                <option {{ (old('position') && old('position') == 'team_leader') ? "selected" : ($user->position == 'team_leader' ? "selected" : '') }} value="team_leader">{{ __('Team Leader') }}</option>
+                                                <option {{ (old('position') && old('position') == 'head') ? "selected" : ($user->position == 'head' ? "selected" : '') }} value="head">{{ __('Head') }}</option>
+                                                <option {{ (old('position') && old('position') == 'super_admin') ? "selected" : ($user->position == 'super_admin' ? "selected" : '') }} value="super_admin">{{ __('Super Admin') }}</option>
                                             </select>
                                             <!--end::Input-->
                                             @if ($errors->has('position'))
@@ -213,7 +213,6 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
                                     <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -223,7 +222,7 @@
                                             <!--begin::Input-->
                                             <select name="roles[]" aria-label="Select a Role" data-control="select2" data-placeholder="Select Role" class="form-select form-select-sm" multiple>
                                                 @foreach($roles as $role)
-                                                    <option {{ old('roles') && in_array($role->id, old('roles')) ? 'selected' : '' }} value="{{$role->id}}">{{$role->name}}</option>
+                                                    <option {{ old('roles') && in_array($role->id, old('roles')) ? 'selected' : (in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '') }} value="{{$role->id}}">{{$role->name}}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
@@ -243,8 +242,8 @@
                                             <!--begin::Input-->
                                             <select name="parent_id" data-control="select2" class="form-select form-select-sm">
                                                 <option selected value="">{{ __('No one') }}</option>
-                                                @foreach ($users as $user)
-                                                    <option {{ old('parent_id') == $user->id ? "selected" : '' }} value="{{ $user->id }}">{{  $user->name }}</option>
+                                                @foreach ($parents as $parent)
+                                                    <option {{ (old('parent_id') && old('parent_id') == $parent->id ) ? "selected" : ($user->parent_id == $parent->id ? "selected" : '') }} value="{{ $parent->id }}">{{  $parent->name }}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
@@ -263,8 +262,8 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="gender" aria-label="Select a Gender" data-control="select2" data-placeholder="Select Gender" class="form-select form-select-sm">
-                                                <option {{ old('gender') == 'male' ? "selected" : '' }} value="male">{{ __('Male') }}</option>
-                                                <option {{ old('gender') == 'female' ? "selected" : '' }} value="female">{{ __('Female') }}</option>
+                                                <option {{ old('gender') == 'male' ? "selected" : ($user->gender == 'male' ? "selected" : '') }} value="male">{{ __('Male') }}</option>
+                                                <option {{ old('gender') == 'female' ? "selected" : ($user->gender == 'female' ? "selected" : '') }} value="female">{{ __('Female') }}</option>
                                             </select>
                                             <!--end::Input-->
                                             @if ($errors->has('gender'))
@@ -283,9 +282,9 @@
                                             <!--begin::Input-->
                                             <select name="status" aria-label="Select a status" data-control="select2" data-placeholder="Select Status" class="form-select form-select-sm">
                                                 <option value="active">{{ __('Active') }}</option>
-                                                    <option {{ old('status') == 'active' ? "selected" : '' }} value="active">{{ __('Active') }}</option>
-                                                    <option {{ old('status') == 'pending' ? "selected" : '' }} value="pending">{{ __('Pending') }}</option>
-                                                    <option {{ old('status') == 'closed' ? "selected" : '' }} value="closed">{{ __('Closed') }}</option>
+                                                    <option {{ old('status') == 'active' ? "selected" : ($user->status == 'active' ? 'selected' :'') }} value="active">{{ __('Active') }}</option>
+                                                    <option {{ old('status') == 'pending' ? "selected" : ($user->status == 'pending' ? 'selected' :'') }} value="pending">{{ __('Pending') }}</option>
+                                                    <option {{ old('status') == 'closed' ? "selected" : ($user->status == 'closed' ? 'selected' :'') }} value="closed">{{ __('Closed') }}</option>
                                             </select>
                                             <!--end::Input-->
                                             @if ($errors->has('status'))
@@ -304,7 +303,7 @@
                                             <!--begin::Input-->
                                             <select id="country" name="country_id" data-control="select2" class="form-select form-select-sm">
                                                 @foreach ($countries as $country)
-                                                    <option {{ old('country_id') == $country->id ? "selected" : 'null' }} value="{{ $country->id }}">{{  $country->name }}</option>
+                                                    <option {{ old('country_id') == $country->id ? "selected" : ($user->country_id == $country->id ? 'selected' : '') }} value="{{ $country->id }}">{{  $country->name }}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
@@ -325,7 +324,7 @@
                                             <select id="cities" name="city_id" data-control="select2" class="form-select form-select-sm">
                                                 <option value="">You have to select country</option>
                                                 @foreach ($cities as $city)
-                                                    <option {{ old('city_id') == $city->id ? "selected" : 'null' }} value="{{ $city->id }}">{{  $city->name }}</option>
+                                                    <option {{ old('city_id') == $city->id ? "selected" : ($user->city_id == $city->id ? "selected" : '') }} value="{{ $city->id }}">{{  $city->name }}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
@@ -343,7 +342,7 @@
                                             <label class="required form-label">Years of Experience</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="years_of_experience" class="form-control mb-2" placeholder="Years of Experience " value="{{ old('years_of_experience') }}" />
+                                            <input type="text" name="years_of_experience" class="form-control mb-2" placeholder="Years of Experience " value="{{ old('years_of_experience') ?? $user->years_of_experience }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('years_of_experience'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('years_of_experience') }}</div></div>
@@ -359,7 +358,7 @@
                                             <label class="required form-label">Address</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="address" class="form-control mb-2" placeholder="Address " value="{{ old('address') }}" />
+                                            <input type="text" name="address" class="form-control mb-2" placeholder="Address " value="{{ old('address') ?? $user->address }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('address'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('address') }}</div></div>
@@ -379,10 +378,10 @@
             <!--end::Tab content-->
             <div class="d-flex justify-content-end">
                 <!--begin::Button-->
-                <a href="../../demo14/dist/apps/ecommerce/catalog/products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
+                <button type="reset" class="btn btn-light me-5">Cancel</button>
                 <!--end::Button-->
                 <!--begin::Button-->
-                <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
+                <button type="submit"  class="btn btn-primary">
                     <span class="indicator-label">Save Changes</span>
                     <span class="indicator-progress">Please wait...
                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
