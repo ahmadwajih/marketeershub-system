@@ -177,9 +177,6 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="team" aria-label="Select a Team" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
-                                                <option {{ old('team') == 'management' ? "selected" : '' }} value="management">{{ __('Management') }}</option>
-                                                <option {{ old('team') == 'digital_operation' ? "selected" : '' }} value="digital_operation">{{ __('Digital Operation') }}</option>
-                                                <option {{ old('team') == 'finance' ? "selected" : '' }} value="finance">{{ __('Finance') }}</option>
                                                 <option {{ old('team') == 'media_buying' ? "selected" : '' }} value="media_buying">{{ __('Media Buying') }}</option>
                                                 <option {{ old('team') == 'influencer' ? "selected" : '' }} value="influencer">{{ __('Influencer') }}</option>
                                                 <option {{ old('team') == 'affiliate' ? "selected" : '' }} value="affiliate">{{ __('Affiliate') }}</option>
@@ -209,26 +206,6 @@
                                             <!--end::Input-->
                                             @if ($errors->has('position'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('position') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Role</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="roles[]" aria-label="Select a Role" data-control="select2" data-placeholder="Select Role" class="form-select form-select-sm" multiple>
-                                                @foreach($roles as $role)
-                                                    <option {{ old('roles') && in_array($role->id, old('roles')) ? 'selected' : '' }} value="{{$role->id}}">{{$role->name}}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('roles'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('roles') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->

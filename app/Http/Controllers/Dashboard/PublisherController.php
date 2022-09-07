@@ -43,34 +43,35 @@ class PublisherController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_publishers');
-        if ($request->ajax()){
+        // dd($request->all());
+        // $this->authorize('view_publishers');
+        // if ($request->ajax()){
 
-            $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
+        //     $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
 
-            if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
-                $data = $publishers->where(function ($query) {
-                    $childrens = auth()->user()->childrens()->pluck('id')->toArray();
-                    array_push($childrens, auth()->user()->id);
-                    $query->whereIn('parent_id', $childrens)->orWhere('parent_id', '=', null);
-                    $query->where('users.team', auth()->user()->team);
-                });
-            } else {
-                $data = $publishers->groupBy('users.id');
-            }
-            return DataTables::of($data)->make(true);
-        }
-        if(auth()->user()->position == 'super_admin'){
-            $accountManagers = User::where('position', 'account_manager')->get();
-        }else{
-            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
-        }
+        //     if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
+        //         $data = $publishers->where(function ($query) {
+        //             $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+        //             array_push($childrens, auth()->user()->id);
+        //             $query->whereIn('parent_id', $childrens)->orWhere('parent_id', '=', null);
+        //             $query->where('users.team', auth()->user()->team);
+        //         });
+        //     } else {
+        //         $data = $publishers->groupBy('users.id');
+        //     }
+        //     return DataTables::of($data)->make(true);
+        // }
+        // if(auth()->user()->position == 'super_admin'){
+        //     $accountManagers = User::where('position', 'account_manager')->get();
+        // }else{
+        //     $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
+        // }
 
-        return view('new_admin.publishers.index', [
-            'categories' => Category::whereType('publishers')->get(),
-            'accountManagers' =>  $accountManagers,
-            'countries' => Country::all(),
-        ]);
+        // return view('new_admin.publishers.index', [
+        //     'categories' => Category::whereType('publishers')->get(),
+        //     'accountManagers' =>  $accountManagers,
+        //     'countries' => Country::all(),
+        // ]);
 
 
 
@@ -123,7 +124,7 @@ class PublisherController extends Controller
                     ->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city')
                     ->where($where)
                     ->groupBy('users.id');
-                    $publishers->orderBy($sortBy, $sortType);
+                    // $publishers->orderBy($sortBy, $sortType);
                 if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
                     $data = $publishers->where(function ($query) {
                         $childrens = auth()->user()->childrens()->pluck('id')->toArray();
@@ -163,7 +164,7 @@ class PublisherController extends Controller
         }else{
             $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
         }
-        return view('admin.publishers.index', [
+        return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
@@ -204,73 +205,6 @@ class PublisherController extends Controller
         return view('admin.publishers.index');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        $this->authorize('view_publishers');
-        $publishers = User::query();
-        $where = [['position', '=', 'publisher']];
-        // Check  pased on status
-        if($request->status){
-            $where[] = ['status', '=', $request->status];
-        }
-        if($request->team){
-            $where[] = ['team', '=', $request->team];
-        }
-
-        // check based on category
-        if($request->category_id){
-            $publishers = $publishers->whereHas('categories', function($q) use($request) {
-                $q->whereIn('category_id', [$request->category_id]);
-            });
-        }
-
-        // check based on account manager
-        if($request->account_manager_id){
-            if($request->account_manager_id == 'unassigned'){
-                $where[] = ['parent_id', '=', null];
-
-            }else{
-                $where[] = ['parent_id', '=', $request->account_manager_id];
-
-            }
-        }
-
-
-        if ($request->ajax()) {
-            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
-                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where(function ($query) {
-                    $query->where('parent_id', '=' ,auth()->user()->id)
-                        ->orWhere('parent_id', '=', null);
-                })->where($where);
-            }else{
-                $data = User::select('*')->wherePosition('publisher')->with('parent', 'categories')->where($where);
-            }
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-
-                    $btn = '<a href="'.route('admin.publishers.show', $row->id).'" class="edit btn btn-primary btn-sm">View</a>';
-                    $btn .= $row->parent?$row->parent->name:" <button class='btn badge btn-success assignToMe' onclick='assignToMe(".$row->id.")'>".__('Assign To Me')."</button>";
-                    return $btn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-
-
-        $categories = Category::whereType('publishers')->get();
-        $accountManagers = User::wherePosition('account_manager')->get();
-        $data = $request->all();
-        $data['categories'] = $categories;
-        $data['accountManagers'] = $accountManagers;
-
-        return view('admin.publishers.index', $data);
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -280,7 +214,8 @@ class PublisherController extends Controller
     public function create()
     {
         $this->authorize('create_publishers');
-        return view('admin.publishers.create',[
+        return view('new_admin.publishers.create',[
+            'cities' => City::all(),
             'countries' => Country::all(),
             'categories' => Category::whereType('influencer')->get(),
             'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),

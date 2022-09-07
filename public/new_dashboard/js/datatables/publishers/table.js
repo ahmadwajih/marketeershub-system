@@ -32,8 +32,8 @@ var KTUsersList = function () {
                 { data: 'name' },
                 { data: 'email' },
                 { data: 'phone' },
-                { data: 'team' },
-                { data: 'parent.name' },
+                { data: 'team', 'name': 'team' },
+                { data: 'parent_id', 'name': 'parent_id' },
                 { data: 'status' },
                 { data: 'created_at' },
                 { data: 'Action' },
@@ -50,32 +50,23 @@ var KTUsersList = function () {
                             </div>`;
                     }
                 },
-                {
-                    targets: 5,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        var str = row.team.replace(/_/g, " ");
-                        return str.charAt(0).toUpperCase() + str.slice(1);
-                    }
-                },
-                {
-                    targets: 6,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        if(row.parent_id == null){
-                            return null;
-                        }else{
-                            try {
-                                return row.parent.name;
-                              }
-                              catch(err) {
-                                return null;
-                              }
-                        }
-                    }
-                },
+                // {
+                //     targets: 6,
+                //     orderable: false,
+                //     searchable:true,
+                //     render: function (data, type, row) {
+                //         if(row.parent_id == null){
+                //             return null;
+                //         }else{
+                //             try {
+                //                 return row.parent.name;
+                //               }
+                //               catch(err) {
+                //                 return null;
+                //               }
+                //         }
+                //     }
+                // },
                 {
                     targets: 7,
                     orderable: false,

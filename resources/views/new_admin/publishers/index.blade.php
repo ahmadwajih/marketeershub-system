@@ -82,12 +82,20 @@
                                     <label class="form-label fs-6 fw-semibold">Team:</label>
                                     <select class="form-select form-select-solid fw-bold" name="team" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-user-table-filter="search" data-hide-search="true">
                                         <option></option>
-                                        <option {{ old('team') == 'management' ? "selected" : '' }} value="management">{{ __('Management') }}</option>
-                                        <option {{ old('team') == 'digital_operation' ? "selected" : '' }} value="digital_operation">{{ __('Digital Operation') }}</option>
-                                        <option {{ old('team') == 'finance' ? "selected" : '' }} value="finance">{{ __('Finance') }}</option>
                                         <option {{ old('team') == 'media_buying' ? "selected" : '' }} value="media_buying">{{ __('Media Buying') }}</option>
                                         <option {{ old('team') == 'influencer' ? "selected" : '' }} value="influencer">{{ __('Influencer') }}</option>
                                         <option {{ old('team') == 'affiliate' ? "selected" : '' }} value="affiliate">{{ __('Affiliate') }}</option>
+                                    </select>
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="mb-10">
+                                    <label class="form-label fs-6 fw-semibold">AM:</label>
+                                    <select class="form-select form-select-solid fw-bold" name="parent_id" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-user-table-filter="search" data-hide-search="true">
+                                        <option></option>
+                                        @foreach($accountManagers as $accountManager)
+                                            <option {{ old('parent_id') == $accountManager->id ? "selected" : '' }} value="{{ $accountManager->id }}">{{ $accountManager->id  }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <!--end::Input group-->
