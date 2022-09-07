@@ -101,7 +101,7 @@
 								<div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
 									<div></div>
 									<!--begin::Link-->
-									<a href="../../demo14/dist/authentication/layouts/overlay/reset-password.html" class="link-primary">Forgot Password ?</a>
+									<a href="#" class="link-primary">Forgot Password ?</a>
 									<!--end::Link-->
 								</div>
 								<!--end::Wrapper-->
@@ -120,7 +120,7 @@
 								<!--end::Submit button-->
 								<!--begin::Sign up-->
 								<div class="text-gray-500 text-center fw-semibold fs-6">Not a Member yet?
-								<a href="../../demo14/dist/authentication/layouts/overlay/sign-up.html" class="link-primary">Sign up</a></div>
+								<a href="{{ route('admin.register.form') }}" class="link-primary">Sign up</a></div>
 								<!--end::Sign up-->
 							</form>
 							<!--end::Form-->

@@ -44,6 +44,36 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
+        if ($request->ajax()){
+
+            $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
+
+            if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
+                $data = $publishers->where(function ($query) {
+                    $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+                    array_push($childrens, auth()->user()->id);
+                    $query->whereIn('parent_id', $childrens)->orWhere('parent_id', '=', null);
+                    $query->where('users.team', auth()->user()->team);
+                });
+            } else {
+                $data = $publishers->groupBy('users.id');
+            }
+            return DataTables::of($data)->make(true);
+        }
+        if(auth()->user()->position == 'super_admin'){
+            $accountManagers = User::where('position', 'account_manager')->get();
+        }else{
+            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
+        }
+
+        return view('new_admin.publishers.index', [
+            'categories' => Category::whereType('publishers')->get(),
+            'accountManagers' =>  $accountManagers,
+            'countries' => Country::all(),
+        ]);
+
+
+
         $where = [
             ['users.id', '!=', null]
         ];
