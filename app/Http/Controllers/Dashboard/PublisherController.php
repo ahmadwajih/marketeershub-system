@@ -43,135 +43,34 @@ class PublisherController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->all());
-        // $this->authorize('view_publishers');
-        // if ($request->ajax()){
+        $this->authorize('view_publishers');
+        if ($request->ajax()){
+            $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
 
-        //     $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
-
-        //     if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
-        //         $data = $publishers->where(function ($query) {
-        //             $childrens = auth()->user()->childrens()->pluck('id')->toArray();
-        //             array_push($childrens, auth()->user()->id);
-        //             $query->whereIn('parent_id', $childrens)->orWhere('parent_id', '=', null);
-        //             $query->where('users.team', auth()->user()->team);
-        //         });
-        //     } else {
-        //         $data = $publishers->groupBy('users.id');
-        //     }
-        //     return DataTables::of($data)->make(true);
-        // }
-        // if(auth()->user()->position == 'super_admin'){
-        //     $accountManagers = User::where('position', 'account_manager')->get();
-        // }else{
-        //     $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
-        // }
-
-        // return view('new_admin.publishers.index', [
-        //     'categories' => Category::whereType('publishers')->get(),
-        //     'accountManagers' =>  $accountManagers,
-        //     'countries' => Country::all(),
-        // ]);
-
-
-
-        $where = [
-            ['users.id', '!=', null]
-        ];
-        $sortBy = 'id';
-        $sortType = 'desc';
-
-        if(isset($request->team) && $request->team != null){
-            $where[] = ['users.team', '=', $request->team];
-        }
-        if(isset($request->account_manager) && $request->account_manager != null){
-            $where[] = ['users.parent_id', '=', $request->account_manager];
-        }
-        if(isset($request->status) && $request->status != null){
-            $where[] = ['users.status', '=', $request->status];
-        }
-        if(isset($request->country_id) && $request->country_id != null){
-            $where[] = ['users.country_id', '=', $request->country_id];
-        }
-        if(isset($request->city_id) && $request->city_id != null){
-            $where[] = ['users.city_id', '=', $request->city_id];
-        }
-        if(isset($request->category_id) && $request->category_id != null){
-            $where[] = ['categories.id', '=', $request->category_id];
-        }
-        if(isset($request->platform) && $request->platform != null){
-            $where[] = ['social_media_links.platform', '=', $request->platform];
-        }
-        // if(isset($request->performance) && $request->performance != null){
-        //     $where[] = ['orders_number', '<=', 10];
-        // }
-        
-        if(isset($request->sort_by) && $request->sort_by != null){
-            $sortBy = $request->sort_by;
-        }
-        if(isset($request->sort_type) && $request->sort_type != null){
-            $sortType = $request->sort_type;
-        }
-        if($request->account_status){
-            $where[] = ['account_status', '=', $request->account_status];
-        }
- 
-        if ($request->ajax()) {
-            
-            try {
-                
-                $publishers = User::wherePosition('publisher')
-                    ->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city')
-                    ->where($where)
-                    ->groupBy('users.id');
-                    // $publishers->orderBy($sortBy, $sortType);
-                if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
-                    $data = $publishers->where(function ($query) {
-                        $childrens = auth()->user()->childrens()->pluck('id')->toArray();
-                         array_push($childrens, auth()->user()->id);
-                        $query
-                            ->whereIn('parent_id', $childrens)
-                            ->orWhere('parent_id', '=', null);
-                   
-                        $query->where('users.team', auth()->user()->team);
-                    });
-                } else {
-                    $data = $publishers->groupBy('users.id');
-                }
-
-                // return $data;
-                return DataTables::of($data)
-                    ->addIndexColumn()
-                    ->editColumn('parent_id', function ($row) {
-                        return !empty($row->parent->name) ? $row->parent->name : '';
-                    })
-             
-                    ->addColumn('action', function ($row) {
-                        $btn = '<a href="' . route('admin.publisher.profile', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
-                        $btn .= '<a href="' . route('admin.publishers.edit', $row->id) . '" class="edit btn btn-primary btn-xs m-1"><i class="fas fa-pen"></i></a>';
-                        $btn .= $row->parent ? $row->parent->name : " <button class='btn badge btn-success ' onclick='assignToMe(" . $row->id . ")'>" . __('Assign To Me') . "</button>";
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            } catch (Exception $exception) {
-                Log::debug($exception->getMessage());
+            if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
+                $data = $publishers->where(function ($query) {
+                    $childrens = auth()->user()->childrens()->pluck('id')->toArray();
+                    array_push($childrens, auth()->user()->id);
+                    $query->whereIn('parent_id', $childrens)->orWhere('parent_id', '=', null);
+                    $query->where('users.team', auth()->user()->team);
+                });
+            } else {
+                $data = $publishers->groupBy('users.id');
             }
+            return DataTables::of($data)->make(true);
         }
-
         if(auth()->user()->position == 'super_admin'){
             $accountManagers = User::where('position', 'account_manager')->get();
         }else{
             $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
         }
+
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
         ]);
     }
-
-
 
     public function dashboard(){
         $publisher = User::findOrFail(Auth::user()->id);
@@ -321,23 +220,6 @@ class PublisherController extends Controller
             }
         }
 
-        // Store Digital Asset
-        // if($request->team == 'influencer' || $request->team == 'prepaid'){
-        //     if($request->social_media && count($request->social_media) > 0){
-        //         foreach($request->social_media as $link){
-        //             if(!is_null($link['link'])){
-        //                 SocialMediaLink::create([
-        //                     'link' => $link['link'],
-        //                     'platform' => $link['platform'],
-        //                     'followers' => $link['followers'],
-        //                     'user_id' => $publisher->id,
-        //                 ]);
-        //             }
-                    
-        //         }
-
-        //     }
-        // }
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -698,7 +580,7 @@ class PublisherController extends Controller
             ->groupBy('date')
             ->first();
             
-        return view('admin.publishers.profile', [
+        return view('new_admin.publishers.profile', [
             'publisher' => $publisher,
             'offers' => $offers,
             'activeOffers' => $activeOffers->groupBy('date')->first(), 

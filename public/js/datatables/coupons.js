@@ -34,6 +34,10 @@ var KTDatatableRemoteAjaxDemo = function() {
                 serverFiltering: true,
                 serverSorting: true,
                 saveState: false,
+                searchDelay: 500,
+                processing: true,
+                serverSide: true,
+                stateSave: true,
 
             },
 

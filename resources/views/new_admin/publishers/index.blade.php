@@ -80,7 +80,7 @@
                                 <!--begin::Input group-->
                                 <div class="mb-10">
                                     <label class="form-label fs-6 fw-semibold">Team:</label>
-                                    <select class="form-select form-select-solid fw-bold" name="team" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-user-table-filter="search" data-hide-search="true">
+                                    <select class="form-select form-select-solid fw-bold filter-input" data-column="5" name="team" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true">
                                         <option></option>
                                         <option {{ old('team') == 'media_buying' ? "selected" : '' }} value="media_buying">{{ __('Media Buying') }}</option>
                                         <option {{ old('team') == 'influencer' ? "selected" : '' }} value="influencer">{{ __('Influencer') }}</option>
@@ -91,10 +91,10 @@
                                 <!--begin::Input group-->
                                 <div class="mb-10">
                                     <label class="form-label fs-6 fw-semibold">AM:</label>
-                                    <select class="form-select form-select-solid fw-bold" name="parent_id" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-user-table-filter="search" data-hide-search="true">
+                                    <select class="form-select form-select-solid fw-bold filter-input" data-column="6" name="parent_id" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true">
                                         <option></option>
                                         @foreach($accountManagers as $accountManager)
-                                            <option {{ old('parent_id') == $accountManager->id ? "selected" : '' }} value="{{ $accountManager->id }}">{{ $accountManager->id  }}</option>
+                                            <option {{ old('parent_id') == $accountManager->id ? "selected" : '' }} value="{{ $accountManager->id }}">{{ $accountManager->name  }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -160,6 +160,7 @@
                     </thead>
                     <tbody class="text-gray-600">
                     </tbody>
+                    
                 </table>
                 <!--end::Datatable-->
                 <!--end::Table-->
@@ -176,4 +177,10 @@ var route = "{{route('admin.publishers.index')}}";
 var publishersRoute = "{{route('admin.publisher.profile')}}";
 </script>
 <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/table.js"></script>
+<script>
+    // $('.filter-input').keyup(function(){
+    //     console.log($(this).val());
+    //     var dbtable = $('#kt_table_users');
+    // })
+</script>
 @endpush

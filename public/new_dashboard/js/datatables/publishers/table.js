@@ -18,6 +18,10 @@ var KTUsersList = function () {
             serverSide: true,
             order: [[5, 'asc']],
             stateSave: true,
+            searching: true,
+            orderCellsTop: true,
+            fixedHeader: true,  
+            
             select: {
                 style: 'multi',
                 selector: 'td:first-child input[type="checkbox"]',
@@ -33,7 +37,7 @@ var KTUsersList = function () {
                 { data: 'email' },
                 { data: 'phone' },
                 { data: 'team', 'name': 'team' },
-                { data: 'parent_id', 'name': 'parent_id' },
+                { data: 'parent_id'},
                 { data: 'status' },
                 { data: 'created_at' },
                 { data: 'Action' },
@@ -50,23 +54,23 @@ var KTUsersList = function () {
                             </div>`;
                     }
                 },
-                // {
-                //     targets: 6,
-                //     orderable: false,
-                //     searchable:true,
-                //     render: function (data, type, row) {
-                //         if(row.parent_id == null){
-                //             return null;
-                //         }else{
-                //             try {
-                //                 return row.parent.name;
-                //               }
-                //               catch(err) {
-                //                 return null;
-                //               }
-                //         }
-                //     }
-                // },
+                {
+                    targets: 6,
+                    orderable: false,
+                    searchable:true,
+                    render: function (data, type, row) {
+                        if(row.parent_id == null){
+                            return null;
+                        }else{
+                            try {
+                                return row.parent.name;
+                              }
+                              catch(err) {
+                                return null;
+                              }
+                        }
+                    }
+                },
                 {
                     targets: 7,
                     orderable: false,
@@ -438,7 +442,17 @@ var KTUsersList = function () {
             toolbarSelected.classList.add('d-none');
         }
     }
+    var filter = () =>  {
+        $('.filter-input').change(function(){
+            
+            console.log($(this).val());
+            // datatable.s.draw();
+            datatable.column($(this).data('column')).search($(this).val()).draw();
 
+            // var dbtable = $('#kt_table_users');
+            // dbtable.draw();
+        })
+    }
     return {
         // Public functions  
         init: function () {
@@ -452,6 +466,7 @@ var KTUsersList = function () {
             handleResetForm();
             handleDeleteRows();
             handleFilterDatatable();
+            filter();
 
         }
     }
@@ -461,4 +476,5 @@ var KTUsersList = function () {
 KTUtil.onDOMContentLoaded(function () {
     KTUsersList.init();
 });
+
 
