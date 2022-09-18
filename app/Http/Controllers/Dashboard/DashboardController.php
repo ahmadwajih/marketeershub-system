@@ -25,6 +25,7 @@ use App\Notifications\NewAssigenCoupon;
 use App\Notifications\NewOffer;
 use App\Notifications\UpdateValidation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -32,14 +33,70 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-
         $this->authorize('view_dashboard');
+        $offersTotals = DB::table('pivot_reports')
+        ->select(
+            DB::raw('SUM(pivot_reports.orders) as orders'),
+            DB::raw('SUM(pivot_reports.sales) as sales'),
+            DB::raw('SUM(pivot_reports.revenue) as revenue'),
+            DB::raw('SUM(pivot_reports.payout) as payout'),
+            'pivot_reports.date as date',
+            'offers.id  as offer_id',
+            'offers.name_en  as offer_name',
+            'offers.name_en  as offer_name',
+            'offers.thumbnail  as thumbnail',
+            'users.team as team'
+        )
+        ->join('offers', 'pivot_reports.offer_id', 'offers.id')
+        ->join('coupons', 'pivot_reports.coupon_id', 'coupons.id')
+        ->join('users', 'coupons.user_id', 'users.id')
+        ->groupBy('offer_name')
+        ->get();
+        
+            $offersTotals = $offersTotals->groupBy('date')->first();
+            $map = [];
+            foreach($offersTotals as $index => $offer){
+                // Offer
+                $map[$index]['offer']['name'] = $offer->offer_name;
+                $map[$index]['offer']['thumbnail'] = $offer->thumbnail;
+                $map[$index]['offer']['id'] = $offer->offer_id;
+                $map[$index]['offer']['orders'] = $offer->orders;
+                $map[$index]['offer']['sales'] = $offer->sales;
+                $map[$index]['offer']['revenue'] = $offer->revenue;
+                $map[$index]['offer']['payout'] = $offer->payout;
+                $map[$index]['offer']['gross_margin'] = $offer->revenue - $offer->payout;
+                
+                // Teams
+                $temsTotal = totalNumbersBasedOnTeamAndOffer($offer->offer_id);
+                foreach($temsTotal as $team){
+                    $map[$index]['team'][$team->team]['orders'] =  $team->orders;
+                    $map[$index]['team'][$team->team]['sales'] =  $team->sales;
+                    $map[$index]['team'][$team->team]['revenue'] =  $team->revenue;
+                    $map[$index]['team'][$team->team]['payout'] =  $team->payout;
+                    $map[$index]['team'][$team->team]['gross_margin'] =  $team->revenue - $team->payout;
+                }
+            }
 
+            // Totals 
+            Cache::remember('total_users', 60*60*60*24, function () {
+                return User::select('team', 'position')->get();
+            });
+
+        return view('new_admin.index', [
+            'maps' => $map, 
+            'totalNumbers' => totalNumbers(),
+            'totalInfluencerNumbers' => totalNumbersForSeparateTeam('influencer'),
+            'totalAffiliateNumbers' => totalNumbersForSeparateTeam('affiliate'),
+            'totalMediaBuyingNumbers' => totalNumbersForSeparateTeam('media_buying'),
+            'totalUsers' => Cache::get('total_users')
+        ]);
+        
         // Get all offers that have coupons and report
         $offers  = Offer::whereHas('report')->with(['report'])->get();
 
@@ -61,7 +118,7 @@ class DashboardController extends Controller
             ->having('orders', '>', 0)
             ->get();
 
-        return view('admin.index', [
+        return view('new_admin.index', [
             'offers' => $offers,
             'accountManagers' => $accountManagers,
             'totalNumbers' => totalNumbers(),

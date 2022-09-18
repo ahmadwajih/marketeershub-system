@@ -168,6 +168,8 @@ return [
          * Package Service Providers...
          */
         Yajra\DataTables\DataTablesServiceProvider::class,
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
+
         /*
          * Application Service Providers...
          */

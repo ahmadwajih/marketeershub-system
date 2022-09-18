@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Charts\PublisherOfferProfileChart;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Extended\MhDataTables;
 use App\Imports\InfluencerImport;
@@ -32,6 +33,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use Matrix\Exception;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Notification;
+use App\Facades\PublisherCharts;
+use App\Facades\PublisherProfile;
+use Illuminate\Support\Facades\Cache;
 
 class PublisherController extends Controller
 {
@@ -44,7 +48,7 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
 
             if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
@@ -57,12 +61,13 @@ class PublisherController extends Controller
             } else {
                 $data = $publishers->groupBy('users.id');
             }
+  
             return DataTables::of($data)->make(true);
         }
-        if(auth()->user()->position == 'super_admin'){
-            $accountManagers = User::where('position', 'account_manager')->get();
-        }else{
-            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
+        if (auth()->user()->position == 'super_admin') {
+            $accountManagers = User::where('position', 'account_manager');
+        } else {
+            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager');
         }
 
         return view('new_admin.publishers.index', [
@@ -72,12 +77,14 @@ class PublisherController extends Controller
         ]);
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $publisher = User::findOrFail(Auth::user()->id);
         return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);
     }
 
-    public function offers() {
+    public function offers()
+    {
         $offers = Offer::paginate();
         return view('admin.publishers.new.offers', ['offers' => $offers]);
     }
@@ -113,7 +120,7 @@ class PublisherController extends Controller
     public function create()
     {
         $this->authorize('create_publishers');
-        return view('new_admin.publishers.create',[
+        return view('new_admin.publishers.create', [
             'cities' => City::all(),
             'countries' => Country::all(),
             'categories' => Category::whereType('influencer')->get(),
@@ -135,7 +142,7 @@ class PublisherController extends Controller
             'name'                      => 'required|max:255',
             'email'                     => 'required|unique:users|max:255',
             'phone'                     => 'required|unique:users|max:255',
-            'password'                  => ['required','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password'                  => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
@@ -159,13 +166,13 @@ class PublisherController extends Controller
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
 
         ]);
-        if($request->traffic_sources){
-            $data['traffic_sources'] = implode(",",$request->traffic_sources);
+        if ($request->traffic_sources) {
+            $data['traffic_sources'] = implode(",", $request->traffic_sources);
         }
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
         unset($data['social_media']);
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $data['image'] = uploadImage($request->file('image'), "Users");
         }
         // dd($data);
@@ -174,8 +181,8 @@ class PublisherController extends Controller
         userActivity('User', $publisher->id, 'create');
 
         // Add categories
-        if($request->categories){
-            foreach($request->categories as $categoryId){
+        if ($request->categories) {
+            foreach ($request->categories as $categoryId) {
                 $category = Category::findOrFail($categoryId);
                 $publisher->assignCategory($category);
             }
@@ -186,9 +193,9 @@ class PublisherController extends Controller
         $publisher->assignRole($role);
 
         // Store Social Media Accounts
-        if($request->team == 'affiliate'){
-            if($request->digital_asset && count($request->digital_asset) > 0){
-                foreach($request->digital_asset as $link){
+        if ($request->team == 'affiliate') {
+            if ($request->digital_asset && count($request->digital_asset) > 0) {
+                foreach ($request->digital_asset as $link) {
 
                     DigitalAsset::create([
                         'link' => $link['link'],
@@ -196,17 +203,15 @@ class PublisherController extends Controller
                         'other_platform_name' => $link['other_platform_name'],
                         'user_id' => $publisher->id,
                     ]);
-                    
                 }
-
             }
         }
 
         // Store Social Media Accounts
-        if($request->team == 'influencer' || $request->team == 'prepaid'){
-            if($request->social_media && count($request->social_media) > 0){
-                foreach($request->social_media as $link){
-                    if(!is_null($link['link'])){
+        if ($request->team == 'influencer' || $request->team == 'prepaid') {
+            if ($request->social_media && count($request->social_media) > 0) {
+                foreach ($request->social_media as $link) {
+                    if (!is_null($link['link'])) {
                         SocialMediaLink::create([
                             'link' => $link['link'],
                             'platform' => $link['platform'],
@@ -214,9 +219,7 @@ class PublisherController extends Controller
                             'user_id' => $publisher->id,
                         ]);
                     }
-                    
                 }
-
             }
         }
 
@@ -235,7 +238,7 @@ class PublisherController extends Controller
      */
     public function show($id)
     {
-        if(auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
+        if (auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())) {
             $this->authorize('show_publishers');
         }
 
@@ -253,12 +256,12 @@ class PublisherController extends Controller
      */
     public function edit($id)
     {
-        if(auth()->user()->id != $id && !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
+        if (auth()->user()->id != $id && !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())) {
             $this->authorize('update_publishers');
         }
         $accountManagers = User::where('position', 'account_manager')->get();
         $publisher = User::findOrFail($id);
-        if($publisher->position != 'publisher'){
+        if ($publisher->position != 'publisher') {
             return redirect()->route('admin.users.edit', $id);
         }
         $publisher->traffic_sources = explode(',', $publisher->traffic_sources);
@@ -285,15 +288,15 @@ class PublisherController extends Controller
     public function update(Request $request, $id)
     {
 
-        if(auth()->user()->id != $id){
+        if (auth()->user()->id != $id) {
             $this->authorize('update_publishers');
         }
         $message = 'Updated successfully';
         $data = $request->validate([
             'name'                      => 'required|max:255',
-            'email'                     => 'required|max:255|unique:users,email,'.$id,
-            'phone'                     => 'required|max:255|unique:users,phone,'.$id,
-            'password'                  => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'email'                     => 'required|max:255|unique:users,email,' . $id,
+            'phone'                     => 'required|max:255|unique:users,phone,' . $id,
+            'password'                  => ['nullable', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
             'gender'                    => 'required|in:male,female',
@@ -316,15 +319,15 @@ class PublisherController extends Controller
             'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
         ]);
-        if($request->traffic_sources){
-            $data['traffic_sources'] = implode(",",$request->traffic_sources);
+        if ($request->traffic_sources) {
+            $data['traffic_sources'] = implode(",", $request->traffic_sources);
         }
         unset($data['password']);
         unset($data['social_media']);
         unset($data['categories']);
         unset($data['roles']);
 
-        if($request->password){
+        if ($request->password) {
             $data['password'] = Hash::make($request->password);
         }
         // dd($data);
@@ -332,76 +335,74 @@ class PublisherController extends Controller
 
         // Update Image
         $data['image'] = $publisher->image;
-        if($request->has("image")){
-            Storage::disk('public')->delete('Images/Users/'.$publisher->image);
-            $image = time().rand(11111,99999).'.'.$request->image->extension();
-            $request->image->storeAs('Images/Users/',$image, 'public');
+        if ($request->has("image")) {
+            Storage::disk('public')->delete('Images/Users/' . $publisher->image);
+            $image = time() . rand(11111, 99999) . '.' . $request->image->extension();
+            $request->image->storeAs('Images/Users/', $image, 'public');
             $data['image'] = $image;
         }
 
-        if($publisher->socialMediaLinks){
+        if ($publisher->socialMediaLinks) {
             $publisher->socialMediaLinks()->delete();
         }
 
-        if($publisher->digitalAssets){
+        if ($publisher->digitalAssets) {
             $publisher->digitalAssets()->delete();
         }
 
-        if(auth()->user()->position == 'account_manager' || auth()->user()->position == 'publisher'){
+        if (auth()->user()->position == 'account_manager' || auth()->user()->position == 'publisher') {
             userActivity('User', $publisher->id, 'update', $data, $publisher, null, false);
             $message = 'A request to update the data has been sent to your direct head';
             // Check if publisher have AM
-            if($publisher->parent_id != null){
+            if ($publisher->parent_id != null) {
                 // Get AM
                 $accountManager = User::where('id', $publisher->parent_id)->first();
                 // Check if AM exists 
-                if($accountManager){
+                if ($accountManager) {
                     // Send notification to AM
-                     Notification::send($accountManager, new PublisherNeedToUpdateHisInfo($publisher));
-                     // Check if AM has head
-                     if($accountManager->parent_id != null){
-                         // Get Head Info
+                    Notification::send($accountManager, new PublisherNeedToUpdateHisInfo($publisher));
+                    // Check if AM has head
+                    if ($accountManager->parent_id != null) {
+                        // Get Head Info
                         $head = User::where('id', $accountManager->parent_id)->first();
                         // Check if head exists
-                        if($head){
+                        if ($head) {
                             // Send notification to head
                             Notification::send($head, new PublisherNeedToUpdateHisInfo($publisher));
                         }
-                     }  
+                    }
                 }
             }
-
-        }else{
+        } else {
             $message = __('Data updated successfully');
             userActivity('User', $publisher->id, 'update', $data, $publisher);
             $publisher->update($data);
         }
 
-        if($request->categories){
+        if ($request->categories) {
             // Unasign categories
             $publisher->categories()->detach();
             // Assign Categories
-            foreach($request->categories as $categoryId){
+            foreach ($request->categories as $categoryId) {
                 $category = Category::findOrFail($categoryId);
                 $publisher->assignCategory($category);
             }
         }
-        
+
 
         // Asign Role
-        if($request['roles']){
+        if ($request['roles']) {
             $publisher->roles()->detach();
-            foreach ($request['roles'] as $role_id)
-            {
+            foreach ($request['roles'] as $role_id) {
                 $role = Role::findOrFail($role_id);
                 $publisher->assignRole($role);
             }
         }
 
-        if($request->team == 'influencer' || $request->team == 'prepaid'){
-            if($request->social_media && count($request->social_media) > 0){
-                foreach($request->social_media as $link){
-                    if($link['link']){
+        if ($request->team == 'influencer' || $request->team == 'prepaid') {
+            if ($request->social_media && count($request->social_media) > 0) {
+                foreach ($request->social_media as $link) {
+                    if ($link['link']) {
                         SocialMediaLink::create([
                             'link' => $link['link'],
                             'platform' => $link['platform'],
@@ -409,15 +410,13 @@ class PublisherController extends Controller
                             'user_id' => $publisher->id,
                         ]);
                     }
-                    
                 }
-
             }
         }
 
-        if($request->team == 'affiliate'){
-            if($request->digital_asset && count($request->digital_asset) > 0){
-                foreach($request->digital_asset as $link){
+        if ($request->team == 'affiliate') {
+            if ($request->digital_asset && count($request->digital_asset) > 0) {
+                foreach ($request->digital_asset as $link) {
                     DigitalAsset::create([
                         'link' => $link['link'],
                         'platform' => $link['platform'],
@@ -425,7 +424,6 @@ class PublisherController extends Controller
                         'user_id' => $publisher->id,
                     ]);
                 }
-
             }
         }
 
@@ -434,7 +432,7 @@ class PublisherController extends Controller
             'message' => $message,
             'alert-type' => 'success'
         ];
-        if(auth()->user()->id == $id){
+        if (auth()->user()->id == $id) {
             return redirect()->route('admin.publisher.profile')->with($notification);
         }
         return redirect()->route('admin.publishers.index')->with($notification);
@@ -449,12 +447,12 @@ class PublisherController extends Controller
     public function updateAccountManager(Request $request)
     {
         $publisher = User::whereId($request->affiliateId)->first();
-        if($publisher){
+        if ($publisher) {
             $publisher->parent_id = auth()->user()->id;
-            if( auth()->user()->position == 'super_admin' || auth()->user()->position == 'head'){
-                
+            if (auth()->user()->position == 'super_admin' || auth()->user()->position == 'head') {
+
                 $accountManager = User::whereId($request->accountManagerId)->first();
-                if($request->accountManagerId != null && $accountManager){
+                if ($request->accountManagerId != null && $accountManager) {
 
                     $publisher->parent_id =  $request->accountManagerId;
                 }
@@ -464,7 +462,6 @@ class PublisherController extends Controller
                 'code' => 200,
                 'message' => 'Updated',
             ], 200);
-
         }
         return response()->json([
             'code'      =>  401,
@@ -482,7 +479,7 @@ class PublisherController extends Controller
     {
         $this->authorize('delete_users');
         $publisher = User::findOrFail($id);
-        if($request->ajax()){
+        if ($request->ajax()) {
             $publisher->delete();
             userActivity('User', $publisher->id, 'delete');
         }
@@ -498,7 +495,8 @@ class PublisherController extends Controller
 
     public function profile(Request $request, int $id = null)
     {
-       
+
+
         $request->validate([
             'from' => "nullable|before:to",
             'to' => "nullable|after:from",
@@ -506,22 +504,19 @@ class PublisherController extends Controller
         $userId = ($id == null) ? auth()->user()->id : $id;
         $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
         $childrens = userChildrens($publisher);
-        
-        // $childrens = userChildrens($id) ?? [0=>0];
-        // $childrens = $publisher->childrens()->pluck('id')->toArray();
         array_push($childrens, $userId);
-        // dd($childrens);
+
         // Chaeck if login user team and check publisher team to make sure there is in the same team
-        if(isset($id) && in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
-            if(auth()->user()->team == $publisher->team){
-                if(!in_array($id, userChildrens()) && $publisher->parent_id != null){
+        if (isset($id) && in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])) {
+            if (auth()->user()->team == $publisher->team) {
+                if (!in_array($id, userChildrens()) && $publisher->parent_id != null) {
                     abort(401);
                 }
-            }else{
+            } else {
                 abort(401);
             }
         }
-      
+
 
         $startDate = Carbon::now(); //returns current day
         $firstDay = $startDate->firstOfMonth()->format('Y-m-d');
@@ -532,63 +527,46 @@ class PublisherController extends Controller
             ['pivot_reports.date', '<=', $lastDay]
         ];
 
-        if(isset($request->from) && $request->from != null && isset($request->to) && $request->to != null){
+        if (isset($request->from) && $request->from != null && isset($request->to) && $request->to != null) {
             $where[0] = ['pivot_reports.date', '>=', $request->from];
             $where[1] = ['pivot_reports.date', '<=', $request->to];
         }
 
-        
-        $offers = Offer::whereHas('coupons', function($q) use($childrens) {
-            $q->whereIn('user_id', $childrens);
-        })->with(['users' => function($q) use($childrens){
-            $q->whereIn('users.id', $childrens);
-        },
-        'coupons' => function($q) use($childrens){
-            $q->whereIn('coupons.user_id', $childrens);
-        }])->get();
+        $offers = PublisherProfile::offers($childrens);
+        $coupons = PublisherProfile::coupons($childrens, $where);
+        $activeOffers = PublisherProfile::activeOffers($childrens, $where);
+        $totalNumbers = PublisherProfile::totalNumbers($childrens, $where);
+        $payments = PublisherProfile::payments($childrens);
+        // dd(count($activeOffers));
+        // dd($payments);
+        //Start Charts 
+        // Offer Charts
+        $offersOrdersChart = PublisherCharts::chart($activeOffers, 'offer_name', 'orders', 'doughnut', 'Offers');
+        $offersSalesChart = PublisherCharts::chart($activeOffers, 'offer_name', 'sales', 'doughnut', 'Offers');
+        $offersRevenueChart = PublisherCharts::chart($activeOffers, 'offer_name', 'revenue', 'doughnut', 'Offers');
 
-       
-        $activeOffers = DB::table('pivot_reports')
-        ->select(
-                DB::raw('TRUNCATE(SUM(pivot_reports.orders),2) as orders'), 
-                DB::raw('TRUNCATE(SUM(pivot_reports.sales) ,2) as sales'),
-                DB::raw('TRUNCATE(SUM(pivot_reports.revenue) ,2) as revenue'),
-                'offers.id as offer_id',
-                'offers.name_en as offer_name',
-                'offers.status as offer_status',
-                'offers.thumbnail as thumbnail',
-                // 'offers.description_en as description',
-                'pivot_reports.date as date',
-                DB::raw('COUNT(coupons.id) as coupons')
-            )
-            ->join('offers', 'pivot_reports.offer_id', '=', 'offers.id')
-            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
-            ->join('users', 'coupons.user_id', '=', 'users.id')
-            ->whereIn('coupons.user_id', $childrens)
-            ->where($where)
-            ->orderBy('date',  'DESC')
-            ->groupBy('offer_name', 'date')
-            ->get();
-        
-            $totalNumbers = DB::table('pivot_reports')
-            ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'), DB::raw('SUM(payout) as payout'))
-            ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
-            ->join('users', 'coupons.user_id', '=', 'users.id')
-            ->whereIn('coupons.user_id', $childrens)
-            ->where($where)
-            ->orderBy('date',  'DESC')
-            ->groupBy('date')
-            ->first();
-            
+        // Coupons Charts
+        $couponsOrdersChart = PublisherCharts::chart($coupons, 'coupon', 'orders', 'bar', 'Coupons');
+        $couponsSalesChart = PublisherCharts::chart($coupons, 'coupon', 'sales', 'bar', 'Coupons');
+        $couponsRevenueChart = PublisherCharts::chart($coupons, 'coupon','revenue', 'bar', 'Coupons');
+
         return view('new_admin.publishers.profile', [
             'publisher' => $publisher,
             'offers' => $offers,
-            'activeOffers' => $activeOffers->groupBy('date')->first(), 
-            'totalNumbers' => $totalNumbers
+            'activeOffers' => $activeOffers->groupBy('date')->first(),
+            'totalNumbers' => $totalNumbers,
+            'offersOrdersChart' => $offersOrdersChart,
+            'offersSalesChart' => $offersSalesChart,
+            'offersRevenueChart' => $offersRevenueChart,
+            'couponsOrdersChart' => $couponsOrdersChart,
+            'couponsSalesChart' => $couponsSalesChart,
+            'couponsRevenueChart' => $couponsRevenueChart,
+            'payments' => $payments,
+            'coupons' => $coupons,
         ]);
     }
 
-     /**
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -603,27 +581,27 @@ class PublisherController extends Controller
         $childrens = $publisher->childrens()->pluck('id')->toArray();
         array_push($childrens, $userId);
 
-        $payments = Payment::whereHas('publisher', function($q) use($childrens) {
+        $payments = Payment::whereHas('publisher', function ($q) use ($childrens) {
             $q->whereIn('publisher_id', $childrens);
         })->get();
 
         if ($request->ajax()) {
             return DataTables::of($payments)
-                    ->addIndexColumn()
-                    ->editColumn('parent_id', function ($row) {
-                        return !empty($row->parent->name) ? $row->parent->name : '';
-                    })
-            
-                    ->addColumn('action', function ($row) {
-                        $btn = '<a href="' . route('admin.payments.show', $row->id) . '" class="show btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
-                        return $btn;
-                    })
-                    ->addColumn('slip', function ($row) {
-                        $btn = '<img class="img-thumbnail rounded" src="' . getImagesPath('Payments', $row->slip) . '" class="show btn btn-primary btn-xs m-1">';
-                        return $btn;
-                    })
-                    ->rawColumns(['action', 'slip'])
-                    ->make(true);
+                ->addIndexColumn()
+                ->editColumn('parent_id', function ($row) {
+                    return !empty($row->parent->name) ? $row->parent->name : '';
+                })
+
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="' . route('admin.payments.show', $row->id) . '" class="show btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
+                    return $btn;
+                })
+                ->addColumn('slip', function ($row) {
+                    $btn = '<img class="img-thumbnail rounded" src="' . getImagesPath('Payments', $row->slip) . '" class="show btn btn-primary btn-xs m-1">';
+                    return $btn;
+                })
+                ->rawColumns(['action', 'slip'])
+                ->make(true);
         }
 
         return view('admin.publishers.payments', [
@@ -640,7 +618,7 @@ class PublisherController extends Controller
     public function upload()
     {
         $this->authorize('view_bulk_upload_publishers');
-        return view('admin.publishers.upload');
+        return view('new_admin.publishers.upload');
     }
 
     /**
@@ -661,16 +639,16 @@ class PublisherController extends Controller
         // Excel::import(new InfluencerImport($request->team, $request->parent_id),request()->file('publishers'));
 
 
-        if($request->team == 'affiliate'){
-            Excel::import(new PublishersImport($request->team),request()->file('publishers'));
+        if ($request->team == 'affiliate') {
+            Excel::import(new PublishersImport($request->team), request()->file('publishers'));
             // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
         }
-        if($request->team == 'influencer'){
-            Excel::import(new InfluencerImport($request->team),request()->file('publishers'));
+        if ($request->team == 'influencer') {
+            Excel::import(new InfluencerImport($request->team), request()->file('publishers'));
             // Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
         }
 
-        userActivity('User', null , 'upload', 'Upload Publishers');
+        userActivity('User', null, 'upload', 'Upload Publishers');
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
@@ -692,8 +670,8 @@ class PublisherController extends Controller
         $request->validate([
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new PublishersUpdateHasofferIdByEmail(),request()->file('publishers'));
-        userActivity('User', null , 'upload', 'Upload and Update HasOffer Id ByEmail');
+        Excel::import(new PublishersUpdateHasofferIdByEmail(), request()->file('publishers'));
+        userActivity('User', null, 'upload', 'Upload and Update HasOffer Id ByEmail');
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
@@ -706,34 +684,34 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function myAccountManager(){
-        if(auth()->user()->parent){
+    public function myAccountManager()
+    {
+        if (auth()->user()->parent) {
             $accountManager = auth()->user()->parent;
             return view('admin.publishers.myAccountManager', [
                 'accountManager' => $accountManager,
             ]);
         }
-        
+
         try {
             return redirect()->back()->withErrors(['message' => __('You do not have account manager')]);
         } catch (\Throwable $th) {
             return redirect()->route('admin.publisher.profile');
-
         }
     }
-// .  
-    public function checkIfExists(Request $request){
+    // .  
+    public function checkIfExists(Request $request)
+    {
         $user = User::where('phone', $request->column)->orWhere('email', $request->column)->first();
-        if($user){
-            $response = '<p class="invalid-input">'.__('Already exists his name is ').$user->name. __(' Team ') . $user->team . __(' Posiion ') . $user->position .' </p>';
-            if($user->parent){
-                $response .= '<p class="invalid-input">'.__('His account manager is '). $user->parent->name.'</p>';
-            }else{
-                $response .= '<p class="invalid-input">'.__('He dosn`t have account manager').'</p>';
+        if ($user) {
+            $response = '<p class="invalid-input">' . __('Already exists his name is ') . $user->name . __(' Team ') . $user->team . __(' Posiion ') . $user->position . ' </p>';
+            if ($user->parent) {
+                $response .= '<p class="invalid-input">' . __('His account manager is ') . $user->parent->name . '</p>';
+            } else {
+                $response .= '<p class="invalid-input">' . __('He dosn`t have account manager') . '</p>';
             }
             return $response;
         }
         return null;
     }
-
 }

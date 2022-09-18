@@ -37,7 +37,7 @@ class OfferController extends Controller
         $update             = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offers             = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
-        return view('admin.offers.index', compact('offers', 'offerRequestsArray'));
+        return view('new_admin.offers.index', compact('offers', 'offerRequestsArray'));
     }
 
     /**

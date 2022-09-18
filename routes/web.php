@@ -68,6 +68,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
         Route::get('publisher/payments/{id?}', 'PublisherController@payments')->name('publisher.payments');
         Route::get('publisher/my-account-manager', 'PublisherController@myAccountManager')->name('publisher.account.manager');
+
         // Upload Publishers
         Route::get('publishers/upload/form', 'PublisherController@upload')->name('publishers.upload.form');
         Route::post('publishers/upload', 'PublisherController@storeUpload')->name('publishers.upload.store');
@@ -123,7 +124,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
-
+        // Delete this routes and views
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
             Route::get('offers', 'PublisherController@offers')->name('publisher.offers');

@@ -92,3 +92,29 @@ if(!function_exists('totalOffersNumbers')){
     }
 }
 
+
+if(!function_exists('totalNumbersBasedOnTeamAndOffer')){
+    function totalNumbersBasedOnTeamAndOffer($offerId){
+        $data = DB::table('pivot_reports')
+        ->select(
+            DB::raw('SUM(pivot_reports.orders) as orders'),
+            DB::raw('SUM(pivot_reports.sales) as sales'),
+            DB::raw('SUM(pivot_reports.revenue) as revenue'),
+            DB::raw('SUM(pivot_reports.payout) as payout'),
+            'pivot_reports.date as date',
+            'offers.id  as offer_id',
+            'offers.name_en  as offer_name',
+            'users.team as team'
+        )
+        ->join('offers', 'pivot_reports.offer_id', 'offers.id')
+        ->join('coupons', 'pivot_reports.coupon_id', 'coupons.id')
+        ->join('users', 'coupons.user_id', 'users.id')
+        ->where('pivot_reports.offer_id', $offerId)
+        // ->where('users.team', $team)
+        ->groupBy('team')
+        ->orderBy('team', 'desc')
+        ->get();
+        return $data->groupBy('date')->first();
+    }
+}
+
