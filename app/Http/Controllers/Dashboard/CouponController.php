@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
+
 class CouponController extends Controller
 {
     /**
@@ -23,12 +25,18 @@ class CouponController extends Controller
     {
         $this->authorize('view_coupons');
         if($request->ajax()){
+
+            $coupons = Coupon::with(['offer', 'user']);
+            // $coupons = getModelData('Coupon', $request, ['offer', 'user']);
+
+            return DataTables::of($coupons)->make(true);
             // return $request->all();
-            $coupons = getModelData('Coupon', $request, ['offer', 'user']);
-            return response()->json($coupons);
+            // $coupons = getModelData('Coupon', $request, ['offer', 'user']);
+            // $coupons = 
+            // return response()->json($coupons);
         }
         $offers = Offer::whereHas('coupons')->get();
-        return view('admin.coupons.index', ['offers' => $offers]);
+        return view('new_admin.coupons.index', ['offers' => $offers]);
 
     }
 

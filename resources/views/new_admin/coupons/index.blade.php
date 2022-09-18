@@ -5,7 +5,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Team Members List</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Coupons List</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -14,14 +14,12 @@
                     <a href="{{ route('admin.index') }}" class="text-gray-600 text-hover-primary">Home</a>
                 </li>
                 <!--end::Item-->
+
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">User Management</li>
+                <li class="breadcrumb-item text-gray-600">Cpupons</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Users</li>
-                <!--end::Item-->
-                <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Users List</li>
+                <li class="breadcrumb-item text-gray-500">Coupons List</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->
@@ -233,11 +231,11 @@
                             </div>
                         </th>
                         <th>#</th>
-                        <th>{{ __('Name') }}</th>
-                        <th>{{ __('Email') }}</th>
-                        <th>{{ __('Phone') }}</th>
+                        <th>{{ __('Code') }}</th>
+                        <th>{{ __('Offer Name') }}</th>
+                        <th>{{ __('Publisher Name') }}</th>
+                        <th>{{ __('Publisher ID') }}</th>
                         <th>{{ __('Team') }}</th>
-                        <th>{{ __('Belongs To') }}</th>
                         <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                     </tr>
                     </thead>
@@ -255,9 +253,8 @@
 @endsection
 @push('scripts')
 <script>
-var route = "{{route('admin.users.index')}}";
-var publishersRoute = "{{route('admin.publisher.profile')}}";
+var route = "{{route('admin.coupons.index')}}";
 </script>
-<script src="{{ asset('new_dashboard') }}/js/datatables/users/table.js"></script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/coupons/table.js"></script>
 
 @endpush

@@ -145,3 +145,13 @@ Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.']
 
 Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
 Route::get('test', 'Dashboard\DashboardController@test')->name("test");
+
+Route::get('/optimize', function () {
+    Artisan::call('optimize:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+    Artisan::call('key:generate');
+    return redirect()->route('admin.index');
+    return view('welcome');
+});
+
