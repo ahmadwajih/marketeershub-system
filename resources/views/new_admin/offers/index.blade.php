@@ -103,9 +103,9 @@
                                 <!--begin::Stats-->
                                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
                                     <div class="fs-6 fw-bold text-gray-700">$236,400</div>
-                                    <div class="fw-semibold text-gray-400">Sales</div>
+                                    <div class="fw-semibold text-gray-400  ">Sales</div>
                                 </div>
-                                <!--end::Stats-->
+                                <!--end::Stats--> 
                             </div> --}}
                             <!--end::Info-->
                         </div>
