@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-class InfluencerImport implements ToCollection
+class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $team;
     public $status;
@@ -208,6 +208,11 @@ class InfluencerImport implements ToCollection
             }
 
         }
-    }
 
+        
+    }
+    public function chunkSize(): int
+    {
+        return 100;
+    }
 }

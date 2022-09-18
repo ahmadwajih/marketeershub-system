@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class PublishersImport implements ToCollection
+class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $team;
     public $status;
@@ -192,6 +192,11 @@ class PublishersImport implements ToCollection
                 $this->currrencyId = null;
             }
         }
+    }
+
+    public function chunkSize(): int
+    {
+        return 100;
     }
 
 }

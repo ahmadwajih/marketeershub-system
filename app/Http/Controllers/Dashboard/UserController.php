@@ -166,7 +166,7 @@ class UserController extends Controller
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,
             'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
-            'password'              => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
+            // 'password'              => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
             'years_of_experience'   => 'required|numeric',
             'country_id'            => 'required|exists:countries,id',
             'city_id'               => 'required|exists:cities,id',
