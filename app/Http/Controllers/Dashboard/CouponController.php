@@ -48,7 +48,7 @@ class CouponController extends Controller
     public function create()
     {
         $this->authorize('create_coupons');
-        return view('admin.coupons.create',[
+        return view('new_admin.coupons.create',[
             'offers' => Offer::whereStatus("active")->get(),
             'users' => User::whereIn('position', ['publisher'])->whereIn('team', ['media_buying','influencer','affiliate', 'prepaid'])->get(),
         ]);

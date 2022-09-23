@@ -142,7 +142,7 @@ class PublisherController extends Controller
             'name'                      => 'required|max:255',
             'email'                     => 'required|unique:users|max:255',
             'phone'                     => 'required|unique:users|max:255',
-            'password'                  => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            // 'password'                  => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
@@ -155,7 +155,7 @@ class PublisherController extends Controller
             'years_of_experience'       => 'nullable|numeric',
             // 'traffic_sources'           => 'required_if:team,affiliate|max:255',
             'affiliate_networks'        => 'required_if:team,affiliate|max:255',
-            // 'digital_asset'            => 'required_if:team,affiliate|max:255',
+            // 'digital_asset'            => 'required_if:team,affiliate|array',
             'referral_account_manager'  => 'nullable|max:255',
             'account_title'             => 'nullable|max:255',
             'bank_name'                 => 'nullable|max:255',
@@ -266,11 +266,11 @@ class PublisherController extends Controller
         }
         $publisher->traffic_sources = explode(',', $publisher->traffic_sources);
 
-        return view('admin.publishers.edit', [
+        return view('new_admin.publishers.edit', [
             'publisher' => $publisher,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($publisher->country_id)->get(),
-            'parents' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
             'categories' => Category::whereType('influencer')->get(),
             'roles' => Role::all(),
             'currencies' => Currency::all(),
@@ -417,12 +417,15 @@ class PublisherController extends Controller
         if ($request->team == 'affiliate') {
             if ($request->digital_asset && count($request->digital_asset) > 0) {
                 foreach ($request->digital_asset as $link) {
-                    DigitalAsset::create([
-                        'link' => $link['link'],
-                        'platform' => $link['platform'],
-                        // 'other_platform_name' => $link['other_platform_name'],
-                        'user_id' => $publisher->id,
-                    ]);
+                    if($link['link']){
+                        DigitalAsset::create([
+                            'link' => $link['link'],
+                            'platform' => $link['platform'],
+                            // 'other_platform_name' => $link['other_platform_name'],
+                            'user_id' => $publisher->id,
+                        ]);
+                    }
+                    
                 }
             }
         }
@@ -537,18 +540,22 @@ class PublisherController extends Controller
         $activeOffers = PublisherProfile::activeOffers($childrens, $where);
         $totalNumbers = PublisherProfile::totalNumbers($childrens, $where);
         $payments = PublisherProfile::payments($childrens);
+        // dd(gettype($activeOffers));
         // dd(count($activeOffers));
         // dd($payments);
         //Start Charts 
+        $chartCoupons = PublisherCharts::coupons($childrens, $where);
+        $chartActiveOffers = PublisherCharts::activeOffers($childrens, $where);
         // Offer Charts
-        $offersOrdersChart = PublisherCharts::chart($activeOffers, 'offer_name', 'orders', 'doughnut', 'Offers');
-        $offersSalesChart = PublisherCharts::chart($activeOffers, 'offer_name', 'sales', 'doughnut', 'Offers');
-        $offersRevenueChart = PublisherCharts::chart($activeOffers, 'offer_name', 'revenue', 'doughnut', 'Offers');
+        $offersOrdersChart = PublisherCharts::chart($chartActiveOffers, 'offer_name', 'orders', 'doughnut', 'Offers');
+        $offersSalesChart = PublisherCharts::chart($chartActiveOffers, 'offer_name', 'sales', 'doughnut', 'Offers');
+        $offersRevenueChart = PublisherCharts::chart($chartActiveOffers, 'offer_name', 'revenue', 'doughnut', 'Offers');
 
         // Coupons Charts
-        $couponsOrdersChart = PublisherCharts::chart($coupons, 'coupon', 'orders', 'bar', 'Coupons');
-        $couponsSalesChart = PublisherCharts::chart($coupons, 'coupon', 'sales', 'bar', 'Coupons');
-        $couponsRevenueChart = PublisherCharts::chart($coupons, 'coupon','revenue', 'bar', 'Coupons');
+
+        $couponsOrdersChart = PublisherCharts::chart($chartCoupons, 'coupon', 'orders', 'bar', 'Coupons');
+        $couponsSalesChart = PublisherCharts::chart($chartCoupons, 'coupon', 'sales', 'bar', 'Coupons');
+        $couponsRevenueChart = PublisherCharts::chart($chartCoupons, 'coupon','revenue', 'bar', 'Coupons');
 
         return view('new_admin.publishers.profile', [
             'publisher' => $publisher,

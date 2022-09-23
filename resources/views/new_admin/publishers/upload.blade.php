@@ -11,7 +11,7 @@
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
                 <!--begin::Item-->
                 <li class="breadcrumb-item text-gray-600">
-                    <a href="../../demo14/dist/index.html" class="text-gray-600 text-hover-primary">Home</a>
+                    <a href="{{ route('admin.index') }}" class="text-gray-600 text-hover-primary">Home</a>
                 </li>
                 <!--end::Item-->
                 <!--begin::Item-->

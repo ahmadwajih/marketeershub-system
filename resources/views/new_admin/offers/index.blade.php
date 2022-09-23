@@ -197,7 +197,7 @@
                                                 <!--begin::Info-->
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <a href="" class="mb-1 text-gray-800 text-hover-primary">{{ $offer->name }}</a>
-                                                    <div class="fw-semibold fs-6 text-gray-400">{{ $offer->advertiser->company_name_en }}</div>
+                                                    @if($offer->advertiser)<div class="fw-semibold fs-6 text-gray-400">{{  $offer->advertiser->company_name_en }}</div>@endif
                                                 </div>
                                                 <!--end::Info-->
                                             </div>

@@ -62,7 +62,7 @@ class OfferController extends Controller
     public function create()
     {
         $this->authorize('create_offers');
-        return view('admin.offers.create', [
+        return view('new_admin.offers.create', [
             'countries' => Country::all(),
             'categories' => Category::all(),
             'currencies' => Currency::all(),

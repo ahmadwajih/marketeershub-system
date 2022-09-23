@@ -46,6 +46,25 @@
                          <!--end::Checkbox-->
                      </td>
                  </tr>
+
+                 <tr>
+                    <!--begin::Label-->
+                    <td class="text-gray-800">Main Dashboard
+                    </td>
+                    <!--end::Label-->
+                    <!--begin::Options-->
+                    <td>
+                        <!--begin::Wrapper-->
+                        <div class="d-flex">
+                           <label
+                               class="form-check form-check-sm form-check-custom form-check-solid me-5 me-lg-10">
+                               <input class="form-check-input" type="checkbox"  {{ (old('view_dashboard') ?: $role->abilities->contains(App\Models\Ability::whereName('view_dashboard')->first()))? 'checked' : '' }}  value="on" name="view_dashboard" />
+                               <span class="form-check-label">View</span>
+                           </label>
+                        </div>
+                    </td>
+                 </tr>
+                
                  <!--end::Table row-->
                  @foreach ($models as $model)
                      <!--begin::Table row-->

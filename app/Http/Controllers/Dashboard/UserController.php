@@ -227,6 +227,6 @@ class UserController extends Controller
     public function profile()
     {
         $user = auth()->user();
-        return view('admin.users.profile', ['user' => $user]);
+        return view('new_admin.users.profile', ['user' => $user]);
     }
 }

@@ -5,7 +5,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Add New Coupon</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Upload Coupons</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -15,10 +15,10 @@
                 </li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Coupon</li>
+                <li class="breadcrumb-item text-gray-600">Coupons</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Add New</li>
+                <li class="breadcrumb-item text-gray-500">Upload</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->

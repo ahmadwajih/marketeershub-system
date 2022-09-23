@@ -2,7 +2,6 @@
 
 @push('styles')
 <style>
-
         table {
             font-family: Verdana;
             font-size: 14px;

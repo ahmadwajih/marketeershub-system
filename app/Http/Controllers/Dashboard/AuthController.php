@@ -70,7 +70,7 @@ class AuthController extends Controller
         }
         $accountManagers = User::where('position', 'account_manager')->get();
         $countries = Country::get();
-        $categories = Category::get();
+        $categories = Category::whereType('influencer')->get();
         $currencies = Currency::get();
         return view('new_admin.auth.register', [
             'accountManagers' => $accountManagers,
