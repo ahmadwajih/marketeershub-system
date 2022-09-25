@@ -37,6 +37,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::post('login', 'AuthController@login')->name('login');
     Route::get('register', 'AuthController@registerForm')->name('register.form');
     Route::post('register', 'AuthController@register')->name('register');
+    Route::get('forgot-password', 'AuthController@forgotPasswordForm')->name('forgot.password.form');
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
     Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');

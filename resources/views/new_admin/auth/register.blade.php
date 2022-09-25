@@ -1,9 +1,5 @@
 @extends('new_admin.auth.layouts.app')
 @section('content')
-    <video autoplay muted loop id="myVideo">
-        <source src="{{ asset('new_dashboard/media/videos') }}/Marketeers Hub - Motion Graphic.mp4" type="video/mp4">
-        Your browser does not support HTML5 video.
-    </video>
     
     <!--begin::Theme mode setup on page load-->
     <script>
@@ -537,16 +533,7 @@
     <!--end::Main-->
 @endsection
 @push('styles')
-<style>
-    #myVideo {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%; 
-        min-height: 100%;
-        z-index: 0;
-    }
-</style>
+
 @endpush
 @push('scripts')
     <script>

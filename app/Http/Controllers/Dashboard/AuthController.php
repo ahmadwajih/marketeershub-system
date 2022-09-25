@@ -173,14 +173,27 @@ class AuthController extends Controller
     
     }
 
+    public function forgotPasswordForm(){
+        if(Auth::check()){
+            if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid'])){
+                return redirect()->route('admin.publisher.profile');
+            }
+            return redirect()->route('admin.user.profile');
+        }
+        return view('new_admin.auth.forgot-password');
+    }
+
     public function forgotPassword(Request $request){
         $request->validate([
             'email' => 'required|exists:users,email'
+        ],[
+            'email.exists' => 'This email dosn`t exists'
         ]);
         $code = rand(11111, 99999);
         Mail::to($request->email)->send(new ResetPassword($code));
         session(['reset_password_code' => $code, 'email' => $request->email]);
-        return redirect()->route('admin.reset.password.form');
+        return response()->json(true, 200);
+        // return redirect()->route('admin.reset.password.form');
     }
 
     public function resetPasswordForm(){
@@ -190,14 +203,15 @@ class AuthController extends Controller
             }
             return redirect()->route('admin.user.profile');
         }
-        return view('admin.auth.reset-password');
+        return view('new_admin.auth.reset-password');
     }
 
     public function resetPassword(Request $request){
+
         if(session('reset_password_code') && session('email') && session('reset_password_code') == $request->code){
             $request->validate([
                 'code' => 'required',
-                'password' => ['required','confirmed', 'min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/']
+                'password' => ['required','confirmed', 'min:8']
             ]);
 
             $user = User::whereEmail(session('email'))->first();

@@ -37,14 +37,27 @@ License: For each use you must have a valid license purchased only from above li
     <link href="{{ asset('new_dashboard') }}/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('new_dashboard') }}/css/style.bundle.css" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
-    
+    <style>
+        #myVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%; 
+            min-height: 100%;
+            z-index: 0;
+        }
+    </style>
     @stack('styles')
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
 <body data-kt-name="metronic" id="kt_body" class="app-blank bgi-size-cover bgi-position-center bgi-no-repeat">
-
+    <video autoplay muted loop id="myVideo">
+        <source src="{{ asset('new_dashboard/media/videos') }}/Marketeers Hub - Motion Graphic.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
     @yield('content')
     <!--begin::Javascript-->
     <script>
