@@ -5,19 +5,6 @@
         <!--begin::Title-->
         <div class="d-flex flex-wrap align-items-center my-1">
             <h3 class="fw-bold me-5 my-1">Offers ({{ $offers->count() }})</h3>
-            <!--begin::Search-->
-            <div class="d-flex align-items-center position-relative my-1">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                <span class="svg-icon svg-icon-3 position-absolute ms-3">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
-                        <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-                <input type="text" id="kt_filter_search" class="form-control form-control-sm border-body bg-body w-150px ps-10" placeholder="Search" />
-            </div>
-            <!--end::Search-->
         </div>
         <!--end::Title-->
         <!--begin::Controls-->
@@ -25,7 +12,7 @@
             <!--begin::Tab nav-->
             <ul class="nav nav-pills me-6 mb-2 mb-sm-0">
                 <li class="nav-item m-0">
-                    <a class="btn btn-sm btn-icon btn-light btn-color-muted btn-active-primary me-3 active" data-bs-toggle="tab" href="#kt_project_users_card_pane">
+                    <a class="btn btn-sm btn-icon btn-light btn-color-muted btn-active-primary me-3 " data-bs-toggle="tab" href="#kt_project_users_card_pane">
                         <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
@@ -41,7 +28,7 @@
                     </a>
                 </li>
                 <li class="nav-item m-0">
-                    <a class="btn btn-sm btn-icon btn-light btn-color-muted btn-active-primary" data-bs-toggle="tab" href="#kt_project_users_table_pane">
+                    <a class="btn btn-sm btn-icon btn-light btn-color-muted btn-active-primary active" data-bs-toggle="tab" href="#kt_project_users_table_pane">
                         <!--begin::Svg Icon | path: icons/duotune/abstract/abs015.svg-->
                         <span class="svg-icon svg-icon-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +50,7 @@
     <!--begin::Tab Content-->
     <div class="tab-content">
         <!--begin::Tab pane-->
-        <div id="kt_project_users_card_pane" class="tab-pane fade show active">
+        <div id="kt_project_users_card_pane" class="tab-pane fade">
             <!--begin::Row-->
            
             <div class="row g-6 g-xl-9">
@@ -84,29 +71,29 @@
                             <a href="#" class="fs-4 text-gray-800 text-hover-primary fw-bold mb-0">{{ $offer->name }}</a>
                             <!--end::Name-->
                             <!--begin::Position-->
-                            <div class="fw-semibold text-gray-400 mb-6">{{ $offer->description }}</div>
+                            <div class="fw-semibold text-gray-400 mb-6">
+                                @if ($offer->status == 'active')
+                                    <span class="badge badge-success">Active</span>
+                                @elseif ($offer->status == 'pused')
+                                    <span class="badge badge-warning">Pused</span>
+                                @elseif ($offer->status == 'pending')
+                                    <span class="badge badge-warning">Pending</span>
+                                @elseif ($offer->status == 'expire')
+                                    <span class="badge badge-danger">Expire</span>
+                                @else
+                                @endif
+                            </div>
                             <!--end::Position-->
                             <!--begin::Info-->
-                            {{-- <div class="d-flex flex-center flex-wrap">
-                                <!--begin::Stats-->
-                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                    <div class="fs-6 fw-bold text-gray-700">$14,560</div>
-                                    <div class="fw-semibold text-gray-400">Earnings</div>
-                                </div>
-                                <!--end::Stats-->
-                                <!--begin::Stats-->
-                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                    <div class="fs-6 fw-bold text-gray-700">23</div>
-                                    <div class="fw-semibold text-gray-400">Tasks</div>
-                                </div>
-                                <!--end::Stats-->
-                                <!--begin::Stats-->
-                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
-                                    <div class="fs-6 fw-bold text-gray-700">$236,400</div>
-                                    <div class="fw-semibold text-gray-400  ">Sales</div>
-                                </div>
-                                <!--end::Stats--> 
-                            </div> --}}
+                            <div class="text-left">
+                                <p class="p-0 m-0">Advertiser: {{ $offer->advertiser->company_name }}</p>
+                                <hr>
+                                <p class="p-0 m-0">Revenue Type: {{ $offer->cps_type == 'static' ? $offer->revenue_type : '' }} {{ $offer->cps_type == 'new_old' ? ($offer->newOld ? $offer->newOld->new_revenue_type : '') : '' }}</p>
+                                <hr>
+                                <p class="p-0 m-0">CPS Type: {{ $offer->cps_type }}</p>
+                                <hr>
+                                <p class="p-0 m-0">Discount: {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' .$offer->currency->code }}</p>
+                            </div>
                             <!--end::Info-->
                         </div>
                         <!--end::Card body-->
@@ -157,21 +144,52 @@
         </div>
         <!--end::Tab pane-->
         <!--begin::Tab pane-->
-        <div id="kt_project_users_table_pane" class="tab-pane fade">
+        <div id="kt_project_users_table_pane" class="tab-pane fade show active">
             <!--begin::Card-->
             <div class="card card-flush">
+
+                <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                    <!--begin::Card title-->
+                    <div class="card-title">
+                        <!--begin::Search-->
+                        <div class="d-flex align-items-center position-relative my-1">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                            <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                    <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search" />
+                        </div>
+                        <!--end::Search-->
+                    </div>
+                    <!--end::Card title-->
+                    @can('create_offers')
+                    <!--begin::Card toolbar-->
+                    <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+                        <!--begin::Add product-->
+                        <a href="{{ route('admin.offers.create') }}" class="btn btn-primary">Add Offer</a>
+                        <!--end::Add product-->
+                    </div>
+                    <!--end::Card toolbar-->
+                    @endcan
+                </div>
                 <!--begin::Card body-->
                 <div class="card-body pt-0">
                     <!--begin::Table container-->
                     <div class="table-responsive">
                         <!--begin::Table-->
-                        <table id="kt_project_users_table" class="table table-row-bordered table-row-dashed gy-4 align-middle fw-bold">
+                        <table class="table align-middle table-row-dashed" id="kt_ecommerce_products_table">
                             <!--begin::Head-->
                             <thead class="fs-7 text-gray-400 text-uppercase">
                                 <tr>
                                     <th class="min-w-250px">Thumbnail</th>
-                                    <th class="min-w-90px">Payout</th>
                                     <th class="min-w-90px">Status</th>
+                                    <th class="min-w-90px">Revenue Type</th>
+                                    <th class="min-w-90px">CPS Type</th>
+                                    <th class="min-w-90px">Discount</th>
                                     <th class="min-w-90px">Target Market</th>
                                     <th class="min-w-90px">Discount</th>
                                     <th class="min-w-50px text-end">Actions</th>
@@ -196,30 +214,29 @@
                                                 <!--end::Wrapper-->
                                                 <!--begin::Info-->
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <a href="" class="mb-1 text-gray-800 text-hover-primary">{{ $offer->name }}</a>
+                                                    <a href="" class="mb-1 text-gray-800 text-hover-primary" data-kt-ecommerce-product-filter="offer_name">{{ $offer->name }}</a>
                                                     @if($offer->advertiser)<div class="fw-semibold fs-6 text-gray-400">{{  $offer->advertiser->company_name_en }}</div>@endif
                                                 </div>
                                                 <!--end::Info-->
                                             </div>
                                             <!--end::User-->
                                         </td>
-                                        <td>
-                                            @if ($offer->cps_type == 'static')
-                                                {{ $offer->revenu }}
-                                            @elseif($offer->cps_type == 'new_old')
-                                                New & Old
-                                            @elseif($offer->cps_type == 'slaps')
-                                                Slaps
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($offer->status == 'active')
-                                                <span class="badge badge-light-success fw-bold px-4 py-3">Live</span>
+                                        <td data-order="{{ $offer->status }}">
+                                            @if ($offer->status == 'active')
+                                                <span class="badge badge-success">Active</span>
+                                            @elseif ($offer->status == 'pused')
+                                                <span class="badge badge-warning">Pused</span>
+                                            @elseif ($offer->status == 'pending')
+                                                <span class="badge badge-warning">Pending</span>
+                                            @elseif ($offer->status == 'expire')
+                                                <span class="badge badge-danger">Expire</span>
                                             @else
-                                                <span class="badge badge-light-warning fw-bold px-4 py-3">{{ ucfirst($offer->status) }}</span>
                                             @endif
 
                                         </td>
+                                        <td>{{ $offer->cps_type == 'static' ? $offer->revenue_type : '' }} {{ $offer->cps_type == 'new_old' ? ($offer->newOld ? $offer->newOld->new_revenue_type : '') : '' }}</td>
+                                        <td>{{ $offer->cps_type }}</td>
+                                        <td>{{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' .$offer->currency->code }}</td>
                                         <td>
                                             @foreach ($offer->countries as $country)
                                                 {{ $country->name_en }} @if (!$loop->last)
@@ -227,9 +244,39 @@
                                                 @endif
                                             @endforeach
                                         </td>
-                                        <td> {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : '' }}
+                                        <td> {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' .$offer->currency->code }}
                                         <td class="text-end">
-                                            <a href="#" class="btn btn-light btn-sm">View</a>
+                                            <a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
+                                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
+                                                <span class="svg-icon svg-icon-5 m-0">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                                <!--end::Svg Icon--></a>
+                                                <!--begin::Menu-->
+                                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+                                                    <!--begin::Menu item-->
+                                                    <div class="menu-item px-3">
+                                                        <a href="{{ route('admin.offers.show', $offer->id) }}" class="menu-link px-3">View</a>
+                                                    </div>
+                                                    <!--end::Menu item-->
+                                                    @can('update_offers')
+                                                    <!--begin::Menu item-->
+                                                    <div class="menu-item px-3">
+                                                        <a href="{{ route('admin.offers.edit', $offer->id) }}" class="menu-link px-3">Edit</a>
+                                                    </div>
+                                                    <!--end::Menu item-->
+                                                    @endcan
+                                                    @can('delete_offers')
+                                                    <!--begin::Menu item-->
+                                                    <div class="menu-item px-3">
+                                                        <a href="#" data-kt-delte-url="{{ route('admin.offers.destroy', $offer->id) }}" class="menu-link px-3" data-kt-ecommerce-product-filter="delete_row">Delete</a>
+                                                    </div>
+                                                    <!--end::Menu item-->
+                                                    @endcan
+                                                </div>
+                                                <!--end::Menu-->
                                         </td>
                                     </tr>
                                 @endforeach
@@ -250,5 +297,6 @@
     <!--end::Tab Content-->
 @endsection
 @push('scripts')
+<script src="{{ asset('new_dashboard') }}/js\datatables\offers.js"></script>
 
 @endpush

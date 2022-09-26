@@ -25,15 +25,8 @@ class CouponController extends Controller
     {
         $this->authorize('view_coupons');
         if($request->ajax()){
-
             $coupons = Coupon::with(['offer', 'user']);
-            // $coupons = getModelData('Coupon', $request, ['offer', 'user']);
-
             return DataTables::of($coupons)->make(true);
-            // return $request->all();
-            // $coupons = getModelData('Coupon', $request, ['offer', 'user']);
-            // $coupons = 
-            // return response()->json($coupons);
         }
         $offers = Offer::whereHas('coupons')->get();
         return view('new_admin.coupons.index', ['offers' => $offers]);

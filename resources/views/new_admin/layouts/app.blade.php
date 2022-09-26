@@ -52,7 +52,7 @@ Like: www.facebook.com/keenthemes
                     themeMode = defaultThemeMode;
                 }
             }
-            document.documentElement.setAttribute("data-theme", themeMode);
+            document.documentElement.setAttribute("data-theme", 'dark');
         }
     </script>
     <!--end::Theme mode setup on page load-->

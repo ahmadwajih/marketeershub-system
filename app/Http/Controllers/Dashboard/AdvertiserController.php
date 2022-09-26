@@ -9,9 +9,8 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
 use Illuminate\Http\Request;
-/*
- * Just for repo fix
- **/
+use Yajra\DataTables\Facades\DataTables;
+
 class AdvertiserController extends Controller
 {
     /**
@@ -23,10 +22,10 @@ class AdvertiserController extends Controller
     {
         $this->authorize('view_advertisers');
         if($request->ajax()){
-            $advertisers = getModelData('Advertiser', $request);
-            return response()->json($advertisers);
+            $advertisers = Advertiser::all();
+            return DataTables::of($advertisers)->make(true);
         }
-        return view('admin.advertisers.index');
+        return view('new_admin.advertisers.index');
 
     }
 
@@ -38,8 +37,9 @@ class AdvertiserController extends Controller
     public function create()
     {
         $this->authorize('create_advertisers');
-        return view('admin.advertisers.create',[
+        return view('new_admin.advertisers.create',[
             'countries' => Country::all(),
+            'cities' => City::all(),
             'categories' => Category::whereType('advertisers')->get(),
             'currencies' => Currency::all(),
         ]);

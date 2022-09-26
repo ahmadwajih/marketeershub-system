@@ -237,7 +237,7 @@ class OfferController extends Controller
 
         // userActivity('Offer', $offer->id, 'view');
         //
-        return view('admin.offers.show', [
+        return view('new_admin.offers.show', [
             'offer' => $offer,
             'offerRequest' => $offerRequest,
             'topPublishers' => $topPublishers->groupBy('date')->first(), 
@@ -253,7 +253,7 @@ class OfferController extends Controller
     public function edit(Offer $offer)
     {
         $this->authorize('update_offers');
-        return view('admin.offers.edit', [
+        return view('new_admin.offers.edit', [
             'offer' => $offer,
             'countries' => Country::all(),
             'categories' => Category::all(),
