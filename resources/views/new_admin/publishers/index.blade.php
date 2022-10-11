@@ -111,7 +111,7 @@
                         </div>
                         <!--end::Menu 1-->
                         <!--end::Filter-->
-     
+                        @can('create_publishers')
                         <!--begin::Add user-->
                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
@@ -123,6 +123,7 @@
                         </span>
                         <!--end::Svg Icon-->Add User</a>
                         <!--end::Add user-->
+                        @endcan
                     </div>
                     <!--end::Toolbar-->
                     <!--begin::Group actions-->
@@ -177,10 +178,6 @@ var route = "{{route('admin.publishers.index')}}";
 var publishersRoute = "{{route('admin.publisher.profile')}}";
 </script>
 <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/table.js"></script>
-<script>
-    // $('.filter-input').keyup(function(){
-    //     console.log($(this).val());
-    //     var dbtable = $('#kt_table_users');
-    // })
-</script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/publishers/change-status.js"></script>
+
 @endpush

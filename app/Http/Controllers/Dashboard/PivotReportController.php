@@ -37,7 +37,7 @@ class PivotReportController extends Controller
     public function create()
     {
         $this->authorize('create_pivot_report');
-        return view('admin.pivot-report.create', [
+        return view('new_admin.pivot-report.create', [
             'offers' => Offer::whereStatus("active")->get(),
         ]);
         

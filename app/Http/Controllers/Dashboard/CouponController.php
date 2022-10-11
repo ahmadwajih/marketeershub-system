@@ -80,7 +80,8 @@ class CouponController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.coupons.index');
+
+        return redirect()->route('admin.coupons.index')->with($notification);
     }
 
     /**
@@ -94,7 +95,7 @@ class CouponController extends Controller
         $this->authorize('show_coupons');
         $coupon = Coupon::withTrashed()->findOrFail($id);
         userActivity('Coupon', $coupon->id, 'show');
-        return view('admin.coupons.show', ['coupon' => $coupon]);
+        return view('new_admin.coupons.show', ['coupon' => $coupon]);
     }
 
     /**
@@ -107,7 +108,7 @@ class CouponController extends Controller
     {
         $this->authorize('update_coupons');
 
-        return view('admin.coupons.edit', [
+        return view('new_admin.coupons.edit', [
             'coupon' => $coupon,
             'offers' => Offer::whereStatus("active")->get(),
             'users' => User::whereStatus("active")->whereIn('position', ['publisher'])->whereIn('team', ['media_buying','influencer','affiliate', 'prepaid'])->get(),
@@ -145,7 +146,7 @@ class CouponController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('admin.coupons.index')->with($notification);
     }
 
     /**
@@ -172,7 +173,7 @@ class CouponController extends Controller
     public function uploadForm()
     {
         $this->authorize('view_upload_coupons');
-        return view('admin.coupons.upload',[
+        return view('new_admin.coupons.upload',[
             'offers' => Offer::whereStatus("active")->get()
         ]);
     }
@@ -201,4 +202,22 @@ class CouponController extends Controller
         ];
         return redirect()->route('admin.coupons.index');
     }
+
+    public function changeStatus(Request $request){
+        $this->authorize('update_coupons');
+        $coupon = Coupon::findOrFail($request->id);
+        $coupon->status = $request->status == 'active' ? 'active' : 'unactive';
+        $coupon->save();
+        return response()->json(['message' => 'Updated Succefuly']);
+    }
+
+    
+    public function bulkChangeRevenue(Request $request){
+        return $request->all();
+        $coupon = Coupon::findOrFail($request->id);
+        $coupon->status = $request->status == 'active' ? 'active' : 'unactive';
+        $coupon->save();
+        return response()->json(['message' => 'Updated Succefuly']);
+    }
+
 }

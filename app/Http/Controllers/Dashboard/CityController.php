@@ -21,7 +21,7 @@ class CityController extends Controller
             $cities = getModelData('City' , $request, ['country']);
             return response()->json($cities);
         }
-        return view('admin.cities.index');
+        return view('new_admin.cities.index');
     }
     
     /**
@@ -32,7 +32,7 @@ class CityController extends Controller
     public function create()
     {
         $this->authorize('create_cites');
-        return view('admin.cities.create',[
+        return view('new_admin.cities.create',[
             'countries' => Country::all()
         ]);
     }
@@ -60,7 +60,7 @@ class CityController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.cities.index');
+        return redirect()->route('admin.cities.index')->with($notification);
     }
 
     /**
@@ -71,6 +71,7 @@ class CityController extends Controller
      */
     public function show($id)
     {
+        abort(404);
         $this->authorize('show_cites');
         $city = City::findOrFail($id);
         userActivity('City', $city->id, 'show');
@@ -86,7 +87,7 @@ class CityController extends Controller
     public function edit(City $city)
     {
         $this->authorize('show_cites');
-        return view('admin.cities.edit', [
+        return view('new_admin.cities.edit', [
             'city' => $city,
             'countries' => Country::all()
         ]);
@@ -117,7 +118,7 @@ class CityController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.cities.index');
+        return redirect()->route('admin.cities.index')->with($notification);
     }
 
     /**

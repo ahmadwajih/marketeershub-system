@@ -138,4 +138,8 @@ class Offer extends Model
     public function authUserCoupons(){
         return $this->coupons();
     }
+
+    public function cps(){
+        return $this->hasMany(OfferCps::class);
+    }
 }

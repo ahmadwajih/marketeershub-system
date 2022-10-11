@@ -27,7 +27,7 @@
     </div>
 
     <!--begin::Form-->
-    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{ route('admin.coupons.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{route('admin.coupons.upload')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <!--begin::Main column-->
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
@@ -58,9 +58,9 @@
                                             <label class="required form-label">Coupon Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="coupon" class="form-control mb-2" placeholder="Coupon Code" value="{{ old('coupon') }}" />
-                                            @if ($errors->has('coupon'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('coupon') }}</div></div>
+                                            <input type="file" name="coupons" class="form-control mb-2" placeholder="Coupon Code" value="{{ old('coupons') }}" />
+                                            @if ($errors->has('coupons'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('coupons') }}</div></div>
                                             @endif
                                             <!--end::Input-->
                                         </div>
@@ -95,15 +95,14 @@
                                             <label class="form-label">Publisher</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="user_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
-                                                @foreach($users as $user)
-                                                    <option {{old('user_id')==$user->id?"selected":""}} value="{{$user->id}}">{{$user->name}}</option>
-                                                @endforeach
+                                            <select name="team" data-control="select2" class="form-select">
+                                                <option value="influencer">{{ __('Influencer') }}</option>
+                                                <option value="affiliate">{{ __('Affiliate') }}</option>
+                                                <option value="media_buying">{{ __('Media Buying') }}</option>
                                             </select>
                                             <!--end::Input-->
-                                            @if ($errors->has('user_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('user_id') }}</div></div>
+                                            @if ($errors->has('team'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('team') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->

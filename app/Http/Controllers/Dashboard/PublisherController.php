@@ -227,7 +227,7 @@ class PublisherController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.publishers.index');
+        return redirect()->route('admin.publishers.index')->with($notification);
     }
 
     /**
@@ -720,5 +720,14 @@ class PublisherController extends Controller
             return $response;
         }
         return null;
+    }
+
+    public function changeStatus(Request $request){
+        $this->authorize('update_publishers');
+
+        $user = User::findOrFail($request->id);
+        $user->status = $request->status == 'active' ? 'active' : 'closed';
+        $user->save();
+        return response()->json(['message' => 'Updated Succefuly']);
     }
 }

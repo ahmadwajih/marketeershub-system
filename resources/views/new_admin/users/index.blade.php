@@ -116,6 +116,7 @@
                         <!--end::Svg Icon-->Export</button> --}}
                         <!--end::Export-->
                         <!--begin::Add user-->
+                        @can('create_users')
                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                         <span class="svg-icon svg-icon-2">
@@ -126,6 +127,7 @@
                         </span>
                         <!--end::Svg Icon-->Add User</a>
                         <!--end::Add user-->
+                        @endcan
                     </div>
                     <!--end::Toolbar-->
                     <!--begin::Group actions-->
@@ -238,6 +240,7 @@
                         <th>{{ __('Phone') }}</th>
                         <th>{{ __('Team') }}</th>
                         <th>{{ __('Belongs To') }}</th>
+                        <th>{{ __('Status') }}</th>
                         <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                     </tr>
                     </thead>
@@ -259,5 +262,6 @@ var route = "{{route('admin.users.index')}}";
 var publishersRoute = "{{route('admin.publisher.profile')}}";
 </script>
 <script src="{{ asset('new_dashboard') }}/js/datatables/users/table.js"></script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/users/change-status.js"></script>
 
 @endpush

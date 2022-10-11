@@ -29,6 +29,7 @@
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
+                        @can('view_dashboard')
                         <div class="menu-item">
                             <!--begin:Menu link-->
                             <a class="menu-link  {{ Request::segment(2)=='index'?'active':'' }} " href="{{ route('admin.index') }}">
@@ -39,6 +40,7 @@
                             </a>
                             <!--end:Menu link-->
                         </div>
+                        @endcan
                         <!--end:Menu item-->
                         @if( in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']))
                         <!--begin:Menu item-->
@@ -71,6 +73,7 @@
                     <!--end:Menu sub-->
                 </div>
                 <!--end:Menu item-->
+                @if(Gate::check('view_users') || Gate::check('view_publishers'))
                 <!--begin:Menu item-->
                 <div class="menu-item pt-5">
                     <!--begin:Menu content-->
@@ -80,7 +83,7 @@
                     <!--end:Menu content-->
                 </div>
                 <!--end:Menu item-->
-
+                @can('view_users')
                 <!--begin:Team Members-->
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Request::segment(2)=='users'?'here show':'' }}">
                     <!--begin:Menu link-->
@@ -99,6 +102,7 @@
                         <span class="menu-arrow"></span>
                     </span>
                     <!--end:Menu link-->
+                    @can('view_users')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -115,6 +119,8 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
+                    @endcan
+                    @can('create_users')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -131,10 +137,12 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
+                    @endcan
 
                 </div>
+                @endcan
                 <!--end:Team Members-->
-
+                @can('view_publishers')
                 <!--begin:Publishers-->
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Request::segment(2)=='publishers'|| Request::segment(2)=='publishers-search' ?'here show':'' }}">
                     <!--begin:Menu link-->
@@ -159,6 +167,7 @@
                         <span class="menu-arrow"></span>
                     </span>
                     <!--end:Menu link-->
+                    @can('view_publishers')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -175,6 +184,8 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
+                    @endcan
+                    @can('create_publishers')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -207,8 +218,11 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
+                    @endcan
 
                 </div>
+                @endcan
+                @endif
                 <!--end:Publishers-->
                 @can('view_roles') 
                 <!--begin:Menu item-->
@@ -238,7 +252,31 @@
                     </div>
                     <!--end:Menu content-->
                 </div>
+
+                @can('view_pivot_report') 
+                 <!--begin:Menu item-->
+                 <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link {{ Request::segment(2)=='pivot-report'?'active':'' }}" href="{{ route('admin.pivot-report.create') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3" d="M7 20.5L2 17.6V11.8L7 8.90002L12 11.8V17.6L7 20.5ZM21 20.8V18.5L19 17.3L17 18.5V20.8L19 22L21 20.8Z" fill="currentColor" />
+                                    <path d="M22 14.1V6L15 2L8 6V14.1L15 18.2L22 14.1Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">{{ __('Upload Report') }}</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
                 <!--end:Menu item-->
+                @endcan
+
+                <!--end:Menu item-->
+                @can('view_offers')
                 <!--begin:Offers-->
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Request::segment(2)=='offers'?'here show':'' }}">
                     <!--begin:Menu link-->
@@ -273,6 +311,7 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
+                    @can('create_offers')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -289,8 +328,10 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
-
+                    @endcan
                 </div>
+                @endcan
+                @can('view_coupons')
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Request::segment(2)=='coupons'?'here show':'' }}">
                     <!--begin:Menu link-->
                     <span class="menu-link">
@@ -325,6 +366,7 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
+                    @can('create_coupons')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -340,7 +382,9 @@
                         </div>
                         <!--end:Menu item-->
                     </div>
+                    @endcan
                     <!--end:Menu sub-->
+                    @can('view_upload_coupons')
                     <!--begin:Menu sub-->
                     <div class="menu-sub menu-sub-accordion">
                         <!--begin:Menu item-->
@@ -357,8 +401,9 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
-
+                    @endcan
                 </div>
+                @endcan
                 <!--end:Team Members-->
                 @can('view_advertisers') 
                  <!--begin:Menu item-->
@@ -383,7 +428,7 @@
                 @endcan
                 @can('view_targets') 
                  <!--begin:Menu item-->
-                 <div class="menu-item">
+                 {{-- <div class="menu-item">
                     <!--begin:Menu link-->
                     <a class="menu-link {{ Request::segment(2)=='targets'?'active':'' }}" href="{{ route('admin.targets.index') }}">
                         <span class="menu-icon">
@@ -400,7 +445,7 @@
                         <span class="menu-title">Targets</span>
                     </a>
                     <!--end:Menu link-->
-                </div>
+                </div> --}}
                 <!--end:Menu item-->
                 @endcan
                 @can('view_categories') 
@@ -445,7 +490,7 @@
                 </div>
                 <!--end:Menu item-->
                 @endcan
-                {{-- @can('view_cities')  --}}
+                @can('view_cites') 
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -464,10 +509,10 @@
                     <!--end:Menu link-->
                 </div>
                 <!--end:Menu item-->
-                {{-- @endcan --}}
+                @endcan
                
     
-                <!--begin:Menu item-->
+                {{-- <!--begin:Menu item-->
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                     <!--begin:Menu link-->
                     <span class="menu-link">
@@ -529,10 +574,10 @@
                     </div>
                     <!--end:Menu sub-->
                 </div>
-                <!--end:Menu item-->
+                <!--end:Menu item--> --}}
 
    
-               
+                @can('view_helps')
                 <!--begin:Menu item-->
                 <div class="menu-item pt-5">
                     <!--begin:Menu content-->
@@ -562,11 +607,13 @@
                     <!--end:Menu link-->
                 </div>
                 <!--end:Menu item-->
+                @endcan
             </div>
             <!--end::Menu-->
         </div>
     </div>
     <!--end::Aside menu-->
+    @can('view_helps')
     <!--begin::Footer-->
     <div class="aside-footer flex-column-auto pt-5 pb-7 px-7" id="kt_aside_footer">
         <a href="{{ route('admin.helps.index') }}" class="btn btn-bg-light btn-color-gray-500 btn-active-color-gray-900 text-nowrap w-100" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss-="click" title="Here you will find posts and videos help you to use the system">
@@ -585,5 +632,6 @@
         </a>
     </div>
     <!--end::Footer-->
+    @endcan
 </div>
 <!--end::Aside-->

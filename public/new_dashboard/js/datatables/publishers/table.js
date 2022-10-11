@@ -76,18 +76,11 @@ var KTUsersList = function () {
                     orderable: false,
                     searchable:false,
                     render: function (data, type, row) {
-                       
-                        // active pending closed
                         if(row.status == 'active'){
-                            return '<div class="badge badge-success">Active</div>';
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'unactive')" class="btn btn-light-success btn-sm">Active</button>`;
+                        }else{
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'active')" class="btn btn-light-danger btn-sm">Unactive</button>`;
                         }
-                        if(row.status == 'pending'){
-                            return '<div class="badge badge-info">Pausd</div>';
-                        }
-                        if(row.status == 'closed'){
-                            return '<div class="badge badge-danger">Closed</div>';
-                        }
-                        return null;
                     }
                 },
                 {

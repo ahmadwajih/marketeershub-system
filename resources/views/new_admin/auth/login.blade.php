@@ -96,12 +96,22 @@
 								<!--end::Input group=-->
 								<!--begin::Wrapper-->
 								<div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
-									<div></div>
+									<div>
+                                        <div class="fv-row mb-1 mt-2">
+                                            <label class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" name="remember_me"/>
+                                                <span class="form-check-label fw-semibold text-gray-700 fs-base ms-1">Remember Me</span>
+                                            </label>
+                                        </div>
+                                    </div>
 									<!--begin::Link-->
 									<a href="{{ route('admin.forgot.password.form') }}" class="link-primary">Forgot Password ?</a>
 									<!--end::Link-->
 								</div>
 								<!--end::Wrapper-->
+                                
+                                
+
 								<!--begin::Submit button-->
 								<div class="d-grid mb-10">
 									<button type="submit" id="kt_sign_in_submit" class="btn btn-primary">

@@ -56,6 +56,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('charts/gm-v-po', 'DashboardController@chartGmVPo')->name('chart.gm-v-po');
 
         Route::resource('users', UserController::class);
+        Route::post('users/change/status', 'UserController@changeStatus');
         // User Profile
         Route::get('user/profile', 'UserController@profile')->name('user.profile');
 
@@ -64,6 +65,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('publishers-search', 'PublisherController@search')->name('publishers.search');
         Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
         Route::post('publishers-check-exists', 'PublisherController@checkIfExists')->name('publishers.check.exists');
+        Route::post('publishers/change/status', 'PublisherController@changeStatus');
 
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
@@ -85,15 +87,19 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
         Route::resource('advertisers', AdvertiserController::class);
+        Route::post('advertisers/change/status', 'AdvertiserController@changeStatus');
+
         Route::resource('categories', CategoryController::class);
         Route::resource('offers', OfferController::class);
         Route::get('my-offers', 'OfferController@myOffers')->name('my-offers');
         Route::get('upload/offers', 'OfferController@upload')->name('upload.offers');
+        Route::get('offers/coupons/{offer}', 'OfferController@coupons')->name('offers.coupons');
         Route::resource('offerRequests', OfferRequestController::class);
         Route::get('ajax/offerRequests/form', 'OfferRequestController@offerRequestAjaxForm')->name('offerRequest.ajax.form');
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
+        Route::post('offers/change/status', 'OfferController@changeStatus');
 
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');
@@ -105,6 +111,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('pivot-report', PivotReportController::class);
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
+        Route::post('coupons/change/status', 'CouponController@changeStatus');
+        Route::post('coupons/change/revenue', 'CouponController@bulkChangeRevenue');
+
         Route::resource('reports', ReportController::class);
         Route::resource('countries', CountryController::class);
         Route::resource('cities', CityController::class);

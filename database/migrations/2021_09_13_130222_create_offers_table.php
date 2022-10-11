@@ -32,7 +32,6 @@ class CreateOffersTable extends Migration
             $table->enum('cps_type', ['static', 'new_old', 'slaps'])->default('static');
             $table->float('payout')->nullable();
             $table->float('revenue')->nullable();
-            $table->float('percent_payout')->nullable();
             $table->enum('status', ['active', 'pused', 'pending', 'expire'])->default('pending');
             $table->date('expire_date');
             $table->text('note')->nullable();

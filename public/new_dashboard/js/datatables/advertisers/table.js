@@ -49,6 +49,18 @@ var KTUsersList = function () {
                     }
                 },
                 {
+                    targets: 6,
+                    orderable: false,
+                    searchable:false,
+                    render: function (data, type, row) {
+                        if(row.status == 'active'){
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'unactive')" class="btn btn-light-success btn-sm">Active</button>`;
+                        }else{
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'active')" class="btn btn-light-danger btn-sm">Unactive</button>`;
+                        }
+                    }
+                },
+                {
                     targets: -1,
                     data: null,
                     searchable:false,

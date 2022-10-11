@@ -5,7 +5,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Add New Coupon</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Add New Advertiser</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -15,7 +15,7 @@
                 </li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Coupon</li>
+                <li class="breadcrumb-item text-gray-600">Advertisers</li>
                 <!--end::Item-->
                 <!--begin::Item-->
                 <li class="breadcrumb-item text-gray-500">Add New</li>
@@ -27,7 +27,7 @@
     </div>
 
     <!--begin::Form-->
-    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{ route('admin.coupons.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{route('admin.advertisers.store')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <!--begin::Main column-->
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
@@ -43,13 +43,27 @@
                             <!--begin::Card header-->
                             <div class="card-header">
                                 <div class="card-title">
-                                    <h2>General</h2>
+                                    <h2>General Information</h2>
                                 </div>
                             </div>
                             <!--end::Card header-->
                             <!--begin::Card body-->
                             <div class="card-body pt-0">
                                 <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-custom form-check-solid mb-10">
+                                            <input @if(old('exclusive') == 'on') checked="checked" @endif class="form-check-input" type="checkbox" name="exclusive" id="exclusive"/>
+                                            <label class="form-check-label" for="exclusive">
+                                                {{ __('Exclusive') }}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-custom form-check-solid mb-10">
+                                            <input @if(old('broker') == 'on') checked="checked" @endif class="form-check-input" type="checkbox" name="broker" id="broker"/>
+                                            <label class="form-check-label" for="broker">
+                                                {{ __('Broker') }}
+                                            </label>
+                                        </div>
+                                    </div>
 
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
@@ -266,7 +280,7 @@
                                             <label class="form-label">Categories</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="Categories[]" multiple data-control="select2" class="form-select form-select-sm">
+                                            <select name="categories[]" multiple data-control="select2" class="form-select form-select-sm">
                                                 @foreach ($categories as $category)
                                                 <option {{ old('categories')?(in_array($category->id,old('categories'))?'selected':''):''  }} value="{{ $category->id }}">{{  $category->title }}</option>
                                             @endforeach
@@ -278,54 +292,155 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-{{-- 
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="form-label">Offer</label>
+                                            <label class="required form-label">Access Username Or Email</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="offer_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
-                                                @foreach($offers as $offer)
-                                                        <option {{old('offer_id')==$offer->id?"selected":""}} value="{{$offer->id}}">{{$offer->name}}</option>
-                                                    @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('offer_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('offer_id') }}</div></div>
+                                            <input type="text" name="access_username" class="form-control mb-2" placeholder="Access Username Or Email" value="{{ old('access_username') }}" />
+                                            @if ($errors->has('access_username'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('access_username') }}</div></div>
                                             @endif
+                                            <!--end::Input-->
                                         </div>
                                         <!--end::Input group-->
-                                    </div> --}}
+                                    </div>
 
-                                    {{-- <div class="col-md-4">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="form-label">Publisher</label>
+                                            <label class="required form-label">Access Password</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="user_id" data-control="select2" class="form-select">
+                                            <input type="text" name="access_password" class="form-control mb-2" placeholder="Access Password" value="{{ old('access_password') }}" />
+                                            @if ($errors->has('access_password'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('access_password') }}</div></div>
+                                            @endif
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="form-label">Currency</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select name="currency_id" data-control="select2" class="form-select">
                                                 <option selected value="">{{ __('No one') }}</option>
-                                                @foreach($users as $user)
-                                                    <option {{old('user_id')==$user->id?"selected":""}} value="{{$user->id}}">{{$user->name}}</option>
+                                                @foreach ($currencies as $currency)
+                                                    <option {{ old('currency_id') == $currency->id ? 'selected' : '' }}
+                                                        value="{{ $currency->id }}">{{ $currency->name }}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
-                                            @if ($errors->has('user_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('user_id') }}</div></div>
+                                            @if ($errors->has('currency_id'))
+                                                <div class="fv-plugins-message-container invalid-feedback">
+                                                    <div data-field="text_input">{{ $errors->first('currency_id') }}</div>
+                                                </div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
-                                    </div> --}}
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="form-label">Language</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select name="language" data-control="select2" class="form-select">
+                                                <option value="ar">{{ __('AR') }}</option>
+                                                <option value="en">{{ __('En') }}</option>
+                                                <option value="ar_en">{{ __('AR & EN') }}</option>
+                                            </select>
+                                            <!--end::Input-->
+                                            @if ($errors->has('language'))
+                                                <div class="fv-plugins-message-container invalid-feedback">
+                                                    <div data-field="text_input">{{ $errors->first('language') }}</div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Contract</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="file" name="contract" class="form-control mb-2" value="{{ old('contract') }}" />
+                                            @if ($errors->has('contract'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('contract') }}</div></div>
+                                            @endif
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">NDA</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="file" name="nda" class="form-control mb-2" value="{{ old('nda') }}" />
+                                            @if ($errors->has('nda'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('nda') }}</div></div>
+                                            @endif
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">IO</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="file" name="io" class="form-control mb-2" value="{{ old('io') }}" />
+                                            @if ($errors->has('io'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('io') }}</div></div>
+                                            @endif
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Note</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <textarea name="note" class="form-control mb-2" >{{ old('note') }}</textarea>
+                                            @if ($errors->has('note'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('note') }}</div></div>
+                                            @endif
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
 
                                 </div>
                             </div>
                             <!--end::Card header-->
                         </div>
                         <!--end::General options-->
+
                     </div>
                 </div>
                 <!--end::Tab pane-->
@@ -333,7 +448,7 @@
             <!--end::Tab content-->
             <div class="d-flex justify-content-end">
                 <!--begin::Button-->
-                <a href="../../demo14/dist/apps/ecommerce/catalog/products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
+                <a href="{{ route('admin.advertisers.index') }}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
                 <!--end::Button-->
                 <!--begin::Button-->
                 <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">

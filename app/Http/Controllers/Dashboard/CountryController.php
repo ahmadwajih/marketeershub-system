@@ -20,7 +20,7 @@ class CountryController extends Controller
             $countries = getModelData('Country' , $request);
             return response()->json($countries);
         }
-        return view('admin.countries.index');
+        return view('new_admin.countries.index');
     }
     
     /**
@@ -31,7 +31,7 @@ class CountryController extends Controller
     public function create()
     {
         $this->authorize('create_countries');
-        return view('admin.countries.create');
+        return view('new_admin.countries.create');
     }
 
     /**
@@ -56,7 +56,7 @@ class CountryController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.countries.index');
+        return redirect()->route('admin.countries.index')->with($notification);
     }
 
     /**
@@ -67,6 +67,7 @@ class CountryController extends Controller
      */
     public function show($id)
     {
+        abort(404);
         $this->authorize('show_countries');
         $country = Country::findOrFail($id);
         userActivity('Country', $country->id, 'show');
@@ -82,7 +83,7 @@ class CountryController extends Controller
     public function edit(Country $country)
     {
         $this->authorize('show_countries');
-        return view('admin.countries.edit', [
+        return view('new_admin.countries.edit', [
             'country' => $country
         ]);
     }
@@ -110,7 +111,7 @@ class CountryController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.countries.index');
+        return redirect()->route('admin.countries.index')->with($notification);
     }
 
     /**

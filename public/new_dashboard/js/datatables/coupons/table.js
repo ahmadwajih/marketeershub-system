@@ -34,6 +34,7 @@ var KTUsersList = function () {
                 { data: 'user.name' },
                 { data: 'user.ho_id' },
                 { data: 'user.team' },
+                { data: 'status' },
                 { data: null },
             ],
             columnDefs: [
@@ -117,6 +118,18 @@ var KTUsersList = function () {
                     }
                 },
                 {
+                    targets: 7,
+                    orderable: false,
+                    searchable:false,
+                    render: function (data, type, row) {
+                        if(row.status == 'active'){
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'unactive')" class="btn btn-light-success btn-sm">Active</button>`;
+                        }else{
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'active')" class="btn btn-light-danger btn-sm">Unactive</button>`;
+                        }
+                    }
+                },
+                {
                     targets: -1,
                     data: null,
                     searchable:false,
@@ -136,9 +149,6 @@ var KTUsersList = function () {
                         <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
                             <!--begin::Menu item-->
                             <div class="menu-item px-3">
-                            <div class="menu-item px-3">
-                                <a href="`+route+`/`+row.id+`" class="menu-link px-3">View</a>
-                            </div>
                             <div class="menu-item px-3">
                                 <a href="`+route+`/`+row.id+`/edit" class="menu-link px-3">Edit</a>
                             </div>
@@ -356,7 +366,7 @@ var KTUsersList = function () {
                 
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
-                    text: "Are you sure you want to delete selected customers?",
+                    text: "Are you sure you want to delete selected coupons?",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
@@ -413,7 +423,7 @@ var KTUsersList = function () {
                                 });
 
                             Swal.fire({
-                                text: "You have deleted all selected customers!.",
+                                text: "You have deleted all selected coupons!.",
                                 icon: "success",
                                 buttonsStyling: false,
                                 confirmButtonText: "Ok, got it!",
@@ -427,7 +437,7 @@ var KTUsersList = function () {
                         });
                     } else if (result.dismiss === "cancel") {
                         Swal.fire({
-                            text: "Selected customers was not deleted.",
+                            text: "Selected coupons was not deleted.",
                             icon: "error",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",

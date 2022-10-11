@@ -60,7 +60,6 @@ class AdvertiserController extends Controller
             'phone'                 => 'nullable|max:255',
             'email'                 => 'nullable|max:255',
             'ho_user_id'            => 'nullable|max:255',
-            'company_name_ar'       => 'required|max:255',
             'company_name_en'       => 'required|max:255',
             'website'               => 'nullable|max:255',
             'categories'            => 'array|required|exists:categories,id',
@@ -105,7 +104,7 @@ class AdvertiserController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.advertisers.index');
+        return redirect()->route('admin.advertisers.index')->with($notification);
     }
 
     /**
@@ -119,7 +118,7 @@ class AdvertiserController extends Controller
         $this->authorize('show_advertisers');
         $advertiser = Advertiser::withTrashed()->findOrFail($id);
         userActivity('Advertiser', $advertiser->id, 'show');
-        return view('admin.advertisers.show', ['advertiser' => $advertiser]);
+        return view('new_admin.advertisers.show', ['advertiser' => $advertiser]);
     }
 
     /**
@@ -132,7 +131,7 @@ class AdvertiserController extends Controller
     {
         $this->authorize('update_advertisers');
 
-        return view('admin.advertisers.edit', [
+        return view('new_admin.advertisers.edit', [
             'advertiser' => $advertiser,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($advertiser->country_id)->get(),
@@ -207,7 +206,8 @@ class AdvertiserController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.advertisers.index');
+
+        return redirect()->route('admin.advertisers.index')->with($notification);
     }
 
     /**
@@ -224,4 +224,14 @@ class AdvertiserController extends Controller
             $advertiser->delete();
         }
     }
+
+    public function changeStatus(Request $request){
+        $this->authorize('update_advertisers');
+
+        $advertiser = Advertiser::findOrFail($request->id);
+        $advertiser->status = $request->status == 'active' ? 'active' : 'unactive';
+        $advertiser->save();
+        return response()->json(['message' => 'Updated Succefuly']);
+    }
+
 }

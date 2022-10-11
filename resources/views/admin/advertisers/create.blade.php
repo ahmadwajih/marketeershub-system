@@ -289,7 +289,7 @@
                                                 @if ($errors->has('contract'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('contract') }}</p>
-                                                    </div>
+                                                    </div>  
                                                 @endif
                                             </div>
                                         </div>

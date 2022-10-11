@@ -37,8 +37,11 @@ class AuthController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'required|min:6'
         ]);
-
-        if (Auth::attempt($credentials)) {
+        $remember = false;
+        if(isset($request->remember_me ) && $request->remember_me == 'on') {
+            $remember = true;
+        }
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             LoginUser::create([
                 'user_id' => auth()->user()->id,

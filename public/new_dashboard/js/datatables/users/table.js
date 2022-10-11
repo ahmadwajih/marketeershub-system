@@ -34,6 +34,7 @@ var KTUsersList = function () {
                 { data: 'phone' },
                 { data: 'team' },
                 { data: null },
+                { data: 'status' },
                 { data: null },
             ],
             columnDefs: [
@@ -62,6 +63,18 @@ var KTUsersList = function () {
                               catch(err) {
                                 return null;
                               }
+                        }
+                    }
+                },
+                {
+                    targets: 7,
+                    orderable: false,
+                    searchable:false,
+                    render: function (data, type, row) {
+                        if(row.status == 'active'){
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'unactive')" class="btn btn-light-success btn-sm">Active</button>`;
+                        }else{
+                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'active')" class="btn btn-light-danger btn-sm">Unactive</button>`;
                         }
                     }
                 },
@@ -279,7 +292,7 @@ var KTUsersList = function () {
     // Init toggle toolbar
     var initToggleToolbar = () => {
         // Toggle selected action toolbar
-        // Select all checkboxes
+        // Select all radioes
         const checkboxes = table.querySelectorAll('[type="checkbox"]');
 
         // Select elements

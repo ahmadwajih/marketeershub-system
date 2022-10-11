@@ -8,9 +8,11 @@ use App\Imports\OfferCouponImport;
 use App\Models\Advertiser;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\NewOldOffer;
 use App\Models\Offer;
+use App\Models\OfferCps;
 use App\Models\OfferRequest;
 use App\Models\OfferSlap;
 use App\Models\User;
@@ -78,40 +80,60 @@ class OfferController extends Controller
      */
     public function store(Request $request)
     {
+        // foreach ($request->static_revenue as $staticRevenue) {
+        //     dd($staticRevenue['countries']);
+        // }
+        // dd($request->all());
         $this->authorize('create_offers');
         $data = $request->validate([
+            // Genral Info
             'name_en' => 'required|max:255',
-            'partener' => 'required|in:none,salla',
-            'salla_user_email' => 'required_if:partener,salla|email|nullable',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
-            'type' => 'required|in:coupon_tracking,link_tracking',
             'coupons' => 'nullable|file',
-            'cps_type' => 'required|in:static,new_old,slaps',
-            'payout_type' => 'required_if:cps_type,static|in:flat,percentage',
-            'revenue_type' => 'required_if:cps_type,static|in:flat,percentage',
-            'payout' => 'required_if:cps_type,static|nullable|numeric',
-            'revenue' => 'required_if:cps_type,static|nullable|numeric',
-            'new_payout' => 'required_if:cps_type,new_old|nullable|numeric',
-            'new_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
-            'old_payout' => 'required_if:cps_type,new_old|nullable|numeric',
-            'old_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'nullable|date|after:yesterday',
             'note' => 'nullable',
             'terms_and_conditions_en' => 'nullable',
-            'countries' => 'array|required|exists:countries,id',
+            // 'countries' => 'array|required|exists:countries,id',
             'currency_id' => 'nullable|exists:currencies,id',
             'discount' => 'required|numeric',
             'discount_type' => 'required|in:flat,percentage',
-            'slaps.*.from' => 'required_if:cps_type,slaps',
-            'slaps.*.to' => 'required_if:cps_type,slaps',
-            'slaps.*.revenue' => 'required_if:cps_type,slaps',
-            'slaps.*.payout' => 'required_if:cps_type,slaps',
+            'discount_type' => 'required|in:flat,percentage',
+            // Revenue Validation
+            'revenue_cps_type' => 'required|in:static,new_old,slaps',
+            'revenue_type' => 'required|in:flat,percentage',
+            'static_revenue' => 'required_if:revenue_cps_type,static|array',
+            'static_revenue.*.revenue' => 'required_if:revenue_cps_type,static',
+
+            'new_old_revenue' => 'required_if:revenue_cps_type,new_old|array',
+            'new_old_revenue.*.new_revenue' => 'required_if:revenue_cps_type,new_old',
+            'new_old_revenue.*.old_revenue' => 'required_if:revenue_cps_type,new_old',
+
+            'revenue_slaps' => 'required_if:revenue_cps_type,slaps|array',
+            'revenue_slaps.*.from' => 'required_if:revenue_cps_type,slaps',
+            'revenue_slaps.*.to' => 'required_if:revenue_cps_type,slaps',
+            'revenue_slaps.*.revenue' => 'required_if:revenue_cps_type,slaps',
+            // Payout Validation
+            'payout_cps_type' => 'required|in:static,new_old,slaps',
+            'payout_type' => 'required|in:flat,percentage',
+            'static_payout' => 'required_if:payout_cps_type,static|array',
+            'static_payout.*.payout' => 'required_if:payout_cps_type,static',
+
+            'new_old_payout' => 'required_if:payout_cps_type,new_old|array',
+            'new_old_payout.*.new_payout' => 'required_if:payout_cps_type,new_old',
+            'new_old_payout.*.old_payout' => 'required_if:payout_cps_type,new_old',
+
+            'payout_slaps' => 'required_if:payout_cps_type,slaps|array',
+            'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
+            'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
+            'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
+
+
         ]);
 
         $thumbnail = '';
@@ -119,66 +141,169 @@ class OfferController extends Controller
             $thumbnail = time() . rand(11111, 99999) . '.' . $request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/', $thumbnail, 'public');
         }
-        unset($data['coupons']);
-        unset($data['slaps']);
-        unset($data['categories']);
-        unset($data['countries']);
-        unset($data['new_payout']);
-        unset($data['new_revenue']);
-        unset($data['old_payout']);
-        unset($data['old_revenue']);
-        $data['thumbnail'] = $thumbnail;
-        $data['payout']    = $request->cps_type == 'static' ? $request->payout : null;
-        $data['revenue']   = $request->cps_type == 'static' ? $request->revenue : null;
-        $data['name_ar']   = $request->name_en;
-        $data['description_ar']   = $request->description_en;
-        $data['terms_and_conditions_ar']   = $request->terms_and_conditions_en;
-        $offer = Offer::create($data);
-        userActivity('Offer', $offer->id, 'create');
-        $publishers = User::wherePosition('publisher')->get();
-        // try {
-        //     Notification::send($publishers, new NewOffer($offer));
-        // } catch (\Throwable $th) {
-        //     Log::debug($th);
-        // }
 
-        if ($request->categories) {
-            $offer->categories()->attach($request->categories);
-        }
+        try {
+            DB::beginTransaction();
 
-        if ($request->countries) {
-            $offer->countries()->attach($request->countries);
-        }
-
-        // If cps is new old
-        if ($request->cps_type == 'new_old') {
-            NewOldOffer::create([
-                'new_payout' => $request->new_payout,
-                'new_revenue' => $request->new_revenue,
-                'old_payout' => $request->old_payout,
-                'old_revenue' => $request->old_revenue,
-                'new_payout_type' => $request->new_payout_type,
-                'new_revenue_type' => $request->new_revenue_type,
-                'old_payout_type' => $request->old_payout_type,
-                'old_revenue_type' => $request->old_revenue_type,
-                'offer_id' => $offer->id,
+            $offer = Offer::create([
+                'name_en' => $request->name_en,
+                'advertiser_id' => $request->advertiser_id,
+                'description_en' => $request->description_en,
+                'website' => $request->website,
+                'thumbnail' => $thumbnail,
+                'offer_url' => $request->offer_url,
+                'status' => $request->status,
+                'expire_date' => $request->expire_date,
+                'note' => $request->note,
+                'terms_and_conditions_en' => $request->terms_and_conditions_en,
+                'currency_id' => $request->currency_id,
+                'discount' => $request->discount,
+                'discount_type' => $request->discount_type,
+                'discount_type' => $request->discount_type,
+                'revenue_cps_type' => $request->revenue_cps_type,
+                'revenue_type' => $request->revenue_type,
+                'payout_cps_type' => $request->payout_cps_type,
+                'payout_type' => $request->payout_type,
             ]);
-        }
-        // If cps is slaps
-        if ($request->cps_type == 'slaps') {
-            if ($request->slaps && count($request->slaps) > 0) {
-                foreach ($request->slaps as $slap) {
-                    OfferSlap::create([
-                        'slap_type' => $slap['slap_type'],
-                        'from' => $slap['from'],
-                        'to' => $slap['to'],
-                        'payout' => $slap['payout'],
-                        'revenue' => $slap['revenue'],
-                        'offer_id' => $offer->id,
-                    ]);
+
+            userActivity('Offer', $offer->id, 'create');
+            // $publishers = User::wherePosition('publisher')->get();
+            // try {
+            //     Notification::send($publishers, new NewOffer($offer));
+            // } catch (\Throwable $th) {
+            //     Log::debug($th);
+            // }
+
+            if ($request->categories) {
+                $offer->categories()->attach($request->categories);
+            }
+
+            // if ($request->countries) {
+            //     $offer->countries()->attach($request->countries);
+            // }
+
+            // If revenue_cps_type is static
+            if ($request->revenue_cps_type == 'static') {
+                if ($request->static_revenue && count($request->static_revenue) > 0) {
+                    foreach ($request->static_revenue as $staticRevenue) {
+                        OfferCps::create([
+                            'type' => 'revenue',
+                            'cps_type' => 'static',
+                            'amount_type' => $request->revenue_type,
+                            'amount' => $staticRevenue['revenue'],
+                            'date_range' => isset($staticRevenue['date_range']) && $staticRevenue['date_range'][0] == 'on' ? true : false,
+                            'from_date' => $staticRevenue['from_date'] ?? null,
+                            'to_date' => $staticRevenue['to_date'] ?? null,
+                            'countries' => isset($staticRevenue['countries']) && $staticRevenue['countries'][0] == 'on' ? true : false,
+                            'countries_ids' => isset($staticRevenue['countries_ids']) ? json_encode($staticRevenue['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
                 }
             }
+
+            // If revenue_cps_type is new_old
+            if ($request->revenue_cps_type == 'new_old') {
+                if ($request->new_old_revenue && count($request->new_old_revenue) > 0) {
+                    foreach ($request->new_old_revenue as $newOldRevenue) {
+                        OfferCps::create([
+                            'type' => 'revenue',
+                            'cps_type' => 'new_old',
+                            'amount_type' => $request->revenue_type,
+                            'new_amount' => $newOldRevenue['new_revenue'],
+                            'old_amount' => $newOldRevenue['old_revenue'],
+                            'date_range' => isset($newOldRevenue['date_range']) &&  $newOldRevenue['date_range'][0] == 'on' ? true : false,
+                            'from_date' => $newOldRevenue['from_date'] ?? null,
+                            'to_date' => $newOldRevenue['to_date'] ?? null,
+                            'countries' => isset($newOldRevenue['countries']) && $newOldRevenue['countries'][0] == 'on' ? true : false,
+                            'countries_ids' => isset($newOldRevenue['countries_ids']) ? json_encode($newOldRevenue['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
+                }
+            }
+
+            // If revenue_cps_type is slaps
+            if ($request->revenue_cps_type == 'slaps') {
+                if ($request->revenue_slaps && count($request->revenue_slaps) > 0) {
+                    foreach ($request->revenue_slaps as $slapsRevenue) {
+                        OfferCps::create([
+                            'type' => 'revenue',
+                            'cps_type' => 'slaps',
+                            'amount_type' => $request->revenue_type,
+                            'amount' => $slapsRevenue['revenue'],
+                            'from' => $slapsRevenue['from'] ?? null,
+                            'to' => $slapsRevenue['to'] ?? null,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
+                }
+            }
+
+
+            // If payout_cps_type is static
+            if ($request->payout_cps_type == 'static') {
+                if ($request->static_payout && count($request->static_payout) > 0) {
+                    foreach ($request->static_payout as $staticPayout) {
+                        OfferCps::create([
+                            'type' => 'payout',
+                            'cps_type' => 'static',
+                            'amount_type' => $request->payout_type,
+                            'amount' => $staticPayout['payout'],
+                            'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
+                            'from_date' => $staticPayout['from_date'] ?? null,
+                            'to_date' => $staticPayout['to_date'] ?? null,
+                            'countries' => isset($staticPayout['countries']) && $staticPayout['countries'][0] == 'on' ? true : false,
+                            'countries_ids' => isset($staticPayout['countries_ids']) ? json_encode($staticPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
+                }
+            }
+
+            // If payout_cps_type is new_old
+            if ($request->payout_cps_type == 'new_old') {
+                if ($request->new_old_payout && count($request->new_old_payout) > 0) {
+                    foreach ($request->new_old_payout as $newOldPayout) {
+                        OfferCps::create([
+                            'type' => 'payout',
+                            'cps_type' => 'new_old',
+                            'amount_type' => $request->payout_type,
+                            'new_amount' => $newOldPayout['new_payout'],
+                            'old_amount' => $newOldPayout['old_payout'],
+                            'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
+                            'from_date' => $newOldPayout['from_date'] ?? null,
+                            'to_date' => $newOldPayout['to_date'] ?? null,
+                            'countries' => isset($newOldPayout['countries']) && $newOldPayout['countries'][0] == 'on' ? true : false,
+                            'countries_ids' => isset($newOldPayout['countries_ids']) ? json_encode($newOldPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
+                }
+            }
+
+            // If payout_cps_type is slaps
+            if ($request->payout_cps_type == 'slaps') {
+                if ($request->payout_slaps && count($request->payout_slaps) > 0) {
+                    foreach ($request->payout_slaps as $slapsPayout) {
+                        OfferCps::create([
+                            'type' => 'payout',
+                            'cps_type' => 'slaps',
+                            'amount_type' => $request->payout_type,
+                            'amount' => $slapsPayout['payout'],
+                            'from' => $slapsPayout['from'] ?? null,
+                            'to' => $slapsPayout['to'] ?? null,
+                            'offer_id' => $offer->id,
+                        ]);
+                    }
+                }
+            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th);
         }
+
 
         // If this offer is with salla partener 
         if ($request->partener == 'salla') {
@@ -231,16 +356,16 @@ class OfferController extends Controller
             ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
             ->join('users', 'coupons.user_id', '=', 'users.id')
             ->groupBy('user_name', 'date', 'orders')
-            
+
             ->get();
-        
+
 
         // userActivity('Offer', $offer->id, 'view');
         //
         return view('new_admin.offers.show', [
             'offer' => $offer,
             'offerRequest' => $offerRequest,
-            'topPublishers' => $topPublishers->groupBy('date')->first(), 
+            'topPublishers' => $topPublishers->groupBy('date')->first(),
         ]);
     }
 
@@ -252,6 +377,9 @@ class OfferController extends Controller
      */
     public function edit(Offer $offer)
     {
+        // $array = [1, 3];
+        // $array = json_encode($array);
+        // dd($array);
         $this->authorize('update_offers');
         return view('new_admin.offers.edit', [
             'offer' => $offer,
@@ -272,35 +400,57 @@ class OfferController extends Controller
     public function update(Request $request, Offer $offer)
     {
         $this->authorize('update_offers');
-        $data      = $request->validate([
+        $data = $request->validate([
+            // Genral Info
             'name_en' => 'required|max:255',
-            'partener' => 'required|in:none,salla',
-            'salla_user_email' => 'nullable|required_if:partener,salla|email',
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
-            'type' => 'required|in:coupon_tracking,link_tracking',
-            'cps_type' => 'required|in:static,new_old,slaps',
-            'payout_type' => 'required|in:flat,percentage',
-            'revenue_type' => 'required|in:flat,percentage',
-            'payout' => 'required_if:cps_type,static|nullable|numeric',
-            'revenue' => 'required_if:cps_type,static|nullable|numeric',
-            'new_payout' => 'required_if:cps_type,new_old|nullable|numeric',
-            'new_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
-            'old_payout' => 'required_if:cps_type,new_old|nullable|numeric',
-            'old_revenue' => 'required_if:cps_type,new_old|nullable|numeric',
+            'coupons' => 'nullable|file',
             'status' => 'required|in:active,pending,pused,expire',
             'expire_date' => 'nullable|date|after:yesterday',
             'note' => 'nullable',
             'terms_and_conditions_en' => 'nullable',
-            'countries' => 'array|required|exists:countries,id',
+            // 'countries' => 'array|required|exists:countries,id',
             'currency_id' => 'nullable|exists:currencies,id',
             'discount' => 'required|numeric',
             'discount_type' => 'required|in:flat,percentage',
+            'discount_type' => 'required|in:flat,percentage',
+            // Revenue Validation
+            'revenue_cps_type' => 'required|in:static,new_old,slaps',
+            'revenue_type' => 'required|in:flat,percentage',
+            'static_revenue' => 'required_if:revenue_cps_type,static|array',
+            'static_revenue.*.revenue' => 'required_if:revenue_cps_type,static',
+
+            'new_old_revenue' => 'required_if:revenue_cps_type,new_old|array',
+            'new_old_revenue.*.new_revenue' => 'required_if:revenue_cps_type,new_old',
+            'new_old_revenue.*.old_revenue' => 'required_if:revenue_cps_type,new_old',
+
+            'revenue_slaps' => 'required_if:revenue_cps_type,slaps|array',
+            'revenue_slaps.*.from' => 'required_if:revenue_cps_type,slaps',
+            'revenue_slaps.*.to' => 'required_if:revenue_cps_type,slaps',
+            'revenue_slaps.*.revenue' => 'required_if:revenue_cps_type,slaps',
+            // Payout Validation
+            'payout_cps_type' => 'required|in:static,new_old,slaps',
+            'payout_type' => 'required|in:flat,percentage',
+            'static_payout' => 'required_if:payout_cps_type,static|array',
+            'static_payout.*.payout' => 'required_if:payout_cps_type,static',
+
+            'new_old_payout' => 'required_if:payout_cps_type,new_old|array',
+            'new_old_payout.*.new_payout' => 'required_if:payout_cps_type,new_old',
+            'new_old_payout.*.old_payout' => 'required_if:payout_cps_type,new_old',
+
+            'payout_slaps' => 'required_if:payout_cps_type,slaps|array',
+            'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
+            'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
+            'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
+
+
         ]);
+
         $thumbnail = $offer->thumbnail;
         if ($request->has("thumbnail")) {
             Storage::disk('public')->delete('Images/Offers/' . $offer->thumbnail);
@@ -308,22 +458,29 @@ class OfferController extends Controller
             $request->thumbnail->storeAs('Images/Offers/', $thumbnail, 'public');
         }
 
-        unset($data['categories']);
-        unset($data['countries']);
-        unset($data['new_payout']);
-        unset($data['new_revenue']);
-        unset($data['old_payout']);
-        unset($data['old_revenue']);
 
-        $data['thumbnail'] = $thumbnail;
-        $data['payout']    = $request->cps_type == 'static' ? $request->payout : null;
-        $data['revenue']   = $request->cps_type == 'static' ? $request->revenue : null;
-        $data['name_ar']   = $request->name_en;
-        $data['description_ar']   = $request->description_en;
-        $data['terms_and_conditions_ar']   = $request->terms_and_conditions_en;
 
         userActivity('Offer', $offer->id, 'update', $data, $offer);
-        $offer->update($data);
+        $offer->update([
+            'name_en' => $request->name_en,
+            'advertiser_id' => $request->advertiser_id,
+            'description_en' => $request->description_en,
+            'website' => $request->website,
+            'thumbnail' => $thumbnail,
+            'offer_url' => $request->offer_url,
+            'status' => $request->status,
+            'expire_date' => $request->expire_date,
+            'note' => $request->note,
+            'terms_and_conditions_en' => $request->terms_and_conditions_en,
+            'currency_id' => $request->currency_id,
+            'discount' => $request->discount,
+            'discount_type' => $request->discount_type,
+            'discount_type' => $request->discount_type,
+            'revenue_cps_type' => $request->revenue_cps_type,
+            'revenue_type' => $request->revenue_type,
+            'payout_cps_type' => $request->payout_cps_type,
+            'payout_type' => $request->payout_type,
+        ]);
 
         if ($request->categories) {
             $offer->categories()->sync($request->categories);
@@ -332,36 +489,126 @@ class OfferController extends Controller
         if ($request->countries) {
             $offer->countries()->sync($request->countries);
         }
-        // If cps is new old
-        if ($request->cps_type == 'new_old') {
-            NewOldOffer::updateOrCreate([
-                'offer_id' => $offer->id,
-            ], [
-                'new_payout' => $request->new_payout,
-                'new_revenue' => $request->new_revenue,
-                'old_payout' => $request->old_payout,
-                'old_revenue' => $request->old_revenue,
-                'new_payout_type' => $request->new_payout_type,
-                'new_revenue_type' => $request->new_revenue_type,
-                'old_payout_type' => $request->old_payout_type,
-                'old_revenue_type' => $request->old_revenue_type,
-            ]);
-        }
 
-        // If cps is slaps
-        if ($request->cps_type == 'slaps') {
-            $offer->slaps->detach();
-            foreach ($request->slaps as $slap) {
-                OfferSlap::create([
-                    'slap_type' => $slap['slap_type'],
-                    'from' => $slap['from'],
-                    'to' => $slap['to'],
-                    'payout' => $slap['payout'],
-                    'revenue' => $slap['revenue'],
-                    'offer_id' => $offer->id,
-                ]);
+        $offer->cps()->delete();
+        // If revenue_cps_type is static
+        if ($request->revenue_cps_type == 'static') {
+            if ($request->static_revenue && count($request->static_revenue) > 0) {
+                foreach ($request->static_revenue as $staticRevenue) {
+                    OfferCps::create([
+                        'type' => 'revenue',
+                        'cps_type' => 'static',
+                        'amount_type' => $request->revenue_type,
+                        'amount' => $staticRevenue['revenue'],
+                        'date_range' => isset($staticRevenue['date_range']) && $staticRevenue['date_range'][0] == 'on' ? true : false,
+                        'from_date' => $staticRevenue['from_date'] ?? null,
+                        'to_date' => $staticRevenue['to_date'] ?? null,
+                        'countries' => isset($staticRevenue['countries']) && $staticRevenue['countries'][0] == 'on' ? true : false,
+                        'countries_ids' => isset($staticRevenue['countries_ids']) ? json_encode($staticRevenue['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
             }
         }
+
+        // If revenue_cps_type is new_old
+        if ($request->revenue_cps_type == 'new_old') {
+            if ($request->new_old_revenue && count($request->new_old_revenue) > 0) {
+                foreach ($request->new_old_revenue as $newOldRevenue) {
+                    OfferCps::create([
+                        'type' => 'revenue',
+                        'cps_type' => 'new_old',
+                        'amount_type' => $request->revenue_type,
+                        'new_amount' => $newOldRevenue['new_revenue'],
+                        'old_amount' => $newOldRevenue['old_revenue'],
+                        'date_range' => isset($newOldRevenue['date_range']) &&  $newOldRevenue['date_range'][0] == 'on' ? true : false,
+                        'from_date' => $newOldRevenue['from_date'] ?? null,
+                        'to_date' => $newOldRevenue['to_date'] ?? null,
+                        'countries' => isset($newOldRevenue['countries']) && $newOldRevenue['countries'][0] == 'on' ? true : false,
+                        'countries_ids' => isset($newOldRevenue['countries_ids']) ? json_encode($newOldRevenue['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
+            }
+        }
+
+        // If revenue_cps_type is slaps
+        if ($request->revenue_cps_type == 'slaps') {
+            if ($request->revenue_slaps && count($request->revenue_slaps) > 0) {
+                foreach ($request->revenue_slaps as $slapsRevenue) {
+                    OfferCps::create([
+                        'type' => 'revenue',
+                        'cps_type' => 'slaps',
+                        'amount_type' => $request->revenue_type,
+                        'amount' => $slapsRevenue['revenue'],
+                        'from' => $slapsRevenue['from'] ?? null,
+                        'to' => $slapsRevenue['to'] ?? null,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
+            }
+        }
+
+
+        // If payout_cps_type is static
+        if ($request->payout_cps_type == 'static') {
+            if ($request->static_payout && count($request->static_payout) > 0) {
+                foreach ($request->static_payout as $staticPayout) {
+                    OfferCps::create([
+                        'type' => 'payout',
+                        'cps_type' => 'static',
+                        'amount_type' => $request->payout_type,
+                        'amount' => $staticPayout['payout'],
+                        'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
+                        'from_date' => $staticPayout['from_date'] ?? null,
+                        'to_date' => $staticPayout['to_date'] ?? null,
+                        'countries' => isset($staticPayout['countries']) && $staticPayout['countries'][0] == 'on' ? true : false,
+                        'countries_ids' => isset($staticPayout['countries_ids']) ? json_encode($staticPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
+            }
+        }
+
+        // If payout_cps_type is new_old
+        if ($request->payout_cps_type == 'new_old') {
+            if ($request->new_old_payout && count($request->new_old_payout) > 0) {
+                foreach ($request->new_old_payout as $newOldPayout) {
+                    OfferCps::create([
+                        'type' => 'payout',
+                        'cps_type' => 'new_old',
+                        'amount_type' => $request->payout_type,
+                        'new_amount' => $newOldPayout['new_payout'],
+                        'old_amount' => $newOldPayout['old_payout'],
+                        'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
+                        'from_date' => $newOldPayout['from_date'] ?? null,
+                        'to_date' => $newOldPayout['to_date'] ?? null,
+                        'countries' => isset($newOldPayout['countries']) && $newOldPayout['countries'][0] == 'on' ? true : false,
+                        'countries_ids' => isset($newOldPayout['countries_ids']) ? json_encode($newOldPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
+            }
+        }
+
+        // If payout_cps_type is slaps
+        if ($request->payout_cps_type == 'slaps') {
+            if ($request->payout_slaps && count($request->payout_slaps) > 0) {
+                foreach ($request->payout_slaps as $slapsPayout) {
+                    OfferCps::create([
+                        'type' => 'payout',
+                        'cps_type' => 'slaps',
+                        'amount_type' => $request->payout_type,
+                        'amount' => $slapsPayout['payout'],
+                        'from' => $slapsPayout['from'] ?? null,
+                        'to' => $slapsPayout['to'] ?? null,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
+            }
+        }
+
+
 
         // If this offer is with salla partener 
         if ($request->partener == 'salla') {
@@ -372,7 +619,7 @@ class OfferController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.offers.index');
+        return redirect()->route('admin.offers.index')->with($notification);
     }
 
     /**
@@ -388,6 +635,24 @@ class OfferController extends Controller
             userActivity('Offer', $offer->id, 'delete');
             Storage::disk('public')->delete('Images/Offers/' . $offer->thumbnail);
             $offer->delete();
+        }
+    }
+
+    public function changeStatus(Request $request)
+    {
+        $this->authorize('update_offers');
+        $offer = Offer::findOrFail($request->id);
+        $offer->status = $request->status == 'active' ? 'active' : 'pused';
+        $offer->save();
+        return response()->json(['message' => 'Updated Succefuly']);
+    }
+
+    public function coupons(Request $request, $offer)
+    {
+        $coupons = Coupon::where('offer_id', $offer)->with(['offer', 'user'])->get();
+        if ($request->ajax()) {
+            $coupons = Coupon::where('offer_id', $offer)->with(['offer', 'user'])->get();
+            return DataTables::of($coupons)->make(true);
         }
     }
 }

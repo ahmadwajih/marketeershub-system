@@ -5,7 +5,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Upload Coupons</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Edit Category</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -15,10 +15,10 @@
                 </li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Coupons</li>
+                <li class="breadcrumb-item text-gray-600">Categories</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Upload</li>
+                <li class="breadcrumb-item text-gray-500">Edit</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->
@@ -27,8 +27,9 @@
     </div>
 
     <!--begin::Form-->
-    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{ route('admin.coupons.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{route('admin.categories.update', $category->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <!--begin::Main column-->
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
 
@@ -43,77 +44,75 @@
                             <!--begin::Card header-->
                             <div class="card-header">
                                 <div class="card-title">
-                                    <h2>General</h2>
+                                    <h2>General Information</h2>
                                 </div>
                             </div>
                             <!--end::Card header-->
                             <!--begin::Card body-->
                             <div class="card-body pt-0">
                                 <div class="row">
-
-                                    <div class="col-md-4">
+                     
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Coupon Code</label>
+                                            <label class="required form-label">Title EN</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="coupon" class="form-control mb-2" placeholder="Coupon Code" value="{{ old('coupon') }}" />
-                                            @if ($errors->has('coupon'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('coupon') }}</div></div>
+                                            <input type="text" name="title_en" class="form-control mb-2" placeholder="Title EN" value="{{ old('title_en') ?? $category->title_en }}" />
+                                            @if ($errors->has('title_en'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('title_en') }}</div></div>
                                             @endif
                                             <!--end::Input-->
                                         </div>
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="form-label">Offer</label>
+                                            <label class="required form-label">Title AR</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="offer_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
-                                                @foreach($offers as $offer)
-                                                        <option {{old('offer_id')==$offer->id?"selected":""}} value="{{$offer->id}}">{{$offer->name}}</option>
-                                                    @endforeach
+                                            <input type="text" name="title_ar" class="form-control mb-2" placeholder="Title AR" value="{{ old('title_ar') ?? $category->title_ar }}" />
+                                            @if ($errors->has('title_ar'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('title_ar') }}</div></div>
+                                            @endif
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+                                        
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="form-label">Category Type</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select name="type" data-control="select2" class="form-select">
+                                                <option {{ old('type')=="affiliate"?"selected":($category->type=='affiliate'?"selected":'') }} value="affiliate">{{ __('Affiliate') }}</option>
+                                                <option {{ old('type')=="influencer"?"selected":($category->type=='influencer'?"selected":'') }} value="influencer">{{ __('Influencer') }}</option>
+                                                <option {{ old('type')=="advertisers"?"selected":($category->type=='advertisers'?"selected":'') }} value="advertisers">{{ __('Advertisers') }}</option>
+                                                <option {{ old('type')=="offers"?"selected":($category->type=='offers'?"selected":'') }} value="offers">{{ __('Offers') }}</option>
+                                                <option {{ old('type')=="other"?"selected":($category->type=='other'?"selected":'') }} value="other">{{ __('Other') }}</option>
                                             </select>
                                             <!--end::Input-->
-                                            @if ($errors->has('offer_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('offer_id') }}</div></div>
+                                            @if ($errors->has('type'))
+                                                <div class="fv-plugins-message-container invalid-feedback">
+                                                    <div data-field="text_input">{{ $errors->first('type') }}</div>
+                                                </div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">Publisher</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="user_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
-                                                @foreach($users as $user)
-                                                    <option {{old('user_id')==$user->id?"selected":""}} value="{{$user->id}}">{{$user->name}}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('user_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('user_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
                                 </div>
                             </div>
                             <!--end::Card header-->
                         </div>
                         <!--end::General options-->
+
                     </div>
                 </div>
                 <!--end::Tab pane-->
@@ -121,7 +120,7 @@
             <!--end::Tab content-->
             <div class="d-flex justify-content-end">
                 <!--begin::Button-->
-                <a href="../../demo14/dist/apps/ecommerce/catalog/products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
+                <a href="{{ route('admin.advertisers.index') }}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
                 <!--end::Button-->
                 <!--begin::Button-->
                 <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">

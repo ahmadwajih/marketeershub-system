@@ -8,7 +8,8 @@
         </div>
         <!--end::Title-->
         <!--begin::Controls-->
-        <div class="d-flex flex-wrap my-1">
+        {{-- Disable grade --}}
+        {{-- <div class="d-flex flex-wrap my-1">
             <!--begin::Tab nav-->
             <ul class="nav nav-pills me-6 mb-2 mb-sm-0">
                 <li class="nav-item m-0">
@@ -42,7 +43,7 @@
             </ul>
             <!--end::Tab nav-->
 
-        </div>
+        </div> --}}
         <!--end::Controls-->
     </div>
     <!--end::Toolbar-->
@@ -86,13 +87,17 @@
                             <!--end::Position-->
                             <!--begin::Info-->
                             <div class="text-left">
+                                @if($offer->advertiser)
                                 <p class="p-0 m-0">Advertiser: {{ $offer->advertiser->company_name }}</p>
                                 <hr>
+                                @endif
                                 <p class="p-0 m-0">Revenue Type: {{ $offer->cps_type == 'static' ? $offer->revenue_type : '' }} {{ $offer->cps_type == 'new_old' ? ($offer->newOld ? $offer->newOld->new_revenue_type : '') : '' }}</p>
                                 <hr>
                                 <p class="p-0 m-0">CPS Type: {{ $offer->cps_type }}</p>
                                 <hr>
-                                <p class="p-0 m-0">Discount: {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' .$offer->currency->code }}</p>
+                                @if($offer->discount)
+                                <p class="p-0 m-0">Discount: {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' . ($offer->currency ? $offer->currency->code : '') }}</p>
+                                @endif
                             </div>
                             <!--end::Info-->
                         </div>
@@ -189,7 +194,6 @@
                                     <th class="min-w-90px">Status</th>
                                     <th class="min-w-90px">Revenue Type</th>
                                     <th class="min-w-90px">CPS Type</th>
-                                    <th class="min-w-90px">Discount</th>
                                     <th class="min-w-90px">Target Market</th>
                                     <th class="min-w-90px">Discount</th>
                                     <th class="min-w-50px text-end">Actions</th>
@@ -214,7 +218,7 @@
                                                 <!--end::Wrapper-->
                                                 <!--begin::Info-->
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <a href="" class="mb-1 text-gray-800 text-hover-primary" data-kt-ecommerce-product-filter="offer_name">{{ $offer->name }}</a>
+                                                    <a href="{{ route('admin.offers.show', $offer->id) }}" class="mb-1 text-gray-800 text-hover-primary" data-kt-ecommerce-product-filter="offer_name">{{ $offer->name }}</a>
                                                     @if($offer->advertiser)<div class="fw-semibold fs-6 text-gray-400">{{  $offer->advertiser->company_name_en }}</div>@endif
                                                 </div>
                                                 <!--end::Info-->
@@ -223,20 +227,19 @@
                                         </td>
                                         <td data-order="{{ $offer->status }}">
                                             @if ($offer->status == 'active')
-                                                <span class="badge badge-success">Active</span>
+                                                <button class="btn btn-light-success btn-sm"  onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'unactive')" >Active</button>
                                             @elseif ($offer->status == 'pused')
-                                                <span class="badge badge-warning">Pused</span>
+                                                <button class="btn btn-light-warning btn-sm" onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" >Pused</button>
                                             @elseif ($offer->status == 'pending')
-                                                <span class="badge badge-warning">Pending</span>
+                                                <button class="btn btn-light-warning btn-sm" onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" >Pending</button>
                                             @elseif ($offer->status == 'expire')
-                                                <span class="badge badge-danger">Expire</span>
+                                                <button class="btn btn-light-danger btn-sm" onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" >Expire</button>
                                             @else
                                             @endif
 
                                         </td>
                                         <td>{{ $offer->cps_type == 'static' ? $offer->revenue_type : '' }} {{ $offer->cps_type == 'new_old' ? ($offer->newOld ? $offer->newOld->new_revenue_type : '') : '' }}</td>
                                         <td>{{ $offer->cps_type }}</td>
-                                        <td>{{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' .$offer->currency->code }}</td>
                                         <td>
                                             @foreach ($offer->countries as $country)
                                                 {{ $country->name_en }} @if (!$loop->last)
@@ -244,7 +247,7 @@
                                                 @endif
                                             @endforeach
                                         </td>
-                                        <td> {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' .$offer->currency->code }}
+                                        <td> {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' . ($offer->currency ? $offer->currency->code : '') }}
                                         <td class="text-end">
                                             <a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
                                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
@@ -256,11 +259,6 @@
                                                 <!--end::Svg Icon--></a>
                                                 <!--begin::Menu-->
                                                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
-                                                    <!--begin::Menu item-->
-                                                    <div class="menu-item px-3">
-                                                        <a href="{{ route('admin.offers.show', $offer->id) }}" class="menu-link px-3">View</a>
-                                                    </div>
-                                                    <!--end::Menu item-->
                                                     @can('update_offers')
                                                     <!--begin::Menu item-->
                                                     <div class="menu-item px-3">
@@ -297,6 +295,11 @@
     <!--end::Tab Content-->
 @endsection
 @push('scripts')
-<script src="{{ asset('new_dashboard') }}/js\datatables\offers.js"></script>
+{{-- <script src="{{ asset('new_dashboard') }}/js\datatables\/offers.js"></script> --}}
+<script>
+    var route = "{{route('admin.offers.index')}}";
+</script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/offers/change-status.js"></script>
+
 
 @endpush

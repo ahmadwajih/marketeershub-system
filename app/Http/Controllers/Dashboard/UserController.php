@@ -97,7 +97,11 @@ class UserController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.users.index');
+        $notification = [
+            'message' => 'User Created successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('admin.users.index')->with($notification);
     }
 
     /**
@@ -163,7 +167,7 @@ class UserController extends Controller
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,
             'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
-            'password'              => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
+            // 'password'              => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
             'years_of_experience'   => 'required|numeric',
             'country_id'            => 'required|exists:countries,id',
             'city_id'               => 'required|exists:cities,id',
@@ -172,6 +176,7 @@ class UserController extends Controller
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
             'roles.*'               => 'exists:roles,id',
+            'address'               => 'nullable|max:255'
         ]);
         if($request->hasFile('image')){
             deleteImage($user->image, 'Users');
@@ -228,5 +233,14 @@ class UserController extends Controller
     {
         $user = auth()->user();
         return view('new_admin.users.profile', ['user' => $user]);
+    }
+
+    public function changeStatus(Request $request){
+        $this->authorize('update_users');
+
+        $user = User::findOrFail($request->id);
+        $user->status = $request->status == 'active' ? 'active' : 'closed';
+        $user->save();
+        return response()->json(['message' => 'Updated Succefuly']);
     }
 }
