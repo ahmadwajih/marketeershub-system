@@ -371,4 +371,13 @@ class CouponController extends Controller
         $coupon->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }
+
+    public function loadPayout(Request $request){
+        $coupon = Coupon::whereId($request->id)->first();
+        if($coupon){
+            return view('new_admin.coupons.load-payout', ['coupon' => $coupon]);
+        }
+        return 'No Data';
+
+    }
 }

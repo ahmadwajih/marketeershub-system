@@ -220,6 +220,7 @@
                             <th>{{ __('Publisher ID') }}</th>
                             <th>{{ __('Team') }}</th>
                             <th>{{ __('Status') }}</th>
+                            <th>{{ __('Payout') }}</th>
                             <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
@@ -235,7 +236,34 @@
     </div>
     <!--end::Post-->
 
-
+    <!--start::Modal-->
+    <div class="modal fade" tabindex="-1" id="payout_details">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Payout Details</h3>
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                        <span class="svg-icon svg-icon-1"></span>
+                    </div>
+                    <!--end::Close-->
+                </div>
+    
+                <div class="modal-body" id="payout_details_body">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        </div>
+                </div>
+    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Modal-->
     <!--start::Modal-->
     
         <div class="modal fade" tabindex="-1" id="kt_modal_scrollable_1">
@@ -493,5 +521,35 @@
                     $('#new_old_payout').fadeOut();
                 }
             });
+    </script>
+
+    <script>
+        function loadPayoutDetails(couponId){
+            $.ajax({
+                method: "GET",
+                headers: {"X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+                url: route + "/load/payout",
+                data: {
+                    id: couponId,
+                },
+            })
+                .done(function (res) {
+                    $('#payout_details_body').html(res);                
+                })
+                .fail(function (res) {
+                    Swal.fire({
+                        text:
+                        name + " was not " + action,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton:
+                                "btn fw-bold btn-primary",
+                        },
+                    });
+                });
+        }
     </script>
 @endpush

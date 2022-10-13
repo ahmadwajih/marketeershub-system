@@ -41,7 +41,7 @@
                                 <!--end::Label-->
                                 <div class="col-md-8">
                                     <!--begin::Input-->
-                                <input type="number" name="new_payout" class="form-control mb-2" placeholder="New Payout"
+                                <input type="number" step="0.1" min="0.1" name="new_payout" class="form-control mb-2" placeholder="New Payout"
                                 value="{{ old('payout') }}" />
                                 <!--end::Input-->
                                 @if ($errors->has('new_payout'))
@@ -63,7 +63,7 @@
                                 <!--end::Label-->
                                 <div class="col-md-8">
                                     <!--begin::Input-->
-                                <input type="number" name="old_payout" class="form-control mb-2" placeholder="Old Revemue"
+                                <input type="number" step="0.1" min="0.1"  name="old_payout" class="form-control mb-2" placeholder="Old Revemue"
                                 value="{{ old('old_payout') }}" />
                                 <!--end::Input-->
                                 @if ($errors->has('old_payout'))

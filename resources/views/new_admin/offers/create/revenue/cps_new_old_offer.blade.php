@@ -38,7 +38,7 @@
                                 <!--end::Label-->
                                 <div class="col-md-8">
                                     <!--begin::Input-->
-                                <input type="number" name="new_revenue" class="form-control mb-2" placeholder="New Revenue"
+                                <input type="number" step="0.1" min="0.1"  name="new_revenue" class="form-control mb-2" placeholder="New Revenue"
                                 value="{{ old('revenue') }}" />
                                 <!--end::Input-->
                                 @if ($errors->has('new_revenue'))
@@ -60,7 +60,7 @@
                                 <!--end::Label-->
                                 <div class="col-md-8">
                                     <!--begin::Input-->
-                                <input type="number" name="old_revenue" class="form-control mb-2" placeholder="Old Revemue"
+                                <input type="number" step="0.1" min="0.1"  name="old_revenue" class="form-control mb-2" placeholder="Old Revemue"
                                 value="{{ old('old_revenue') }}" />
                                 <!--end::Input-->
                                 @if ($errors->has('old_revenue'))

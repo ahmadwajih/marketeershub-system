@@ -12,17 +12,17 @@
                                 
                                 <div class="col-md-3">
                                     <label class="form-label">From:</label>
-                                    <input type="number" name="from" class="form-control mb-2 mb-md-0"  />
+                                    <input type="number" step="0.1" min="0.1"  name="from" class="form-control mb-2 mb-md-0"  />
                                 </div>
 
                                 <div class="col-md-3">
                                     <label class="form-label">To:</label>
-                                    <input type="number" name="to" class="form-control mb-2 mb-md-0"  />
+                                    <input type="number" step="0.1" min="0.1"  name="to" class="form-control mb-2 mb-md-0"  />
                                 </div>
 
                                 <div class="col-md-3">
                                     <label class="form-label">Revenue:</label>
-                                    <input type="number" name="revenue" class="form-control mb-2 mb-md-0"  />
+                                    <input type="number" step="0.1" min="0.1"  name="revenue" class="form-control mb-2 mb-md-0"  />
                                 </div>
 
                                 <div class="col-md-3">

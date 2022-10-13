@@ -41,7 +41,7 @@
                                 <!--end::Label-->
                                 <div class="col-md-8">
                                     <!--begin::Input-->
-                                <input type="number" name="revenue" class="form-control mb-2" placeholder="revenue" value="{{ old('revenue') }}" />
+                                <input type="number" step="0.1" min="0.1"  name="revenue" class="form-control mb-2" placeholder="revenue" value="{{ old('revenue') }}" />
                                 <!--end::Input-->
                                 @if ($errors->has('revenue'))
                                     <div class="fv-plugins-message-container invalid-feedback">

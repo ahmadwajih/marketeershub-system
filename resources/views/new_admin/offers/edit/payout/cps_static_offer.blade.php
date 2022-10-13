@@ -42,7 +42,7 @@
                                     <!--end::Label-->
                                     <div class="col-md-8">
                                         <!--begin::Input-->
-                                    <input type="number" name="payout" class="form-control mb-2" placeholder="payout" value="{{ old('payout') ?? $cps->amount }}" />
+                                    <input type="number" step="0.1" min="0.1"  name="payout" class="form-control mb-2" placeholder="payout" value="{{ old('payout') ?? $cps->amount }}" />
                                     <!--end::Input-->
                                     @if ($errors->has('payout'))
                                         <div class="fv-plugins-message-container invalid-feedback">
@@ -116,7 +116,7 @@
                                 <!--end::Label-->
                                 <div class="col-md-8">
                                     <!--begin::Input-->
-                                <input type="number" name="payout" class="form-control mb-2" placeholder="payout" value="{{ old('payout') }}" />
+                                <input type="number" step="0.1" min="0.1"  name="payout" class="form-control mb-2" placeholder="payout" value="{{ old('payout') }}" />
                                 <!--end::Input-->
                                 @if ($errors->has('payout'))
                                     <div class="fv-plugins-message-container invalid-feedback">

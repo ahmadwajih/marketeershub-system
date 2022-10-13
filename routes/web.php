@@ -116,6 +116,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
         Route::post('coupons/change/status', 'CouponController@changeStatus');
         Route::post('coupons/change/revenue', 'CouponController@bulkChangeRevenue');
+        Route::get('coupons/load/payout', 'CouponController@loadPayout');
 
         Route::resource('reports', ReportController::class);
         Route::resource('countries', CountryController::class);
