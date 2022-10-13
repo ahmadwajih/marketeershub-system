@@ -4,7 +4,8 @@
         #new_old_payout,
         #slaps_payout,
         #new_old_revenue,
-        #slaps_revenue{
+        #slaps_revenue,
+        #percentage_discount{
             display: none;
         }
     </style>
@@ -302,8 +303,6 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    
-
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -311,7 +310,7 @@
                                             <label class="form-label">Offer Discount Type</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="discount_type" data-control="select2" class="form-select">
+                                            <select name="discount_type" data-control="select2" class="form-select" id="discount_type">
                                                 <option {{ old('discount_type') == 'flat' ? 'selected' : '' }} value="flat">{{ __('Flat') }}</option>
                                                 <option {{ old('discount_type') == 'percentage' ? 'selected' : '' }} value="percentage">{{ __('Percentage') }}</option>
                                             </select>
@@ -326,45 +325,32 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Offer Discount</label>
+                                            <label class="required form-label" style="margin-bottom: -20px; display: block;">Offer Discount</label>
                                             <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="number" name="discount" class="form-control mb-2"
-                                                value="{{ old('discount') }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('discount'))
-                                                <div class="fv-plugins-message-container invalid-feedback">
-                                                    <div data-field="text_input">{{ $errors->first('discount') }}</div>
-                                                </div>
-                                            @endif
                                         </div>
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">Currency</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="currency_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
-                                                @foreach ($currencies as $currency)
-                                                    <option {{ old('currency_id') == $currency->id ? 'selected' : '' }}
-                                                        value="{{ $currency->id }}">{{ $currency->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('currency_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback">
-                                                    <div data-field="text_input">{{ $errors->first('currency_id') }}</div>
+                                        <div class="input-group mb-5">
+                                            <input type="number" class="form-control" name="discount" placeholder="Discount Amount" value="{{ old('discount') }}" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <div id="currency_sellect">
+                                                    <select name="currency_id" class="form-select" data-control="select2">
+                                                        <option selected disabled value="">{{ __('Currency') }}</option>
+                                                        @foreach ($currencies as $currency)
+                                                            <option {{ old('currency_id') == $currency->id ? 'selected' : '' }}
+                                                                value="{{ $currency->id }}">{{ $currency->code }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
-                                            @endif
+                                                <div id="percentage_discount">%</div>
+                                            </span>
                                         </div>
                                         <!--end::Input group-->
                                     </div>
@@ -588,6 +574,17 @@
                     $('#sallaUserEmail').fadeIn();
                 } else {
                     $('#sallaUserEmail').fadeOut();
+                }
+            });
+
+
+            $("#discount_type").change(function() {
+                if ($(this).val() == 'percentage') {
+                    $('#currency_sellect').fadeOut('fast');
+                    $('#percentage_discount').fadeIn('slow');
+                } else {
+                    $('#percentage_discount').fadeOut('fast');
+                    $('#currency_sellect').fadeIn('slow');
                 }
             });
 
