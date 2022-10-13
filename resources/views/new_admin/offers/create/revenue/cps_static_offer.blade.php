@@ -30,7 +30,7 @@
         <div class="form-group">
             <div data-repeater-list="static_revenue">
                 <div data-repeater-item>
-                    <div class="form-group row mb-5">
+                    <div class="form-group custom-class-in-form-repeater row mb-5">
                         <div class="col-md-12 mb-3">
                             <!--begin::Input group-->
                             <div class="row">

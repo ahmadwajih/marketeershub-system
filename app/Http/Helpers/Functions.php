@@ -1,6 +1,7 @@
 
 <?php
 
+use App\Exports\PivotReportErrorsExport;
 use App\Models\Category;
 use App\Models\Chat;
 use App\Models\City;
@@ -15,20 +16,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Get Model Data To data Table .
  * Author : Wageh
  * created By Wageh
  */
-if(!function_exists('getModelData')){
-    function getModelData($model, Request $request , $relations = [], $where = array( ['id', '!=', 0]), $trashed = false)
+if (!function_exists('getModelData')) {
+    function getModelData($model, Request $request, $relations = [], $where = array(['id', '!=', 0]), $trashed = false)
     {
-   
+
         $model = app('\\App\Models\\' . $model);
         $columns = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
         $model   = $model->query();
-        if($trashed){
+        if ($trashed) {
             $model = $model->onlyTrashed();
         }
 
@@ -43,30 +45,30 @@ if(!function_exists('getModelData')){
         // Get the request parameters
         $params = $request->all();
         // Set the current page
-        if(isset($params['pagination']['page'])) {
+        if (isset($params['pagination']['page'])) {
             $page = $params['pagination']['page'];
         }
 
         // Set the number of items
-        if(isset($params['pagination']['perpage'])) {
+        if (isset($params['pagination']['perpage'])) {
             $per_page = $params['pagination']['perpage'];
         }
 
         // Set the search filter
-        if(isset($params['query']['generalSearch'])) {
-            foreach ($columns as $column){
+        if (isset($params['query']['generalSearch'])) {
+            foreach ($columns as $column) {
                 $model->orWhere($column, 'LIKE', "%" . $params['query']['generalSearch'] . "%");
             }
         }
 
         // Set the search filter
-        if(isset($request['query']['offer_id'])) {
+        if (isset($request['query']['offer_id'])) {
             $model->orWhere('offer_id', $request['query']['offer_id']);
         }
 
 
         // Set the sort order and field
-        if(isset($params['sort']['field'])) {
+        if (isset($params['sort']['field'])) {
             $order_field = $params['sort']['field'];
             $order_sort = $params['sort']['sort'];
         }
@@ -74,22 +76,21 @@ if(!function_exists('getModelData')){
         // Get how many items there should be
         $total = $model->count();
         $total = $model->where($where)->limit($per_page)->count();
-//            ->where($where['column'], $where['operation'], $where['value'])
+        //            ->where($where['column'], $where['operation'], $where['value'])
 
         // Get the items defined by the parameters
         $orderFieldIsRelation = strpos($order_field, ".") !== false;
 
 
-        if ($orderFieldIsRelation){
+        if ($orderFieldIsRelation) {
 
             $orderRelation = explode(".", $order_field)[0];
             $orderField = explode(".", $order_field)[1];
 
-            $model->whereHas($orderRelation, function (Builder $query) use ($orderField ,$order_sort){
+            $model->whereHas($orderRelation, function (Builder $query) use ($orderField, $order_sort) {
                 $query->orderBy($orderField, $order_sort);
             });
-
-        }else{
+        } else {
 
             $model->orderBy($order_field, $order_sort);
         }
@@ -124,40 +125,44 @@ if(!function_exists('getModelData')){
      * Author : Wageh
      * created By Wageh
 */
-if(!function_exists('getOfferRequest')){
-    function getOfferRequest(int $offerId){
+if (!function_exists('getOfferRequest')) {
+    function getOfferRequest(int $offerId)
+    {
         $offerRequest = OfferRequest::where('user_id', auth()->user()->id)->where('offer_id', $offerId)->first();
         return $offerRequest;
     }
 }
 
-if(!function_exists('getImagesPath')){
-    function getImagesPath($model, $imageName = null){
+if (!function_exists('getImagesPath')) {
+    function getImagesPath($model, $imageName = null)
+    {
         $model =  Str::ucfirst(Str::plural($model));
-        if(!$imageName){
+        if (!$imageName) {
             $imageName = 'default.png';
         }
-        return asset('/storage/Images').'/'.$model.'/'.$imageName;
+        return asset('/storage/Images') . '/' . $model . '/' . $imageName;
     }
 }
 
 
 
-if(!function_exists('uploadImage')){
+if (!function_exists('uploadImage')) {
 
-    function uploadImage($request, $model){
-        $path         = "/Images/".$model;
+    function uploadImage($request, $model)
+    {
+        $path         = "/Images/" . $model;
         $originalName =  $request->getClientOriginalName(); // Get file Original Name
-        $imageName    = 'MH-'.time().rand(11111,99999).$originalName;  // Set Image name based on user name and time
-        $request->storeAs($path, $imageName,'public');
+        $imageName    = 'MH-' . time() . rand(11111, 99999) . $originalName;  // Set Image name based on user name and time
+        $request->storeAs($path, $imageName, 'public');
         return $imageName;
     }
 }
 
-if(!function_exists('deleteImage')){
+if (!function_exists('deleteImage')) {
 
-    function deleteImage($imageName, $model){
-        $path = "/Images/".$model.'/'.$imageName;
+    function deleteImage($imageName, $model)
+    {
+        $path = "/Images/" . $model . '/' . $imageName;
         Storage::disk('public')->delete($path);
     }
 }
@@ -170,32 +175,32 @@ if(!function_exists('deleteImage')){
  * Usage: create user activity
  * parameters : object_name, object_id
  */
-if(!function_exists('userActivity')){
-    function userActivity($object, $objectId, $mission, $data = [], $oldObject = null,  $note = null, $approved = true, $userId=null){
+if (!function_exists('userActivity')) {
+    function userActivity($object, $objectId, $mission, $data = [], $oldObject = null,  $note = null, $approved = true, $userId = null)
+    {
 
-        if(!$userId){
+        if (!$userId) {
             $userId = auth()->user()->id;
         }
-        $fieldsistory = [] ;
-        if($oldObject){
+        $fieldsistory = [];
+        if ($oldObject) {
             $history = array_diff_assoc($data, $oldObject->toArray());
             $chachedFields  = array_keys($history);
-            foreach($chachedFields as $field){
+            foreach ($chachedFields as $field) {
                 $fieldsistory[$field]['old'] = $oldObject[$field];
                 $fieldsistory[$field]['new'] = $history[$field];
-
             }
         }
 
         $exists = UserActivity::where([
-            ['user_id' , '=', $userId],
-            ['mission' , '=', $mission],
-            ['object' , '=', $object],
-            ['object_id' , '=', $objectId],
-            ['approved' , '=', $approved],
-            ['history' , '=', serialize($fieldsistory)],
+            ['user_id', '=', $userId],
+            ['mission', '=', $mission],
+            ['object', '=', $object],
+            ['object_id', '=', $objectId],
+            ['approved', '=', $approved],
+            ['history', '=', serialize($fieldsistory)],
         ])->first();
-        if(!$exists){
+        if (!$exists) {
             UserActivity::create([
                 'user_id' => $userId,
                 'mission' => $mission,
@@ -218,89 +223,90 @@ if(!function_exists('userActivity')){
  * Usage: create user activity
  * parameters : object_name, object_id
  */
-if(!function_exists('getActivity')){
-    function getActivity($object, $objectId){
+if (!function_exists('getActivity')) {
+    function getActivity($object, $objectId)
+    {
         $activitiees = UserActivity::where([
-            ['object' , '=', $object],
-            ['object_id' , '=', $objectId],
+            ['object', '=', $object],
+            ['object_id', '=', $objectId],
         ])->orderBy('id', 'desc')->get();
 
         return $activitiees;
     }
 }
 
-if(!function_exists('getCountryId')){
-    function getCountryId($countryName):int
+if (!function_exists('getCountryId')) {
+    function getCountryId($countryName): int
     {
-        $country = Country::where('name_en', 'like', '%'.$countryName.'%')->orWhere('name_ar', 'like', '%'.$countryName.'%')->first();
-        if($country){
+        $country = Country::where('name_en', 'like', '%' . $countryName . '%')->orWhere('name_ar', 'like', '%' . $countryName . '%')->first();
+        if ($country) {
             return $country->id;
         }
         return Country::first()->id;
     }
 }
 
-if(!function_exists('getCategoryId')){
+if (!function_exists('getCategoryId')) {
     function getCategoryId($categoryName)
     {
-        $category = Category::where('title_en', 'like', '%'.$categoryName.'%')->orWhere('title_ar', 'like', '%'.$categoryName.'%')->first();
-        if($category){
+        $category = Category::where('title_en', 'like', '%' . $categoryName . '%')->orWhere('title_ar', 'like', '%' . $categoryName . '%')->first();
+        if ($category) {
             return $category->id;
         }
         return null;
     }
 }
 
-if(!function_exists('getCityId')){
-    function getCityId($cityName):int
+if (!function_exists('getCityId')) {
+    function getCityId($cityName): int
     {
-        $city = City::where('name_en', 'like', '%'.$cityName.'%')->orWhere('name_ar', 'like', '%'.$cityName.'%')->first();
-        if($city){
+        $city = City::where('name_en', 'like', '%' . $cityName . '%')->orWhere('name_ar', 'like', '%' . $cityName . '%')->first();
+        if ($city) {
             return $city->id;
         }
         return City::first()->id;
     }
 }
 
-if(!function_exists('getCountryName')){
-    function getCountryName($countryId):int
+if (!function_exists('getCountryName')) {
+    function getCountryName($countryId): int
     {
         $country = Country::find($countryId);
-        if($country){
+        if ($country) {
             return $country->name;
         }
         return Country::first()->name;
     }
 }
 
-if(!function_exists('getCityName')){
-    function getCityName($cityId):int
+if (!function_exists('getCityName')) {
+    function getCityName($cityId): int
     {
         $city = City::find($cityId);
-        if($city){
+        if ($city) {
             return $city->name;
         }
         return City::first()->name;
     }
 }
 
-if(!function_exists('getCurrency')){
-    function getCurrency($currencyName):int
+if (!function_exists('getCurrency')) {
+    function getCurrency($currencyName): int
     {
-        $currency = Currency::where('name_en', 'like', '%'.$currencyName.'%')
-        ->orWhere('name_ar', 'like', '%'.$currencyName.'%')
-        ->orWhere('code', 'like', '%'.$currencyName.'%')
-        ->orWhere('sign', 'like', '%'.$currencyName.'%')
-        ->first();
+        $currency = Currency::where('name_en', 'like', '%' . $currencyName . '%')
+            ->orWhere('name_ar', 'like', '%' . $currencyName . '%')
+            ->orWhere('code', 'like', '%' . $currencyName . '%')
+            ->orWhere('sign', 'like', '%' . $currencyName . '%')
+            ->first();
 
-        if($currency){
+        if ($currency) {
             return $currency->id;
         }
         return Currency::first()->id;
     }
 }
 
-if(!function_exists('assetsId')) {
+if (!function_exists('assetsId')) {
     function assetsId()
     {
         $cacheKey = 'static_assets_id';
@@ -316,18 +322,18 @@ if(!function_exists('assetsId')) {
 }
 
 
-if(!function_exists('unSeenMessages')) {
+if (!function_exists('unSeenMessages')) {
     function unSeenMessages()
     {
         $unSeenMessagesCount = Chat::where([
-            ['receiver_id', '=',auth()->user()->id],
-            ['seen', '=',false],
+            ['receiver_id', '=', auth()->user()->id],
+            ['seen', '=', false],
         ])->count();
         return $unSeenMessagesCount;
     }
 }
 
-if(!function_exists('marketersHubPublisherInfo')) {
+if (!function_exists('marketersHubPublisherInfo')) {
     function marketersHubPublisherInfo()
     {
         $marketersHubPublisherInfo = User::whereEmail('info@marketeershub.com')->first();
@@ -335,39 +341,36 @@ if(!function_exists('marketersHubPublisherInfo')) {
     }
 }
 
-if(!function_exists('userChildrens')) {
+if (!function_exists('userChildrens')) {
     function userChildrens($user = null, $childrens = [], bool $provideMyId = true)
     {
         $user = ($user == null) ? auth()->user() : $user;
 
         $index = 0;
-        if($user->childrens->count() > 0)
-        {
-            while ( $index < $user->childrens->count() )
-            {
+        if ($user->childrens->count() > 0) {
+            while ($index < $user->childrens->count()) {
                 $childrens[] = $user->childrens[$index]['id'];
-                userChildrens( $user->childrens[$index]) ?  $childrens = array_merge($childrens, userChildrens( $user->childrens[$index])) : '';
+                userChildrens($user->childrens[$index]) ?  $childrens = array_merge($childrens, userChildrens($user->childrens[$index])) : '';
                 $index++;
             }
-        }else
-        {
+        } else {
             return [];
         }
 
 
-        if($provideMyId){
+        if ($provideMyId) {
             array_push($childrens, auth()->user()->id);
         }
-        
+
         return $childrens;
     }
 }
 
-if(!function_exists('usersCounter')) {
+if (!function_exists('usersCounter')) {
     function usersCounter()
     {
-        $secends = 60*60*15;
-        if(!cache('usersCount')){
+        $secends = 60 * 60 * 15;
+        if (!cache('usersCount')) {
             $all =  User::count();
             $inReview = User::where('account_status', 'in_review')->count();
             $approved = User::where('account_status', 'approved')->count();
@@ -376,16 +379,17 @@ if(!function_exists('usersCounter')) {
                 'all' => $all,
                 'in_review' => $inReview,
                 'approved' => $approved,
-                'rejected' => $rejected ,
+                'rejected' => $rejected,
             ];
             cache(['usersCount' => $data], $secends);
         }
-        
+
         return cache('usersCount');
     }
 }
-if(!function_exists('positionRankCheck')) {
-    function positionRankCheck($position1 , $position2)
+
+if (!function_exists('positionRankCheck')) {
+    function positionRankCheck($position1, $position2)
     {
         $super_admin = 0;
         $head = -1;
@@ -394,13 +398,12 @@ if(!function_exists('positionRankCheck')) {
         $employee = -4;
         $publisher = -5;
 
-        if($$position1 >= $$position2){
+        if ($$position1 >= $$position2) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 }
-
 
 

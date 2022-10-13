@@ -1,14 +1,15 @@
-<div id="slaps_revenue">
+<div id="slaps_payout">
     <div class="card card-flush py-4">
         <!--begin::Card body-->
         <div class="card-body pt-0">
+            <!--begin::Repeater-->
 
-            <div id="kt_docs_repeater_slaps_revenue" class="mb-5 mt-5">
+            <div id="kt_docs_repeater_slaps_payout" class="mb-5 mt-5">
                 <!--begin::Form group-->
                 <div class="form-group">
-                    <div data-repeater-list="revenue_slaps">
+                    <div data-repeater-list="payout_slaps">
                         <div data-repeater-item>
-                            <div class="form-group custom-class-in-form-repeater row mb-5">
+                            <div class="form-group  row mb-5 custom-class-in-form-repeater">
                                 
                                 <div class="col-md-3">
                                     <label class="form-label">From:</label>
@@ -21,8 +22,8 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label class="form-label">Revenue:</label>
-                                    <input type="number" name="revenue" class="form-control mb-2 mb-md-0"  />
+                                    <label class="form-label">Payout:</label>
+                                    <input type="number" name="payout" class="form-control mb-2 mb-md-0"  />
                                 </div>
 
                                 <div class="col-md-3">

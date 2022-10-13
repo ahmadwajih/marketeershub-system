@@ -91,23 +91,6 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Date</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="date" name="date" class="form-control mb-2"  value="{{ old('date')??Carbon\Carbon::now()->format('Y-m-d') }}" required />
-
-                                            @if ($errors->has('date'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('date') }}</div></div>
-                                            @endif
-                                            <!--end::Input-->
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
                                             <label class="required form-label">Excel File</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
@@ -120,10 +103,9 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
-
-
-     
+                                    @if(session('columnHaveIssue'))
+                                        <a class="btn btn-danger" href="{{ route('admin.pivot-report.deonload.errore') }}">Donlowad Errors</a>
+                                    @endif
 
                                 </div>
                             </div>
@@ -138,7 +120,7 @@
             <!--end::Tab content-->
             <div class="d-flex justify-content-end">
                 <!--begin::Button-->
-                <a href="{{ route('admin.advertisers.index') }}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
+                <button type="reset" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</button>
                 <!--end::Button-->
                 <!--begin::Button-->
                 <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">

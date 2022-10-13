@@ -29,8 +29,8 @@
         <!--begin::Form group-->
         <div class="form-group">
             <div data-repeater-list="new_old_payout">
-                <div data-repeater-item class="custom-class-in-form-repeater">
-                    <div class="form-group row mb-5">
+                <div data-repeater-item>
+                    <div class="form-group row  mb-5 custom-class-in-form-repeater">
                         <div class="col-md-12 mb-3">
                             <!--begin::Input group-->
                             <div class="row">

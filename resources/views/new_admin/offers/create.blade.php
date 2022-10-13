@@ -326,7 +326,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -345,7 +345,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -796,32 +796,6 @@
     </script>
 
     <script>
-        // $('input[type="checkbox"]').on('change', function(){
-        //     var switcherParent = $(this).parent().parent().parent();
-
-        //     if ($(this).val() == 'on') {
-
-        //         $(this).val('off');
-        //         if ($(this).data('input') == 'text') {
-        //             switcherParent.find('input[type=text]').prop("disabled", true);
-
-        //         }
-        //         if ($(this).data('input') == 'select') {
-        //             switcherParent.find('select').prop("disabled", true);
-
-        //         }
-        //     }else{
-        //         $(this).val('on');
-        //         if ($(this).data('input') == 'text') {
-        //             switcherParent.find('input[type=text]').prop("disabled", false);
-
-        //         }
-        //         if ($(this).data('input') == 'select') {
-        //             switcherParent.find('select').prop("disabled", false);
-
-        //         }
-        //     }
-        // });
 
         function switcherFunction(switcher) {
 

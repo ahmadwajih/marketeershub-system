@@ -24,4 +24,8 @@ class Coupon extends Model
     public function report(){
         return $this->hasOne(PivotReport::class);
     }
+
+    public function cps(){
+        return $this->hasMany(CouponCps::class);
+    }
 }

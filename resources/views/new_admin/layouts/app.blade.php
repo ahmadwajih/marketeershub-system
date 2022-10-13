@@ -39,6 +39,14 @@ Like: www.facebook.com/keenthemes
     <link href="{{ asset('new_dashboard') }}/css/style.bundle.css" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
     @stack('styles')
+    <style>
+        .custom-class-in-form-repeater{
+            box-shadow: 0px 0px 15px -5px #fff;
+            border-radius: 15px;
+            padding: 10px;
+            margin:  20px 0;
+        }
+    </style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->

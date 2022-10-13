@@ -32,7 +32,7 @@
                 @if($offer->payout_cps_type == 'new_old')
                     @foreach ($offer->cps->where('type', 'payout') as $cps)
                         <div data-repeater-item>
-                            <div class="form-group row mb-5">
+                            <div class="form-group custom-class-in-form-repeater row mb-5">
                                 <div class="col-md-12 mb-3">
                                     <!--begin::Input group-->
                                     <div class="row">
@@ -128,7 +128,7 @@
                     @endforeach
                 @else 
                     <div data-repeater-item>
-                        <div class="form-group row mb-5">
+                        <div class="form-group custom-class-in-form-repeater row mb-5">
                             <div class="col-md-12 mb-3">
                                 <!--begin::Input group-->
                                 <div class="row">

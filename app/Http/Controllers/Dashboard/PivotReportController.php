@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\PivotReportErrorsExport;
 use App\Http\Controllers\Controller;
 use App\Imports\PivotReportImport;
+use App\Imports\V2\UpdateReportImport;
 use App\Imports\ValidationPivotReportImport;
 use App\Models\Offer;
 use App\Notifications\UpdateValidation;
@@ -55,11 +57,9 @@ class PivotReportController extends Controller
         $request->validate([
             'offer_id' => 'required|numeric|exists:offers,id',
             'type' => 'required|in:update,validation',
-            'date' => 'required|date',
-            'team'  => 'required|in:affiliate,influencer,prepaid,media_buying',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new PivotReportImport($request->offer_id, $request->type, $request->date, $request->team),request()->file('report'));
+        Excel::import(new UpdateReportImport($request->offer_id, $request->type, $request->date),request()->file('report'));
 
         if($request->type=='validation'){
             $offer = Offer::findOrFail($request->offer_id);
@@ -74,5 +74,15 @@ class PivotReportController extends Controller
         return redirect()->back()->with($notification);
     }
 
+    public function downloadErrors(){
+        if(session('columnHaveIssue')){
+            $errors = session('columnHaveIssue');
+            session()->forget('columnHaveIssue');
+            return Excel::download(new PivotReportErrorsExport($errors), 'errors.csv',\Maatwebsite\Excel\Excel::CSV );
+
+        }
+        return redirect()->back();
+        
+    }
 
 }

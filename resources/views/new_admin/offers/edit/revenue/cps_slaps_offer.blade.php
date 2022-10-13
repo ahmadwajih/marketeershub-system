@@ -10,7 +10,7 @@
                         @if($offer->revenue_cps_type == 'slaps')
                             @foreach ($offer->cps->where('type', 'revenue') as $cps)
                                 <div data-repeater-item>
-                                    <div class="form-group row mb-5">
+                                    <div class="form-group custom-class-in-form-repeater row mb-5">
                                         
                                         <div class="col-md-3">
                                             <label class="form-label">From:</label>
@@ -38,7 +38,7 @@
                         @else
 
                             <div data-repeater-item>
-                                <div class="form-group row mb-5">
+                                <div class="form-group custom-class-in-form-repeater row mb-5">
                                     
                                     <div class="col-md-3">
                                         <label class="form-label">From:</label>

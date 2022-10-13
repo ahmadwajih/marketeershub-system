@@ -88,7 +88,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -106,6 +106,11 @@
                                             @endif
                                         </div>
                                         <!--end::Input group-->
+                                    </div> --}}
+
+                                    <div class="col-md-4">
+                                        <br>
+                                        <a href="{{ asset('dashboard/excel-sheets-examples/coupons.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
                                     </div>
 
                                 </div>

@@ -15,9 +15,9 @@ class AddCpsColumnsToOffersTable extends Migration
     {
         Schema::table('offers', function (Blueprint $table) {
             $table->enum('revenue_cps_type', ['static', 'new_old', 'slaps'])->default('static')->after('currency_id');
-            $table->enum('revenue_type', ['percentage', 'flat'])->default('flat')->after('currency_id');
-            $table->enum('payout_cps_type', ['static', 'new_old', 'slaps'])->default('static')->after('currency_id');
-            $table->enum('payout_type', ['percentage', 'flat'])->default('flat')->after('currency_id');
+            $table->enum('revenue_type', ['percentage', 'flat'])->default('flat')->after('revenue_cps_type');
+            $table->enum('payout_cps_type', ['static', 'new_old', 'slaps'])->default('static')->after('revenue_type');
+            $table->enum('payout_type', ['percentage', 'flat'])->default('flat')->after('payout_cps_type');
         });
     }
 

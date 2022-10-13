@@ -100,6 +100,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
         Route::post('offers/change/status', 'OfferController@changeStatus');
+        Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
+        Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
 
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');
@@ -109,6 +111,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         
         Route::resource('coupons', CouponController::class);
         Route::resource('pivot-report', PivotReportController::class);
+        Route::get('pivot-report/download/errors', 'PivotReportController@downLoadErrors')->name('pivot-report.deonload.errore');
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
         Route::post('coupons/change/status', 'CouponController@changeStatus');

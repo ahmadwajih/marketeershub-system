@@ -11,14 +11,12 @@ use Illuminate\Support\Facades\Validator;
 class CouponImport implements ToCollection
 {
     public $offerId;
-    public $team;
     public $oldId = null;
     public $test = [];
 
-    public function __construct($offerId, $team)
+    public function __construct($offerId)
     {
         $this->offerId = $offerId;
-        $this->team = $team;
     }
     /**
     * @param Collection $collection
@@ -26,25 +24,24 @@ class CouponImport implements ToCollection
     public function collection(Collection $collection)
     {
         unset($collection[0]);
+        Validator::make($collection->toArray(), [
+            '*.0' => 'required|max:20',
+        ])->validate();
+
         foreach ($collection as $index => $col) 
         {
-            if($this->team == 'influencer'){
-                $this->oldId = 'inf-'.$col[0];
-            }elseif($this->team == 'affiliate'){
-                $this->oldId = 'aff-'.$col[0];
-            }else{
-                $this->oldId = $col[0];
-            }
-            if(!is_null($col[1])){
+
+           
+            if(!is_null($col[0])){
                 $userId = null;
-                if(!is_null($col[0])){
-                    if($col[0] == 1000 || $col[0] == 'inf-1000' || $col[0] == 'aff-1000' || $this->team == 'media_buying'){
+                if(!is_null($col[1])){
+                    if($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000'){
                         $publisher = User::where('email', 'info@marketeershub.com')->first();
                         if($publisher){
                             $userId = $publisher->id;
                         }
                     }else{
-                        $publisher = User::where('ho_id', $this->oldId)->where('team', $this->team)->first();
+                        $publisher = User::where('ho_id', $this->oldId)->first();
                         if($publisher){
                             $userId = $publisher->id;
                         }
@@ -54,7 +51,7 @@ class CouponImport implements ToCollection
                 
                 $coupon = Coupon::updateOrCreate(
                     [
-                        'coupon' => $col[1],
+                        'coupon' => $col[0],
                         'offer_id' => $this->offerId,
                         
                     ],
@@ -66,8 +63,8 @@ class CouponImport implements ToCollection
                         $this->test[$index]['code'] = $coupon->coupon; 
                         $this->test[$index]['user_id'] = $coupon->user_id; 
                     }else{
-                        $this->test[$index]['code_null'] = $col[1]; 
-                        $this->test[$index]['user_id_null'] = $col[0]; 
+                        $this->test[$index]['code_null'] = $col[0]; 
+                        $this->test[$index]['user_id_null'] = $col[1]; 
                     }
                     
             }

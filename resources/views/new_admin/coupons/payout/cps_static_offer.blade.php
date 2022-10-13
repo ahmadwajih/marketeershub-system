@@ -66,11 +66,11 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">From Date:</label>
-                            <input class="form-control" data-kt-repeater="datepicker" name="from_date" placeholder="Pick a date" disabled/>
+                            <input class="form-control" data-kt-repeater="datepicker" type="text" name="from_date" placeholder="Pick a date" disabled/>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">To Date:</label>
-                            <input class="form-control" data-kt-repeater="datepicker" name="to_date" placeholder="Pick a date" disabled/>
+                            <input class="form-control" data-kt-repeater="datepicker" type="text" name="to_date" placeholder="Pick a date" disabled/>
                         </div>
 
                         <div class="col-md-3">

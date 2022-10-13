@@ -338,7 +338,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -357,7 +357,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->

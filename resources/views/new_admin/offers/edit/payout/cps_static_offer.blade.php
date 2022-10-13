@@ -31,7 +31,7 @@
             <div data-repeater-list="static_payout">
                 @if($offer->payout_cps_type == 'static')
                     @foreach ($offer->cps->where('type', 'payout') as $cps)
-                        <div data-repeater-item>
+                        <div data-repeater-item class="custom-class-in-form-repeater">
                             <div class="col-md-12 mb-4">
                                 <!--begin::Input group-->
                                 <div class="row">
@@ -105,7 +105,7 @@
                         </div>
                     @endforeach
                 @else
-                    <div data-repeater-item>
+                    <div data-repeater-item class="custom-class-in-form-repeater"> 
                         <div class="col-md-12 mb-4">
                             <!--begin::Input group-->
                             <div class="row">

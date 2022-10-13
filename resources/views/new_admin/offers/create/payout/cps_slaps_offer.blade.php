@@ -9,7 +9,7 @@
                 <div class="form-group">
                     <div data-repeater-list="payout_slaps">
                         <div data-repeater-item>
-                            <div class="form-group row mb-5">
+                            <div class="form-group custom-class-in-form-repeater row mb-5">
                                 
                                 <div class="col-md-3">
                                     <label class="form-label">From:</label>
