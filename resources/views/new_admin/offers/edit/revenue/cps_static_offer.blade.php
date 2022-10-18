@@ -7,14 +7,14 @@
             <label class="form-label">Revenue Type</label>
             <!--end::Label-->
             <!--begin::Input-->
-            <select name="revenue_type" data-control="select2" class="form-select">
-                <option {{ old('revenue_type') == 'flat' ? 'selected' : ($offer->revenue_type == '' ? 'selected' : 'flat') }} value="flat">{{ __('Per Order') }}</option>
-                <option {{ old('revenue_type') == 'percentage' ? 'selected' : ($offer->revenue_type == '' ? 'selected' : 'percentage') }} value="percentage">{{ __('Percentage') }}</option>
+            <select name="static_revenue_type" data-control="select2" class="form-select">
+                <option {{ old('static_revenue_type') == 'flat' ? 'selected' : ($offer->static_revenue_type == '' ? 'selected' : 'flat') }} value="flat">{{ __('Per Order') }}</option>
+                <option {{ old('static_revenue_type') == 'percentage' ? 'selected' : ($offer->static_revenue_type == '' ? 'selected' : 'percentage') }} value="percentage">{{ __('Percentage') }}</option>
             </select>
             <!--end::Input-->
-            @if ($errors->has('revenue_type'))
+            @if ($errors->has('static_revenue_type'))
                 <div class="fv-plugins-message-container invalid-feedback">
-                    <div data-field="text_input">{{ $errors->first('revenue_type') }}</div>
+                    <div data-field="text_input">{{ $errors->first('static_revenue_type') }}</div>
                 </div>
             @endif
         </div>

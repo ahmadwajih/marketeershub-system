@@ -405,5 +405,165 @@ if (!function_exists('positionRankCheck')) {
         }
     }
 }
+/*
 
+function all(
+    $search = [],
+    $column = ['*'],
+    $withRelations = [],
+    $recursiveRel = [],
+    $moreConditionForFirstLevel = [],
+    $pluck = [],
+    $orderBy = [],
+    $get = '',
+    $skip = null,
+    $limit = null,
+    $pagination = false,
+    $perPage = 0,
+    $latest = '',
+    $distinct = null,
+    $groupBy = null
+) {
+    $query = allQuery($search, $skip, $limit, $latest, $distinct, $groupBy);
 
+    if ($recursiveRel != []) {
+        $query = $this->addRecursiveRelationsToQuery($query, $recursiveRel);
+    }
+    if ($moreConditionForFirstLevel) {
+        if (count($moreConditionForFirstLevel) == 1) {
+            $query = self::proccessQuery($query, $moreConditionForFirstLevel);
+        } else {
+            foreach ($moreConditionForFirstLevel as $key => $value) {
+                $query = self::proccessQuery($query, [$key => $value]);
+            }
+        }
+    }
+    if (!empty($orderBy)) {
+        $query = $query->orderBy($orderBy['column'], $orderBy['order']);
+    }
+    if (!empty($withRelations)) {
+        $query = $this->with($query, $withRelations);
+    }
+    if (!empty($column) && $column != ['*']) {
+        $query = $query->select($column);
+    }
+    if (!empty($pluck)) {
+        return $query->pluck($pluck[0], $pluck[1]);
+    } elseif ($get == 'toArray') {
+        return $query->toArray();
+    } elseif ($get == 'count') {
+        return $query->count();
+    } elseif ($get == 'first') {
+        return $query->first();
+    } elseif ($pagination == true && $perPage != 0) {
+        return $query->paginate($perPage);
+    } else {
+        return $query->get();
+    }
+}
+
+function allQuery($search = [], $model, $skip = null, $limit = null, $latest = '', $distinct = null, $groupBy = null)
+    {
+        $query = $model->newQuery();
+        if (count($search) > 0) {
+            foreach ($search as $key => $value) {
+                if (!empty($value) || $value === 0 || $value === "0") {
+                    if (in_array($key, $this->getFieldsSearchable())) {
+                        if (isset($model->searchConfig) && !is_array($value) && array_key_exists($key, $model->searchConfig) && !empty
+                            ($model->searchConfig[$key])) {
+                            if ($model->searchConfig[$key] == 'like' || $model->searchConfig[$key] == 'LIKE') {
+                                $condition = $model->searchConfig[$key] == 'like' || $model->searchConfig[$key] == 'LIKE';
+                                $query->where($key, $model->searchConfig[$key], $condition ? '%' . $value . '%' : $value);
+                            }
+                        } else {
+                            if (is_array($value)) {
+                                $query->whereIn($key, $value);
+                            } elseif (strpos($value, ',') !== false) {
+                                $query->whereIn($key, explode(',', $value));
+                            } else {
+                                $query->where($key, $value);
+                            }
+                        }
+                    }
+                    if (!empty($this->getFieldsRelationShipSearchable()) && array_key_exists($key, $this->getFieldsRelationShipSearchable())) {
+                        $relation = explode("->", $model->searchRelationShip[$key]);
+                        $query->whereHas($relation[0], function ($query) use ($value, $relation) {
+                            if (is_array($value)) {
+                                $query->whereIn($relation[1], $value);
+                            } elseif (strpos($value, ',') !== false) {
+                                $query->whereIn($relation[1], explode(',', $value));
+                            } else {
+                                $query->where($relation[1], $value);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        if (!is_null($skip)) {
+            $query->skip($skip);
+        }
+        if (!is_null($limit)) {
+            $query->limit($limit);
+        }
+        if ($latest == 'latest') {
+            $query->latest();
+        }
+        if (!is_null($distinct)) {
+             $query->distinct($distinct);
+        }
+        if (!is_null($groupBy)) {
+            $query->groupBy($groupBy);
+        }
+        return $query;
+    }
+
+    function addRecursiveRelationsToQuery($query, $withRecursive)
+    {
+        foreach ($withRecursive as $key => $value) {
+            if (!isset($value['type']) || $value['type'] == 'normal') {
+                $query = $query->with([$key => function ($q) use ($key, $value) {
+                    $q = self::proccessQuery($q, $value);
+                    if (isset($value['recursive']) && count($value['recursive']) > 0)
+                        $this->addRecursiveRelationsToQuery($q, $value['recursive']);
+                }]);
+            } elseif ($value['type'] == 'whereHas') {// use relation whereHas
+                $query = $query->whereHas($key, function ($q) use ($key, $value) {
+                    $q = self::proccessQuery($q, $value);
+                    if (isset($value['recursive']) && count($value['recursive']) > 0)
+                        $this->addRecursiveRelationsToQuery($q, $value['recursive']);
+                });
+            } elseif (in_array($value['type'], ['whereDoesntHave', 'orWhereDoesntHave'])) {// use relation doesntHave
+                $query = $query->{$value['type']}($key, function ($q) use ($key, $value) {
+                    $q = self::proccessQuery($q, $value);
+                    if (isset($value['recursive']) && count($value['recursive']) > 0)
+                        $this->addRecursiveRelationsToQuery($q, $value['recursive']);
+                });
+            } elseif ($value['type'] == 'orWhereHas') {// use relation whereHas
+                $query = $query->orWhereHas($key, function ($q) use ($key, $value) {
+                    $q = self::proccessQuery($q, $value);
+                    if (isset($value['recursive']) && count($value['recursive']) > 0)
+                        $this->addRecursiveRelationsToQuery($q, $value['recursive']);
+                });
+            } elseif (in_array($value['type'], ['whereHasMorph', 'orWhereHasMorph'])) {
+                $query = $query->{$value['type']}($key, '*', function ($q, $type) use ($key, $value) {
+                    $q = self::proccessQuery($q, $value);
+                    if (isset($value['recursive']) && count($value['recursive']) > 0)
+                        $this->addRecursiveRelationsToQuery($q, $value['recursive']);
+                });
+            }elseif ($value['type'] == 'orWhereHas') {// use relation whereHas
+                $query = $query->orWhereHas($key, function ($q) use ($key, $value) {
+                    $q = self::proccessQuery($q, $value);
+                    if (isset($value['recursive']) && count($value['recursive']) > 0)
+                        $this->addRecursiveRelationsToQuery($q, $value['recursive']);
+                });
+            }
+        }
+        return $query;
+    }
+
+    function getFieldsRelationShipSearchable($model)
+    {
+        return $model->searchRelationShip;
+    }
+    */

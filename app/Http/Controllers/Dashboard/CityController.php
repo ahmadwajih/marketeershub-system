@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CityController extends Controller
 {
@@ -18,8 +19,8 @@ class CityController extends Controller
     {
         $this->authorize('view_cites');
         if ($request->ajax()){
-            $cities = getModelData('City' , $request, ['country']);
-            return response()->json($cities);
+            $coupons = City::with('country');
+            return DataTables::of($coupons)->make(true);
         }
         return view('new_admin.cities.index');
     }

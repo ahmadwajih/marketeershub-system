@@ -8,13 +8,17 @@ use App\Imports\PivotReportImport;
 use App\Imports\V2\UpdateReportImport;
 use App\Imports\ValidationPivotReportImport;
 use App\Models\Offer;
+use App\Models\PivotReport;
 use App\Notifications\UpdateValidation;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Notification;
+use Yajra\DataTables\Facades\DataTables;
 
 class PivotReportController extends Controller
 {
+
+
     /** 
      * Display a listing of the resource.
      *
@@ -22,13 +26,13 @@ class PivotReportController extends Controller
      */
     public function index(Request $request)
     {
-        return redirect()->back();
+        // return redirect()->back();
         $this->authorize('view_pivot_report');
         if($request->ajax()){
-            $coupons = getModelData('Coupon', $request, ['offer', 'user']);
-            return response()->json($coupons);
+            $coupons = PivotReport::with(['offer', 'coupon']);
+            return DataTables::of($coupons)->make(true);
         }
-        return view('admin.pivot-report.index');
+        return view('new_admin.pivot-report.index');
     }
 
     /**
@@ -44,6 +48,12 @@ class PivotReportController extends Controller
         ]);
         
     }
+
+    public function edit()
+    {
+        abort(404);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -83,6 +93,21 @@ class PivotReportController extends Controller
         }
         return redirect()->back();
         
+    }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, PivotReport $pivotReport)
+    {
+        $this->authorize('delete_cites');
+        if($request->ajax()){
+            userActivity('PivotReport', $pivotReport->id, 'delete');
+            $pivotReport->delete();
+        }
     }
 
 }

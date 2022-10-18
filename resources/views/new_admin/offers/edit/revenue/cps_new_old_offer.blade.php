@@ -8,13 +8,13 @@
                 <label class="form-label">Revenue Type</label>
                 <!--end::Label-->
                 <!--begin::Input-->
-                <select name="revenue_type" data-control="select2" class="form-select">
-                    <option {{ old('revenue_type')=="flat"?"selected":"" }} value="flat">{{ __('Per Order') }}</option>
-                    <option {{ old('revenue_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                <select name="new_old_revenue_type" data-control="select2" class="form-select">
+                    <option {{ old('new_old_revenue_type')=="flat"?"selected":"" }} value="flat">{{ __('Per Order') }}</option>
+                    <option {{ old('new_old_revenue_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
                 </select>
                 <!--end::Input-->
-                @if ($errors->has('revenue_type'))
-                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('revenue_type') }}</div></div>
+                @if ($errors->has('new_old_revenue_type'))
+                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('new_old_revenue_type') }}</div></div>
                 @endif
             </div>
             <!--end::Input group-->

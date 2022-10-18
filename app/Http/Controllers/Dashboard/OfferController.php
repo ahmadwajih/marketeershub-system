@@ -81,9 +81,7 @@ class OfferController extends Controller
      */
     public function store(Request $request)
     {
-        // foreach ($request->static_revenue as $staticRevenue) {
-        //     dd($staticRevenue['countries']);
-        // }
+        
         // dd($request->all());
         $this->authorize('create_offers');
         $data = $request->validate([
@@ -107,7 +105,8 @@ class OfferController extends Controller
             'discount_type' => 'required|in:flat,percentage',
             // Revenue Validation
             'revenue_cps_type' => 'required|in:static,new_old,slaps',
-            'revenue_type' => 'required|in:flat,percentage',
+            'static_revenue_type' => 'required_if:revenue_cps_type,static|in:flat,percentage',
+            'new_old_revenue_type' => 'required_if:revenue_cps_type,new_old|in:flat,percentage',
             'static_revenue' => 'required_if:revenue_cps_type,static|array',
             'static_revenue.*.revenue' => 'required_if:revenue_cps_type,static',
 
@@ -121,7 +120,8 @@ class OfferController extends Controller
             'revenue_slaps.*.revenue' => 'required_if:revenue_cps_type,slaps',
             // Payout Validation
             'payout_cps_type' => 'required|in:static,new_old,slaps',
-            'payout_type' => 'required|in:flat,percentage',
+            'static_payout_type' => 'required_if:payout_cps_type,static|in:flat,percentage',
+            'new_old_payout_type' => 'required_if:payout_cps_type,new_old|in:flat,percentage',
             'static_payout' => 'required_if:payout_cps_type,static|array',
             'static_payout.*.payout' => 'required_if:payout_cps_type,static',
 
@@ -162,9 +162,10 @@ class OfferController extends Controller
                 'discount_type' => $request->discount_type,
                 'discount_type' => $request->discount_type,
                 'revenue_cps_type' => $request->revenue_cps_type,
-                'revenue_type' => $request->revenue_type,
+                'revenue_type' => $request->revenue_cps_type == 'static' ? $request->static_revenue_type : $request->new_old_revenue_type,
                 'payout_cps_type' => $request->payout_cps_type,
-                'payout_type' => $request->payout_type,
+                'payout_type' => $request->payout_cps_type == 'static' ? $request->static_payout_type : $request->new_old_payout_type,
+                
             ]);
 
             userActivity('Offer', $offer->id, 'create');
@@ -190,7 +191,7 @@ class OfferController extends Controller
                         OfferCps::create([
                             'type' => 'revenue',
                             'cps_type' => 'static',
-                            'amount_type' => $request->revenue_type,
+                            'amount_type' => $request->static_revenue_type,
                             'amount' => $staticRevenue['revenue'],
                             'date_range' => isset($staticRevenue['date_range']) && $staticRevenue['date_range'][0] == 'on' ? true : false,
                             'from_date' => $staticRevenue['from_date'] ?? null,
@@ -210,7 +211,7 @@ class OfferController extends Controller
                         OfferCps::create([
                             'type' => 'revenue',
                             'cps_type' => 'new_old',
-                            'amount_type' => $request->revenue_type,
+                            'amount_type' => $request->new_old_revenue_type,
                             'new_amount' => $newOldRevenue['new_revenue'],
                             'old_amount' => $newOldRevenue['old_revenue'],
                             'date_range' => isset($newOldRevenue['date_range']) &&  $newOldRevenue['date_range'][0] == 'on' ? true : false,
@@ -231,7 +232,7 @@ class OfferController extends Controller
                         OfferCps::create([
                             'type' => 'revenue',
                             'cps_type' => 'slaps',
-                            'amount_type' => $request->revenue_type,
+                            'amount_type' => $request->static_revenue_type,
                             'amount' => $slapsRevenue['revenue'],
                             'from' => $slapsRevenue['from'] ?? null,
                             'to' => $slapsRevenue['to'] ?? null,
@@ -249,7 +250,7 @@ class OfferController extends Controller
                         OfferCps::create([
                             'type' => 'payout',
                             'cps_type' => 'static',
-                            'amount_type' => $request->payout_type,
+                            'amount_type' => $request->static_payout_type,
                             'amount' => $staticPayout['payout'],
                             'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
                             'from_date' => $staticPayout['from_date'] ?? null,
@@ -269,7 +270,7 @@ class OfferController extends Controller
                         OfferCps::create([
                             'type' => 'payout',
                             'cps_type' => 'new_old',
-                            'amount_type' => $request->payout_type,
+                            'amount_type' => $request->new_old_payout_type,
                             'new_amount' => $newOldPayout['new_payout'],
                             'old_amount' => $newOldPayout['old_payout'],
                             'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
@@ -290,7 +291,7 @@ class OfferController extends Controller
                         OfferCps::create([
                             'type' => 'payout',
                             'cps_type' => 'slaps',
-                            'amount_type' => $request->payout_type,
+                            'amount_type' => $request->static_payout_type,
                             'amount' => $slapsPayout['payout'],
                             'from' => $slapsPayout['from'] ?? null,
                             'to' => $slapsPayout['to'] ?? null,
@@ -360,13 +361,31 @@ class OfferController extends Controller
 
             ->get();
 
+            // Get Coupons 
+            $query = Coupon::query();
 
+            // Filter
+            if(isset($request->user_id ) && $request->user_id  != null){
+                $query->where('user_id', $request->user_id);
+            }
+
+            if(isset($request->status ) && $request->status  != null){
+                $query->where('status', $request->status);
+            }
+
+            if(isset($request->search ) && $request->search  != null){
+                $query->where('coupon', $request->search);
+            }
+            $coupons = $query->where('offer_id', $id)->with(['offer', 'user'])->paginate(config('app.pagination_pages'));
         // userActivity('Offer', $offer->id, 'view');
         //
         return view('new_admin.offers.show', [
             'offer' => $offer,
             'offerRequest' => $offerRequest,
             'topPublishers' => $topPublishers->groupBy('date')->first(),
+            'publishers' => User::wherePosition('publisher')->get(),
+            'countries' => Country::all(),
+            'coupons' => $coupons
         ]);
     }
 
@@ -400,7 +419,9 @@ class OfferController extends Controller
      */
     public function update(Request $request, Offer $offer)
     {
+
         $this->authorize('update_offers');
+      
         $data = $request->validate([
             // Genral Info
             'name_en' => 'required|max:255',
@@ -422,7 +443,8 @@ class OfferController extends Controller
             'discount_type' => 'required|in:flat,percentage',
             // Revenue Validation
             'revenue_cps_type' => 'required|in:static,new_old,slaps',
-            'revenue_type' => 'required|in:flat,percentage',
+            'static_revenue_type' => 'required_if:revenue_cps_type,static|in:flat,percentage',
+            'new_old_revenue_type' => 'required_if:revenue_cps_type,new_old|in:flat,percentage',
             'static_revenue' => 'required_if:revenue_cps_type,static|array',
             'static_revenue.*.revenue' => 'required_if:revenue_cps_type,static',
 
@@ -436,7 +458,8 @@ class OfferController extends Controller
             'revenue_slaps.*.revenue' => 'required_if:revenue_cps_type,slaps',
             // Payout Validation
             'payout_cps_type' => 'required|in:static,new_old,slaps',
-            'payout_type' => 'required|in:flat,percentage',
+            'static_payout_type' => 'required_if:payout_cps_type,static|in:flat,percentage',
+            'new_old_payout_type' => 'required_if:payout_cps_type,new_old|in:flat,percentage',
             'static_payout' => 'required_if:payout_cps_type,static|array',
             'static_payout.*.payout' => 'required_if:payout_cps_type,static',
 
@@ -461,6 +484,7 @@ class OfferController extends Controller
 
 
 
+
         userActivity('Offer', $offer->id, 'update', $data, $offer);
         $offer->update([
             'name_en' => $request->name_en,
@@ -478,9 +502,9 @@ class OfferController extends Controller
             'discount_type' => $request->discount_type,
             'discount_type' => $request->discount_type,
             'revenue_cps_type' => $request->revenue_cps_type,
-            'revenue_type' => $request->revenue_type,
+            'revenue_type' => $request->revenue_cps_type == 'static' ? $request->static_revenue_type : $request->new_old_revenue_type,
             'payout_cps_type' => $request->payout_cps_type,
-            'payout_type' => $request->payout_type,
+            'payout_type' => $request->payout_cps_type == 'static' ? $request->static_payout_type : $request->new_old_payout_type,
         ]);
 
         if ($request->categories) {
@@ -499,7 +523,7 @@ class OfferController extends Controller
                     OfferCps::create([
                         'type' => 'revenue',
                         'cps_type' => 'static',
-                        'amount_type' => $request->revenue_type,
+                        'amount_type' => $request->static_revenue_type,
                         'amount' => $staticRevenue['revenue'],
                         'date_range' => isset($staticRevenue['date_range']) && $staticRevenue['date_range'][0] == 'on' ? true : false,
                         'from_date' => $staticRevenue['from_date'] ?? null,
@@ -519,7 +543,7 @@ class OfferController extends Controller
                     OfferCps::create([
                         'type' => 'revenue',
                         'cps_type' => 'new_old',
-                        'amount_type' => $request->revenue_type,
+                        'amount_type' => $request->new_old_revenue_type,
                         'new_amount' => $newOldRevenue['new_revenue'],
                         'old_amount' => $newOldRevenue['old_revenue'],
                         'date_range' => isset($newOldRevenue['date_range']) &&  $newOldRevenue['date_range'][0] == 'on' ? true : false,
@@ -540,7 +564,7 @@ class OfferController extends Controller
                     OfferCps::create([
                         'type' => 'revenue',
                         'cps_type' => 'slaps',
-                        'amount_type' => $request->revenue_type,
+                        'amount_type' => $request->static_revenue_type,
                         'amount' => $slapsRevenue['revenue'],
                         'from' => $slapsRevenue['from'] ?? null,
                         'to' => $slapsRevenue['to'] ?? null,
@@ -558,7 +582,7 @@ class OfferController extends Controller
                     OfferCps::create([
                         'type' => 'payout',
                         'cps_type' => 'static',
-                        'amount_type' => $request->payout_type,
+                        'amount_type' => $request->static_payout_type,
                         'amount' => $staticPayout['payout'],
                         'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
                         'from_date' => $staticPayout['from_date'] ?? null,
@@ -578,7 +602,7 @@ class OfferController extends Controller
                     OfferCps::create([
                         'type' => 'payout',
                         'cps_type' => 'new_old',
-                        'amount_type' => $request->payout_type,
+                        'amount_type' => $request->new_old_payout_type,
                         'new_amount' => $newOldPayout['new_payout'],
                         'old_amount' => $newOldPayout['old_payout'],
                         'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
@@ -599,7 +623,7 @@ class OfferController extends Controller
                     OfferCps::create([
                         'type' => 'payout',
                         'cps_type' => 'slaps',
-                        'amount_type' => $request->payout_type,
+                        'amount_type' => $request->static_payout_type,
                         'amount' => $slapsPayout['payout'],
                         'from' => $slapsPayout['from'] ?? null,
                         'to' => $slapsPayout['to'] ?? null,
@@ -650,7 +674,7 @@ class OfferController extends Controller
 
     public function coupons(Request $request, $offer)
     {
-        $coupons = Coupon::where('offer_id', $offer)->with(['offer', 'user'])->get();
+        // ;
         if ($request->ajax()) {
             $coupons = Coupon::where('offer_id', $offer)->with(['offer', 'user'])->get();
             return DataTables::of($coupons)->make(true);

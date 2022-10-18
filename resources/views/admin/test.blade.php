@@ -19,26 +19,27 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
+                <th scope="col">Code</th>
+                <th scope="col">User</th>
+                <th scope="col">Offer</th>
                 <th scope="col">Team</th>
-                <th scope="col">Coupon</th>
-                <th scope="col">Orders</th>
             </tr>
         </thead>
         <tbody>
-          @foreach($data as $d)
+          @foreach($coupons as $coupon)
             <tr>
-                <th scope="row">{{ $d['id'] }}</th>
-                <td>{{ $d['name'] }}</td>
-                <td>{{ $d['team'] }}</td>
-                <td>{{ $d['coupon'] }}</td>
-                <td>{{ $d['orders'] }}</td>
+                <th scope="row">{{ $coupon->id }}</th>
+                <td>{{ $coupon->coupon}}</td>
+                <td>{{ $coupon->user->name ?? ''}}</td>
+                <td>{{ $coupon->offer->name ?? ''}}</td>
+                <td>{{ $coupon->user->team ?? ''}}</td>
+
             </tr>
             @endforeach
         </tbody>
     </table>
     <!-- Optional JavaScript; choose one of the two! -->
-
+    {!! $coupons->links() !!}
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">

@@ -34,20 +34,20 @@ class CouponImport implements ToCollection
            
             if(!is_null($col[0])){
                 $userId = null;
-                if(!is_null($col[1])){
-                    if($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000'){
-                        $publisher = User::where('email', 'info@marketeershub.com')->first();
-                        if($publisher){
-                            $userId = $publisher->id;
-                        }
-                    }else{
-                        $publisher = User::where('ho_id', $this->oldId)->first();
-                        if($publisher){
-                            $userId = $publisher->id;
-                        }
-                    }
+                // if(!is_null($col[1]) && isset($col[1])){
+                //     if($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000'){
+                //         $publisher = User::where('email', 'info@marketeershub.com')->first();
+                //         if($publisher){
+                //             $userId = $publisher->id;
+                //         }
+                //     }else{
+                //         $publisher = User::where('ho_id', $this->oldId)->first();
+                //         if($publisher){
+                //             $userId = $publisher->id;
+                //         }
+                //     }
                     
-                }
+                // }
                 
                 $coupon = Coupon::updateOrCreate(
                     [
@@ -64,7 +64,7 @@ class CouponImport implements ToCollection
                         $this->test[$index]['user_id'] = $coupon->user_id; 
                     }else{
                         $this->test[$index]['code_null'] = $col[0]; 
-                        $this->test[$index]['user_id_null'] = $col[1]; 
+                        $this->test[$index]['user_id_null'] = isset($col[1]) ?? '' ; 
                     }
                     
             }

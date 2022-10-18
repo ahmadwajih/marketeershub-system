@@ -371,7 +371,7 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
-                                                <label class="required form-label">Affiliate Networks</label>
+                                                <label class="form-label">Affiliate Networks</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <input type="text" name="affiliate_networks" class="form-control mb-2" placeholder="Affiliate Networks " value="{{ old('affiliate_networks') ?? $publisher->affiliate_networks }}" />
@@ -405,7 +405,7 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
-                                                <label class="required form-label">Affiliate Networks</label>
+                                                <label class="form-label">Traffic Sources</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <select caria-label="Select Traffic Sources" data-control="select2" data-placeholder="Select Traffic Sources" class="form-select" name="traffic_sources[]" multiple>

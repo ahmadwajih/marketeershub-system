@@ -166,7 +166,7 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search" />
+                            <input type="text" data-kt-users-table-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search" />
                         </div>
                         <!--end::Search-->
                     </div>
@@ -203,7 +203,7 @@
                             <!--begin::Body-->
                             <tbody class="fs-6">
                                 @foreach ($offers as $offer)
-                                    <tr>
+                                    <tr class="tr-{{ $offer->id }}">
                                         <td>
                                             <!--begin::User-->
                                             <div class="d-flex align-items-center">
@@ -218,7 +218,7 @@
                                                 <!--end::Wrapper-->
                                                 <!--begin::Info-->
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <a href="{{ route('admin.offers.show', $offer->id) }}" class="mb-1 text-gray-800 text-hover-primary" data-kt-ecommerce-product-filter="offer_name">{{ $offer->name }}</a>
+                                                    <a href="{{ route('admin.offers.show', $offer->id) }}" class="mb-1 text-gray-800 text-hover-primary" data-kt-users-table-filter="offer_name">{{ $offer->name }}</a>
                                                     @if($offer->advertiser)<div class="fw-semibold fs-6 text-gray-400">{{  $offer->advertiser->company_name_en }}</div>@endif
                                                 </div>
                                                 <!--end::Info-->
@@ -269,7 +269,7 @@
                                                     @can('delete_offers')
                                                     <!--begin::Menu item-->
                                                     <div class="menu-item px-3">
-                                                        <a href="#" data-kt-delte-url="{{ route('admin.offers.destroy', $offer->id) }}" class="menu-link px-3" data-kt-ecommerce-product-filter="delete_row">Delete</a>
+                                                        <a href="javascript:void(0)" class="menu-link px-3" onclick="delete_row('{{ $offer->id }}', '{{ $offer->name }}')">Delete</a>
                                                     </div>
                                                     <!--end::Menu item-->
                                                     @endcan
@@ -295,10 +295,12 @@
     <!--end::Tab Content-->
 @endsection
 @push('scripts')
-{{-- <script src="{{ asset('new_dashboard') }}/js\datatables\/offers.js"></script> --}}
 <script>
     var route = "{{route('admin.offers.index')}}";
 </script>
+{{-- <script src="{{ asset('new_dashboard') }}/js/datatables/offers/table.js"></script> --}}
+<script src="{{ asset('new_dashboard') }}/js/datatables/offers/delete.js"></script>
+
 <script src="{{ asset('new_dashboard') }}/js/datatables/offers/change-status.js"></script>
 
 

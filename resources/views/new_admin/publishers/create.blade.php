@@ -162,6 +162,8 @@
                                             <!--begin::Input-->
                                             <input type="password" name="password" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
                                             <!--end::Input-->
+                                            <p >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol min 8 chars') }}</p>
+
                                             @if ($errors->has('password'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password') }}</div></div>
                                             @endif
@@ -370,7 +372,7 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
-                                                <label class="required form-label">Affiliate Networks</label>
+                                                <label class=" form-label">Affiliate Networks</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <input type="text" name="affiliate_networks" class="form-control mb-2" placeholder="Affiliate Networks " value="{{ old('affiliate_networks') }}" />
@@ -387,7 +389,7 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
-                                                <label class="required form-label">Years of Experience</label>
+                                                <label class="form-label">Years of Experience</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <input type="text" name="years_of_experience" class="form-control mb-2" placeholder="Years of Experience " value="{{ old('years_of_experience') }}" />
@@ -403,7 +405,7 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
-                                                <label class="required form-label">Affiliate Networks</label>
+                                                <label class="form-label">Traffic Sources</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <select caria-label="Select Traffic Sources" data-control="select2" data-placeholder="Select Traffic Sources" class="form-select" name="traffic_sources[]" multiple>

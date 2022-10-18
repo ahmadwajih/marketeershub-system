@@ -14,19 +14,19 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            RoleSeeder::class,
-            AbilitySeeder::class,
-            CountrySeeder::class,
-            CitySeeder::class,
-            CurrencySeeder::class,
-            UserSeeder::class,
-            AdvertiserSeeder::class,
-            OfferSeeder::class,
+            // RoleSeeder::class,
+            // AbilitySeeder::class,
+            // CountrySeeder::class,
+            // CitySeeder::class,
+            // CurrencySeeder::class,
+            // UserSeeder::class,
+            // AdvertiserSeeder::class,
+            // OfferSeeder::class,
             CouponSeeder::class,
-            PivotReportSeeder::class,
-            CategorySeeder::class,
-            AdvertiserCategorySeeder::class,
-            PublisherCategorySeeder::class,
+            // PivotReportSeeder::class,
+            // CategorySeeder::class,
+            // AdvertiserCategorySeeder::class,
+            // PublisherCategorySeeder::class,
         ]);
     }
 }

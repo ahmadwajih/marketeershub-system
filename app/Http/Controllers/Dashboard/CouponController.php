@@ -26,15 +26,46 @@ class CouponController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_coupons');
-        if ($request->ajax()) {
-            $coupons = Coupon::with(['offer', 'user']);
-            return DataTables::of($coupons)->make(true);
+        // Get Coupons 
+        $query = Coupon::query();
+        if(isset($request->table_length ) && $request->table_length  != null){
+            session()->put('coupons_table_length', $request->table_length);
         }
-        $countries = Country::all();
-        $offers = Offer::whereHas('coupons')->get();
-        $publishers = User::wherePosition('publisher')->get();
+        if (session()->has('coupons_table_length') == false) {
+            session()->put('coupons_table_length', config('app.pagination_pages'));
+        }
+        $tableLength = session('coupons_table_length');
+        // Filter
+        
 
-        return view('new_admin.coupons.index', ['offers' => $offers, 'countries' => $countries, 'publishers' => $publishers]);
+        if(isset($request->offer_id ) && $request->offer_id  != null){
+            $query->where('offer_id', $request->offer_id);
+        }
+
+        if(isset($request->user_id ) && $request->user_id  != null){
+            $query->where('user_id', $request->user_id);
+        }
+
+        if(isset($request->status ) && $request->status  != null){
+            $query->where('status', $request->status);
+        }
+
+        if(isset($request->search ) && $request->search  != null){
+            $query->where('coupon', $request->search);
+        }
+
+        $coupons = $query->with(['offer', 'user']);
+        $coupons = $query->paginate($tableLength);
+
+        $countries = Country::all();
+        $publishers = User::wherePosition('publisher')->get();
+        $offers = Offer::all();
+        return view('new_admin.coupons.index', [
+            'countries' => $countries,
+            'publishers' => $publishers,
+            'coupons' => $coupons,
+            'offers' => $offers
+        ]);
     }
 
     /**
@@ -50,8 +81,6 @@ class CouponController extends Controller
             'offers' => Offer::whereStatus("active")->get(),
             'users' => User::whereIn('position', ['publisher'])->whereIn('team', ['media_buying', 'influencer', 'affiliate', 'prepaid'])->get(),
             'countries' => Country::all(),
-
-
         ]);
     }
 
@@ -70,7 +99,8 @@ class CouponController extends Controller
             'user_id'        => 'nullable|numeric|exists:users,id',
         ]);
         $data['coupon'] = strtolower(trim(str_replace(' ', '', trim($request->coupon))));
-
+        $data['have_custom_payout'] = isset($request->have_custom_payout) && $request->have_custom_payout == 'on' ? true : false;
+        // dd($request->all());
         $coupon = Coupon::create($data);
         // dd($coupon->user);/
         //  if($request->user_id){
@@ -224,6 +254,9 @@ class CouponController extends Controller
     {
         $this->authorize('delete_coupons');
         if ($request->ajax()) {
+            if($coupon->report && $coupon->report->count() > 0){
+                return response()->json(['message' => __('You cannot delete this coupout because it have transactions.')], 422);
+            }
             userActivity('Coupon', $coupon->id, 'delete');
             $coupon->delete();
         }
@@ -283,7 +316,6 @@ class CouponController extends Controller
 
     public function bulckUpdate(Request $request)
     {
-
         if (count($request->item_check) > 0) {
             foreach ($request->item_check as $couponId) {
                 $coupon = Coupon::findOrFail($couponId);
@@ -359,7 +391,7 @@ class CouponController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.coupons.index')->with($notification);
+        return redirect()->back()->with($notification);
     }
 
 
@@ -372,12 +404,12 @@ class CouponController extends Controller
         return response()->json(['message' => 'Updated Succefuly']);
     }
 
-    public function loadPayout(Request $request){
+    public function loadPayout(Request $request)
+    {
         $coupon = Coupon::whereId($request->id)->first();
-        if($coupon){
+        if ($coupon) {
             return view('new_admin.coupons.load-payout', ['coupon' => $coupon]);
         }
         return 'No Data';
-
     }
 }

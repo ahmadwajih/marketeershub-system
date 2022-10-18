@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CountryController extends Controller
 {
@@ -17,8 +18,10 @@ class CountryController extends Controller
     {
         $this->authorize('view_countries');
         if ($request->ajax()){
-            $countries = getModelData('Country' , $request);
-            return response()->json($countries);
+            $coupons = Country::with('cities');
+            return DataTables::of($coupons)->make(true);
+            // $countries = getModelData('Country' , $request);
+            // return response()->json($countries);
         }
         return view('new_admin.countries.index');
     }

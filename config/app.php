@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-
+    'pagination_pages' => 10,
     'name' => env('APP_NAME', 'MarketeersHub'),
 
     /*

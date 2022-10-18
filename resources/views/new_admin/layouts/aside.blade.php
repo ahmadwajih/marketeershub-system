@@ -257,7 +257,7 @@
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
-                    <a class="menu-link {{ Request::segment(2)=='pivot-report'?'active':'' }}" href="{{ route('admin.pivot-report.create') }}">
+                    <a class="menu-link {{ Request::segment(2)=='pivot-report'?'active':'' }}" href="{{ route('admin.pivot-report.index') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
                             <span class="svg-icon svg-icon-2">
@@ -268,7 +268,7 @@
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                        <span class="menu-title">{{ __('Upload Report') }}</span>
+                        <span class="menu-title">{{ __('Pivot Report') }}</span>
                     </a>
                     <!--end:Menu link-->
                 </div>

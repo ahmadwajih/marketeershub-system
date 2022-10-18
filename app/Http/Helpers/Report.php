@@ -5,7 +5,7 @@ use App\Models\Coupon;
 
 
 if(!function_exists('totalNumbersForSeparateTeam')){
-    function totalNumbersForSeparateTeam($team){
+    function totalNumbersForSeparateTeam($team, $from, $to){
 
         return DB::table('pivot_reports')
         ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'),  DB::raw('SUM(payout) as payout'))
@@ -15,6 +15,7 @@ if(!function_exists('totalNumbersForSeparateTeam')){
         ->orderBy('date', 'desc')
         ->groupBy('date')
         ->having('orders', '>', 0)
+        ->whereBetween('date', [$from.' 00:00:00', $to.' 23:59:29'])
         ->first();
     }
 }

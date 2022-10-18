@@ -200,7 +200,7 @@ class PublisherController extends Controller
                     DigitalAsset::create([
                         'link' => $link['link'],
                         'platform' => $link['platform'],
-                        'other_platform_name' => $link['other_platform_name'],
+                        'other_platform_name' => $link['other_platform_name'] ?? '',
                         'user_id' => $publisher->id,
                     ]);
                 }

@@ -87,7 +87,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -102,6 +102,10 @@
                                             <!--end::Input-->
                                         </div>
                                         <!--end::Input group-->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br>
+                                        <a href="{{ asset('dashboard/excel-sheets-examples/Update report-example.xlsx') }}" class="btn btn-primary mt-3 btn-block" download>{{ __('Download Example') }}</a>
                                     </div>
                                     @if(session('columnHaveIssue'))
                                         <a class="btn btn-danger" href="{{ route('admin.pivot-report.deonload.errore') }}">Donlowad Errors</a>

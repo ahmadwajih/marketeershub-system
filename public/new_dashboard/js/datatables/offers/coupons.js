@@ -17,7 +17,7 @@ var KTUsersList = function () {
             processing: true,
             serverSide: true,
             order: [[5, 'asc']],
-            stateSave: true,
+            // stateSave: true,
             select: {
                 style: 'multi',
                 selector: 'td:first-child input[type="checkbox"]',
@@ -30,10 +30,11 @@ var KTUsersList = function () {
                 { data: null },
                 { data: 'id' },
                 { data: 'coupon' },
-                { data: 'offer.name_en' },
-                { data: 'user.name' },
-                { data: 'user.ho_id' },
-                { data: 'user.team' },
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null }, // Payout
                 { data: 'status' },
                 { data: null },
             ],
@@ -127,6 +128,14 @@ var KTUsersList = function () {
                         }else{
                             return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'active')" class="btn btn-light-danger btn-sm">Unactive</button>`;
                         }
+                    }
+                },
+                {
+                    targets: 8,
+                    orderable: false,
+                    searchable:false,
+                    render: function (data, type, row) {
+                        return `<button onclick="loadPayoutDetails(`+row.id +`)"   data-bs-toggle="modal" data-bs-target="#payout_details" class="btn btn-light-info btn-sm">Show Payout</button>`;
                     }
                 },
                 {

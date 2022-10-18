@@ -113,7 +113,7 @@
                         <!--end::Filter-->
                         @can('create_publishers')
                         <!--begin::Add user-->
-                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.publishers.create') }}" class="btn btn-primary">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                         <span class="svg-icon svg-icon-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,7 +121,7 @@
                                 <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
                             </svg>
                         </span>
-                        <!--end::Svg Icon-->Add User</a>
+                        <!--end::Svg Icon-->Add Publisher</a>
                         <!--end::Add user-->
                         @endcan
                     </div>

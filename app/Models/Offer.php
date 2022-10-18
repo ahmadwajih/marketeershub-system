@@ -142,4 +142,10 @@ class Offer extends Model
     public function cps(){
         return $this->hasMany(OfferCps::class);
     }
+
+    public function prvotReports()
+    {
+        return $this->hasManyThrough(PivotReport::class, Coupon::class);
+    }
+
 }

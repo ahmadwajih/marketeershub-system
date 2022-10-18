@@ -29,13 +29,12 @@ var KTUsersList = function () {
             columns: [
                 { data: null },
                 { data: 'id' },
-                { data: 'coupon' },
-                { data: null },
-                { data: null },
-                { data: null },
-                { data: null },
-                { data: null }, // Payout
-                { data: 'status' },
+                { data: 'offer.name_en' },
+                { data: 'coupon.coupon' },
+                { data: 'orders' },
+                { data: 'sales' },
+                { data: 'revenue' },
+                { data: 'payout' },
                 { data: null },
             ],
             columnDefs: [
@@ -48,94 +47,6 @@ var KTUsersList = function () {
                             <div class="form-check form-check-sm form-check-custom form-check-solid">
                                 <input class="form-check-input" name="item_check" type="checkbox" value="${data.id}" />
                             </div>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    orderable: true,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        if(row.offer_id == null){
-                            return null;
-                        }else{
-                            try {
-                                return row.offer.name_en;
-                              }
-                              catch(err) {
-                                return null;
-                              }
-                        }
-                    }
-                },
-                {
-                    targets: 4,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        if(row.user_id == null){
-                            return null;
-                        }else{
-                            try {
-                                return row.user.name;
-                              }
-                              catch(err) {
-                                return null;
-                              }
-                        }
-                    }
-                },
-                {
-                    targets: 5,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        if(row.user_id == null){
-                            return null;
-                        }else{
-                            try {
-                                return row.user.ho_id;
-                              }
-                              catch(err) {
-                                return null;
-                              }
-                        }
-                    }
-                },
-                {
-                    targets: 6,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        if(row.user_id == null){
-                            return null;
-                        }else{
-                            try {
-                                return row.user.team;
-                              }
-                              catch(err) {
-                                return null;
-                              }
-                        }
-                    }
-                },
-                {
-                    targets: 7,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        if(row.status == 'active'){
-                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'unactive')" class="btn btn-light-success btn-sm">Active</button>`;
-                        }else{
-                            return `<button onclick="changeStatus(`+row.id +`,'`+ row.name+`', 'active')" class="btn btn-light-danger btn-sm">Unactive</button>`;
-                        }
-                    }
-                },
-                {
-                    targets: 8,
-                    orderable: false,
-                    searchable:false,
-                    render: function (data, type, row) {
-                        return `<button onclick="loadPayoutDetails(`+row.id +`)"   data-bs-toggle="modal" data-bs-target="#payout_details" class="btn btn-light-info btn-sm">Show Payout</button>`;
                     }
                 },
                 {
@@ -158,9 +69,6 @@ var KTUsersList = function () {
                         <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
                             <!--begin::Menu item-->
                             <div class="menu-item px-3">
-                            <div class="menu-item px-3">
-                                <a href="`+route+`/`+row.id+`/edit" class="menu-link px-3">Edit</a>
-                            </div>
                             <!--begin::Menu item-->
                             <div class="menu-item px-3">
                                 <a href="#" data-kt-users-table-filter="delete_row" class="menu-link px-3">Delete</a>
@@ -375,7 +283,7 @@ var KTUsersList = function () {
                 
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
-                    text: "Are you sure you want to delete selected coupons?",
+                    text: "Are you sure you want to delete selected customers?",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
@@ -432,7 +340,7 @@ var KTUsersList = function () {
                                 });
 
                             Swal.fire({
-                                text: "You have deleted all selected coupons!.",
+                                text: "You have deleted all selected customers!.",
                                 icon: "success",
                                 buttonsStyling: false,
                                 confirmButtonText: "Ok, got it!",
@@ -446,7 +354,7 @@ var KTUsersList = function () {
                         });
                     } else if (result.dismiss === "cancel") {
                         Swal.fire({
-                            text: "Selected coupons was not deleted.",
+                            text: "Selected customers was not deleted.",
                             icon: "error",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",
