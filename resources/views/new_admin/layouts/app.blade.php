@@ -2,25 +2,26 @@
 <!--
 Author: Ahmed Wageh
 Product Name: MarketeersHub statem
-Contact: a.wajih@marketeershub.com
-Like: www.facebook.com/keenthemes
+Contact: ahmad.wajih@marketeershub.com - a.ahmedwageh@gmail.com
+Facebook: https://www.facebook.com/a.ahmed.wagih/
+LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
 -->
 <html lang="en">
 <!--begin::Head-->
 
 <head>
     <base href="">
-    <title>{{ __('Dashboard') }} - @yield('title', 'Home Page')</title>
+    <title> @yield('title', 'Home Page') - {{ __('Dashboard') }} - {{ __('Marketeershub') }}</title>
     <meta charset="utf-8" />
     <meta name="description"
-        content="The most advanced Bootstrap Admin Theme on Themeforest trusted by 100,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue, Asp.Net Core, Blazor, Django, Flask &amp; Laravel versions. Grab your copy now and get life-time updates for free." />
+        content="Marketeers Hub is a performance marketing agency built to solidify your digital presence, in order to create impact and achieve your business goals. Our highly experienced team connects your business with the largest local and international affiliate networks via data-driven strategies that deliver unprecedented & sustainable results." />
     <meta name="keywords"
-        content="Metronic, Bootstrap, Bootstrap 5, Angular, VueJs, React, Asp.Net Core, Blazor, Django, Flask &amp; Laravel, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+        content="Marketeers Hub is a performance marketing agency built to solidify your digital presence, in order to create impact and achieve your business goals. Our highly experienced team connects your business with the largest local and international affiliate networks via data-driven strategies that deliver unprecedented & sustainable results." />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
     <meta property="og:title"
-        content="Metronic - Bootstrap 5 HTML, VueJS, React, Angular, Asp.Net Core, Blazor, Django, Flask &amp; Laravel Admin Dashboard Theme" />
+        content="Marketeers Hub is a performance marketing agency built to solidify your digital presence, in order to create impact and achieve your business goals. Our highly experienced team connects your business with the largest local and international affiliate networks via data-driven strategies that deliver unprecedented & sustainable results." />
     <meta property="og:url" content="https://keenthemes.com/metronic" />
     <meta property="og:site_name" content="Keenthemes | Metronic" />
     <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />

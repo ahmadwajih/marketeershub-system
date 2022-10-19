@@ -37,7 +37,7 @@ function changeStatus(id, name, action){
                     // Simulate delete request -- for demo purpose only
                     Swal.fire({
                         text:
-                            "You have " + action + name +"!",
+                            "You have " + action + ' ' + name +"!",
                         icon: "success",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",
@@ -47,7 +47,13 @@ function changeStatus(id, name, action){
                         },
                     }).then(function () {
                         // delete row data from server and re-draw datatable
-                        location.reload();
+                        if(action == 'active'){
+                            $('.active-btn-'+id).removeClass('d-none');
+                            $('.inactive-btn-'+id).addClass('d-none');
+                        }else{
+                            $('.active-btn-'+id).addClass('d-none');
+                            $('.inactive-btn-'+id).removeClass('d-none');
+                        }
 
                     });
                 })

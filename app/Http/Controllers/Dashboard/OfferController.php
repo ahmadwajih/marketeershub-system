@@ -36,8 +36,22 @@ class OfferController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_offers');
+        $query = Offer::query();
+        if(isset($request->table_length ) && $request->table_length  != null){
+            session()->put('offers_table_length', $request->table_length);
+        }
+        if (session()->has('offers_table_length') == false) {
+            session()->put('offers_table_length', config('app.pagination_pages'));
+        }
+        $tableLength = session('offers_table_length');
+
+        if(isset($request->search ) && $request->search  != null){
+            $query->where('name_ar', 'like',  "%{$request->search}%" )
+                    ->orWhere('name_en', 'like', "%{$request->search}%");
+        }
+
+        $offers = $query->with(['advertiser', 'categories', 'countries'])->latest()->paginate($tableLength);
         $update             = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
-        $offers             = Offer::with(['advertiser', 'categories', 'countries'])->latest()->get();
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
 
         return view('new_admin.offers.index', compact('offers', 'offerRequestsArray'));

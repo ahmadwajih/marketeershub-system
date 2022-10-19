@@ -51,10 +51,15 @@ class DashboardController extends Controller
         // })->where('offer_id', 98)->get();
         // dd($coupons);
         // $reports = PivotReport::all();
-
         // foreach($reports as $report){
         //     $report->delete();
         // }
+
+        // $coupons = Coupon::get();
+        // foreach($coupons as $coupon){
+        //     $coupon->forceDelete();
+        // }
+
         $this->authorize('view_dashboard');
         if (session()->has('from_date') == false) {
             session()->put('from_date', now()->firstOfMonth()->format('Y-m-d'));

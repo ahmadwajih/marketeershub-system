@@ -109,43 +109,7 @@
             @endforeach
             </div>
             <!--end::Row-->
-            <!--begin::Pagination-->
-            {{-- <div class="d-flex flex-stack flex-wrap pt-10">
-                <div class="fs-6 fw-semibold text-gray-700">Showing 1 to 10 of 50 entries</div>
-                <!--begin::Pages-->
-                <ul class="pagination">
-                    <li class="page-item previous">
-                        <a href="#" class="page-link">
-                            <i class="previous"></i>
-                        </a>
-                    </li>
-                    <li class="page-item active">
-                        <a href="#" class="page-link">1</a>
-                    </li>
-                    <li class="page-item">
-                        <a href="#" class="page-link">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a href="#" class="page-link">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a href="#" class="page-link">4</a>
-                    </li>
-                    <li class="page-item">
-                        <a href="#" class="page-link">5</a>
-                    </li>
-                    <li class="page-item">
-                        <a href="#" class="page-link">6</a>
-                    </li>
-                    <li class="page-item next">
-                        <a href="#" class="page-link">
-                            <i class="next"></i>
-                        </a>
-                    </li>
-                </ul>
-                <!--end::Pages-->
-            </div> --}}
-            <!--end::Pagination-->
+       
         </div>
         <!--end::Tab pane-->
         <!--begin::Tab pane-->
@@ -158,27 +122,36 @@
                     <div class="card-title">
                         <!--begin::Search-->
                         <div class="d-flex align-items-center position-relative my-1">
-                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                            <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
-                                    <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
-                                </svg>
-                            </span>
-                            <!--end::Svg Icon-->
-                            <input type="text" data-kt-users-table-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search" />
+                            <form action="{{ route('admin.offers.index') }}">
+                                <!--end::Svg Icon-->
+                                <div class="input-group mb-5">
+                                    <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
+                                    <button class="input-group-text" id="basic-addon2">Go</button>
+                                </div>
+                            </form> 
                         </div>
                         <!--end::Search-->
                     </div>
                     <!--end::Card title-->
                     @can('create_offers')
                     <!--begin::Card toolbar-->
-                    <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+                    <div class="card-toolbar flex-row-fluid justify-content-end gap-5" id="add_btn">
                         <!--begin::Add product-->
                         <a href="{{ route('admin.offers.create') }}" class="btn btn-primary">Add Offer</a>
                         <!--end::Add product-->
                     </div>
                     <!--end::Card toolbar-->
+                    @endcan
+                    @can('delete_offers')
+                        <!--begin::Group actions-->
+                        <div id="delete_btn" class="d-flex justify-content-end align-items-center d-none"
+                            data-kt-user-table-toolbar="selected">
+                            <div class="fw-bold me-5">
+                                <span class="me-2" id="selected_count"></span>Selected
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="delete_selected()" >Delete Selected</button>
+                        </div>
+                        <!--end::Group actions-->
                     @endcan
                 </div>
                 <!--begin::Card body-->
@@ -190,6 +163,12 @@
                             <!--begin::Head-->
                             <thead class="fs-7 text-gray-400 text-uppercase">
                                 <tr>
+                                    <th class="w-10px pe-2">
+                                        <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                            <input class="form-check-input" id="main_form_check" type="checkbox" data-kt-check="true" value="1" />
+                                        </div>
+                                    </th>
+                                    <th>#</th>
                                     <th class="min-w-250px">Thumbnail</th>
                                     <th class="min-w-90px">Status</th>
                                     <th class="min-w-90px">Revenue Type</th>
@@ -204,6 +183,13 @@
                             <tbody class="fs-6">
                                 @foreach ($offers as $offer)
                                     <tr class="tr-{{ $offer->id }}">
+                                        <td>
+                                            <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                                <input class="form-check-input table-checkbox" name="item_check" type="checkbox"
+                                                    value="{{ $offer->id }}" />
+                                            </div>
+                                        </td>
+                                        <td>{{ $offer->id }}</td>
                                         <td>
                                             <!--begin::User-->
                                             <div class="d-flex align-items-center">
@@ -226,17 +212,8 @@
                                             <!--end::User-->
                                         </td>
                                         <td data-order="{{ $offer->status }}">
-                                            @if ($offer->status == 'active')
-                                                <button class="btn btn-light-success btn-sm"  onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'unactive')" >Active</button>
-                                            @elseif ($offer->status == 'pused')
-                                                <button class="btn btn-light-warning btn-sm" onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" >Pused</button>
-                                            @elseif ($offer->status == 'pending')
-                                                <button class="btn btn-light-warning btn-sm" onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" >Pending</button>
-                                            @elseif ($offer->status == 'expire')
-                                                <button class="btn btn-light-danger btn-sm" onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" >Expire</button>
-                                            @else
-                                            @endif
-
+                                            <button onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $offer->id }} {{ $offer->status == 'active' ?: 'd-none' }}">Active</button> 
+                                            <button onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $offer->id }} {{ $offer->status != 'active' ?: 'd-none' }}">Inactive</button>
                                         </td>
                                         <td>{{ $offer->cps_type == 'static' ? $offer->revenue_type : '' }} {{ $offer->cps_type == 'new_old' ? ($offer->newOld ? $offer->newOld->new_revenue_type : '') : '' }}</td>
                                         <td>{{ $offer->cps_type }}</td>
@@ -283,6 +260,19 @@
                             <!--end::Body-->
                         </table>
                         <!--end::Table-->
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <select id="change_table_length" class="form-select form-select-sm">
+                                    @for($i = 10; $i <= 100; $i += 10)
+                                    <option {{  session('offers_table_length') == $i ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div>
+                                {!! $offers->links() !!}
+                            </div>
+                        </div>
+
                     </div>
                     <!--end::Table container-->
                 </div>
@@ -302,6 +292,47 @@
 <script src="{{ asset('new_dashboard') }}/js/datatables/offers/delete.js"></script>
 
 <script src="{{ asset('new_dashboard') }}/js/datatables/offers/change-status.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $('#main_form_check').change(function(){
+            if(this.checked) {
+                $('.table-checkbox').prop('checked', true);
+                $('#delete_btn').removeClass('d-none');
+                $('#add_btn').addClass('d-none');
+            }else{
+                $('.table-checkbox').prop('checked', false);
+                $('#delete_btn').addClass('d-none');
+                $('#add_btn').removeClass('d-none');
+            }
+            var numberOfChecked = $('.table-checkbox:checked').length;
+            $('#selected_count').html(numberOfChecked);
+        });
+
+        $('.table-checkbox').change(function(){
+            var numberOfChecked = $('.table-checkbox:checked').length;
+            if(this.checked) {
+                $('#delete_btn').removeClass('d-none');
+                $('#add_btn').addClass('d-none');
+            }else{
+                if(numberOfChecked == 0){
+                    $('#delete_btn').addClass('d-none');
+                    $('#add_btn').removeClass('d-none');
+                }
+            }
+            numberOfChecked = $('.table-checkbox:checked').length;
+            $('#selected_count').html(numberOfChecked);
+        });
+
+        $('#change_table_length').change(function(){
+            var url = "{{ route('admin.offers.index', request()->all()) }}" + "{{ count(request()->all())> 0 ? '&' : '?' }}" + "table_length="+$(this).val();
+            url = url.replace(/&amp;/g, '&');
+            window.location.href = url;
+        });
+
+    });
+</script>
 
 
 @endpush

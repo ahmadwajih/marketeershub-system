@@ -54,9 +54,7 @@ class CouponController extends Controller
             $query->where('coupon', $request->search);
         }
 
-        $coupons = $query->with(['offer', 'user']);
-        $coupons = $query->paginate($tableLength);
-
+        $coupons = $query->with(['offer', 'user'])->latest()->paginate($tableLength);
         $countries = Country::all();
         $publishers = User::wherePosition('publisher')->get();
         $offers = Offer::all();
@@ -290,7 +288,7 @@ class CouponController extends Controller
             'coupons'    => 'required|mimes:xlsx,csv',
         ]);
 
-        Excel::import(new CouponImport($request->offer_id, $request->team), request()->file('coupons'));
+        Excel::queueImport(new CouponImport($request->offer_id, $request->team), request()->file('coupons'));
         userActivity('Coupon', null, 'upload');
 
         $notification = [
@@ -304,7 +302,7 @@ class CouponController extends Controller
     {
         $this->authorize('update_coupons');
         $coupon = Coupon::findOrFail($request->id);
-        $coupon->status = $request->status == 'active' ? 'active' : 'unactive';
+        $coupon->status = $request->status == 'active' ? 'active' : 'unsctive';
         $coupon->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }

@@ -143,7 +143,7 @@
                                                 data-allow-clear="true">
                                                 <option value="">No One</option>
                                                 <option {{ request()->status == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
-                                                <option {{ request()->status == 'unactive' ? 'selected' :''}} value="unactive">{{ __('Unactive') }}</option>
+                                                <option {{ request()->status == 'unactive' ? 'selected' :''}} value="unactive">{{ __('Inactive') }}</option>
                                             </select>
                                         </div>
                                         <!--end::Input-->
@@ -194,18 +194,21 @@
                         <!--end::Add user-->
                     </div>
                     <!--end::Toolbar-->
-                    <!--begin::Group actions-->
-                    <div id="delete_btn" class="d-flex justify-content-end align-items-center d-none"
-                        data-kt-user-table-toolbar="selected">
-                        <div class="fw-bold me-5">
-                            <span class="me-2" id="selected_count"></span>Selected
-                        </div>
-                        <button type="button" class="btn btn-danger" onclick="delete_selected()" >Delete Selected</button>
+                    @can('delete_coupons')
+                        <!--begin::Group actions-->
+                        <div id="delete_btn" class="d-flex justify-content-end align-items-center d-none"
+                            data-kt-user-table-toolbar="selected">
+                            <div class="fw-bold me-5">
+                                <span class="me-2" id="selected_count"></span>Selected
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="delete_selected()" >Delete Selected</button>
 
-                        <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal"
-                            data-bs-target="#kt_modal_scrollable_1">Edit Selected</button>
-                    </div>
-                    <!--end::Group actions-->
+                            <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal"
+                                data-bs-target="#kt_modal_scrollable_1">Edit Selected</button>
+                        </div>
+                        <!--end::Group actions-->
+                    @endcan
+
                 </div>
                 <!--end::Card toolbar-->
             </div>
@@ -244,24 +247,17 @@
                                     </td>
                                     <td>{{ $coupon->id }}</td>
                                     <td>{{ $coupon->coupon }}</td>
-                                    <td>{{ $coupon->offer->name }}</td>
+                                    <td>{{ $coupon->offer ? $coupon->offer->name :'' }}</td>
                                     <td>{{ $coupon->user ? $coupon->user->name : '' }}</td>
                                     <td>{{ $coupon->user ? $coupon->user->id : '' }}</td>
                                     <td>{{ $coupon->user ? $coupon->user->updated_team : '' }}</td>
                                     <td>
-                                        @if ($coupon->status == 'active')
-                                            <button
-                                                onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'unactive')"
-                                                class="btn btn-light-success btn-sm">Active</button>
-                                        @else
-                                            <button
-                                                onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')"
-                                                class="btn btn-light-danger btn-sm">Unactive</button>
-                                        @endif
+                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button> 
+                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'unsctive' ?: 'd-none' }}">Inactive</button>
                                     </td>
                                     <td>
                                         <button onclick="loadPayoutDetails('{{ $coupon->id }}')" data-bs-toggle="modal"
-                                            data-bs-target="#payout_details" class="btn btn-light-info btn-sm">Show
+                                            data-bs-target="#payout_details" class="btn btn-light-info btn-sm ">Show
                                             Payout</button>
                                     </td>
                                     <td>
@@ -542,14 +538,17 @@
             });
 
             $('.table-checkbox').change(function(){
+                var numberOfChecked = $('.table-checkbox:checked').length;
                 if(this.checked) {
                     $('#delete_btn').removeClass('d-none');
                     $('#add_btn').addClass('d-none');
                 }else{
-                    $('#delete_btn').addClass('d-none');
-                    $('#add_btn').removeClass('d-none');
+                    if(numberOfChecked == 0){
+                        $('#delete_btn').addClass('d-none');
+                        $('#add_btn').removeClass('d-none');
+                    }
                 }
-                var numberOfChecked = $('.table-checkbox:checked').length;
+                numberOfChecked = $('.table-checkbox:checked').length;
                 $('#selected_count').html(numberOfChecked);
             });
 
@@ -696,6 +695,14 @@
                 });
         }
     </script>
+    <script>
 
+        $(document).ready(function() {
+        $("#mySelect2").select2({
+            dropdownParent: $("#kt_modal_scrollable_1")
+        });
+        });
+        
+        </script>
 
 @endpush

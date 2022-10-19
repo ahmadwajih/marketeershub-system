@@ -1,5 +1,5 @@
 "use strict";
-function changeStatus(id, name, action){
+function changeStatus(id, name, action, className){
      // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
      var table = document.getElementById('kt_table_users');
     var datatable = $('#kt_table_users').DataTable();
@@ -36,9 +36,10 @@ function changeStatus(id, name, action){
             })
                 .done(function (res) {
                     // Simulate delete request -- for demo purpose only
+                    
                     Swal.fire({
                         text:
-                            "You have " + action + name +"!",
+                            "You have " + action + ' ' + name +"!",
                         icon: "success",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",
@@ -47,8 +48,13 @@ function changeStatus(id, name, action){
                                 "btn fw-bold btn-primary",
                         },
                     }).then(function () {
-                        // delete row data from server and re-draw datatable
-                        datatable.draw();
+                        if(action == 'active'){
+                            $('.active-btn-'+id).removeClass('d-none');
+                            $('.inactive-btn-'+id).addClass('d-none');
+                        }else{
+                            $('.active-btn-'+id).addClass('d-none');
+                            $('.inactive-btn-'+id).removeClass('d-none');
+                        }
                     });
                 })
                 .fail(function (res) {

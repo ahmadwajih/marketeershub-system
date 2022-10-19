@@ -12,6 +12,30 @@ class Country extends Model
     protected $guarded = [];
     protected $appends = ['name'];
 
+    protected static $relations_to_cascade = ['cities'];
+    protected static function boot(){
+        parent::boot();
+        static::deleting(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                foreach ($resource->{$relation}()->get() as $item) {
+                    $item->delete();
+                }
+            }
+        });
+
+        static::restoring(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                $resource->$relation()->withTrashed()->restore();
+            }
+        });
+
+        static::forceDeleted(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                $resource->$relation()->withTrashed()->forceDelete();
+            }
+        });
+    }
+
     public function getnameAttribute(){
         return $this->attributes['name_'. app()->getLocale()];
     }
