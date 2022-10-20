@@ -1,5 +1,6 @@
 @extends('new_admin.layouts.app')
-
+@section('title', 'Roles')
+@section('subtitle', 'Show')
 
 @section('content')
     <!--begin::Layout-->

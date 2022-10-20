@@ -1,5 +1,6 @@
 @extends('new_admin.layouts.app')
-
+@section('title', 'Main')
+@section('subtitle', 'Dashboard')
 @push('styles')
 <style>
         table {

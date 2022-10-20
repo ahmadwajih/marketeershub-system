@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Offers')
+@section('subtitle', 'Show')
 @push('styles')
     <style>
         table tr {

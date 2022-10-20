@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Update Reports')
+@section('subtitle', 'View')
 @section('content')
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
@@ -62,7 +64,7 @@
                         <!--end::Export-->
                         @can('create_cites')
                         <!--begin::Add user-->
-                        <a href="{{ route('admin.pivot-report.create') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.reports.create') }}" class="btn btn-primary">
                             <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                             <span class="svg-icon svg-icon-2">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -129,7 +131,7 @@
 @endsection
 @push('scripts')
     <script>
-        var route = "{{ route('admin.pivot-report.index') }}";
+        var route = "{{ route('admin.reports.index') }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/table.js"></script>
 @endpush

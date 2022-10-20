@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Offers')
+@section('subtitle', 'Edit')
 @push('styles')
     <style>
         #new_old_payout,

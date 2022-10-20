@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Update Reports')
+@section('subtitle', 'Upload')
 @section('content')
 
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
@@ -27,7 +29,7 @@
     </div>
 
     <!--begin::Form-->
-    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{route('admin.pivot-report.store')}}" method="POST" enctype="multipart/form-data">
+    <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" action="{{route('admin.reports.store')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <!--begin::Main column-->
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
@@ -106,10 +108,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         <br>
-                                        <a id="download_btn" href="javascript:void(0)" class="btn btn-primary mt-3 btn-block" download>{{ __('Select Offer First') }}</a>
+                                        <a id="download_btn" href="javascript:void(0)" class="btn btn-primary mt-3 btn-block d-none" download>{{ __('Select Offer First') }}</a>
                                     </div>
                                     @if(session('columnHaveIssue'))
-                                        <a class="btn btn-danger" href="{{ route('admin.pivot-report.deonload.errore') }}">Donlowad Errors</a>
+                                        <a class="btn btn-danger" href="{{ route('admin.reports.deonload.errore') }}">Donlowad Errors</a>
                                     @endif
 
                                 </div>
@@ -159,9 +161,15 @@
                     $('#loading').show()
                 },
                 success: function(data) {
-                    console.log(data);
-                    $('#download_btn').attr("href", data.link);
-                    $('#download_btn').html(data.title);
+                    console.log(data.data);
+         
+                    if(data.link || data.title){
+                        $('#download_btn').removeClass('d-none');
+                        $('#download_btn').attr("href", data.link);
+                        $('#download_btn').html(data.title);
+                    }else{
+                        $('#download_btn').addClass('d-none');
+                    }
 
                 },
                 complete: function() {

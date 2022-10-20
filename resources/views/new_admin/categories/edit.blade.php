@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Categories')
+@section('subtitle', 'Edit')
 @section('content')
 
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">

@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Offers')
+@section('subtitle', 'View')
 @section('content')
     <!--begin::Toolbar-->
     <div class="d-flex flex-wrap flex-stack pb-7">

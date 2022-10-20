@@ -1,4 +1,5 @@
 @extends('new_admin.auth.layouts.app')
+@section('title', 'Login')
 @section('content')
 
     

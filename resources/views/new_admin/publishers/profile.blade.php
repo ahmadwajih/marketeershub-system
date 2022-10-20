@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Publisher')
+@section('subtitle', 'Profile')
 @section('content')
     <!--begin::Navbar-->
     <div class="card mb-5 mb-xxl-8">

@@ -1,4 +1,5 @@
 @extends('new_admin.auth.layouts.app')
+@section('title', 'Register')
 @section('content')
     
     <!--begin::Theme mode setup on page load-->

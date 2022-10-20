@@ -44,7 +44,7 @@ class PivotReportController extends Controller
     {
         $this->authorize('create_pivot_report');
         return view('new_admin.pivot-report.create', [
-            'offers' => Offer::whereStatus("active")->get(),
+            'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get(),
         ]);
     }
 
@@ -128,6 +128,11 @@ class PivotReportController extends Controller
        
         $link = asset('dashboard/excel-sheets-examples/update-report');
         $title = 'Download example';
+        
+        if(count($revenue) == 0 && count($payout) == 0 ){
+            return response()->json(['data' =>false]);
+        }
+
         if ($cpsType == 'static') {
             // If have date range and countries conditoin 
             if ($haveDateRange && $haveCountryRange) {
