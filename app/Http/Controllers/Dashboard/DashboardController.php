@@ -397,9 +397,21 @@ class DashboardController extends Controller
     public function test(Request $request)
     {
 
-        $coupons = Coupon::with(['offer', 'user'])->paginate(10);
-
-
+        $offer = Offer::findOrFail(1);
+        $revenue = $offer->cps->where('type', 'revenue');
+        $payout = $offer->cps->where('type', 'payout');
+        $revenueHaveDateRange = $revenue->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
+        $revenueHaveCountries = $revenue->where('countries', 1)->where('countries_ids', '!=', null)->first();
+        $payoutHaveDateRange = $payout->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
+        $payoutHaveCountries = $payout->where('countries', 1)->where('countries_ids', '!=', null)->first();
+        $haveDateRange = $revenueHaveDateRange || $payoutHaveDateRange ? true : false;
+        $haveCountryRange = $revenueHaveCountries || $payoutHaveCountries ? true : false;
+        $cpsType = $offer->payout_cps_type;
+        dd([
+            'haveDateRange' => $haveDateRange,
+            'haveCountryRange' => $haveCountryRange,
+            'cpsType' => $cpsType,
+        ]);
         return view('admin.test', ['coupons' => $coupons]);
     }
 }

@@ -54,7 +54,7 @@ class CouponController extends Controller
             $query->where('coupon', $request->search);
         }
 
-        $coupons = $query->with(['offer', 'user'])->latest()->paginate($tableLength);
+        $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
         $publishers = User::wherePosition('publisher')->get();
         $offers = Offer::all();

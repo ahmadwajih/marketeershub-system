@@ -28,7 +28,7 @@ class PivotReportController extends Controller
     {
         // return redirect()->back();
         $this->authorize('view_pivot_report');
-        if($request->ajax()){
+        if ($request->ajax()) {
             $coupons = PivotReport::with(['offer', 'coupon']);
             return DataTables::of($coupons)->make(true);
         }
@@ -46,7 +46,6 @@ class PivotReportController extends Controller
         return view('new_admin.pivot-report.create', [
             'offers' => Offer::whereStatus("active")->get(),
         ]);
-        
     }
 
     public function edit()
@@ -69,9 +68,9 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new UpdateReportImport($request->offer_id, $request->type, $request->date),request()->file('report'));
+        Excel::import(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
 
-        if($request->type=='validation'){
+        if ($request->type == 'validation') {
             $offer = Offer::findOrFail($request->offer_id);
             // Notification::send($offer->users, new UpdateValidation($offer));
         }
@@ -84,18 +83,17 @@ class PivotReportController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    public function downloadErrors(){
-        if(session('columnHaveIssue')){
+    public function downloadErrors()
+    {
+        if (session('columnHaveIssue')) {
             $errors = session('columnHaveIssue');
             session()->forget('columnHaveIssue');
-            return Excel::download(new PivotReportErrorsExport($errors), 'errors.csv',\Maatwebsite\Excel\Excel::CSV );
-
+            return Excel::download(new PivotReportErrorsExport($errors), 'errors.csv', \Maatwebsite\Excel\Excel::CSV);
         }
         return redirect()->back();
-        
     }
 
-     /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -104,10 +102,83 @@ class PivotReportController extends Controller
     public function destroy(Request $request, PivotReport $pivotReport)
     {
         $this->authorize('delete_cites');
-        if($request->ajax()){
+        if ($request->ajax()) {
             userActivity('PivotReport', $pivotReport->id, 'delete');
             $pivotReport->delete();
         }
     }
 
+    public function defineExcelSheetColumns(Request $request)
+    {
+
+        $request->validate([
+            'offer_id' => 'required|numeric|exists:offers,id',
+        ]);
+
+        $offer = Offer::findOrFail($request->offer_id);
+        $revenue = $offer->cps->where('type', 'revenue');
+        $payout = $offer->cps->where('type', 'payout');
+        $revenueHaveDateRange = $revenue->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
+        $revenueHaveCountries = $revenue->where('countries', 1)->where('countries_ids', '!=', null)->first();
+        $payoutHaveDateRange = $payout->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
+        $payoutHaveCountries = $payout->where('countries', 1)->where('countries_ids', '!=', null)->first();
+        $haveDateRange = $revenueHaveDateRange || $payoutHaveDateRange ? true : false;
+        $haveCountryRange = $revenueHaveCountries || $payoutHaveCountries ? true : false;
+        $cpsType = $offer->payout_cps_type;
+       
+        $link = asset('dashboard/excel-sheets-examples/update-report');
+        $title = 'Download example';
+        if ($cpsType == 'static') {
+            // If have date range and countries conditoin 
+            if ($haveDateRange && $haveCountryRange) {
+                $link .= '/static-with-date-range-and-countries-condition.xlsx';
+                $title = 'Fixed amount with date range and countries condition';
+            }
+            // If have date range conditoin 
+            if ($haveDateRange && !$haveCountryRange) {
+                $link .= '/static-with-date-range-condition.xlsx';
+                $title = 'Fixed amount with date range condition';
+            }
+            // If have countries conditoin 
+            if (!$haveDateRange && $haveCountryRange) {
+                $link .= '/static-with-countries-condition.xlsx';
+                $title = 'Fixed amount with countries condition';
+            }
+            // If dosnot have date range and dosner countries conditoin 
+            if (!$haveDateRange && !$haveCountryRange) {
+                $link .= '/static-without-date-range-and-without-countries-condition.xlsx';
+                $title = 'Fixed amount without date range and without countries condition';
+            }
+        }
+
+        if ($cpsType == 'new_old') {
+            // If have date range and countries conditoin 
+            if ($haveDateRange && $haveCountryRange) {
+                $link .= '/new-old-with-date-range-and-countries-condition.xlsx';
+                $title = 'New-Old with date range and countries condition';
+            }
+            // If have date range conditoin 
+            if ($haveDateRange && !$haveCountryRange) {
+                $link .= '/new-old-with-date-range-condition.xlsx';
+                $title = 'New-Old with date range condition';
+            }
+            // If have countries conditoin 
+            if (!$haveDateRange && $haveCountryRange) {
+                $link .= '/new-old-with-countries-condition.xlsx';
+                $title = 'New-Old with countries condition';
+            }
+            // If dosnot have date range and dosner countries conditoin 
+            if (!$haveDateRange && !$haveCountryRange) {
+                $link .= '/new-old-without-date-range-and-without-countries-condition.xlsx';
+                $title = 'New-Old without date range and without countries condition';
+            }
+        }
+
+        if ($cpsType == 'slaps') {
+            $link .= '/slabs.xlsx';
+            $title = 'Slabs';
+        }
+
+        return response()->json(['link' => $link,'title' => $title]);
+    }
 }

@@ -86,7 +86,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Offer Thumbnail</label>
+                                            <label class="form-label">Offer Thumbnail</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="file" name="thumbnail" class="form-control mb-2" />

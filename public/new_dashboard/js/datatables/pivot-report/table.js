@@ -30,7 +30,7 @@ var KTUsersList = function () {
                 { data: null },
                 { data: 'id' },
                 { data: 'offer.name_en' },
-                { data: 'coupon.coupon' },
+                { data: null },
                 { data: 'orders' },
                 { data: 'sales' },
                 { data: 'revenue' },
@@ -47,6 +47,23 @@ var KTUsersList = function () {
                             <div class="form-check form-check-sm form-check-custom form-check-solid">
                                 <input class="form-check-input" name="item_check" type="checkbox" value="${data.id}" />
                             </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    // orderable: true,
+                    // searchable:false,
+                    render: function (data, type, row) {
+                        if(row.coupon == null){
+                            return null;
+                        }else{
+                            try {
+                                return row.coupon.coupon;
+                              }
+                              catch(err) {
+                                return null;
+                              }
+                        }
                     }
                 },
                 {

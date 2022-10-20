@@ -66,7 +66,7 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
+                                    
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -74,7 +74,8 @@
                                             <label class="form-label required">Offers</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select  name="offer_id" data-control="select2" class="form-select form-select-sm">
+                                            <select id="offer"  name="offer_id" data-control="select2" class="form-select form-select-sm" required>
+                                                <option selected disabled value="">Select offer</option>
                                                 @foreach($offers as $offer)
                                                     <option {{old('offer_id')==$offer->id?"selected":""}} value="{{$offer->id}}">{{$offer->name}}</option>
                                                 @endforeach
@@ -105,7 +106,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <br>
-                                        <a href="{{ asset('dashboard/excel-sheets-examples/Update report-example.xlsx') }}" class="btn btn-primary mt-3 btn-block" download>{{ __('Download Example') }}</a>
+                                        <a id="download_btn" href="javascript:void(0)" class="btn btn-primary mt-3 btn-block" download>{{ __('Select Offer First') }}</a>
                                     </div>
                                     @if(session('columnHaveIssue'))
                                         <a class="btn btn-danger" href="{{ route('admin.pivot-report.deonload.errore') }}">Donlowad Errors</a>
@@ -141,5 +142,33 @@
 
 @endsection
 @push('scripts')
+<script>
+    $(document).ready(function(){
+        $("#offer").change(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.get({
+                url: '{{ route('admin.define.excel.sheet.columns') }}',
+                data: {
+                    offer_id: $(this).val(),
+                },
+                beforeSend: function() {
+                    $('#loading').show()
+                },
+                success: function(data) {
+                    console.log(data);
+                    $('#download_btn').attr("href", data.link);
+                    $('#download_btn').html(data.title);
 
+                },
+                complete: function() {
+                    $('#loading').hide()
+                }
+            });
+        });
+    });
+</script>
 @endpush
