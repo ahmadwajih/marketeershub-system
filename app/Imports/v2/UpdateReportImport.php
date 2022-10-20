@@ -85,6 +85,7 @@ class UpdateReportImport implements ToCollection
                     $col[] = "Dublicate date for same coupon in same day";
                     $this->columnHaveIssue[] = $col;
                 }
+
                 if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
                     PivotReport::create([
                         'coupon_id' => $coupon->id,
@@ -146,16 +147,23 @@ class UpdateReportImport implements ToCollection
 
     public function calcPayout($col)
     {
-        // Get payout_cps_type ('static', 'new_old', 'slaps')
+        $haveCustomPayout = false;
         $payout_cps_type = $this->offer()->payout_cps_type;
+
+        if($this->coupon->have_custom_payout && count($this->coupon->cps) > 0){
+            $haveCustomPayout = true;
+            $payout_cps_type = $this->coupon->payout_cps_type;
+        }
+
+        // Get payout_cps_type ('static', 'new_old', 'slaps')
         if ($payout_cps_type == 'static') {
-            return $this->static('payout', $col);
+            return $this->static('payout', $col , $haveCustomPayout);
         }
         if ($payout_cps_type == 'new_old') {
-            return $this->new_old('payout', $col);
+            return $this->new_old('payout', $col, $haveCustomPayout);
         }
         if ($payout_cps_type == 'slaps') {
-            return  $this->slaps('payout', $col);
+            return  $this->slaps('payout', $col, $haveCustomPayout);
         }
     }
 
@@ -165,10 +173,14 @@ class UpdateReportImport implements ToCollection
     }
 
 
-    public function static($type, $col)
+    public function static($type, $col, $haveCustomPayout = false)
     {
         // Get Revenu details 
-        $revenue_details = $this->offer()->cps->where('type', $type)->where('cps_type', 'static');
+        if($haveCustomPayout){
+            $revenue_details = $this->coupon->cps->where('type', $type)->where('cps_type', 'static');
+        }else{
+            $revenue_details = $this->offer()->cps->where('type', $type)->where('cps_type', 'static');
+        }
 
         $haveDateRange = $revenue_details->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
         $haveCountries = $revenue_details->where('countries', 1)->where('countries_ids', '!=', null)->first();
@@ -251,11 +263,15 @@ class UpdateReportImport implements ToCollection
 
     }
 
-    public function new_old($type, $col)
+    public function new_old($type, $col, $haveCustomPayout = false)
     {
         $revenue = 0;
         // Get Revenu details 
-        $revenue_details = $this->offer()->cps->where('type', $type)->where('cps_type', 'new_old');
+        if($haveCustomPayout){
+            $revenue_details = $this->coupon->cps->where('type', $type)->where('cps_type', 'new_old');
+        }else{
+            $revenue_details = $this->offer()->cps->where('type', $type)->where('cps_type', 'new_old');
+        }
         $haveDateRange = $revenue_details->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
         $haveCountries = $revenue_details->where('countries', 1)->where('countries_ids', '!=', null)->first();
       
@@ -329,13 +345,14 @@ class UpdateReportImport implements ToCollection
 
         // No date no countries  
         if (!$haveDateRange && !$haveCountries) {
-            $dateRangeOptions = $revenue_details->first();
-
-            if ($dateRangeOptions) {
-                if ($dateRangeOptions->amount_type == 'flat') {
-                    $revenue = $col[1] * $dateRangeOptions->amount;
+            $option = $revenue_details->where('date_range', 0)->where('countries', 0)->first();
+            if ($option) {
+                if ($option->amount_type == 'flat') {
+                    $revenue += $col[3] * $option->new_amount;
+                    $revenue += $col[4] * $option->old_amount;
                 } else {
-                    $revenue = $col[2] * $dateRangeOptions->amount / 100;
+                    $revenue += $col[3] * $option->new_amount / 100;
+                    $revenue += $col[4] * $option->old_amount / 100;
                 }
                 return $revenue;
             } else {
@@ -345,10 +362,14 @@ class UpdateReportImport implements ToCollection
         
     }
 
-    public function slaps($type, $col)
+    public function slaps($type, $col,  $haveCustomPayout = false)
     {
         $revenue = 0;
-        $slaps = $this->offer()->cps->where('type', $type)->where('cps_type', 'slaps');
+        if($haveCustomPayout){
+            $slaps = $this->coupon->cps->where('type', $type)->where('cps_type', 'slaps');
+        }else{
+            $slaps = $this->offer()->cps->where('type', $type)->where('cps_type', 'slaps');
+        }
         foreach ($slaps as $slap) {
             if ($col[2] > $slap->from && $slap->to) {
                 $revenue = $slap->amount;

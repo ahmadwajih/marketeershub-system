@@ -656,14 +656,9 @@
 
         })
     </script>
+    
     <script src="{{ asset('new_dashboard') }}/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/offers/formrepeater-caller.js"></script>
-    {{-- <script src="{{ asset('new_dashboard') }}/js/offers/revenu-static-switchers.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/offers/payout-static-switchers.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/offers/revenu-old-new-switchers.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/offers/payout-old-new-switchers.js"></script> --}}
-
-
 
     <script>
         $('#kt_docs_repeater_advanced_revenue').repeater({

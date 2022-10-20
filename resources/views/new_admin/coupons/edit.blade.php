@@ -1,11 +1,32 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Coupons')
+@section('subtitle', 'Edit')
 @push('styles')
+
     <style>
-        #custom_payout {
+       
+        #static_payout,
+        #new_old_payout,
+        #slaps_payout{
             display: none;
         }
+        #{{ $coupon->payout_cps_type }}_payout{
+            display: block;
+        }
+
     </style>
+
+
+    @if(count($coupon->cps) == 0)
+        <style>
+            #custom_payout {
+                    display: none;
+                }
+        </style>
+    @endif
+
 @endpush
+
 @section('content')
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
@@ -102,7 +123,7 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
+                                
                                     <div class="col-md-4">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -114,7 +135,7 @@
                                                 <option selected value="">{{ __('No one') }}</option>
                                                 @foreach ($users as $user)
                                                     <option
-                                                        {{ old('user_id') == $user->id ? 'selected' : ($coupon->user_id ? 'selected' : '') }}
+                                                        {{ old('user_id') == $user->id ? 'selected' : ($coupon->user_id  == $user->id ? 'selected' : '') }}
                                                         value="{{ $user->id }}">{{ $user->name }}</option>
                                                 @endforeach
                                             </select>
@@ -130,8 +151,8 @@
 
                                     <div class="col-md-12">
                                         <div class="form-check form-switch form-check-custom form-check-solid mt-13">
-                                            <input class="form-check-input switcher" type="checkbox" data-input="select"
-                                                onchange="switcherFunction('custom_payout', this)" value="off" />
+                                            <input class="form-check-input switcher" type="checkbox" data-input="select" name="have_custom_payout"
+                                                onchange="mainSwitcherFunction('custom_payout', this)" value="{{ count($coupon->cps) > 0 ? 'on' : 'off' }}" {{ count($coupon->cps) > 0 ? 'checked' : '' }}/>
                                             <label class="form-check-label">
                                                 Custom Payout
                                             </label>
@@ -140,50 +161,33 @@
 
 
                                     <div class=" mt-7 " id="custom_payout">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-10 fv-row">
-                                                    <!--begin::Label-->
-                                                    <label class="form-label">Custom Revenue Type</label>
-                                                    <!--end::Label-->
-                                                    <!--begin::Input-->
-                                                    <select name="payout_type" data-control="select2" class="form-select">
-                                                        <option {{ old('payout_type') == 'flat' ? 'selected' : '' }}
-                                                            value="flat">{{ __('Flat') }}</option>
-                                                        <option {{ old('payout_type') == 'percentage' ? 'selected' : '' }}
-                                                            value="percentage">{{ __('Percentage') }}</option>
-                                                    </select>
-                                                    <!--end::Input-->
-                                                    @if ($errors->has('payout_type'))
-                                                        <div class="fv-plugins-message-container invalid-feedback">
-                                                            <div data-field="text_input">
-                                                                {{ $errors->first('payout_type') }}</div>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <!--end::Input group-->
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <!--begin::Input group-->
-                                                <div class="mb-10 fv-row">
-                                                    <!--begin::Label-->
-                                                    <label class="required form-label">Custom Payout</label>
-                                                    <!--end::Label-->
-                                                    <!--begin::Input-->
-                                                    <input type="number" name="payout" class="form-control mb-2"
-                                                        placeholder="payout" value="{{ old('payout') }}" />
-                                                    <!--end::Input-->
-                                                    @if ($errors->has('payout'))
-                                                        <div class="fv-plugins-message-container invalid-feedback">
-                                                            <div data-field="text_input">{{ $errors->first('payout') }}
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <!--end::Input group-->
+                                        <div class="col-md-11">
+                                            <!--begin::Input group-->
+                                            <div class="mb-10 fv-row">
+                                                <!--begin::Label-->
+                                                <label class="form-label">CPS Type</label>
+                                                <!--end::Label-->
+                                                <!--begin::Input-->
+                                                <select name="payout_cps_type" data-control="select2" class="form-select"
+                                                    id="cps_type_payout">
+                                                    <option {{ old('payout_cps_type') == 'static' ? 'selected' : ($coupon->payout_cps_type == 'static' ? 'selected' : '') }} value="static"> {{ __('Fixed Model') }}</option>
+                                                    <option {{ old('payout_cps_type') == 'new_old' ? 'selected' : ($coupon->payout_cps_type == 'new_old' ? 'selected' : '') }} value="new_old"> {{ __('New-old Model') }}</option>
+                                                    <option {{ old('payout_cps_type') == 'slaps' ? 'selected' : ($coupon->payout_cps_type == 'slaps' ? 'selected' : '') }} value="slaps"> {{ __('Slabs Model') }}</option>
+                                                </select>
+                                                <!--end::Input-->
+                                                @if ($errors->has('payout_cps_type'))
+                                                    <div class="fv-plugins-message-container invalid-feedback">
+                                                        <div data-field="text_input">{{ $errors->first('payout_cps_type') }}</div>
+                                                    </div>
+                                                @endif
                                             </div>
+                                            <!--end::Input group-->
                                         </div>
+
+                                        @include('new_admin.coupons.edit.payout.cps_static_offer')
+                                        @include('new_admin.coupons.edit.payout.cps_new_old_offer')
+                                        @include('new_admin.coupons.edit.payout.cps_slaps_offer')
                                     </div>
 
                                 </div>
@@ -216,7 +220,7 @@
 @endsection
 @push('scripts')
     <script>
-        function switcherFunction(switcherId, switcher) {
+        function mainSwitcherFunction(switcherId, switcher) {
             if (switcher.value == 'on') {
 
                 switcher.value = 'off';
@@ -227,4 +231,154 @@
             }
         }
     </script>
+    <script src="{{ asset('new_dashboard') }}/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
+
+    <script>
+
+        function switcherFunction(switcher) {
+
+            var switcherParent = switcher.parentNode.parentNode.parentNode;
+            if (switcher.value == 'on') {
+
+                switcher.value = 'off';
+                if (switcher.getAttribute('data-input') == 'text') {
+                    var selectedInput = switcherParent.querySelectorAll("input[type='text']");
+                    for(var i = 0; i < selectedInput.length; i++){
+                        selectedInput[i].disabled = true;
+                    }
+
+                }
+                if (switcher.getAttribute('data-input') == 'select') {
+                    var selectedInput = switcherParent.querySelectorAll("select");
+                    for(var i = 0; i < selectedInput.length; i++){
+                        selectedInput[i].disabled = true;
+                    }
+
+                }
+            } else {
+                switcher.value = 'on';
+                if (switcher.getAttribute('data-input') == 'text') {
+                    var selectedInput = switcherParent.querySelectorAll("input[type='text']");
+                    for(var i = 0; i < selectedInput.length; i++){
+                        selectedInput[i].disabled = false;
+                    }
+                }
+                if (switcher.getAttribute('data-input') == 'select') {
+                    var selectedInput = switcherParent.querySelectorAll("select");
+                    for(var i = 0; i < selectedInput.length; i++){
+                        selectedInput[i].disabled = false;
+                    }
+                }
+            }
+        }
+    </script>
+      <script>
+        $('#kt_docs_repeater_advanced_payout').repeater({
+            initEmpty: false,
+
+            defaultValues: {
+                'text-input': 'foo'
+            },
+
+            show: function() {
+                $(this).slideDown();
+
+                // Re-init select2
+                $(this).find('[data-kt-repeater="select22"]').select2();
+
+                // Re-init flatpickr
+                $(this).find('[data-kt-repeater="datepicker"]').flatpickr();
+
+                // Re-init tagify
+                new Tagify(this.querySelector('[data-kt-repeater="tagify"]'));
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            },
+
+            ready: function() {
+                // Init select2
+                $('[data-kt-repeater="select22"]').select2();
+
+                // Init flatpickr
+                $('[data-kt-repeater="datepicker"]').flatpickr();
+
+                // Init Tagify
+                new Tagify(document.querySelector('[data-kt-repeater="tagify"]'));
+            }
+        });
+    </script>
+    <script>
+        $('#kt_docs_repeater_advanced_new_old_payout').repeater({
+            initEmpty: false,
+
+            defaultValues: {
+                'text-input': 'foo'
+            },
+
+            show: function() {
+                $(this).slideDown();
+
+                // Re-init select2
+                $(this).find('[data-kt-repeater="select-payout"]').select2();
+
+                // Re-init flatpickr
+                $(this).find('[data-kt-repeater="datepicker"]').flatpickr();
+
+                // Re-init tagify
+                new Tagify(this.querySelector('[data-kt-repeater="tagify"]'));
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            },
+
+            ready: function() {
+                // Init select2
+                $('[data-kt-repeater="select-payout"]').select2();
+
+                // Init flatpickr
+                $('[data-kt-repeater="datepicker"]').flatpickr();
+
+                // Init Tagify
+                new Tagify(document.querySelector('[data-kt-repeater="tagify"]'));
+            }
+        });
+
+        $('#kt_docs_repeater_slaps_payout').repeater({
+            initEmpty: false,
+            defaultValues: {
+                'text-input': 'foo'
+            },
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+
+    </script>
+    <script>
+        $("#cps_type_payout").change(function() {
+            if ($(this).val() == 'new_old') {
+                $('#static_payout').fadeOut();
+                $('#slaps_payout').fadeOut();
+                $('#new_old_payout').fadeIn();
+            }
+            if ($(this).val() == 'static') {
+                $('#static_payout').fadeIn();
+                $('#slaps_payout').fadeOut();
+                $('#new_old_payout').fadeOut();
+            }
+            if ($(this).val() == 'slaps') {
+                $('#static_payout').fadeOut();
+                $('#slaps_payout').fadeIn();
+                $('#new_old_payout').fadeOut();
+            }
+        });
+    </script>
+
 @endpush

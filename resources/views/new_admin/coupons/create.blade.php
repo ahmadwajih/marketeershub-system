@@ -1,4 +1,7 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Coupons')
+@section('subtitle', 'Create')
+
 @push('styles')
     <style>
         #custom_payout {
@@ -152,9 +155,9 @@
                                                 <!--begin::Input-->
                                                 <select name="payout_cps_type" data-control="select2" class="form-select"
                                                     id="cps_type_payout">
-                                                    <option {{ old('revenue_cps_type') == 'static' ? 'selected' : '' }} value="static"> {{ __('Fixed Model') }}</option>
-                                                    <option {{ old('revenue_cps_type') == 'new_old' ? 'selected' : '' }} value="new_old"> {{ __('New-old Model') }}</option>
-                                                    <option {{ old('revenue_cps_type') == 'slaps' ? 'selected' : '' }} value="slaps"> {{ __('Slabs Model') }}</option>
+                                                    <option {{ old('payout_cps_type') == 'static' ? 'selected' : '' }} value="static"> {{ __('Fixed Model') }}</option>
+                                                    <option {{ old('payout_cps_type') == 'new_old' ? 'selected' : '' }} value="new_old"> {{ __('New-old Model') }}</option>
+                                                    <option {{ old('payout_cps_type') == 'slaps' ? 'selected' : '' }} value="slaps"> {{ __('Slabs Model') }}</option>
                                                 </select>
                                                 <!--end::Input-->
                                                 @if ($errors->has('payout_cps_type'))
@@ -166,9 +169,9 @@
                                             <!--end::Input group-->
                                         </div>
 
-                                        @include('new_admin.coupons.payout.cps_static_offer')
-                                        @include('new_admin.coupons.payout.cps_new_old_offer')
-                                        @include('new_admin.coupons.payout.cps_slaps_offer')
+                                        @include('new_admin.coupons.create.payout.cps_static_offer')
+                                        @include('new_admin.coupons.create.payout.cps_new_old_offer')
+                                        @include('new_admin.coupons.create.payout.cps_slaps_offer')
                                     </div>
 
                                 </div>

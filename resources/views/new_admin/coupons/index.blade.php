@@ -1,4 +1,6 @@
 @extends('new_admin.layouts.app')
+@section('title', 'Coupons')
+@section('subtitle', 'Index')
 @push('styles')
     <style>
         .modal-content {
@@ -443,9 +445,9 @@
                                 </div>
                                 <!--end::Input group-->
                             </div>
-                            @include('new_admin.coupons.payout.cps_static_offer')
-                            @include('new_admin.coupons.payout.cps_new_old_offer')
-                            @include('new_admin.coupons.payout.cps_slaps_offer')
+                            @include('new_admin.coupons.create.payout.cps_static_offer')
+                            @include('new_admin.coupons.create.payout.cps_new_old_offer')
+                            @include('new_admin.coupons.create.payout.cps_slaps_offer')
                         </div>
 
                     </form>

@@ -7,17 +7,17 @@
             <label class="form-label">Payout Type</label>
             <!--end::Label-->
             <!--begin::Input-->
-            <select name="payout_type" data-control="select2" class="form-select">
-                <option {{ old('payout_type') == 'flat' ? 'selected' : '' }} value="flat">{{ __('Per Order') }}
+            <select name="static_payout_type" data-control="select2" class="form-select">
+                <option {{ old('static_payout_type') == 'flat' ? 'selected' : '' }} value="flat">{{ __('Per Order') }}
                 </option>
-                <option {{ old('payout_type') == 'percentage' ? 'selected' : '' }} value="percentage">
+                <option {{ old('static_payout_type') == 'percentage' ? 'selected' : '' }} value="percentage">
                     {{ __('Percentage') }}
                 </option>
             </select>
             <!--end::Input-->
-            @if ($errors->has('payout_type'))
+            @if ($errors->has('static_payout_type'))
                 <div class="fv-plugins-message-container invalid-feedback">
-                    <div data-field="text_input">{{ $errors->first('payout_type') }}</div>
+                    <div data-field="text_input">{{ $errors->first('static_payout_type') }}</div>
                 </div>
             @endif
         </div>

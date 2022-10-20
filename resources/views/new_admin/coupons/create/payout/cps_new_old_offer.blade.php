@@ -9,13 +9,13 @@
                 <label class="form-label">New Payout Type</label>
                 <!--end::Label-->
                 <!--begin::Input-->
-                <select name="payout_type" data-control="select2" class="form-select">
-                    <option {{ old('payout_type')=="flat"?"selected":"" }} value="flat">{{ __('Per Order') }}</option>
-                    <option {{ old('payout_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
+                <select name="new_old_payout_type" data-control="select2" class="form-select">
+                    <option {{ old('new_old_payout_type')=="flat"?"selected":"" }} value="flat">{{ __('Per Order') }}</option>
+                    <option {{ old('new_old_payout_type')=="percentage"?"selected":"" }} value="percentage">{{ __('Percentage') }}</option>
                 </select>
                 <!--end::Input-->
-                @if ($errors->has('payout_type'))
-                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('payout_type') }}</div></div>
+                @if ($errors->has('new_old_payout_type'))
+                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('new_old_payout_type') }}</div></div>
                 @endif
             </div>
             <!--end::Input group-->

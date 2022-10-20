@@ -11,7 +11,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
 
 <head>
     <base href="">
-    <title> @yield('title', 'Home Page') - {{ __('Dashboard') }} - {{ __('Marketeershub') }}</title>
+    <title> @yield('title', 'Home Page') - @yield('subtitle') - {{ __('Admin Dashboard') }} - {{ __('Marketeershub') }}</title>
     <meta charset="utf-8" />
     <meta name="description"
         content="Marketeers Hub is a performance marketing agency built to solidify your digital presence, in order to create impact and achieve your business goals. Our highly experienced team connects your business with the largest local and international affiliate networks via data-driven strategies that deliver unprecedented & sustainable results." />
