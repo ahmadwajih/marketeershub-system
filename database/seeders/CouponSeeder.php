@@ -18,12 +18,12 @@ class CouponSeeder extends Seeder
         // $offers = Offer::all();
         // foreach($offers as $offer){
             // Add 6 coupons for one offer
-            for($i = 1; $i <= 99999999; $i++){
-                Coupon::create([
-                    'coupon' => 'Test'.$i,
-                    'offer_id' => 1,
-                ]);
+            // for($i = 1; $i <= 10; $i++){
+            //     Coupon::create([
+            //         'coupon' => 'Test'.$i,
+            //         'offer_id' => 1,
+            //     ]);
             // }
-        }
+        // }
     }
 }

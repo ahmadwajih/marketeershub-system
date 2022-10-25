@@ -115,7 +115,7 @@ class OfferRequestController extends Controller
      */
     public function show(OfferRequest $offerRequest)
     {
-        $this->authorize('show_offer_requests');
+        $this->authorize('view_offer_requests');
         userActivity('OfferRequest', $offerRequest->id, 'show');
         return view('admin.offerRequests.show', ['offerRequest' => $offerRequest]);
     }

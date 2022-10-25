@@ -25,6 +25,11 @@ class CouponController extends Controller
      */
     public function index(Request $request)
     {
+        // $coupons = Coupon::withTrashed()->get();
+        // foreach($coupons as $coupon){
+        //     $coupon->forceDelete();
+        // }
+        // dd($coupons->count());
         $this->authorize('view_coupons');
         // Get Coupons 
         $query = Coupon::query();
@@ -35,19 +40,27 @@ class CouponController extends Controller
             session()->put('coupons_table_length', config('app.pagination_pages'));
         }
         $tableLength = session('coupons_table_length');
+
         // Filter
-
-
         if (isset($request->offer_id) && $request->offer_id  != null) {
             $query->where('offer_id', $request->offer_id);
+            session()->put('coupons_filter_offer_id', $request->offer_id);
+        } elseif (session('coupons_filter_offer_id')) {
+            $query->where('offer_id', session('coupons_filter_offer_id'));
         }
 
-        if (isset($request->user_id) && $request->user_id  != null) {
+        if (isset($request->user_id) && $request->user_id  != null || session('coupons_filter_user_id')) {
             $query->where('user_id', $request->user_id);
+            session()->put('coupons_filter_user_id', $request->user_id);
+        } elseif (session('coupons_filter_user_id')) {
+            $query->where('user_id', session('coupons_filter_user_id'));
         }
 
         if (isset($request->status) && $request->status  != null) {
             $query->where('status', $request->status);
+            session()->put('coupons_filter_status', $request->status);
+        } elseif (session('coupons_filter_status')) {
+            $query->where('status', session('coupons_filter_status'));
         }
 
         if (isset($request->search) && $request->search  != null) {
@@ -57,13 +70,21 @@ class CouponController extends Controller
         $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
         $publishers = User::wherePosition('publisher')->get();
-        $offers = Offer::all();
+        $offers = Offer::orderBy('id', 'desc')->get();
         return view('new_admin.coupons.index', [
             'countries' => $countries,
             'publishers' => $publishers,
             'coupons' => $coupons,
             'offers' => $offers
         ]);
+    }
+
+    public function clearFilterSeassoions()
+    {
+        session()->forget('coupons_filter_offer_id');
+        session()->forget('coupons_filter_user_id');
+        session()->forget('coupons_filter_status');
+        return redirect()->route('admin.coupons.index');
     }
 
     /**
@@ -104,11 +125,11 @@ class CouponController extends Controller
                 'new_old_payout_type' => 'required_if:payout_cps_type,new_old|in:flat,percentage',
                 'static_payout' => 'required_if:payout_cps_type,static|array',
                 'static_payout.*.payout' => 'required_if:payout_cps_type,static',
-    
+
                 'new_old_payout' => 'required_if:payout_cps_type,new_old|array',
                 'new_old_payout.*.new_payout' => 'required_if:payout_cps_type,new_old',
                 'new_old_payout.*.old_payout' => 'required_if:payout_cps_type,new_old',
-    
+
                 'payout_slaps' => 'required_if:payout_cps_type,slaps|array',
                 'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
                 'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
@@ -119,8 +140,8 @@ class CouponController extends Controller
         $data['have_custom_payout'] = isset($request->have_custom_payout) && $request->have_custom_payout == 'on' ? true : false;
         $data['payout_cps_type'] = isset($request->payout_cps_type) ? $request->payout_cps_type : '';
         $data['payout_type'] = isset($request->payout_type) ? $request->payout_type : '';
-        $data['offer_id'] = $request->offer_id ;
-        $data['user_id'] = $request->user_id ;
+        $data['offer_id'] = $request->offer_id;
+        $data['user_id'] = $request->user_id;
         $coupon = Coupon::create($data);
         // dd($coupon->user);/
         //  if($request->user_id){
@@ -208,7 +229,7 @@ class CouponController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_coupons');
+        $this->authorize('view_coupons');
         $coupon = Coupon::withTrashed()->findOrFail($id);
         userActivity('Coupon', $coupon->id, 'show');
         return view('new_admin.coupons.show', ['coupon' => $coupon]);
@@ -266,8 +287,8 @@ class CouponController extends Controller
         $data['have_custom_payout'] = isset($request->have_custom_payout) && $request->have_custom_payout == 'on' ? true : false;
         $data['payout_cps_type'] = isset($request->payout_cps_type) ? $request->payout_cps_type : '';
         $data['payout_type'] = isset($request->payout_type) ? $request->payout_type : '';
-        $data['offer_id'] = $request->offer_id ;
-        $data['user_id'] = $request->user_id ;
+        $data['offer_id'] = $request->offer_id;
+        $data['user_id'] = $request->user_id;
         $coupon->update($data);
         userActivity('Coupon', $coupon->id, 'update');
         // if ($request->user_id) {
@@ -372,7 +393,7 @@ class CouponController extends Controller
      */
     public function uploadForm()
     {
-        $this->authorize('view_upload_coupons');
+        $this->authorize('create_coupons');
         return view('new_admin.coupons.upload', [
             'offers' => Offer::whereStatus("active")->get()
         ]);
@@ -386,7 +407,7 @@ class CouponController extends Controller
      */
     public function upload(Request $request)
     {
-        $this->authorize('view_upload_coupons');
+        $this->authorize('create_coupons');
         $request->validate([
             'offer_id'   => 'required|exists:offers,id',
             'coupons'    => 'required|mimes:xlsx,csv',
@@ -406,7 +427,7 @@ class CouponController extends Controller
     {
         $this->authorize('update_coupons');
         $coupon = Coupon::findOrFail($request->id);
-        $coupon->status = $request->status == 'active' ? 'active' : 'unsctive';
+        $coupon->status = $request->status == 'active' ? 'active' : 'inactive';
         $coupon->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }
@@ -427,61 +448,64 @@ class CouponController extends Controller
                 }
                 $coupon->cps()->delete();
 
-
                 // If payout_cps_type is static
-                if ($request->payout_cps_type == 'static') {
-                    if ($request->static_payout && count($request->static_payout) > 0) {
-                        foreach ($request->static_payout as $staticPayout) {
-                            CouponCps::create([
-                                'type' => 'payout',
-                                'cps_type' => 'static',
-                                'amount_type' => $request->payout_type,
-                                'amount' => $staticPayout['payout'],
-                                'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
-                                'from_date' => $staticPayout['from_date'] ?? null,
-                                'to_date' => $staticPayout['to_date'] ?? null,
-                                'countries' => isset($staticPayout['countries']) && $staticPayout['countries'][0] == 'on' ? true : false,
-                                'countries_ids' => isset($staticPayout['countries_ids']) ? json_encode($staticPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
-                                'coupon_id' => $couponId,
-                            ]);
+                if ($request->amount_type) {
+
+
+                    if ($request->payout_cps_type == 'static') {
+                        if ($request->static_payout && count($request->static_payout) > 0) {
+                            foreach ($request->static_payout as $staticPayout) {
+                                CouponCps::create([
+                                    'type' => 'payout',
+                                    'cps_type' => 'static',
+                                    'amount_type' => $request->payout_type,
+                                    'amount' => $staticPayout['payout'],
+                                    'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
+                                    'from_date' => $staticPayout['from_date'] ?? null,
+                                    'to_date' => $staticPayout['to_date'] ?? null,
+                                    'countries' => isset($staticPayout['countries']) && $staticPayout['countries'][0] == 'on' ? true : false,
+                                    'countries_ids' => isset($staticPayout['countries_ids']) ? json_encode($staticPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                                    'coupon_id' => $couponId,
+                                ]);
+                            }
                         }
                     }
-                }
 
-                // If payout_cps_type is new_old
-                if ($request->payout_cps_type == 'new_old') {
-                    if ($request->new_old_payout && count($request->new_old_payout) > 0) {
-                        foreach ($request->new_old_payout as $newOldPayout) {
-                            CouponCps::create([
-                                'type' => 'payout',
-                                'cps_type' => 'new_old',
-                                'amount_type' => $request->payout_type,
-                                'new_amount' => $newOldPayout['new_payout'],
-                                'old_amount' => $newOldPayout['old_payout'],
-                                'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
-                                'from_date' => $newOldPayout['from_date'] ?? null,
-                                'to_date' => $newOldPayout['to_date'] ?? null,
-                                'countries' => isset($newOldPayout['countries']) && $newOldPayout['countries'][0] == 'on' ? true : false,
-                                'countries_ids' => isset($newOldPayout['countries_ids']) ? json_encode($newOldPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
-                                'coupon_id' => $couponId,
-                            ]);
+                    // If payout_cps_type is new_old
+                    if ($request->payout_cps_type == 'new_old') {
+                        if ($request->new_old_payout && count($request->new_old_payout) > 0) {
+                            foreach ($request->new_old_payout as $newOldPayout) {
+                                CouponCps::create([
+                                    'type' => 'payout',
+                                    'cps_type' => 'new_old',
+                                    'amount_type' => $request->payout_type,
+                                    'new_amount' => $newOldPayout['new_payout'],
+                                    'old_amount' => $newOldPayout['old_payout'],
+                                    'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
+                                    'from_date' => $newOldPayout['from_date'] ?? null,
+                                    'to_date' => $newOldPayout['to_date'] ?? null,
+                                    'countries' => isset($newOldPayout['countries']) && $newOldPayout['countries'][0] == 'on' ? true : false,
+                                    'countries_ids' => isset($newOldPayout['countries_ids']) ? json_encode($newOldPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
+                                    'coupon_id' => $couponId,
+                                ]);
+                            }
                         }
                     }
-                }
 
-                // If payout_cps_type is slaps
-                if ($request->payout_cps_type == 'slaps') {
-                    if ($request->payout_slaps && count($request->payout_slaps) > 0) {
-                        foreach ($request->payout_slaps as $slapsPayout) {
-                            CouponCps::create([
-                                'type' => 'payout',
-                                'cps_type' => 'slaps',
-                                'amount_type' => $request->payout_type,
-                                'amount' => $slapsPayout['payout'],
-                                'from' => $slapsPayout['from'] ?? null,
-                                'to' => $slapsPayout['to'] ?? null,
-                                'coupon_id' => $couponId,
-                            ]);
+                    // If payout_cps_type is slaps
+                    if ($request->payout_cps_type == 'slaps') {
+                        if ($request->payout_slaps && count($request->payout_slaps) > 0) {
+                            foreach ($request->payout_slaps as $slapsPayout) {
+                                CouponCps::create([
+                                    'type' => 'payout',
+                                    'cps_type' => 'slaps',
+                                    'amount_type' => $request->payout_type,
+                                    'amount' => $slapsPayout['payout'],
+                                    'from' => $slapsPayout['from'] ?? null,
+                                    'to' => $slapsPayout['to'] ?? null,
+                                    'coupon_id' => $couponId,
+                                ]);
+                            }
                         }
                     }
                 }
@@ -501,7 +525,7 @@ class CouponController extends Controller
     {
         return $request->all();
         $coupon = Coupon::findOrFail($request->id);
-        $coupon->status = $request->status == 'active' ? 'active' : 'unactive';
+        $coupon->status = $request->status == 'active' ? 'active' : 'inactive';
         $coupon->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }

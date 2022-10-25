@@ -16,8 +16,10 @@ class CreateHelpsTable extends Migration
         Schema::create('helps', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug');
             $table->text('content')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

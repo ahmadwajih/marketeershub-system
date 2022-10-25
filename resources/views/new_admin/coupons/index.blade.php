@@ -60,9 +60,11 @@
                             <!--end::Svg Icon-->
                             <div class="input-group mb-5">
                                 <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
-                                <button class="input-group-text" id="basic-addon2">Go</button>
+                                <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $coupons->total() }} Coupon</span>
                             </div>
+                            
                         </form> 
+                       
                     </div>
                     <!--end::Search-->
                 </div>
@@ -106,10 +108,10 @@
                                         <!--end::Label-->
                                         <!--begin::Input-->
                                         <div>
-                                            <select class="form-select form-select-solid" data-allow-clear="true" name="offer_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a" data-allow-clear="true">
+                                            <select class="form-select form-select-solid"  name="offer_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a" >
                                                 <option value="">No One</option>
                                                 @foreach ($offers as $offer)
-                                                    <option {{ request()->offer_id == $offer->id ? 'selected' :''}} value="{{ $offer->id }}">{{ $offer->name }}</option>
+                                                    <option {{ session('coupons_filter_offer_id') == $offer->id ? 'selected' :''}} value="{{ $offer->id }}">{{ $offer->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -124,10 +126,10 @@
                                         <!--begin::Input-->
                                         <div>
                                             <select class="form-select form-select-solid" name="user_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
-                                                data-allow-clear="true">
+                                                >
                                                 <option value="">No One</option>
                                                 @foreach($publishers as $publisher)
-                                                    <option {{ request()->user_id == $publisher->id ? 'selected' :''}} value="{{ $publisher->id }}">{{ $publisher->name }}</option>
+                                                    <option {{ session('coupons_filter_user_id') == $publisher->id ? 'selected' :''}} value="{{ $publisher->id }}">{{ $publisher->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -142,10 +144,10 @@
                                         <!--begin::Input-->
                                         <div>
                                             <select class="form-select form-select-solid" name="status" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
-                                                data-allow-clear="true">
+                                                >
                                                 <option value="">No One</option>
-                                                <option {{ request()->status == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
-                                                <option {{ request()->status == 'unactive' ? 'selected' :''}} value="unactive">{{ __('Inactive') }}</option>
+                                                <option {{ session('coupons_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
+                                                <option {{ session('coupons_filter_status') == 'unactive' ? 'selected' :''}} value="unactive">{{ __('Inactive') }}</option>
                                             </select>
                                         </div>
                                         <!--end::Input-->
@@ -153,6 +155,7 @@
                                     <!--end::Input group-->
                                     <!--begin::Actions-->
                                     <div class="d-flex justify-content-end">
+                                        <a href="{{ route('admin.coupons.clear.sessions') }}" class="btn btn-sm btn-secondary w-100 mx-2">Clear Filter</a>
                                         <button type="submit" class="btn btn-sm btn-primary w-100">Apply</button>
                                     </div>
                                     <!--end::Actions-->
@@ -255,7 +258,7 @@
                                     <td>{{ $coupon->user ? $coupon->user->updated_team : '' }}</td>
                                     <td>
                                         <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button> 
-                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'unsctive' ?: 'd-none' }}">Inactive</button>
+                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'inactive' ?: 'd-none' }}">Inactive</button>
                                     </td>
                                     <td>
                                         <button onclick="loadPayoutDetails('{{ $coupon->id }}')" data-bs-toggle="modal"
@@ -263,35 +266,37 @@
                                             Payout</button>
                                     </td>
                                     <td>
-                                        <a href="#" class="btn btn-light btn-active-light-primary btn-sm"
-                                            data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
-                                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
-                                            <span class="svg-icon svg-icon-5 m-0">
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z"
-                                                        fill="currentColor" />
-                                                </svg>
-                                            </span>
-                                            <!--end::Svg Icon-->
-                                        </a>
-                                        <!--begin::Menu-->
-                                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
-                                            data-kt-menu="true">
-                                            <!--begin::Menu item-->
-                                            <div class="menu-item px-3">
-                                                <div class="menu-item px-3">
-                                                    <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
-                                                        class="menu-link px-3">Edit</a>
-                                                </div>
+                                        @can('update_coupons')
+                                            <a href="#" class="btn btn-light btn-active-light-primary btn-sm"
+                                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
+                                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
+                                                <span class="svg-icon svg-icon-5 m-0">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z"
+                                                            fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                                <!--end::Svg Icon-->
+                                            </a>
+                                            <!--begin::Menu-->
+                                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
+                                                data-kt-menu="true">
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
-                                                    <a href="javascript:void(0)" class="menu-link px-3" onclick="delete_row('{{ $coupon->id }}', '{{ $coupon->coupon }}')">Delete</a>
+                                                    <div class="menu-item px-3">
+                                                        <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
+                                                            class="menu-link px-3">Edit</a>
+                                                    </div>
+                                                    <!--begin::Menu item-->
+                                                    <div class="menu-item px-3">
+                                                        <a href="javascript:void(0)" class="menu-link px-3" onclick="delete_row('{{ $coupon->id }}', '{{ $coupon->coupon }}')">Delete</a>
+                                                    </div>
+                                                    <!--end::Menu item-->
                                                 </div>
-                                                <!--end::Menu item-->
                                             </div>
-                                        </div>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

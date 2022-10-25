@@ -88,7 +88,7 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         if($payment->publisher_id  != auth()->user()->id){
-            $this->authorize('show_payments');
+            $this->authorize('view_payments');
         }
         userActivity('Payment', $payment->id, 'show');
         return view('admin.payments.show', ['payment' => $payment]);

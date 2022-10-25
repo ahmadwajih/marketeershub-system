@@ -20,6 +20,7 @@ class CreateCountriesTable extends Migration
             $table->string('name_en')->nullable();
             $table->string('code')->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

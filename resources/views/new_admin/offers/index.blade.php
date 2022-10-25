@@ -66,7 +66,7 @@
                         <div class="card-body d-flex flex-center flex-column pt-12 p-9">
                             <!--begin::Avatar-->
                             <div class="symbol symbol-65px symbol-circle mb-5">
-                                <img src="{{ getImagesPath('Offers', '') }}" alt="image" />
+                                <img src="{{ getImagesPath('Offers', $offer->thumbnail) }}" alt="image" />
                                 <div class="bg-success position-absolute border border-4 border-body h-15px w-15px rounded-circle translate-middle start-100 top-100 ms-n3 mt-n3"></div>
                             </div>
                             <!--end::Avatar-->
@@ -199,7 +199,7 @@
                                                 <div class="me-5 position-relative">
                                                     <!--begin::Avatar-->
                                                     <div class="symbol symbol-35px symbol-circle">
-                                                        <img alt="Pic" src="{{ getImagesPath('Offers', '') }}" />
+                                                        <img alt="Pic" src="{{ getImagesPath('Offers', $offer->thumbnail) }}" />
                                                     </div>
                                                     <!--end::Avatar-->
                                                 </div>

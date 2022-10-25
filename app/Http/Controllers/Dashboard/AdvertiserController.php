@@ -68,7 +68,7 @@ class AdvertiserController extends Controller
             'currency_id'           => 'required|max:255|exists:currencies,id',
             'address'               => 'nullable|max:255',
             'validation_duration'   => 'nullable|max:255',
-            'status'                => 'required|in:active,unactive',
+            'status'                => 'required|in:active,inactive',
             'validation_source'     => 'nullable|max:255',
             'validation_type'       => 'required|in:system,sheet,manual_report_via_email',
             'language'              => 'required|in:ar,en,ar_en',
@@ -115,7 +115,7 @@ class AdvertiserController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_advertisers');
+        $this->authorize('view_advertisers');
         $advertiser = Advertiser::withTrashed()->findOrFail($id);
         userActivity('Advertiser', $advertiser->id, 'show');
         return view('new_admin.advertisers.show', ['advertiser' => $advertiser]);
@@ -164,7 +164,7 @@ class AdvertiserController extends Controller
             'currency_id'           => 'required|max:255|exists:currencies,id',
             'address'               => 'nullable|max:255',
             'validation_duration'   => 'nullable|max:255',
-            'status'                => 'required|in:active,unactive',
+            'status'                => 'required|in:active,inactive',
             'validation_source'     => 'nullable|max:255',
             'validation_type'       => 'required|in:system,sheet,manual_report_via_email',
             'language'              => 'required|in:ar,en,ar_en',
@@ -229,7 +229,7 @@ class AdvertiserController extends Controller
         $this->authorize('update_advertisers');
 
         $advertiser = Advertiser::findOrFail($request->id);
-        $advertiser->status = $request->status == 'active' ? 'active' : 'unactive';
+        $advertiser->status = $request->status == 'active' ? 'active' : 'inactive';
         $advertiser->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }

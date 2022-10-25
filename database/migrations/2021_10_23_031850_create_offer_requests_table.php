@@ -20,6 +20,7 @@ class CreateOfferRequestsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('offer_id');
             $table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade');
+            $table->integer('number_of_coupons')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

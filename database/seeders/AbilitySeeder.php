@@ -34,12 +34,12 @@ class AbilitySeeder extends Seeder
             'targets',
             'payments',
             'helps',
+            'trashed',
         ];
 
         $names = 
         [
             ['label' => "view", 'name' => 'view'],
-            ['label' => "show", 'name' => 'show'],
             ['label' => "create", 'name' => 'create'],
             ['label' => "update", 'name' => 'update'],
             ['label' => "delete", 'name' => 'delete'],
@@ -61,11 +61,6 @@ class AbilitySeeder extends Seeder
         $models = [
             'reports',
             'dashboard',
-            'my_offers',
-            'bulk_upload_publishers',
-            'upload_coupons',
-            'my_coupons',
-            'my_payments',
         ];
 
         $names = 

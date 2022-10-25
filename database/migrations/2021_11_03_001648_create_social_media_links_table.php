@@ -20,6 +20,7 @@ class CreateSocialMediaLinksTable extends Migration
             $table->string('link')->nullable();
             $table->string('platform')->nullable();
             $table->string('followers')->nullable();
+            $table->string('viewers')->nullable();
             $table->timestamps();
         });
     }

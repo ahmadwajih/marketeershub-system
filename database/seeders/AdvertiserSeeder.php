@@ -23,7 +23,6 @@ class AdvertiserSeeder extends Seeder
             'website' => 'marketeershub.com',
             'country_id' => 1,
             'currency_id' => 1,
-            'city_id' => 1,
             'address' => 'Riayd SAudia Arabia',
             'status' => 'active',
         ]);

@@ -239,7 +239,7 @@ class PublisherController extends Controller
     public function show($id)
     {
         if (auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())) {
-            $this->authorize('show_publishers');
+            $this->authorize('view_publishers');
         }
 
         $publisher = User::findOrFail($id);
@@ -581,7 +581,7 @@ class PublisherController extends Controller
      */
     public function payments(Request $request, int $id = null)
     {
-        $this->authorize('view_my_payments');
+        $this->authorize('view_payments');
 
         $userId = ($id == null) ? auth()->user()->id : $id;
         $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
@@ -624,7 +624,7 @@ class PublisherController extends Controller
      */
     public function upload()
     {
-        $this->authorize('view_bulk_upload_publishers');
+        $this->authorize('create_publishers');
         return view('new_admin.publishers.upload');
     }
 
@@ -637,7 +637,7 @@ class PublisherController extends Controller
     public function storeUpload(Request $request)
     {
 
-        $this->authorize('view_bulk_upload_publishers');
+        $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',

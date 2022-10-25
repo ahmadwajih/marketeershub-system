@@ -58,9 +58,9 @@
                             <div class="card-body text-center pt-0">
                                 <!--begin::Image input-->
                                 <!--begin::Image input placeholder-->
-                                <style>.image-input-placeholder { background-image: url('{{ getImagesPath("Users", $user->image) }}'); } [data-theme="dark"] .image-input-placeholder { background-image: url('{{ asset("new_dashboard") }}/media/svg/files/blank-image-dark.svg'); }</style>
+                                <style>.image-input-placeholder { background-image: url('{{ getImagesPath("Users", $user->image) }}'); } [data-theme="dark"] .image-input-placeholder { background-image: url('{{ getImagesPath("Users", $user->image) }}'); }</style>
                                 <!--end::Image input placeholder-->
-                                <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true" style="&lt;br /&gt; &lt;b&gt;Warning&lt;/b&gt;: Undefined variable $imageBg in &lt;b&gt;C:\wamp64\www\keenthemes\core\html\dist\view\pages\apps\ecommerce\catalog\edit-product\_thumbnail.php&lt;/b&gt; on line &lt;b&gt;30&lt;/b&gt;&lt;br /&gt;">
+                                <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true" style="">
                                     <!--begin::Preview existing avatar-->
                                     <div class="image-input-wrapper w-150px h-150px"></div>
                                     <!--end::Preview existing avatar-->
@@ -112,13 +112,17 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Full Name</label>
+                                            <label class="required form-label">Role</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="name" class="form-control mb-2" placeholder="Full name" value="{{ old('name') ?? $user->name }}" required/>
+                                            <select name="roles[]" aria-label="Select a Role" data-control="select2" data-placeholder="Select Role" class="form-select form-select-sm">
+                                                @foreach($roles as $role)
+                                                    <option {{ old('roles') && in_array($role->id, old('roles')) ? 'selected' : (in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '') }} value="{{$role->id}}">{{$role->name}}</option>
+                                                @endforeach
+                                            </select>
                                             <!--end::Input-->
-                                            @if ($errors->has('name'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('name') }}</div></div>
+                                            @if ($errors->has('roles'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('roles') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
@@ -128,13 +132,13 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Phone</label>
+                                            <label class="required form-label">Full Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Phone" value="{{ old('phone') ?? $user->phone }}" />
+                                            <input type="text" name="name" class="form-control mb-2" placeholder="Full name" value="{{ old('name') ?? $user->name }}" required/>
                                             <!--end::Input-->
-                                            @if ($errors->has('phone'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
+                                            @if ($errors->has('name'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('name') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
@@ -160,13 +164,48 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Password</label>
+                                            <label class="required form-label">Phone</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Phone" value="{{ old('phone') ?? $user->phone }}" />
+                                            <!--end::Input-->
+                                            @if ($errors->has('phone'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="form-label">Password</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="password" name="password" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
+                                            <p >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol min 8 chars') }}</p>
+
                                             <!--end::Input-->
                                             @if ($errors->has('password'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Password Confirmation</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="password" name="password_confirmation" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
+                                            
+                                            <!--end::Input-->
+                                            @if ($errors->has('password_confirmation'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password_confirmation') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
@@ -183,7 +222,6 @@
                                                 <option {{ (old('team') && old('team')  == 'management' ) ? "selected" : ($user->team == 'management' ? "selected" : '') }} value="management">{{ __('Management') }}</option>
                                                 <option {{ (old('team') && old('team')  == 'digital_operation' ) ? "selected" : ($user->team == 'digital_operation' ? "selected" : '') }} value="digital_operation">{{ __('Digital Operation') }}</option>
                                                 <option {{ (old('team') && old('team')  == 'finance' ) ? "selected" : ($user->team == 'finance' ? "selected" : '') }} value="finance">{{ __('Finance') }}</option>
-                                                <option {{ (old('team') && old('team')  == 'media_buying' ) ? "selected" : ($user->team == 'media_buying' ? "selected" : '') }} value="media_buying">{{ __('Media Buying') }}</option>
                                                 <option {{ (old('team') && old('team')  == 'influencer' ) ? "selected" : ($user->team == 'influencer' ? "selected" : '') }} value="influencer">{{ __('Influencer') }}</option>
                                                 <option {{ (old('team') && old('team')  == 'affiliate' ) ? "selected" : ($user->team == 'affiliate' ? "selected" : '') }} value="affiliate">{{ __('Affiliate') }}</option>
                                             </select>
@@ -195,47 +233,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Position</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="position" aria-label="Select a Position" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
-                                                <option {{ (old('position') && old('position') == 'employee') ? "selected" : ($user->position == 'employee' ? "selected" : '') }} value="employee">{{ __('Employee') }}</option>
-                                                <option {{ (old('position') && old('position') == 'account_manager') ? "selected" : ($user->position == 'account_manager' ? "selected" : '') }} value="account_manager">{{ __('Account Manager') }}</option>
-                                                <option {{ (old('position') && old('position') == 'team_leader') ? "selected" : ($user->position == 'team_leader' ? "selected" : '') }} value="team_leader">{{ __('Team Leader') }}</option>
-                                                <option {{ (old('position') && old('position') == 'head') ? "selected" : ($user->position == 'head' ? "selected" : '') }} value="head">{{ __('Head') }}</option>
-                                                <option {{ (old('position') && old('position') == 'super_admin') ? "selected" : ($user->position == 'super_admin' ? "selected" : '') }} value="super_admin">{{ __('Super Admin') }}</option>
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('position'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('position') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Role</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="roles[]" aria-label="Select a Role" data-control="select2" data-placeholder="Select Role" class="form-select form-select-sm" multiple>
-                                                @foreach($roles as $role)
-                                                    <option {{ old('roles') && in_array($role->id, old('roles')) ? 'selected' : (in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '') }} value="{{$role->id}}">{{$role->name}}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('roles'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('roles') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
+                                    
                                     <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -280,27 +278,6 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Status</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="status" aria-label="Select a status" data-control="select2" data-placeholder="Select Status" class="form-select form-select-sm">
-                                                <option value="active">{{ __('Active') }}</option>
-                                                    <option {{ old('status') == 'active' ? "selected" : ($user->status == 'active' ? 'selected' :'') }} value="active">{{ __('Active') }}</option>
-                                                    <option {{ old('status') == 'pending' ? "selected" : ($user->status == 'pending' ? 'selected' :'') }} value="pending">{{ __('Pending') }}</option>
-                                                    <option {{ old('status') == 'closed' ? "selected" : ($user->status == 'closed' ? 'selected' :'') }} value="closed">{{ __('Closed') }}</option>
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('status'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('status') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
                                             <label class="form-label">Country</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
@@ -312,59 +289,6 @@
                                             <!--end::Input-->
                                             @if ($errors->has('country_id'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('country_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">City</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select id="cities" name="city_id" data-control="select2" class="form-select form-select-sm">
-                                                <option value="">You have to select country</option>
-                                                @foreach ($cities as $city)
-                                                    <option {{ old('city_id') == $city->id ? "selected" : ($user->city_id == $city->id ? "selected" : '') }} value="{{ $city->id }}">{{  $city->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('city_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('city_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Years of Experience</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="years_of_experience" class="form-control mb-2" placeholder="Years of Experience " value="{{ old('years_of_experience') ?? $user->years_of_experience }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('years_of_experience'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('years_of_experience') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Address</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="address" class="form-control mb-2" placeholder="Address " value="{{ old('address') ?? $user->address }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('address'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('address') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->

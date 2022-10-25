@@ -71,7 +71,7 @@ class CountryController extends Controller
     public function show($id)
     {
         abort(404);
-        $this->authorize('show_countries');
+        $this->authorize('view_countries');
         $country = Country::findOrFail($id);
         userActivity('Country', $country->id, 'show');
         return view('admin.countries.show', ['country' => $country]);
@@ -85,7 +85,7 @@ class CountryController extends Controller
      */
     public function edit(Country $country)
     {
-        $this->authorize('show_countries');
+        $this->authorize('view_countries');
         return view('new_admin.countries.edit', [
             'country' => $country
         ]);

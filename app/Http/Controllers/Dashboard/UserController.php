@@ -69,16 +69,11 @@ class UserController extends Controller
             'image'                 => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'email'                 => 'required|unique:users|max:255',
             'phone'                 => 'required|unique:users|max:255',
-            'password'              => ['required','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
-            'password'              => ['required'],
+            // 'password'              => ['required', 'confirmed','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
             'parent_id'             => 'nullable|exists:users,id|nullable',
-            'years_of_experience'   => 'required|numeric',
             'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
             'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
             'roles.*'               => 'exists:roles,id',
 
         ]);
@@ -89,6 +84,9 @@ class UserController extends Controller
 
         $data['password'] = Hash::make($request->password);
         unset($data['roles']);
+        $data['account_status'] = 'approved';
+        $data['status'] = 'active';
+        $data['position'] = 'employee';
         $user = User::create($data);
         $user->roles()->sync($request->roles);
         userActivity('User', $user->id, 'create');
@@ -113,7 +111,7 @@ class UserController extends Controller
     public function show($id)
     {
         if(auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
-            $this->authorize('show_users');
+            $this->authorize('view_users');
         }
         $user = User::withTrashed()->findOrFail($id);
         userActivity('User', $user->id, 'show');
@@ -167,16 +165,11 @@ class UserController extends Controller
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,
             'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
-            // 'password'              => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
-            'years_of_experience'   => 'required|numeric',
+            // 'password'              => ['nullable', 'confirmed', 'min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
             'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
             'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
             'roles.*'               => 'exists:roles,id',
-            'address'               => 'nullable|max:255'
         ]);
         if($request->hasFile('image')){
             deleteImage($user->image, 'Users');

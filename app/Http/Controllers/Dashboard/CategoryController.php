@@ -73,7 +73,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         abort(404);
-        $this->authorize('show_categories');
+        $this->authorize('view_categories');
         $category = Category::withTrashed()->findOrFail($id);
         userActivity('Category', $category->id, 'show');
         return view('admin.categories.show', ['category' => $category]);
@@ -87,7 +87,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        $this->authorize('show_categories');
+        $this->authorize('view_categories');
         return view('new_admin.categories.edit', [
             'category' => $category
         ]);

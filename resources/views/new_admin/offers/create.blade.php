@@ -293,7 +293,7 @@
                                             <label class="form-label">Coupon Codes</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="file" name="email" class="form-control mb-2"
+                                            <input type="file" name="coupons" class="form-control mb-2"
                                                 placeholder="Coupons" value="{{ old('coupons') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('coupons'))
@@ -364,8 +364,7 @@
                                             <label class="required form-label">Expire Date</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="date" name="expire_date" class="form-control mb-2"
-                                                placeholder="Email" value="{{ old('expire_date') }}" />
+                                            <input type="date" name="expire_date" class="form-control mb-2" value="{{ old('expire_date') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('expire_date'))
                                                 <div class="fv-plugins-message-container invalid-feedback">

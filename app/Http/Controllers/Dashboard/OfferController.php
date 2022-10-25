@@ -104,7 +104,7 @@ class OfferController extends Controller
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:1024',
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
             'coupons' => 'nullable|file',
@@ -328,7 +328,7 @@ class OfferController extends Controller
 
         // Check of offer type is link tracking to upload coupons
         if ($request->coupons) {
-            Excel::import(new OfferCouponImport($offer->id), request()->file('coupons'));
+            Excel::queueImport(new OfferCouponImport($offer->id), request()->file('coupons'));
         }
         $notification = [
             'message' => 'Created successfully',
@@ -345,7 +345,7 @@ class OfferController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $this->authorize('show_offers');
+        $this->authorize('view_offers');
         $offer = Offer::withTrashed()->findOrFail($id);
         $offerRequest = OfferRequest::where([
             ['user_id', '=', auth()->user()->id],

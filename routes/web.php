@@ -102,6 +102,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('offers/change/status', 'OfferController@changeStatus');
         Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
         Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
+        Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
+        Route::resource('trashed', TrashedController::class);
 
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');

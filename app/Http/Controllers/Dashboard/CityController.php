@@ -73,7 +73,7 @@ class CityController extends Controller
     public function show($id)
     {
         abort(404);
-        $this->authorize('show_cites');
+        $this->authorize('view_cites');
         $city = City::findOrFail($id);
         userActivity('City', $city->id, 'show');
         return view('admin.cities.show', ['city' => $city]);
@@ -87,7 +87,7 @@ class CityController extends Controller
      */
     public function edit(City $city)
     {
-        $this->authorize('show_cites');
+        $this->authorize('view_cites');
         return view('new_admin.cities.edit', [
             'city' => $city,
             'countries' => Country::all()
