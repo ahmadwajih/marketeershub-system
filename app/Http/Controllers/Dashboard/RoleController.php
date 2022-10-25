@@ -37,11 +37,11 @@ class RoleController extends Controller
     {
         $this->authorize('view_roles');
 
-        if($request->ajax()){
-            $roles = getModelData('Role', $request);
-            return response()->json($roles);
-        }
-        return view('admin.roles.index');
+        return view('new_admin.roles.index', [
+            'roles' => Role::with(['users', 'abilities'])->get(),
+            'models' => $this->models,
+            'abilities'=> Ability::all()
+        ]);
     }
 
     /**
@@ -85,6 +85,8 @@ class RoleController extends Controller
                 'message' => 'Created Succefuly ',
                 'alert-type' => 'success'
             );
+            return response()->json($role, 200);
+
             return redirect()->route('admin.roles.index')->with($notification);
     }
 
@@ -96,10 +98,10 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_roles');
+        $this->authorize('view_roles');
 
         $role = Role::withTrashed()->findOrFail($id);
-        return view('admin.roles.show',[
+        return view('new_admin.roles.show',[
             'role' => $role,
             'models' => $this->models,
             'abilities'=> Ability::get(),
@@ -116,8 +118,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         $this->authorize('update_roles');
-
-        return view('admin.roles.edit',[
+        return view('new_admin.roles.edit',[
             'role' => $role,
             'models' => $this->models,
             'abilities'=> Ability::get(),
@@ -132,9 +133,10 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(Request $request)
     {
         $this->authorize('update_roles');
+        $role = Role::findOrFail($request->id);
         $abilities = Ability::get();
         foreach($abilities as $ability){
             if (request($ability->name) == "on" && !$role->abilities->contains($ability)){
@@ -151,6 +153,7 @@ class RoleController extends Controller
             'message' => 'Updated Succefuly ',
             'alert-type' => 'success'
         );
+        return response()->json($role, 200);
         return redirect()->route('admin.roles.index')->with($notification);
     }
 

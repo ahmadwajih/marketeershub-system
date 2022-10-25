@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CityController extends Controller
 {
@@ -18,10 +19,10 @@ class CityController extends Controller
     {
         $this->authorize('view_cites');
         if ($request->ajax()){
-            $cities = getModelData('City' , $request, ['country']);
-            return response()->json($cities);
+            $coupons = City::with('country');
+            return DataTables::of($coupons)->make(true);
         }
-        return view('admin.cities.index');
+        return view('new_admin.cities.index');
     }
     
     /**
@@ -32,7 +33,7 @@ class CityController extends Controller
     public function create()
     {
         $this->authorize('create_cites');
-        return view('admin.cities.create',[
+        return view('new_admin.cities.create',[
             'countries' => Country::all()
         ]);
     }
@@ -60,7 +61,7 @@ class CityController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.cities.index');
+        return redirect()->route('admin.cities.index')->with($notification);
     }
 
     /**
@@ -71,7 +72,8 @@ class CityController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_cites');
+        abort(404);
+        $this->authorize('view_cites');
         $city = City::findOrFail($id);
         userActivity('City', $city->id, 'show');
         return view('admin.cities.show', ['city' => $city]);
@@ -85,8 +87,8 @@ class CityController extends Controller
      */
     public function edit(City $city)
     {
-        $this->authorize('show_cites');
-        return view('admin.cities.edit', [
+        $this->authorize('view_cites');
+        return view('new_admin.cities.edit', [
             'city' => $city,
             'countries' => Country::all()
         ]);
@@ -117,7 +119,7 @@ class CityController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.cities.index');
+        return redirect()->route('admin.cities.index')->with($notification);
     }
 
     /**

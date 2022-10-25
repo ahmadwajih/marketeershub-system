@@ -56,7 +56,7 @@
                             </li>
                         @endif
                 </li>
-                @can('view_my_offers')
+                @can('view_offers')
                 <li class="menu-item menu-item-active {{ Request::segment(2)=='my-offers'?'menu-item-active':'' }}" aria-haspopup="true">
                     <a href="{{route('admin.my-offers')}}" class="menu-link">
                         <span class="svg-icon menu-icon">
@@ -92,7 +92,7 @@
                                         <span class="menu-text">{{ __('My Profile') }}</span>
                                     </a>
                                 </li>
-                                @can('view_my_payments')
+                                @can('view_ayments')
                                     <li class="menu-item {{ Request::segment(2)=='publisher'&&Request::segment(3)=='payments'?'menu-item-active':'' }}" aria-haspopup="true">
                                         <a href="{{route('admin.publisher.payments')}}" class="menu-link">
                                             <i class="menu-bullet menu-bullet-dot">
@@ -245,7 +245,7 @@
                                 </a>
                             </li>
                             @endcan
-                            @can('view_bulk_upload_publishers')
+                            @can('create_publishers')
                             <li class="menu-item {{ Request::segment(2)=='publishers'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.publishers.upload.form')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
@@ -380,7 +380,7 @@
 
                             @can('create_pivot_report')
                             <li class="menu-item {{ Request::segment(2)=='pivot-report'&&Request::segment(3)=='create'?'menu-item-active':'' }}" aria-haspopup="true">
-                                <a href="{{route('admin.pivot-report.create')}}" class="menu-link">
+                                <a href="{{route('admin.reports.create')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
                                         <span></span>
                                     </i>
@@ -480,7 +480,7 @@
                                 </a>
                             </li>
                             @endcan 
-                            @can('view_my_offers')
+                            @can('view_offers')
                             <li class="menu-item {{ Request::segment(2)=='my-offers'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.my-offers')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">
@@ -581,7 +581,7 @@
                             </li>
                             @endcan
 
-                            @can('view_upload_coupons')
+                            @can('create_coupons')
                             <li class="menu-item {{ Request::segment(2)=='coupons'&&Request::segment(3)=='upload'?'menu-item-active':'' }}" aria-haspopup="true">
                                 <a href="{{route('admin.coupons.upload.form')}}" class="menu-link">
                                     <i class="menu-bullet menu-bullet-dot">

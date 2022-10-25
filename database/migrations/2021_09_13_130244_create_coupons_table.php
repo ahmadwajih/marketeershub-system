@@ -20,6 +20,10 @@ class CreateCouponsTable extends Migration
             $table->foreign('offer_id')->references('id')->on('offers')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->boolean('have_custom_payout')->default(false);
+            $table->enum('payout_cps_type', ['static', 'new_old', 'slaps'])->default('static');
+            $table->enum('payout_type', ['percentage', 'flat'])->default('flat');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -5,8 +5,10 @@ namespace App\Imports;
 use App\Models\Coupon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class OfferCouponImport implements ToCollection
+class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $offerId;
 
@@ -30,5 +32,10 @@ class OfferCouponImport implements ToCollection
             }
             
         }
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 }

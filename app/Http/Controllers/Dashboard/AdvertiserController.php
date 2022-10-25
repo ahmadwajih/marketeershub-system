@@ -9,9 +9,8 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
 use Illuminate\Http\Request;
-/*
- * Just for repo fix
- **/
+use Yajra\DataTables\Facades\DataTables;
+
 class AdvertiserController extends Controller
 {
     /**
@@ -23,10 +22,10 @@ class AdvertiserController extends Controller
     {
         $this->authorize('view_advertisers');
         if($request->ajax()){
-            $advertisers = getModelData('Advertiser', $request);
-            return response()->json($advertisers);
+            $advertisers = Advertiser::all();
+            return DataTables::of($advertisers)->make(true);
         }
-        return view('admin.advertisers.index');
+        return view('new_admin.advertisers.index');
 
     }
 
@@ -38,8 +37,9 @@ class AdvertiserController extends Controller
     public function create()
     {
         $this->authorize('create_advertisers');
-        return view('admin.advertisers.create',[
+        return view('new_admin.advertisers.create',[
             'countries' => Country::all(),
+            'cities' => City::all(),
             'categories' => Category::whereType('advertisers')->get(),
             'currencies' => Currency::all(),
         ]);
@@ -60,7 +60,6 @@ class AdvertiserController extends Controller
             'phone'                 => 'nullable|max:255',
             'email'                 => 'nullable|max:255',
             'ho_user_id'            => 'nullable|max:255',
-            'company_name_ar'       => 'required|max:255',
             'company_name_en'       => 'required|max:255',
             'website'               => 'nullable|max:255',
             'categories'            => 'array|required|exists:categories,id',
@@ -69,7 +68,7 @@ class AdvertiserController extends Controller
             'currency_id'           => 'required|max:255|exists:currencies,id',
             'address'               => 'nullable|max:255',
             'validation_duration'   => 'nullable|max:255',
-            'status'                => 'required|in:active,unactive',
+            'status'                => 'required|in:active,inactive',
             'validation_source'     => 'nullable|max:255',
             'validation_type'       => 'required|in:system,sheet,manual_report_via_email',
             'language'              => 'required|in:ar,en,ar_en',
@@ -105,7 +104,7 @@ class AdvertiserController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.advertisers.index');
+        return redirect()->route('admin.advertisers.index')->with($notification);
     }
 
     /**
@@ -116,10 +115,10 @@ class AdvertiserController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_advertisers');
+        $this->authorize('view_advertisers');
         $advertiser = Advertiser::withTrashed()->findOrFail($id);
         userActivity('Advertiser', $advertiser->id, 'show');
-        return view('admin.advertisers.show', ['advertiser' => $advertiser]);
+        return view('new_admin.advertisers.show', ['advertiser' => $advertiser]);
     }
 
     /**
@@ -132,7 +131,7 @@ class AdvertiserController extends Controller
     {
         $this->authorize('update_advertisers');
 
-        return view('admin.advertisers.edit', [
+        return view('new_admin.advertisers.edit', [
             'advertiser' => $advertiser,
             'countries' => Country::all(),
             'cities' => City::whereCountryId($advertiser->country_id)->get(),
@@ -165,7 +164,7 @@ class AdvertiserController extends Controller
             'currency_id'           => 'required|max:255|exists:currencies,id',
             'address'               => 'nullable|max:255',
             'validation_duration'   => 'nullable|max:255',
-            'status'                => 'required|in:active,unactive',
+            'status'                => 'required|in:active,inactive',
             'validation_source'     => 'nullable|max:255',
             'validation_type'       => 'required|in:system,sheet,manual_report_via_email',
             'language'              => 'required|in:ar,en,ar_en',
@@ -207,7 +206,8 @@ class AdvertiserController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.advertisers.index');
+
+        return redirect()->route('admin.advertisers.index')->with($notification);
     }
 
     /**
@@ -224,4 +224,14 @@ class AdvertiserController extends Controller
             $advertiser->delete();
         }
     }
+
+    public function changeStatus(Request $request){
+        $this->authorize('update_advertisers');
+
+        $advertiser = Advertiser::findOrFail($request->id);
+        $advertiser->status = $request->status == 'active' ? 'active' : 'inactive';
+        $advertiser->save();
+        return response()->json(['message' => 'Updated Succefuly']);
+    }
+
 }

@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-
+    'pagination_pages' => 10,
     'name' => env('APP_NAME', 'MarketeersHub'),
 
     /*
@@ -168,6 +168,8 @@ return [
          * Package Service Providers...
          */
         Yajra\DataTables\DataTablesServiceProvider::class,
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
+
         /*
          * Application Service Providers...
          */

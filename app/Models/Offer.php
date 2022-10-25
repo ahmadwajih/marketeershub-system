@@ -20,31 +20,29 @@ class Offer extends Model
         'terms_and_conditions',
     ];
 
-    // protected static $relations_to_cascade = ['coupons', 'newOld', 'slaps', 'categories', 'countries']; 
+    protected static $relations_to_cascade = ['coupons', 'cps'];
+    protected static function boot(){
+        parent::boot();
+        static::deleting(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                foreach ($resource->{$relation}()->get() as $item) {
+                    $item->delete();
+                }
+            }
+        });
 
-    // protected static function boot(){
-    //     parent::boot();
-    //     static::deleting(function($resource) {
-    //         foreach (static::$relations_to_cascade as $relation) {
-    //             foreach ($resource->{$relation}()->get() as $item) {
-    //                 $item->delete();
-    //             }
-    //         }
-    //     });
+        static::restoring(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                $resource->$relation()->withTrashed()->restore();
+            }
+        });
 
-    //     static::restoring(function($resource) {
-    //         foreach (static::$relations_to_cascade as $relation) {
-    //             $resource->$relation()->withTrashed()->restore();
-    //         }
-            
-    //     });
-
-    //     static::forceDeleted(function($resource) {
-    //         foreach (static::$relations_to_cascade as $relation) {
-    //             $resource->$relation()->withTrashed()->forceDelete();
-    //         }
-    //     });
-    // }
+        static::forceDeleted(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                $resource->$relation()->withTrashed()->forceDelete();
+            }
+        });
+    }
 
 
     public function getNameAttribute(){
@@ -138,4 +136,14 @@ class Offer extends Model
     public function authUserCoupons(){
         return $this->coupons();
     }
+
+    public function cps(){
+        return $this->hasMany(OfferCps::class);
+    }
+
+    public function prvotReports()
+    {
+        return $this->hasManyThrough(PivotReport::class, Coupon::class);
+    }
+
 }

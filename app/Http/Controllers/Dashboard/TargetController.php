@@ -67,7 +67,7 @@ class TargetController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_targets');
+        $this->authorize('view_targets');
         $country = Country::findOrFail($id);
         userActivity('Country', $country->id, 'show');
         return view('admin.targets.show', ['country' => $country]);
@@ -81,7 +81,7 @@ class TargetController extends Controller
      */
     public function edit(Country $country)
     {
-        $this->authorize('show_targets');
+        $this->authorize('view_targets');
         return view('admin.targets.edit', [
             'country' => $country
         ]);

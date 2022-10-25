@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             // Main Information
-            $table->integer('ho_id')->nullable();
+            $table->text('ho_id')->nullable();
             $table->string('name')->nullable();
             $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -31,9 +31,10 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['male','female','other'])->default('male');
             $table->enum('team', ['management','digital_operation', 'finance','media_buying', 'influencer', 'affiliate', 'prepaid', 'graphic_design'])->default('affiliate');
             $table->enum('position', ['super_admin','head','team_leader', 'account_manager', 'publisher', 'employee'])->default('publisher');
-            $table->enum('status', ['active','pending', 'closed'])->default('pending');
+            $table->enum('status', ['active','pending', 'closed', 'inactive'])->default('pending');
             $table->string('category')->nullable();
             $table->string('referral_account_manager')->nullable();
+            $table->enum('account_status', ['in_review', 'approved', 'rejected'])->default('in_review');
             // Connection Information
             $table->string('email')->unique();
             $table->string('phone')->nullable();

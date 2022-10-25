@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -17,11 +18,14 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_categories');
-        if ($request->ajax()){
-            $categories = getModelData('Category' , $request);
-            return response()->json($categories);
+        if($request->ajax()){
+            // $categories = getModelData('Category' , $request);
+            // return response()->json($categories);
+
+            $categories = Category::all();
+            return DataTables::of($categories)->make(true);
         }
-        return view('admin.categories.index');
+        return view('new_admin.categories.index');
     }
     
     /**
@@ -32,7 +36,7 @@ class CategoryController extends Controller
     public function create()
     {
         $this->authorize('create_categories');
-        return view('admin.categories.create');
+        return view('new_admin.categories.create');
     }
 
     /**
@@ -57,7 +61,7 @@ class CategoryController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with($notification);
     }
 
     /**
@@ -68,7 +72,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_categories');
+        abort(404);
+        $this->authorize('view_categories');
         $category = Category::withTrashed()->findOrFail($id);
         userActivity('Category', $category->id, 'show');
         return view('admin.categories.show', ['category' => $category]);
@@ -82,8 +87,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        $this->authorize('show_categories');
-        return view('admin.categories.edit', [
+        $this->authorize('view_categories');
+        return view('new_admin.categories.edit', [
             'category' => $category
         ]);
     }
@@ -111,7 +116,7 @@ class CategoryController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with($notification);
     }
 
     /**

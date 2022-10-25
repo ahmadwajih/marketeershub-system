@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CountryController extends Controller
 {
@@ -17,10 +18,12 @@ class CountryController extends Controller
     {
         $this->authorize('view_countries');
         if ($request->ajax()){
-            $countries = getModelData('Country' , $request);
-            return response()->json($countries);
+            $coupons = Country::with('cities');
+            return DataTables::of($coupons)->make(true);
+            // $countries = getModelData('Country' , $request);
+            // return response()->json($countries);
         }
-        return view('admin.countries.index');
+        return view('new_admin.countries.index');
     }
     
     /**
@@ -31,7 +34,7 @@ class CountryController extends Controller
     public function create()
     {
         $this->authorize('create_countries');
-        return view('admin.countries.create');
+        return view('new_admin.countries.create');
     }
 
     /**
@@ -56,7 +59,7 @@ class CountryController extends Controller
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.countries.index');
+        return redirect()->route('admin.countries.index')->with($notification);
     }
 
     /**
@@ -67,7 +70,8 @@ class CountryController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('show_countries');
+        abort(404);
+        $this->authorize('view_countries');
         $country = Country::findOrFail($id);
         userActivity('Country', $country->id, 'show');
         return view('admin.countries.show', ['country' => $country]);
@@ -81,8 +85,8 @@ class CountryController extends Controller
      */
     public function edit(Country $country)
     {
-        $this->authorize('show_countries');
-        return view('admin.countries.edit', [
+        $this->authorize('view_countries');
+        return view('new_admin.countries.edit', [
             'country' => $country
         ]);
     }
@@ -110,7 +114,7 @@ class CountryController extends Controller
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.countries.index');
+        return redirect()->route('admin.countries.index')->with($notification);
     }
 
     /**

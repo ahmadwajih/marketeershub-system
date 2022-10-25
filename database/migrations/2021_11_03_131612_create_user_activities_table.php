@@ -22,6 +22,8 @@ class CreateUserActivitiesTable extends Migration
             $table->unsignedBigInteger('object_id')->nullable();
             $table->text('history')->nullable();
             $table->string('note')->nullable();
+            $table->boolean('approved')->default(true);
+            $table->integer('approved_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

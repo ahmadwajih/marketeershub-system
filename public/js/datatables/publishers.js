@@ -292,7 +292,7 @@ var KTDatatableRemoteAjaxDemo = function() {
                     if(row.sumOrders){
                         return '<span class="badge badge-success">Active</span>';
                     }
-                    return '<span class="badge badge-danger">Unactive</span>';
+                    return '<span class="badge badge-danger">inactive</span>';
                 },
             },{
                 field: 'Actions',

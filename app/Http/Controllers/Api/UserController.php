@@ -132,7 +132,7 @@ class UserController extends Controller
         ];
 
         $user = User::create($data);
-        $user->roles()->attach(Role::findOrFail(4));
+        $user->roles()->attach(Role::whereLabel('publisher')->first());
 
         if(getCategoryId($request->content_category)){
             $user->categories()->attach(getCategoryId($request->content_category));
@@ -194,7 +194,7 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        $user->roles()->attach(Role::findOrFail(4));
+        $user->roles()->attach(Role::whereLabel('publisher')->first());
         if(getCategoryId($request->content_category)){
             $user->categories()->attach(getCategoryId($request->content_category));
         }

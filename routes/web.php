@@ -35,10 +35,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
     Route::post('login', 'AuthController@login')->name('login');
+    Route::get('register', 'AuthController@registerForm')->name('register.form');
     Route::post('register', 'AuthController@register')->name('register');
+    Route::get('forgot-password', 'AuthController@forgotPasswordForm')->name('forgot.password.form');
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
     Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
+    //Start Auth ajax requests 
+    Route::get('ajax/acount-manager-based-on-team', 'AjaxController@getAccountManagersBasedOnTeam')->name('get.account.managers.based.on.team');
+    Route::get('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
+
+    //End Auth ajax requests 
 
 
 
@@ -49,6 +56,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('charts/gm-v-po', 'DashboardController@chartGmVPo')->name('chart.gm-v-po');
 
         Route::resource('users', UserController::class);
+        Route::post('users/change/status', 'UserController@changeStatus');
         // User Profile
         Route::get('user/profile', 'UserController@profile')->name('user.profile');
 
@@ -57,11 +65,13 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('publishers-search', 'PublisherController@search')->name('publishers.search');
         Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
         Route::post('publishers-check-exists', 'PublisherController@checkIfExists')->name('publishers.check.exists');
+        Route::post('publishers/change/status', 'PublisherController@changeStatus');
 
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
         Route::get('publisher/payments/{id?}', 'PublisherController@payments')->name('publisher.payments');
         Route::get('publisher/my-account-manager', 'PublisherController@myAccountManager')->name('publisher.account.manager');
+
         // Upload Publishers
         Route::get('publishers/upload/form', 'PublisherController@upload')->name('publishers.upload.form');
         Route::post('publishers/upload', 'PublisherController@storeUpload')->name('publishers.upload.store');
@@ -77,15 +87,23 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
         Route::resource('advertisers', AdvertiserController::class);
+        Route::post('advertisers/change/status', 'AdvertiserController@changeStatus');
+
         Route::resource('categories', CategoryController::class);
         Route::resource('offers', OfferController::class);
         Route::get('my-offers', 'OfferController@myOffers')->name('my-offers');
         Route::get('upload/offers', 'OfferController@upload')->name('upload.offers');
+        Route::get('offers/coupons/{offer}', 'OfferController@coupons')->name('offers.coupons');
         Route::resource('offerRequests', OfferRequestController::class);
         Route::get('ajax/offerRequests/form', 'OfferRequestController@offerRequestAjaxForm')->name('offerRequest.ajax.form');
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
+        Route::post('offers/change/status', 'OfferController@changeStatus');
+        Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
+        Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
+        Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
+        Route::resource('trashed', TrashedController::class);
 
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');
@@ -94,10 +112,16 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
 
         
         Route::resource('coupons', CouponController::class);
-        Route::resource('pivot-report', PivotReportController::class);
+        Route::resource('reports', PivotReportController::class);
+        Route::get('reports/download/errors', 'PivotReportController@downLoadErrors')->name('reports.deonload.errore');
+        Route::get('reports/define/excel/sheet/columns', 'PivotReportController@defineExcelSheetColumns')->name('define.excel.sheet.columns');
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
-        Route::resource('reports', ReportController::class);
+        Route::post('coupons/change/status', 'CouponController@changeStatus');
+        Route::post('coupons/change/revenue', 'CouponController@bulkChangeRevenue');
+        Route::get('coupons/load/payout', 'CouponController@loadPayout');
+
+        // Route::resource('reports', ReportController::class);
         Route::resource('countries', CountryController::class);
         Route::resource('cities', CityController::class);
         Route::resource('targets', TargetController::class);
@@ -117,7 +141,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
-
+        // Delete this routes and views
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
             Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
@@ -138,3 +162,13 @@ Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.']
 
 Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
 Route::get('test', 'Dashboard\DashboardController@test')->name("test");
+
+Route::get('/optimize', function () {
+    Artisan::call('optimize:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+    Artisan::call('key:generate');
+    return redirect()->route('admin.index');
+    return view('welcome');
+});
+

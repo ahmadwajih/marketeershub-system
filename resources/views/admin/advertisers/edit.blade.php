@@ -168,7 +168,7 @@
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" >
                                                     <option {{ old('status')=='active'?'selected':($advertiser->status =='active'?'selected':'') }} value="active">{{ __('active') }}</option>
-                                                    <option {{ old('status')=='unactive'?'selected':($advertiser->status =='unactive'?'selected':'') }} value="unactive">{{ __('Un Active') }}</option>
+                                                    <option {{ old('status')=='inactive'?'selected':($advertiser->status =='inactive'?'selected':'') }} value="inactive">{{ __('Un Active') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))
                                                     <div>

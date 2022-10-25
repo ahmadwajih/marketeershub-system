@@ -5,7 +5,7 @@ use App\Models\Coupon;
 
 
 if(!function_exists('totalNumbersForSeparateTeam')){
-    function totalNumbersForSeparateTeam($team){
+    function totalNumbersForSeparateTeam($team, $from, $to){
 
         return DB::table('pivot_reports')
         ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'),  DB::raw('SUM(payout) as payout'))
@@ -15,6 +15,7 @@ if(!function_exists('totalNumbersForSeparateTeam')){
         ->orderBy('date', 'desc')
         ->groupBy('date')
         ->having('orders', '>', 0)
+        ->whereBetween('date', [$from.' 00:00:00', $to.' 23:59:29'])
         ->first();
     }
 }
@@ -75,6 +76,46 @@ if(!function_exists('totalNumbers')){
             ->whereIn('coupons.user_id', $childrens)
             ->first();
         
+    }
+}
+
+
+if(!function_exists('totalOffersNumbers')){
+    function totalOffersNumbers($offerId){
+
+        return DB::table('pivot_reports')
+        ->select(DB::raw('SUM(orders) as orders'), DB::raw('SUM(sales) as sales'), DB::raw('SUM(revenue) as revenue'),  DB::raw('SUM(payout) as payout'))
+        ->where('pivot_reports.offer_id', $offerId)
+        ->orderBy('date', 'desc')
+        ->groupBy('date')
+        ->having('orders', '>', 0)
+        ->first();
+    }
+}
+
+
+if(!function_exists('totalNumbersBasedOnTeamAndOffer')){
+    function totalNumbersBasedOnTeamAndOffer($offerId){
+        $data = DB::table('pivot_reports')
+        ->select(
+            DB::raw('SUM(pivot_reports.orders) as orders'),
+            DB::raw('SUM(pivot_reports.sales) as sales'),
+            DB::raw('SUM(pivot_reports.revenue) as revenue'),
+            DB::raw('SUM(pivot_reports.payout) as payout'),
+            'pivot_reports.date as date',
+            'offers.id  as offer_id',
+            'offers.name_en  as offer_name',
+            'users.team as team'
+        )
+        ->join('offers', 'pivot_reports.offer_id', 'offers.id')
+        ->join('coupons', 'pivot_reports.coupon_id', 'coupons.id')
+        ->join('users', 'coupons.user_id', 'users.id')
+        ->where('pivot_reports.offer_id', $offerId)
+        // ->where('users.team', $team)
+        ->groupBy('team')
+        ->orderBy('team', 'desc')
+        ->get();
+        return $data->groupBy('date')->first();
     }
 }
 

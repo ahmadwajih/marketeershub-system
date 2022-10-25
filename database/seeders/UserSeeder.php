@@ -24,7 +24,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '7',
             'parent_id'             => null,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'management',
             'position'              => 'super_admin',
@@ -42,7 +41,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => null,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'influencer',
             'position'              => 'head',
@@ -59,7 +57,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
         //Affiliate head
         $user = User::create([
@@ -68,7 +66,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => null,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'affiliate',
             'position'              => 'head',
@@ -85,7 +82,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
          //Medi Buying head
          $user = User::create([
@@ -94,7 +91,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => null,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'media_buying',
             'position'              => 'head',
@@ -111,7 +107,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
          //Prepaid head
          $user = User::create([
@@ -120,7 +116,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => null,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'prepaid',
             'position'              => 'head',
@@ -137,7 +132,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
         // Account manager 
 
@@ -148,7 +143,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 2,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'influencer',
             'position'              => 'account_manager',
@@ -165,7 +159,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
         //Affiliate Account Manager
         $user = User::create([
@@ -174,7 +168,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 3,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'affiliate',
             'position'              => 'account_manager',
@@ -191,7 +184,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
          //Medi Buying Account Manager
          $user = User::create([
@@ -200,7 +193,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 4,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'media_buying',
             'position'              => 'account_manager',
@@ -217,7 +209,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
          //Prepaid Account Manager
          $user = User::create([
@@ -226,7 +218,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 5,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'prepaid',
             'position'              => 'account_manager',
@@ -243,7 +234,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
         $user = User::create([
             'name'                  => 'Nora Elsubaie AM',
@@ -251,7 +242,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 2,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'female',
             'team'                  => 'influencer',
             'position'              => 'account_manager',
@@ -268,7 +258,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(3));
+        $user->assignRole(Role::whereLabel('account_manager')->first());
 
         // Publisher 
         //Influencer Publisher
@@ -278,7 +268,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 6,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'influencer',
             'position'              => 'publisher',
@@ -295,7 +284,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(4));
+        $user->assignRole(Role::whereLabel('publisher')->first());
 
         //Affiliate Publisher
         $user = User::create([
@@ -304,7 +293,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 7,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'affiliate',
             'position'              => 'publisher',
@@ -321,7 +309,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(4));
+        $user->assignRole(Role::whereLabel('publisher')->first());
 
          //Medi Buying Publisher
          $user = User::create([
@@ -330,7 +318,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 8,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'media_buying',
             'position'              => 'publisher',
@@ -347,7 +334,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(4));
+        $user->assignRole(Role::whereLabel('publisher')->first());
 
          //Prepaid Publisher
          $user = User::create([
@@ -356,7 +343,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 9,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'male',
             'team'                  => 'prepaid',
             'position'              => 'publisher',
@@ -373,7 +359,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(4));
+        $user->assignRole(Role::whereLabel('publisher')->first());
 
         $user = User::create([
             'name'                  => 'Nora Elsubaie Publisher',
@@ -381,7 +367,6 @@ class UserSeeder extends Seeder
             'years_of_experience'   => '5',
             'parent_id'             => 10,
             'country_id'            => 1,
-            'city_id'               => 1,
             'gender'                => 'female',
             'team'                  => 'influencer',
             'position'              => 'publisher',
@@ -398,7 +383,7 @@ class UserSeeder extends Seeder
             'currency_id'           => 1,
             'status'                => 'active'
         ]);
-        $user->assignRole(Role::findOrFail(4));
+        $user->assignRole(Role::whereLabel('publisher')->first());
 
     }
 

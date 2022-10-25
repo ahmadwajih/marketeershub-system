@@ -1,24 +1,59 @@
+<!doctype html>
+<html lang="en">
 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+    <h1>Hello, world!</h1>
     <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Coupon</th>
-                <th scope="col">Orders</th>
-                <th scope="col">Publisher</th>
-                <th scope="col">AM</th>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Code</th>
+                <th scope="col">User</th>
+                <th scope="col">Offer</th>
                 <th scope="col">Team</th>
-              </tr>
-            </thead>
-            <tbody>
-                @foreach ($reports as $report)
-                    <tr>
-                        <th scope="row">{{ $report->coupon->coupon }}</th>
-                        <td>{{ $report->orders }}</td>
-                        <th>{{ $report->coupon->user ? $report->coupon->user->name : null }}</th>
-                        <th>{{ $report->coupon->user && $report->coupon->user->parent? $report->coupon->user->parent->name : null }}</th>
-                        <th>{{ $report->coupon->user ? $report->coupon->user->team : null }}</th>
-                    </tr>
-                @endforeach
-             
-            </tbody>
-          </table>
+            </tr>
+        </thead>
+        <tbody>
+          @foreach($coupons as $coupon)
+            <tr>
+                <th scope="row">{{ $coupon->id }}</th>
+                <td>{{ $coupon->coupon}}</td>
+                <td>{{ $coupon->user->name ?? ''}}</td>
+                <td>{{ $coupon->offer->name ?? ''}}</td>
+                <td>{{ $coupon->user->team ?? ''}}</td>
+
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <!-- Optional JavaScript; choose one of the two! -->
+    {!! $coupons->links() !!}
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+    </script>
+    -->
+</body>
+
+</html>

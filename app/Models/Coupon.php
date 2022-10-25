@@ -12,6 +12,30 @@ class Coupon extends Model
     use SoftDeletes;
     protected $guarded = [];
 
+    protected static $relations_to_cascade = ['cps'];
+    protected static function boot(){
+        parent::boot();
+        static::deleting(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                foreach ($resource->{$relation}()->get() as $item) {
+                    $item->delete();
+                }
+            }
+        });
+
+        static::restoring(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                $resource->$relation()->withTrashed()->restore();
+            }
+        });
+
+        static::forceDeleted(function($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                $resource->$relation()->withTrashed()->forceDelete();
+            }
+        });
+    }
+
 
     public function offer(){
         return $this->belongsTo(Offer::class);
@@ -21,7 +45,15 @@ class Coupon extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function reports(){
+        return $this->hasMany(PivotReport::class);
+    }
+
     public function report(){
         return $this->hasOne(PivotReport::class);
+    }
+    
+    public function cps(){
+        return $this->hasMany(CouponCps::class);
     }
 }

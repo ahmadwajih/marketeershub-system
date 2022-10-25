@@ -164,7 +164,7 @@
                                                 <label>* {{ __('Status') }} :</label>
                                                 <select class="form-control select2" id="kt_select_status" name="status" >
                                                     <option value="active">{{ __('Active') }}</option>
-                                                    <option value="unactive">{{ __('Un Active') }}</option>
+                                                    <option value="inactive">{{ __('Un Active') }}</option>
                                                 </select>
                                                 @if ($errors->has('status'))
                                                     <div>
@@ -289,7 +289,7 @@
                                                 @if ($errors->has('contract'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('contract') }}</p>
-                                                    </div>
+                                                    </div>  
                                                 @endif
                                             </div>
                                         </div>

@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
@@ -19,23 +20,23 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
+        // dd($request->all());
         $this->authorize('view_users');
         if ($request->ajax()){
+
             if(auth()->user()->position == 'super_admin'){
-                $users = getModelData('User' , $request, ['parent','country'], array(
+                $users = User::with('parent')->where([
                     ['position', '!=', 'publisher']
-                ));
+                ]);
             }else{
-                $users = getModelData('User' , $request, ['parent','country'], array(
+                $users = User::with('parent')->where([
                     ['position', '!=', 'publisher'],
                     ['parent_id', '=', auth()->user()->id],
-                ));
+                ]);
             }
-            
-            return response()->json($users);
+            return DataTables::of($users)->make(true);
         }
-        return view('admin.users.index');
+        return view('new_admin.users.index');
     }
     
     /**
@@ -46,8 +47,9 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize('create_users');
-        return view('admin.users.create',[
+        return view('new_admin.users.create',[
             'countries' => Country::all(),
+            'cities' => City::all(),
             'roles' => Role::all(),
             'users' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
         ]);
@@ -67,16 +69,11 @@ class UserController extends Controller
             'image'                 => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
             'email'                 => 'required|unique:users|max:255',
             'phone'                 => 'required|unique:users|max:255',
-            // 'password'              => ['required','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
-            'password'              => ['required'],
+            // 'password'              => ['required', 'confirmed','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
             'parent_id'             => 'nullable|exists:users,id|nullable',
-            'years_of_experience'   => 'required|numeric',
             'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
             'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
             'roles.*'               => 'exists:roles,id',
 
         ]);
@@ -87,21 +84,22 @@ class UserController extends Controller
 
         $data['password'] = Hash::make($request->password);
         unset($data['roles']);
+        $data['account_status'] = 'approved';
+        $data['status'] = 'active';
+        $data['position'] = 'employee';
         $user = User::create($data);
-        if(count($request->roles) > 0){
-            foreach ($request->roles as $role_id)
-            {
-                $role = Role::findOrFail($role_id);
-                $user->assignRole($role);
-            }
-        }
+        $user->roles()->sync($request->roles);
         userActivity('User', $user->id, 'create');
 
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.users.index');
+        $notification = [
+            'message' => 'User Created successfully',
+            'alert-type' => 'success'
+        ];
+        return redirect()->route('admin.users.index')->with($notification);
     }
 
     /**
@@ -113,7 +111,7 @@ class UserController extends Controller
     public function show($id)
     {
         if(auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
-            $this->authorize('show_users');
+            $this->authorize('view_users');
         }
         $user = User::withTrashed()->findOrFail($id);
         userActivity('User', $user->id, 'show');
@@ -136,12 +134,13 @@ class UserController extends Controller
             $this->authorize('update_users');
         }
   
-        return view('admin.users.edit', [ 
+        return view('new_admin.users.edit', [ 
             'user' => $user,
             'countries' => Country::all(),
             'roles' => Role::all(),
             'cities' => City::whereCountryId($user->country_id)->get(),
             'parents' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
+            'users' => User::whereIn('position', ['super_admin','head','team_leader', 'account_manager'])->whereStatus('active')->get(),
         ]);
     }
 
@@ -166,14 +165,10 @@ class UserController extends Controller
             'name'                  => 'required|max:255',
             'email'                 => 'required|max:255|unique:users,email,'.$user->id,
             'phone'                 => 'required|max:255|unique:users,phone,'.$user->id,
-            // 'password'              => ['nullable','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
-            'years_of_experience'   => 'required|numeric',
+            // 'password'              => ['nullable', 'confirmed', 'min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'],
             'country_id'            => 'required|exists:countries,id',
-            'city_id'               => 'required|exists:cities,id',
             'gender'                => 'required|in:male,female',
-            'status'                => 'required|in:active,pending,closed',
             'team'                  => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
-            'position'              => 'required|in:super_admin,head,team_leader,account_manager,publisher,employee',
             'roles.*'               => 'exists:roles,id',
         ]);
         if($request->hasFile('image')){
@@ -217,6 +212,7 @@ class UserController extends Controller
         if($request->ajax()){
             userActivity('User', $user->id, 'delete');
             $user->delete();
+            return true;
         }
     }
 
@@ -229,6 +225,15 @@ class UserController extends Controller
     public function profile()
     {
         $user = auth()->user();
-        return view('admin.users.profile', ['user' => $user]);
+        return view('new_admin.users.profile', ['user' => $user]);
+    }
+
+    public function changeStatus(Request $request){
+        $this->authorize('update_users');
+
+        $user = User::findOrFail($request->id);
+        $user->status = $request->status == 'active' ? 'active' : 'closed';
+        $user->save();
+        return response()->json(['message' => 'Updated Succefuly']);
     }
 }
