@@ -315,7 +315,7 @@
                                             data-allow-clear="true">
                                             <option value="">No One</option>
                                             <option {{ request()->status == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
-                                            <option {{ request()->status == 'unactive' ? 'selected' :''}} value="unactive">{{ __('Unactive') }}</option>
+                                            <option {{ request()->status == 'inactive' ? 'selected' :''}} value="inactive">{{ __('inactive') }}</option>
                                         </select>
                                     </div>
                                     <!--end::Input-->
@@ -424,12 +424,12 @@
                                     <td>
                                         @if ($coupon->status == 'active')
                                             <button
-                                                onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'unactive')"
+                                                onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')"
                                                 class="btn btn-light-success btn-sm">Active</button>
                                         @else
                                             <button
                                                 onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')"
-                                                class="btn btn-light-danger btn-sm">Unactive</button>
+                                                class="btn btn-light-danger btn-sm">inactive</button>
                                         @endif
                                     </td>
                                     <td>

@@ -61,22 +61,6 @@
                                     <tbody class="text-gray-600 fw-semibold">
                                         <!--begin::Table row-->
                                         <tr>
-                                            <td class="text-gray-800">Administrator Access
-                                                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"
-                                                    title="Allows a full access to the system"></i>
-                                            </td>
-                                            <td>
-                                                <!--begin::Checkbox-->
-                                                <label class="form-check form-check-custom form-check-solid me-9">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="kt_roles_select_all" />
-                                                    <span class="form-check-label" for="kt_roles_select_all">Select
-                                                        all</span>
-                                                </label>
-                                                <!--end::Checkbox-->
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <!--begin::Label-->
                                             <td class="text-gray-800">Main Dashboard
                                             </td>

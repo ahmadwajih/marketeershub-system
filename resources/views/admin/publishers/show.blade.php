@@ -411,7 +411,7 @@
                                                                                             @if($coupon->report&&$coupon->report->orders > 1)
                                                                                                 <span class="label label-lg label-success label-inline">{{ __('Active') }}</span>
                                                                                             @else
-                                                                                                <span class="label label-lg label-danger label-inline">{{ __('Unactive') }}</span>
+                                                                                                <span class="label label-lg label-danger label-inline">{{ __('inactive') }}</span>
                                                                                             @endif
                                                                                         </td>
                                                                                         <td>

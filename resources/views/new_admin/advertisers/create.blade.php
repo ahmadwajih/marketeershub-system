@@ -208,7 +208,7 @@
                                             <!--begin::Input-->
                                             <select name="status" data-control="select2" class="form-select">
                                                 <option value="active">{{ __('Active') }}</option>
-                                                <option value="unactive">{{ __('Un Active') }}</option>
+                                                <option value="inactive">{{ __('Un Active') }}</option>
                                             </select>
                                             <!--end::Input-->
                                             @if ($errors->has('status'))

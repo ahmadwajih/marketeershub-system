@@ -169,7 +169,7 @@
                                         @if($publisher->status == 'active')
                                             <span class="badge badge-success">Active</span>
                                         @else
-                                            <span class="badge badge-danger">Unactive</span>
+                                            <span class="badge badge-danger">inactive</span>
                                         @endif
                                     </td>
                                     <td>{{ $publisher->team }}</td>

@@ -36,7 +36,7 @@
                 <div class="card-toolbar">
                     @if ($advertiser->status == 'active')
                         <button type="button" class="btn btn-sm btn-success"
-                            onclick="changeStatus('{{ $advertiser->id }}','{{ $advertiser->id }}', 'unactive')">
+                            onclick="changeStatus('{{ $advertiser->id }}','{{ $advertiser->id }}', 'inactive')">
                             Active
                         </button>
                     @else

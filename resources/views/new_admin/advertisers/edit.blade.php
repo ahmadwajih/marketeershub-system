@@ -210,7 +210,7 @@
                                             <!--begin::Input-->
                                             <select name="status" data-control="select2" class="form-select">
                                                 <option {{ $advertiser->status == 'active' ? 'selected' : '' }} value="active">{{ __('Active') }}</option>
-                                                <option {{ $advertiser->status == 'unactive' ? 'selected' : '' }} value="unactive">{{ __('Un Active') }}</option>
+                                                <option {{ $advertiser->status == 'inactive' ? 'selected' : '' }} value="inactive">{{ __('Un Active') }}</option>
                                             </select>
                                             <!--end::Input-->
                                             @if ($errors->has('status'))

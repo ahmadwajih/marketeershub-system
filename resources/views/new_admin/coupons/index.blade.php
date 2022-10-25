@@ -147,7 +147,7 @@
                                                 >
                                                 <option value="">No One</option>
                                                 <option {{ session('coupons_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
-                                                <option {{ session('coupons_filter_status') == 'unactive' ? 'selected' :''}} value="unactive">{{ __('Inactive') }}</option>
+                                                <option {{ session('coupons_filter_status') == 'inactive' ? 'selected' :''}} value="inactive">{{ __('Inactive') }}</option>
                                             </select>
                                         </div>
                                         <!--end::Input-->

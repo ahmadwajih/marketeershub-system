@@ -506,7 +506,7 @@
                                                                     @if($coupon->report&&$coupon->report->orders > 1)
                                                                         <span class="label label-lg label-success label-inline">Active</span>
                                                                     @else
-                                                                        <span class="label label-lg label-danger label-inline">Unactive</span>
+                                                                        <span class="label label-lg label-danger label-inline">inactive</span>
                                                                     @endif
                                                                 </td>
                                                                 <td>
@@ -607,7 +607,7 @@
                                                 @if($singlePublisher->sumOrders > 1)
                                                     <span class="label label-lg label-success label-inline">Active</span>
                                                 @else
-                                                    <span class="label label-lg label-danger label-inline">Unactive</span>
+                                                    <span class="label label-lg label-danger label-inline">inactive</span>
                                                 @endif
                                             </td>
                                             <td><span class="text-dark-75 font-weight-bolder d-block font-size-lg">
