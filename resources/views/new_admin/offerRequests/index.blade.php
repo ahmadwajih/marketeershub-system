@@ -1,12 +1,15 @@
 @extends('new_admin.layouts.app')
-@section('title', 'Update Reports')
-@section('subtitle', 'View')
+@section('title', 'Offer Requests')
+@section('subtitle', 'Index')
+@push('styles')
+
+@endpush
 @section('content')
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Report Transactions List</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Offer Requests List</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -17,10 +20,10 @@
                 <!--end::Item-->
 
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Report Transactions</li>
+                <li class="breadcrumb-item text-gray-600">Offer Requests</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Report Transactions List</li>
+                <li class="breadcrumb-item text-gray-500">Offer Requests List</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->
@@ -28,8 +31,8 @@
         <!--end::Page title-->
     </div>
     <!--end::Toolbar-->
-     <!--begin::Post-->
-     <div class="content flex-column-fluid" id="kt_content">
+    <!--begin::Post-->
+    <div class="content flex-column-fluid" id="kt_content">
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->
@@ -38,11 +41,12 @@
                 <div class="card-title">
                     <!--begin::Search-->
                     <div class="d-flex align-items-center position-relative my-1">
-                       <form action="{{ route('admin.reports.index') }}">
+                       <form action="{{ route('admin.offerRequests.index') }}">
                             <!--end::Svg Icon-->
                             <div class="input-group mb-5">
-                                <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
-                                <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $reports->total() }} Record</span>
+                                {{-- <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
+                                <button class="input-group-text" id="basic-addon2">Go</button> --}}
+                                <span class="mx-3 mt-3"> {{ $offerRequests->total() }} Requests</span>
                             </div>
                             
                         </form> 
@@ -81,7 +85,7 @@
                             <div class="separator border-gray-200"></div>
                             <!--end::Menu separator-->
                             <!--begin::Form-->
-                            <form action="{{ route('admin.reports.index') }}" method="GET">
+                            <form action="{{ route('admin.offerRequests.index') }}" method="GET">
                                 <div class="px-7 py-5">
                                     <!--begin::Input group-->
                                     <div class="mb-10">
@@ -93,7 +97,7 @@
                                             <select class="form-select form-select-solid"  name="offer_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a" >
                                                 <option value="">No One</option>
                                                 @foreach ($offers as $offer)
-                                                    <option {{ session('pivot_report_filter_offer_id') == $offer->id ? 'selected' :''}} value="{{ $offer->id }}">{{ $offer->name }}</option>
+                                                    <option {{ session('offer_requests_filter_offer_id') == $offer->id ? 'selected' :''}} value="{{ $offer->id }}">{{ $offer->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -116,10 +120,27 @@
                                         <!--end::Input-->
                                     </div>
                                     <!--end::Input group-->
-
+                                    <!--begin::Input group-->
+                                    <div class="mb-10">
+                                        <!--begin::Label-->
+                                        <label class="form-label fw-semibold">Status:</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <div>
+                                            <select class="form-select form-select-solid" name="status" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
+                                                >
+                                                <option value="">No One</option>
+                                                <option {{ session('offer_requests_filter_status') == 'approved' ? 'selected' :''}} value="approved">{{ __('Approved') }}</option>
+                                                <option {{ session('offer_requests_filter_status') == 'rejected' ? 'selected' :''}} value="rejected">{{ __('Rejected') }}</option>
+                                                <option {{ session('offer_requests_filter_status') == 'pending' ? 'selected' :''}} value="pending">{{ __('pending') }}</option>
+                                            </select>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Input group-->
                                     <!--begin::Actions-->
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ route('admin.reports.clear.sessions') }}" class="btn btn-sm btn-secondary w-100 mx-2">Clear Filter</a>
+                                        <a href="{{ route('admin.offerRequests.clear.sessions') }}" class="btn btn-sm btn-secondary w-100 mx-2">Clear Filter</a>
                                         <button type="submit" class="btn btn-sm btn-primary w-100">Apply</button>
                                     </div>
                                     <!--end::Actions-->
@@ -131,8 +152,8 @@
 
                         <!--end::Filter-->
                         <!--begin::Add user-->
-                        @can('create_pivot_report')
-                            <a href="{{ route('admin.reports.create') }}" class="btn btn-primary">
+                        @can('create_offer_requests')
+                            <a href="{{ route('admin.offerRequests.create') }}" class="btn btn-primary">
                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                                 <span class="svg-icon svg-icon-2">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -143,13 +164,13 @@
                                             fill="currentColor" />
                                     </svg>
                                 </span>
-                                <!--end::Svg Icon-->Upload Report
+                                <!--end::Svg Icon-->Add Request
                             </a>
                         @endcan
                         <!--end::Add user-->
                     </div>
                     <!--end::Toolbar-->
-                    @can('delete_pivot_report')
+                    @can('delete_offer_requests')
                         <!--begin::Group actions-->
                         <div id="delete_btn" class="d-flex justify-content-end align-items-center d-none"
                             data-kt-user-table-toolbar="selected">
@@ -177,38 +198,37 @@
                                     </div>
                                 </th>
                                 <th>#</th>
-                                <th>{{ __('Offer Name') }}</th>
-                                <th>{{ __('Code') }}</th>
                                 <th>{{ __('Publisher Name') }}</th>
                                 <th>{{ __('Team') }}</th>
-                                <th>{{ __('Orders') }}</th>
-                                <th>{{ __('Sales') }}</th>
-                                <th>{{ __('Revenue') }}</th>
-                                <th>{{ __('Payout') }}</th>
+                                <th>{{ __('AM') }}</th>
+                                <th>{{ __('Offer Name') }}</th>
+                                <th>{{ __('Status') }}</th>
                                 <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if(count($reports) > 0)
-                            @foreach ($reports as $report)
-                                <tr class="tr-{{ $report->id }}">
+                            @if(count($offerRequests) > 0)
+                            @foreach ($offerRequests as $offerRequest)
+                                <tr class="tr-{{ $offerRequest->id }}">
                                     <td>
                                         <div class="form-check form-check-sm form-check-custom form-check-solid">
                                             <input class="form-check-input table-checkbox" name="item_check" type="checkbox"
-                                                value="{{ $report->id }}" />
+                                                value="{{ $offerRequest->id }}" />
                                         </div>
                                     </td>
-                                    <td>{{ $report->id }}</td>
-                                    <td>{{ $report->offer ? $report->offer->name :'' }}</td>
-                                    <td>{{ $report->coupon ? $report->coupon->coupon :'' }}</td>
-                                    <td>{{ $report->user ? $report->user->name :'' }}</td>
-                                    <td>{{ $report->user ? $report->user->updated_team : '' }}</td>
-                                    <td>{{ $report->orders }}</td>
-                                    <td>{{  round($report->sales, 2) }}$</td>
-                                    <td>{{  round($report->revenue, 2) }}$</td>
-                                    <td>{{  round($report->payout, 2) }}$</td>
+                                    <td>{{ $offerRequest->id }}</td>
+                                    <td>{{ $offerRequest->user->name }}</td>
+                                    <td>{{ $offerRequest->user->team }}</td>
+                                    <td>{{ $offerRequest->user->parent ? $offerRequest->user->parent->name : '' }}</td>
+                                    <td>{{ $offerRequest->offer ? $offerRequest->offer->name :'' }}</td>
+
                                     <td>
-                                        @can('update_coupons')
+                                        <button onclick="changeStatus('{{ $offerRequest->id }}','{{ $offerRequest->user->name }}', 'rejected')" class="btn btn-light-success btn-sm  active-btn-{{ $offerRequest->id }} {{ $offerRequest->status == 'approved' ?: 'd-none' }}">Approved</button> 
+                                        <button onclick="changeStatus('{{ $offerRequest->id }}','{{ $offerRequest->user->name }}', 'approved')" class="btn btn-light-danger btn-sm inactive-btn-{{ $offerRequest->id }} {{ $offerRequest->status == 'rejected' ?: 'd-none' }}">Rejected</button>
+                                    </td>
+         
+                                    <td>
+                                        @can('update_offer_requests')
                                             <a href="#" class="btn btn-light btn-active-light-primary btn-sm"
                                                 data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
                                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
@@ -227,9 +247,13 @@
                                                 data-kt-menu="true">
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
+                                                    <div class="menu-item px-3">
+                                                        <a href="{{ route('admin.offerRequests.edit', $offerRequest->id) }}"
+                                                            class="menu-link px-3">Edit</a>
+                                                    </div>
                                                     <!--begin::Menu item-->
                                                     <div class="menu-item px-3">
-                                                        <a href="javascript:void(0)" class="menu-link px-3" onclick="delete_row('{{ $report->id }}', '{{ $report->coupon->coupon }}')">Delete</a>
+                                                        <a href="javascript:void(0)" class="menu-link px-3" onclick="delete_row('{{ $offerRequest->id }}', '{{ $offerRequest->user->name }}')">Delete</a>
                                                     </div>
                                                     <!--end::Menu item-->
                                                 </div>
@@ -262,7 +286,7 @@
                             @include('new_admin.components.table_length')
                         </div>
                         <div>
-                            {!! $reports->links() !!}
+                            {!! $offerRequests->links() !!}
                         </div>
                     </div>
                 </div>
@@ -276,15 +300,19 @@
         <!--end::Card-->
     </div>
     <!--end::Post-->
+
+    <!--end::Modal-->
 @endsection
 @push('scripts')
     <script>
-        var route = "{{ route('admin.reports.index') }}";
+        var route = "{{ route('admin.offerRequests.index') }}";
     </script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/delete.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/change-status.js"></script>
+
+
     <script>
         $(document).ready(function() {
-
             $('#main_form_check').change(function(){
                 if(this.checked) {
                     $('.table-checkbox').prop('checked', true);
@@ -313,7 +341,6 @@
                 numberOfChecked = $('.table-checkbox:checked').length;
                 $('#selected_count').html(numberOfChecked);
             });
-
         });
     </script>
 @endpush

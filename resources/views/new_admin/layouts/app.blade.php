@@ -20,6 +20,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta property="og:title"
         content="Marketeers Hub is a performance marketing agency built to solidify your digital presence, in order to create impact and achieve your business goals. Our highly experienced team connects your business with the largest local and international affiliate networks via data-driven strategies that deliver unprecedented & sustainable results." />
     <meta property="og:url" content="https://keenthemes.com/metronic" />

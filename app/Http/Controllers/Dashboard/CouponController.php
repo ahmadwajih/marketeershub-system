@@ -33,13 +33,8 @@ class CouponController extends Controller
         $this->authorize('view_coupons');
         // Get Coupons 
         $query = Coupon::query();
-        if (isset($request->table_length) && $request->table_length  != null) {
-            session()->put('coupons_table_length', $request->table_length);
-        }
-        if (session()->has('coupons_table_length') == false) {
-            session()->put('coupons_table_length', config('app.pagination_pages'));
-        }
-        $tableLength = session('coupons_table_length');
+     
+        $tableLength = session('table_length');
 
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
@@ -395,7 +390,7 @@ class CouponController extends Controller
     {
         $this->authorize('create_coupons');
         return view('new_admin.coupons.upload', [
-            'offers' => Offer::whereStatus("active")->get()
+            'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get()
         ]);
     }
 

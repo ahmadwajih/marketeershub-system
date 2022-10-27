@@ -99,6 +99,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
+        Route::get('offerRequests/clear/sessions', 'OfferRequestController@clearFilterSeassoions')->name('offerRequests.clear.sessions');
+        Route::post('offerRequests/change/status', 'OfferRequestController@changeStatus');
+
         Route::post('offers/change/status', 'OfferController@changeStatus');
         Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
         Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
@@ -113,6 +116,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         
         Route::resource('coupons', CouponController::class);
         Route::resource('reports', PivotReportController::class);
+        Route::get('reports/clear/sessions', 'PivotReportController@clearFilterSeassoions')->name('reports.clear.sessions');
         Route::get('reports/download/errors', 'PivotReportController@downLoadErrors')->name('reports.deonload.errore');
         Route::get('reports/define/excel/sheet/columns', 'PivotReportController@defineExcelSheetColumns')->name('define.excel.sheet.columns');
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
@@ -144,6 +148,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         // Delete this routes and views
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
+            Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
+        });
+
+        Route::group(['prefix' => 'table-handler', 'as' => 'table.handler.'], function(){
+            Route::get('set-table-length', 'TableHandlerController@setTableLength')->name('set.table.length');
             Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
         });
     });

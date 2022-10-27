@@ -321,11 +321,7 @@
                     </table>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <select id="change_table_length" class="form-select form-select-sm">
-                                @for($i = 10; $i <= 100; $i += 10)
-                                <option {{  session('coupons_table_length') == $i ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
+                            @include('new_admin.components.table_length')
                         </div>
                         <div>
                             {!! $coupons->links() !!}
@@ -557,12 +553,6 @@
                 }
                 numberOfChecked = $('.table-checkbox:checked').length;
                 $('#selected_count').html(numberOfChecked);
-            });
-
-            $('#change_table_length').change(function(){
-                var url = "{{ route('admin.coupons.index', request()->all()) }}" + "{{ count(request()->all())> 0 ? '&' : '?' }}" + "table_length="+$(this).val();
-                url = url.replace(/&amp;/g, '&');
-                window.location.href = url;
             });
 
         });

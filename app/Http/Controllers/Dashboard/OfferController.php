@@ -37,13 +37,7 @@ class OfferController extends Controller
     {
         $this->authorize('view_offers');
         $query = Offer::query();
-        if(isset($request->table_length ) && $request->table_length  != null){
-            session()->put('offers_table_length', $request->table_length);
-        }
-        if (session()->has('offers_table_length') == false) {
-            session()->put('offers_table_length', config('app.pagination_pages'));
-        }
-        $tableLength = session('offers_table_length');
+        $tableLength = session('table_length');
 
         if(isset($request->search ) && $request->search  != null){
             $query->where('name_ar', 'like',  "%{$request->search}%" )

@@ -33,6 +33,30 @@ class UserSeeder extends Seeder
         ]);
         $superAdmin->assignRole(Role::get()->first());
         
+        //Marketeers Hub
+        $user = User::create([
+            'name'                  => 'Marketeers Hub',
+            'password'              => Hash::make('JGKJSK#@#@#dsfsdfFFSFsgd4545'),
+            'ho_id'                 => '1000',
+            'years_of_experience'   => '5',
+            'gender'                => 'male',
+            'team'                  => 'media_buying',
+            'position'              => 'publisher',
+            'email'                 => 'info@marketeershub.com',
+            'phone'                 => '123456789',
+            'traffic_sources'       => 'traffic sources',
+            'affiliate_networks'    => 'media buying networks',
+            'owened_digital_assets' => 'owened digital assets',
+            'account_title'         => 'account_title',
+            'bank_name'             => 'bank_name',
+            'bank_branch_code'      => 'bank_branch_code',
+            'swift_code'            => 'swift_code',
+            'iban'                  => 'iban',
+            'currency_id'           => 1,
+            'status'                => 'active'
+        ]);
+        $user->assignRole(Role::whereLabel('publisher')->first());
+
         // Head 
         //Influencer Head
         $user = User::create([

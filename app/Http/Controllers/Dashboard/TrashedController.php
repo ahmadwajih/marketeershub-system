@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class TrashedController extends Controller
 {
     public function index(Request $request){
+
         $this->authorize('view_trashed');
         if (isset($request->table_length) && $request->table_length  != null) {
             session()->put('trashed_table_length', $request->table_length);
@@ -20,7 +21,8 @@ class TrashedController extends Controller
         $tableLength = session('trashed_table_length');
 
         if($request->model == 'users'){
-            $users = User::withTrashed()->orderBy('deleted_at', 'desc')->paginate($tableLength);
+            $users = User::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($tableLength);
+            return view('new_admin.users.index', ['users' => $users]);
         }
 
         return view('dashboard.'.$plural.'.index', ['']);

@@ -59,7 +59,15 @@ class UpdateReportImport implements ToCollection
             ])->validate();
         }
         foreach ($collection as $index => $col) {
-            $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
+            try {
+                $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
+
+            } catch (\Throwable $th) {
+                $this->columnHaveIssue[] = ['Please make sure the first column is valid date.'];
+                session(['columnHaveIssue' => $this->columnHaveIssue]);
+                return false;
+            }
+            
             // 1- Fixed Model 
             if ($col[1]) {
                 $coupon  = Coupon::where([
@@ -102,6 +110,7 @@ class UpdateReportImport implements ToCollection
                 if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
                     PivotReport::create([
                         'coupon_id' => $coupon->id,
+                        'user_id' => $coupon->user_id,
                         'orders' => $col[2],
                         'sales' => $col[3],
                         'revenue' => $this->calcRevenue($col),

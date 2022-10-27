@@ -35,6 +35,7 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use PDO;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use PhpParser\Node\Expr\FuncCall;
 use PHPUnit\Framework\Constraint\Count;
 
@@ -397,22 +398,30 @@ class DashboardController extends Controller
 
     public function test(Request $request)
     {
-
-        $offer = Offer::findOrFail(1);
-        $revenue = $offer->cps->where('type', 'revenue');
-        $payout = $offer->cps->where('type', 'payout');
-        $revenueHaveDateRange = $revenue->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
-        $revenueHaveCountries = $revenue->where('countries', 1)->where('countries_ids', '!=', null)->first();
-        $payoutHaveDateRange = $payout->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
-        $payoutHaveCountries = $payout->where('countries', 1)->where('countries_ids', '!=', null)->first();
-        $haveDateRange = $revenueHaveDateRange || $payoutHaveDateRange ? true : false;
-        $haveCountryRange = $revenueHaveCountries || $payoutHaveCountries ? true : false;
-        $cpsType = $offer->payout_cps_type;
-        dd([
-            'haveDateRange' => $haveDateRange,
-            'haveCountryRange' => $haveCountryRange,
-            'cpsType' => $cpsType,
-        ]);
-        return view('admin.test', ['coupons' => $coupons]);
+        abort(404);
+        //Marketeers Hub
+        // $user = User::create([
+        //     'name'                  => 'Marketeers Hub',
+        //     'password'              => Hash::make('JGKJSK#@#@#dsfsdfFFSFsgd4545'),
+        //     'ho_id'   => '1000',
+        //     'years_of_experience'   => '5',
+        //     'gender'                => 'male',
+        //     'team'                  => 'media_buying',
+        //     'position'              => 'publisher',
+        //     'email'                 => 'info@marketeershub.com',
+        //     'phone'                 => '123456789',
+        //     'traffic_sources'       => 'traffic sources',
+        //     'affiliate_networks'    => 'media buying networks',
+        //     'owened_digital_assets' => 'owened digital assets',
+        //     'account_title'         => 'account_title',
+        //     'bank_name'             => 'bank_name',
+        //     'bank_branch_code'      => 'bank_branch_code',
+        //     'swift_code'            => 'swift_code',
+        //     'iban'                  => 'iban',
+        //     'currency_id'           => 1,
+        //     'status'                => 'active'
+        // ]);
+        // $user->assignRole(Role::whereLabel('publisher')->first());
+        // dd($user);
     }
 }

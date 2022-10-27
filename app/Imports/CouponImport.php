@@ -10,8 +10,9 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class CouponImport implements ToCollection, WithChunkReading, ShouldQueue
+class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithStartRow
 {
     public $offerId;
     public $oldId = null;
@@ -26,7 +27,7 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue
      */
     public function collection(Collection $collection)
     {
-        unset($collection[0]);
+
         Validator::make($collection->toArray(), [
             '*.0' => 'required|max:20',
         ])->validate();
@@ -36,53 +37,46 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue
 
             if (!is_null($col[0])) {
                 $userId = null;
-                // if(!is_null($col[1]) && isset($col[1])){
-                //     if($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000'){
+                // if (!is_null($col[1]) && isset($col[1])) {
+                //     if ($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000') {
                 //         $publisher = User::where('email', 'info@marketeershub.com')->first();
-                //         if($publisher){
+                //         if ($publisher) {
                 //             $userId = $publisher->id;
                 //         }
-                //     }else{
+                //     } else {
                 //         $publisher = User::where('ho_id', $this->oldId)->first();
-                //         if($publisher){
+                //         if ($publisher) {
                 //             $userId = $publisher->id;
                 //         }
                 //     }
-
                 // }
-                try {
-                    $coupon = Coupon::updateOrCreate(
-                        [
-                            'coupon' => $col[0],
-                            'offer_id' => $this->offerId,
-    
-                        ],
-                        [
-                            'user_id' => $userId,
-                        ]
-                    );
-                } catch (\Throwable $th) {
-                    Log::debug(['DDDDDDDDDDDDD'=>$th]);
-
-                }
-               
-
-                $this->test[$index]['old_id'] = $this->oldId;
-                if ($coupon) {
-                    $this->test[$index]['code'] = $coupon->coupon;
-                    $this->test[$index]['user_id'] = $coupon->user_id;
-                } else {
-                    $this->test[$index]['code_null'] = $col[0];
-                    $this->test[$index]['user_id_null'] = isset($col[1]) ?? '';
+                $coupon = Coupon::where([
+                    ['coupon', '=',  $col[0]],
+                    [ 'offer_id', '=', $this->offerId] 
+                ])->first();
+                if($coupon){
+                    $coupon->user_id = $userId;
+                    $coupon->save();
+                }else{
+                    Coupon::create([
+                        'coupon' => $col[0],
+                        'offer_id' => $this->offerId,
+                        'user_id' => $userId,
+                    ]);
                 }
             }
         }
 
-        Log::debug($this->test);
     }
 
     public function chunkSize(): int
     {
-        return 10;
+        return 100;
     }
+
+    public function startRow(): int
+    {
+        return 2;
+    }
+
 }
