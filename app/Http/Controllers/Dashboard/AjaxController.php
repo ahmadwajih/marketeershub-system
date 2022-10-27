@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Coupon;
 use App\Models\Offer;
@@ -46,6 +47,14 @@ class AjaxController extends Controller
                 ->whereStatus('active')
                 ->where('team', $request->team)->get();
             return view('admin.ajax.options', ['options' => $users]);
+        }
+    }
+
+    public function getCategoriesBasedOnTeam(Request $request)
+    {
+        if ($request->ajax()) {
+            $categories = Category::where('type', $request->team)->get();
+            return view('admin.ajax.categories_option', ['options' => $categories]);
         }
     }
 

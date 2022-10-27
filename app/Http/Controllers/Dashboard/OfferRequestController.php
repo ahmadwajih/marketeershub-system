@@ -27,7 +27,7 @@ class OfferRequestController extends Controller
 
         $query = OfferRequest::query();
   
-        $tableLength = session('table_length');
+         $tableLength = session('table_length') ?? config('app.pagination_pages');
 
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {

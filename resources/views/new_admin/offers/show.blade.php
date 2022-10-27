@@ -489,7 +489,16 @@
                             @endif
                         </tbody>
                     </table>
-                    {!! $coupons->links() !!}
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            @include('new_admin.components.table_length')
+                        </div>
+                        <div>
+                            {!! $coupons->links() !!}
+                        </div>
+                    </div>
+
                 </div>
                 <!--end::Table-->
             </div>

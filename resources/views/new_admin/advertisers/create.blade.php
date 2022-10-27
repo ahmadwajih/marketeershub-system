@@ -237,27 +237,6 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">City</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select id="cities" name="city_id" data-control="select2" class="form-select form-select-sm">
-                                                <option value="">You have to select country</option>
-                                                @foreach ($cities as $city)
-                                                    <option {{ old('city_id') == $city->id ? "selected" : 'null' }} value="{{ $city->id }}">{{  $city->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('city_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('city_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
                                     
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
@@ -467,33 +446,5 @@
 
 @endsection
 @push('scripts')
-<script>
-    $(document).ready(function(){
-        // get countries based on country
-        $("#country").change(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.get({
-                url: '{{ route('admin.ajax.cities') }}',
-                data: {
-                    countryId: $(this).val(),
-                },
-                beforeSend: function() {
-                    $('#loading').show()
-                },
-                success: function(data) {
-                    $('#cities').html(data)
-                },
-                complete: function() {
-                    $('#loading').hide()
-                }
-            });
 
-
-        });
-    })
-</script>
 @endpush

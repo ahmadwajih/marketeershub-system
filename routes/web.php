@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
     //Start Auth ajax requests 
     Route::get('ajax/acount-manager-based-on-team', 'AjaxController@getAccountManagersBasedOnTeam')->name('get.account.managers.based.on.team');
+    Route::get('ajax/categories-based-on-team', 'AjaxController@getCategoriesBasedOnTeam')->name('get.categories.based.on.team');
     Route::get('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
 
     //End Auth ajax requests 
