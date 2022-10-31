@@ -120,17 +120,17 @@
                                     <!--end::Input group-->
                                     <!--begin::Input group-->
                                     <div class="mb-10">
+                                        @include('new_admin.components.publishers_filter')
                                         <!--begin::Label-->
                                         <label class="form-label fw-semibold">Publisher:</label>
                                         <!--end::Label-->
                                         <!--begin::Input-->
                                         <div>
-                                            <select class="form-select form-select-solid" name="user_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
-                                                >
+                                            <select class="form-select form-select-solid publishers_filter" name="user_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a">
                                                 <option value="">No One</option>
-                                                @foreach($publishers as $publisher)
-                                                    <option {{ session('coupons_filter_user_id') == $publisher->id ? 'selected' :''}} value="{{ $publisher->id }}">{{ $publisher->name }}</option>
-                                                @endforeach
+                                                @if($publisherForFilter)
+                                                    <option value="{{$publisherForFilter->id}}" selected >{{$publisherForFilter->name}}</option>
+                                                @endif
                                             </select>
                                         </div>
                                         <!--end::Input-->
@@ -389,17 +389,15 @@
 
                             <!--begin::Input group-->
                             <div class="mb-10 fv-row">
+                                @include('new_admin.components.publishers_filter')
+
                                 <!--begin::Label-->
                                 <label class="form-label">Publisher</label>
                                 <!--end::Label-->
                                 <!--begin::Input-->
                                 <select name="user_id" id="mySelect2" data-control="select2"
-                                    class="form-select publisher-select-2" data-placeholder="Select an option">
+                                    class="form-select publisher-select-2 publishers_filter" data-placeholder="Select an option">
                                     <option selected value=""> {{ __('No One') }}</option>
-                                    @foreach ($publishers as $publisher)
-                                        <option {{ old('user_id') == $publisher->id ? 'selected' : '' }}
-                                            value="{{ $publisher->id }}"> {{ $publisher->name }}</option>
-                                    @endforeach
                                 </select>
                                 <!--end::Input-->
                                 @if ($errors->has('user_id'))

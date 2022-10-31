@@ -57,12 +57,13 @@ class OfferRequestController extends Controller
         if (!in_array('super_admin', auth()->user()->roles->pluck('label')->toArray())) {
             $query->whereIn('user_id', userChildrens());
         } 
-
+ 
         $offerRequests = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
-        
+        $publisherForFilter = User::whereId(session('offer_requests_filter_user_id'))->first();
         return view('new_admin.offerRequests.index', [
             'offerRequests' => $offerRequests,
-            'offers' => Offer::orderBy('id', 'desc')->get()
+            'offers' => Offer::orderBy('id', 'desc')->get(),
+            'publisherForFilter' => $publisherForFilter
         ]);
     }
 

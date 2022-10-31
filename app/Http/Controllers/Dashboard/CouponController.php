@@ -61,16 +61,16 @@ class CouponController extends Controller
         if (isset($request->search) && $request->search  != null) {
             $query->where('coupon', $request->search);
         }
+        $publisherForFilter = User::whereId(session('coupons_filter_user_id'))->first();
 
         $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
-        $publishers = User::wherePosition('publisher')->get();
         $offers = Offer::orderBy('id', 'desc')->get();
         return view('new_admin.coupons.index', [
             'countries' => $countries,
-            'publishers' => $publishers,
             'coupons' => $coupons,
-            'offers' => $offers
+            'offers' => $offers,
+            'publisherForFilter' => $publisherForFilter
         ]);
     }
 

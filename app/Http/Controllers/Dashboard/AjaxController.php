@@ -73,4 +73,22 @@ class AjaxController extends Controller
             ]);
         }
     }
+
+    public function publishersSearch(Request $request){
+
+        $key = explode(' ', $request->publisher_input);
+
+        $publishers = User::wherePosition('publisher')->where(function ($q) use ($key) {
+            foreach ($key as $value) {
+                $q->orWhere('name', 'like', "%{$value}%")
+                ->orWhere('email', 'like', "%{$value}%")
+                ->orWhere('ho_id', 'like', "%{$value}%");
+            }
+        })->get();
+
+        return view('new_admin.components.option', [
+            'title' => "Select Publisher",
+            "items" => $publishers
+        ]);
+    }
 }

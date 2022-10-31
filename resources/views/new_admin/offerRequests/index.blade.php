@@ -104,6 +104,7 @@
                                         <!--end::Input-->
                                     </div>
                                     <!--end::Input group-->
+                                    @include('new_admin.components.publishers_filter') 
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <!--begin::Label-->
@@ -111,10 +112,12 @@
                                         <!--end::Label-->
                                         <!--begin::Input-->
                                         <div>
-                                            <select class="form-select form-select-solid" name="user_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
+                                            <select class="form-select form-select-solid publishers_filter" name="user_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
                                                 >
                                                 <option value="">No One</option>
-
+                                                @if($publisherForFilter)
+                                                    <option value="{{$publisherForFilter->id}}" selected >{{$publisherForFilter->name}}</option>
+                                                @endif
                                             </select>
                                         </div>
                                         <!--end::Input-->

@@ -33,7 +33,6 @@ class PivotReportController extends Controller
         $query = PivotReport::query();
        
          $tableLength = session('table_length') ?? config('app.pagination_pages');
-
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
             $query->where('offer_id', $request->offer_id);
@@ -54,13 +53,14 @@ class PivotReportController extends Controller
                 return  $couponQuery->where('coupon', $request->search);
             });
         }
-
+        $publisherForFilter = User::whereId(session('pivot_report_filter_user_id'))->first();
         $reports = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $offers = Offer::orderBy('id', 'desc')->get();
 
         return view('new_admin.pivot-report.index', [
             'reports' => $reports,
-            'offers' => $offers
+            'offers' => $offers,
+            'publisherForFilter' => $publisherForFilter
         ]);
     }
 
