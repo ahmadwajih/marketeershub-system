@@ -30,7 +30,7 @@ var KTUsersList = function () {
                 { data: null },
                 { data: 'id' },
                 { data: 'offer.name_en' },
-                { data: null },
+                { data: 'coupon.coupon' },
                 { data: 'orders' },
                 { data: 'sales' },
                 { data: 'revenue' },
@@ -49,23 +49,7 @@ var KTUsersList = function () {
                             </div>`;
                     }
                 },
-                {
-                    targets: 3,
-                    // orderable: true,
-                    // searchable:false,
-                    render: function (data, type, row) {
-                        if(row.coupon == null){
-                            return null;
-                        }else{
-                            try {
-                                return row.coupon.coupon;
-                              }
-                              catch(err) {
-                                return null;
-                              }
-                        }
-                    }
-                },
+
                 {
                     targets: -1,
                     data: null,

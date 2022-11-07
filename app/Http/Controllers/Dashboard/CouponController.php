@@ -25,21 +25,11 @@ class CouponController extends Controller
      */
     public function index(Request $request)
     {
-        // $coupons = Coupon::withTrashed()->get();
-        // foreach($coupons as $coupon){
-        //     $coupon->forceDelete();
-        // }
-        // dd($coupons->count());
         $this->authorize('view_coupons');
         // Get Coupons 
         $query = Coupon::query();
-        if (isset($request->table_length) && $request->table_length  != null) {
-            session()->put('coupons_table_length', $request->table_length);
-        }
-        if (session()->has('coupons_table_length') == false) {
-            session()->put('coupons_table_length', config('app.pagination_pages'));
-        }
-        $tableLength = session('coupons_table_length');
+     
+         $tableLength = session('table_length') ?? config('app.pagination_pages');
 
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
@@ -66,16 +56,16 @@ class CouponController extends Controller
         if (isset($request->search) && $request->search  != null) {
             $query->where('coupon', $request->search);
         }
+        $publisherForFilter = User::whereId(session('coupons_filter_user_id'))->first();
 
         $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
-        $publishers = User::wherePosition('publisher')->get();
         $offers = Offer::orderBy('id', 'desc')->get();
         return view('new_admin.coupons.index', [
             'countries' => $countries,
-            'publishers' => $publishers,
             'coupons' => $coupons,
-            'offers' => $offers
+            'offers' => $offers,
+            'publisherForFilter' => $publisherForFilter
         ]);
     }
 
@@ -395,7 +385,7 @@ class CouponController extends Controller
     {
         $this->authorize('create_coupons');
         return view('new_admin.coupons.upload', [
-            'offers' => Offer::whereStatus("active")->get()
+            'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get()
         ]);
     }
 

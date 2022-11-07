@@ -7,8 +7,9 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue
+class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithStartRow
 {
     public $offerId;
 
@@ -21,7 +22,6 @@ class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue
 */
     public function collection(Collection $collection)
     {
-        unset($collection[0]);
         foreach ($collection as $col) 
         {
             if(!is_null($col[0])){
@@ -36,6 +36,11 @@ class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 10;
+    }
+
+    public function startRow(): int
+    {
+        return 2;
     }
 }

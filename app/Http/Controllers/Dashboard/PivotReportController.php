@@ -9,6 +9,7 @@ use App\Imports\V2\UpdateReportImport;
 use App\Imports\ValidationPivotReportImport;
 use App\Models\Offer;
 use App\Models\PivotReport;
+use App\Models\User;
 use App\Notifications\UpdateValidation;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -28,11 +29,39 @@ class PivotReportController extends Controller
     {
         // return redirect()->back();
         $this->authorize('view_pivot_report');
-        if ($request->ajax()) {
-            $coupons = PivotReport::with(['offer', 'coupon']);
-            return DataTables::of($coupons)->make(true);
+
+        $query = PivotReport::query();
+       
+         $tableLength = session('table_length') ?? config('app.pagination_pages');
+        // Filter
+        if (isset($request->offer_id) && $request->offer_id  != null) {
+            $query->where('offer_id', $request->offer_id);
+            session()->put('pivot_report_filter_offer_id', $request->offer_id);
+        } elseif (session('pivot_report_filter_offer_id')) {
+            $query->where('offer_id', session('pivot_report_filter_offer_id'));
         }
-        return view('new_admin.pivot-report.index');
+
+        if (isset($request->user_id) && $request->user_id  != null || session('pivot_report_filter_user_id')) {
+            $query->where('user_id', $request->user_id);
+            session()->put('pivot_report_filter_user_id', $request->user_id);
+        } elseif (session('pivot_report_filter_user_id')) {
+            $query->where('user_id', session('pivot_report_filter_user_id'));
+        }
+
+        if (isset($request->search) && $request->search  != null) {
+            $query->whereHas('coupon', function($couponQuery)use($request){
+                return  $couponQuery->where('coupon', $request->search);
+            });
+        }
+        $publisherForFilter = User::whereId(session('pivot_report_filter_user_id'))->first();
+        $reports = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
+        $offers = Offer::orderBy('id', 'desc')->get();
+
+        return view('new_admin.pivot-report.index', [
+            'reports' => $reports,
+            'offers' => $offers,
+            'publisherForFilter' => $publisherForFilter
+        ]);
     }
 
     /**
@@ -99,10 +128,12 @@ class PivotReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, PivotReport $pivotReport)
+    public function destroy(Request $request,$id)
     {
+       
         $this->authorize('delete_cites');
         if ($request->ajax()) {
+            $pivotReport = PivotReport::findOrFail($id);
             userActivity('PivotReport', $pivotReport->id, 'delete');
             $pivotReport->delete();
         }
@@ -185,5 +216,13 @@ class PivotReportController extends Controller
         }
 
         return response()->json(['link' => $link,'title' => $title]);
+    }
+
+    public function clearFilterSeassoions()
+    {
+        session()->forget('pivot_report_filter_offer_id');
+        session()->forget('pivot_report_filter_user_id');
+        session()->forget('pivot_report_filter_status');
+        return redirect()->route('admin.reports.index');
     }
 }

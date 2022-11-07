@@ -260,9 +260,11 @@ var KTUsersList = function () {
                                     });
                                 })
                                 .fail(function (res) {
+                                    console.log(res);
                                     Swal.fire({
                                         text:
                                             customerName + " was not deleted.",
+                                        text:res.responseJSON.message,
                                         icon: "error",
                                         buttonsStyling: false,
                                         confirmButtonText: "Ok, got it!",

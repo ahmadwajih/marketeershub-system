@@ -144,6 +144,10 @@ class User extends Authenticatable
         return ucwords(str_replace('_', ' ', $this->attributes['position']));
     }
 
+    public function getHumansCreatedAtAttribute(){
+        return Carbon::parse($this->created_at)->diffForHumans();
+    }
+
     public function socialMediaLinks(){
         return $this->hasMany(SocialMediaLink::class);
     }

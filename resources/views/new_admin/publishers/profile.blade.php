@@ -486,16 +486,36 @@
                 <div class="card-header pt-7">
                     <!--begin::Title-->
                     <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-gray-800">My Payments </span>
+                        <span class="card-label fw-bold text-gray-800">Paid Payments </span>
                         <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ count($payments) }} Paid payment</span>
                     </h3>
                     <!--end::Title-->
-        
                 </div>
                 <!--end::Card header-->
-                <!--begin::Card body-->
-                <div class="card-body pt-2">
-                    <!--begin::Table-->* 
+                    <!--begin::Card body-->
+                    <div class="card-body pt-2">
+                        <!--begin::Stats-->
+                        <div class="row">
+                            <!--begin::Col-->
+                            <div class="col">
+                                <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                                    <span class="fs-4 fw-semibold text-info pb-1 px-2">Pending</span>
+                                    <span class="fs-lg-2tx fw-bold d-flex justify-content-center">$
+                                    <span data-kt-countup="true" data-kt-countup-value="0">0</span></span>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                                    <span class="fs-4 fw-semibold text-info pb-1 px-2">Paid</span>
+                                    <span class="fs-lg-2tx fw-bold d-flex justify-content-center">$
+                                    <span data-kt-countup="true" data-kt-countup-value="0">0</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Col-->
+
+                    <!--begin::Table-->
                     <table class="table align-middle table-row-dashed fs-6 gy-3" id="kt_table_widget_4_table">
                         <!--begin::Table head-->
                         <thead>

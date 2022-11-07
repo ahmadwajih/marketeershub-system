@@ -309,28 +309,6 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">City</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select id="cities" name="city_id" data-control="select2" class="form-select form-select-sm">
-                                                <option value="">You have to select country</option>
-                                                @foreach ($cities as $city)
-                                                    <option {{ old('city_id') == $city->id ? "selected" : 'null' }} value="{{ $city->id }}">{{  $city->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('city_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('city_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
                                     <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -353,7 +331,7 @@
                                             <label class="form-label">Categories</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="categories[]" aria-label="Select Categories" data-control="select2" multiple data-placeholder="Select Categories" class="form-select">
+                                            <select id="categories" name="categories[]" aria-label="Select Categories" data-control="select2" multiple data-placeholder="Select Categories" class="form-select">
                                                 <option value="">Select categories</option>
                                                 @foreach ($categories as $category)
                                                     <option {{ old('categories') && in_array($category->id, old('categories')) ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->title }}</option>
@@ -366,10 +344,8 @@
                                         <!--end::Input group-->
                                     </div>
                                 </div>
-
                                 <div class="affiliate">
                                      <div class="row">
-
                                         <div class="col-md-6">
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
@@ -836,6 +812,22 @@
                     },
                     success: function(data) {
                         $('#accountManagers').html(data)
+                    },
+                    complete: function() {
+                        $('#loading').hide()
+                    }
+                });
+                // Get Categories
+                $.get({
+                    url: '{{ route('admin.get.categories.based.on.team') }}',
+                    data: {
+                        team: $(this).val(),
+                    },
+                    beforeSend: function() {
+                        $('#loading').show()
+                    },
+                    success: function(data) {
+                        $('#categories').html(data)
                     },
                     complete: function() {
                         $('#loading').hide()

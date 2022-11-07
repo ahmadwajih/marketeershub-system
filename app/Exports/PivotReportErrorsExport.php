@@ -23,13 +23,13 @@ class PivotReportErrorsExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
+            'Date',
             'Coupon',
             'Orders',
             'Sales',
             'New',
             'Old',
             'Country',
-            'Date',
             'Error Message',
         ];
     }

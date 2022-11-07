@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Coupon;
 use App\Models\Offer;
@@ -49,6 +50,14 @@ class AjaxController extends Controller
         }
     }
 
+    public function getCategoriesBasedOnTeam(Request $request)
+    {
+        if ($request->ajax()) {
+            $categories = Category::where('type', $request->team)->get();
+            return view('admin.ajax.categories_option', ['options' => $categories]);
+        }
+    }
+
     public function readNotifications()
     {
         auth()->user()->unreadNotifications->markAsRead();
@@ -63,5 +72,23 @@ class AjaxController extends Controller
                 "items" => $accountManagers
             ]);
         }
+    }
+
+    public function publishersSearch(Request $request){
+
+        $key = explode(' ', $request->publisher_input);
+
+        $publishers = User::wherePosition('publisher')->where(function ($q) use ($key) {
+            foreach ($key as $value) {
+                $q->orWhere('name', 'like', "%{$value}%")
+                ->orWhere('email', 'like', "%{$value}%")
+                ->orWhere('ho_id', 'like', "%{$value}%");
+            }
+        })->get();
+
+        return view('new_admin.components.option', [
+            'title' => "Select Publisher",
+            "items" => $publishers
+        ]);
     }
 }

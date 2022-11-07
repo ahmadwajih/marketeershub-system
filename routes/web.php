@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
     //Start Auth ajax requests 
     Route::get('ajax/acount-manager-based-on-team', 'AjaxController@getAccountManagersBasedOnTeam')->name('get.account.managers.based.on.team');
+    Route::get('ajax/categories-based-on-team', 'AjaxController@getCategoriesBasedOnTeam')->name('get.categories.based.on.team');
     Route::get('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
 
     //End Auth ajax requests 
@@ -66,6 +67,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
         Route::post('publishers-check-exists', 'PublisherController@checkIfExists')->name('publishers.check.exists');
         Route::post('publishers/change/status', 'PublisherController@changeStatus');
+        Route::get('publishers/clear/sessions', 'PublisherController@clearFilterSeassoions')->name('publishers.clear.sessions');
 
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
@@ -83,6 +85,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('payments', PaymentController::class);
         Route::get('payments/upload/form', 'PaymentController@uploadForm')->name('payments.upload.form');
         Route::post('payments/upload/form', 'PaymentController@upload')->name('payments.upload');
+        Route::get('payments/clear/sessions', 'PaymentController@clearFilterSeassoions')->name('payments.clear.sessions');
 
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
@@ -99,11 +102,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');
         Route::post('ajax/offerRequests/coupons', 'OfferRequestController@coupons')->name('offerRequest.ajax.coupons');
         Route::post('ajax/offerRequests/view-coupons', 'OfferRequestController@viewOfferCoupons')->name('offerRequest.ajax.view.coupons');
+        Route::get('offerRequests/clear/sessions', 'OfferRequestController@clearFilterSeassoions')->name('offerRequests.clear.sessions');
+        Route::post('offerRequests/change/status', 'OfferRequestController@changeStatus');
+
         Route::post('offers/change/status', 'OfferController@changeStatus');
         Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
         Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
         Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
-        Route::resource('trashed', TrashedController::class);
+        Route::get('trashed', 'TrashedController@index')->name('trashed.index');
+        Route::put('trashed/restore', 'TrashedController@restore')->name('trashed.restore');
 
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');
@@ -113,6 +120,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         
         Route::resource('coupons', CouponController::class);
         Route::resource('reports', PivotReportController::class);
+        Route::get('reports/clear/sessions', 'PivotReportController@clearFilterSeassoions')->name('reports.clear.sessions');
         Route::get('reports/download/errors', 'PivotReportController@downLoadErrors')->name('reports.deonload.errore');
         Route::get('reports/define/excel/sheet/columns', 'PivotReportController@defineExcelSheetColumns')->name('define.excel.sheet.columns');
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
@@ -141,9 +149,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/account-managers', 'AjaxController@accountManagers')->name('ajax.account.managers');
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
+        Route::get('ajax/publishers/search', 'AjaxController@publishersSearch')->name('ajax.publishers.search');
         // Delete this routes and views
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');
+            Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
+        });
+
+        Route::group(['prefix' => 'table-handler', 'as' => 'table.handler.'], function(){
+            Route::get('set-table-length', 'TableHandlerController@setTableLength')->name('set.table.length');
             Route::get('offers', 'PublisherController@offers')->name('publisher.offers');
         });
     });
