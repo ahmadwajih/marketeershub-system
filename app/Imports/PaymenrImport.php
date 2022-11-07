@@ -26,7 +26,7 @@ class PaymenrImport implements ToCollection
     {
 
          unset($collection[0]);
-        //  dd();
+       
          Validator::make($collection->toArray(), [
             '*.0' => 'required|numeric',
             '*.2' => 'required|numeric',
@@ -39,9 +39,10 @@ class PaymenrImport implements ToCollection
 
          foreach ($collection as $col) 
          {
+            // dd($col);
             $userId = null;
             if(!is_null($col[0])){
-                $publisher = User::where('ho_id', $col[0])->first();
+                $publisher = User::where('id', $col[0])->first();
                 if($publisher){
                     $userId = $publisher->id;
                 }
@@ -57,7 +58,7 @@ class PaymenrImport implements ToCollection
                             'user_id'       => auth()->user()->id,
                         ]);
 
-                        Notification::send($publisher, new NewPaymentPaid($payment));
+                        // Notification::send($publisher, new NewPaymentPaid($payment));
 
                     }else{
                         $this->unFoundPublishers[] = $col;

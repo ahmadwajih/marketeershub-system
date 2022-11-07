@@ -1,5 +1,5 @@
 @extends('new_admin.layouts.app')
-@section('title', 'Team Members')
+@section('title', 'Offers')
 @section('subtitle', 'View')
 @section('content')
 
@@ -7,7 +7,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Team Members List</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Offers Trashed List</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -17,13 +17,13 @@
                 </li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">User Management</li>
+                <li class="breadcrumb-item text-gray-600">Offers Mangement</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Users</li>
+                <li class="breadcrumb-item text-gray-600">offers</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Users List</li>
+                <li class="breadcrumb-item text-gray-500">offers List</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->
@@ -236,11 +236,8 @@
                             </div>
                         </th>
                         <th>#</th>
-                        <th>{{ __('Name') }}</th>
-                        <th>{{ __('Email') }}</th>
-                        <th>{{ __('Phone') }}</th>
-                        <th>{{ __('Team') }}</th>
-                        <th class="text-end min-w-100px">{{ __('Actions') }}</th>
+                        <th class="min-w-90px">Title</th>
+                        <th class="min-w-50px text-end">Actions</th>
                     </tr>
                     </thead>
                     <tbody class="text-gray-600">
@@ -257,12 +254,10 @@
 @endsection
 @push('scripts')
 <script>
-var route = "{{route('admin.trashed.index', ['model'=>'users'])}}";
+var route = "{{route('admin.trashed.index', ['model'=>'offers'])}}";
 var restoreRoute = "{{route('admin.trashed.restore')}}";
-var publishersRoute = "{{route('admin.publisher.profile')}}";
 </script>
-<script src="{{ asset('new_dashboard') }}/js/datatables/users/trashed-table.js"></script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/offers/trashed-table.js"></script>
 <script src="{{ asset('new_dashboard') }}/js/datatables/users/restore.js"></script>
-{{-- <script src="{{ asset('new_dashboard') }}/js/datatables/users/restore.js"></script> --}}
 
 @endpush

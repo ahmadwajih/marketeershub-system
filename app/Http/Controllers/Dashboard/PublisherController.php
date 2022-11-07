@@ -48,32 +48,69 @@ class PublisherController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
-        if ($request->ajax()) {
-            $publishers = User::wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
+        $tableLength = session('table_length') ?? config('app.pagination_pages');
+        $query = User::query();
+        
+        
+        // Filter
+        if (isset($request->team) && $request->team  != null) {
+            $query->where('team', $request->team);
+            session()->put('publishers_filter_team', $request->team);
+        } elseif (session('publishers_filter_team')) {
+            $query->where('team', session('publishers_filter_team'));
+        }
+
+        if (isset($request->parent_id) && $request->parent_id  != null) {
+            $query->where('parent_id', $request->parent_id);
+            session()->put('publishers_filter_parent_id', $request->parent_id);
+        } elseif (session('publishers_filter_parent_id')) {
+            $query->where('parent_id', session('publishers_filter_parent_id'));
+        }
+
+        if (isset($request->status) && $request->status  != null) {
+            $query->where('status', $request->status);
+            session()->put('publishers_filter_status', $request->status);
+        } elseif (session('publishers_filter_status')) {
+            $query->where('status', session('publishers_filter_status'));
+        }
+
+        if (isset($request->search) && $request->search  != null) {
+            $key = explode(' ', $request->search);
+            $query->where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('name', 'like', "%{$value}%")
+                    ->orWhere('email', 'like', "%{$value}%")
+                    ->orWhere('phone', 'like', "%{$value}%")
+                    ->orWhere('ho_id', 'like', "%{$value}%");
+                }
+            });
+        }
+
+        $publishers = $query->wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
 
             if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
-                $data = $publishers->where(function ($query) {
+                $publishers = $publishers->where(function ($query) {
                     $childrens = auth()->user()->childrens()->pluck('id')->toArray();
                     array_push($childrens, auth()->user()->id);
                     $query->whereIn('parent_id', $childrens)->orWhere('parent_id', '=', null);
                     $query->where('users.team', auth()->user()->team);
                 });
             } else {
-                $data = $publishers->groupBy('users.id');
+                $publishers = $publishers->groupBy('users.id');
             }
   
-            return DataTables::of($data)->make(true);
-        }
+            $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength); 
         if (auth()->user()->position == 'super_admin') {
-            $accountManagers = User::where('position', 'account_manager');
+            $accountManagers = User::where('position', 'account_manager')->get();
         } else {
-            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager');
+            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
         }
 
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
+            'publishers' => $publishers
         ]);
     }
 
@@ -729,5 +766,13 @@ class PublisherController extends Controller
         $user->status = $request->status == 'active' ? 'active' : 'closed';
         $user->save();
         return response()->json(['message' => 'Updated Succefuly']);
+    }
+
+    public function clearFilterSeassoions()
+    {
+        session()->forget('publishers_filter_team');
+        session()->forget('publishers_filter_parent_id');
+        session()->forget('publishers_filter_status');
+        return redirect()->route('admin.publishers.index');
     }
 }

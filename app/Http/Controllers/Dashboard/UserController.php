@@ -210,6 +210,10 @@ class UserController extends Controller
     {
         $this->authorize('delete_users');
         if($request->ajax()){
+
+            if(count($user->childrens()->pluck('id')->toArray()) > 0){
+                return response()->json(['message'=>  __('You can`t delete this user because he have ')  .  count($user->childrens()->pluck('id')->toArray()) . __(' child')], 422);
+            }
             userActivity('User', $user->id, 'delete');
             $user->delete();
             return true;

@@ -67,6 +67,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('publishers-update-account-manager', 'PublisherController@updateAccountManager')->name('publishers.updateAccountManager');
         Route::post('publishers-check-exists', 'PublisherController@checkIfExists')->name('publishers.check.exists');
         Route::post('publishers/change/status', 'PublisherController@changeStatus');
+        Route::get('publishers/clear/sessions', 'PublisherController@clearFilterSeassoions')->name('publishers.clear.sessions');
 
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');
@@ -84,6 +85,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::resource('payments', PaymentController::class);
         Route::get('payments/upload/form', 'PaymentController@uploadForm')->name('payments.upload.form');
         Route::post('payments/upload/form', 'PaymentController@upload')->name('payments.upload');
+        Route::get('payments/clear/sessions', 'PaymentController@clearFilterSeassoions')->name('payments.clear.sessions');
 
         Route::resource('roles', RoleController::class);
         Route::resource('cities', CityController::class);
@@ -107,7 +109,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
         Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
         Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
-        Route::resource('trashed', TrashedController::class);
+        Route::get('trashed', 'TrashedController@index')->name('trashed.index');
+        Route::put('trashed/restore', 'TrashedController@restore')->name('trashed.restore');
 
         Route::resource('helps', HelpController::class);
         Route::any('helps-upload-image', 'HelpController@uploadImages')->name('helps.image.upload');

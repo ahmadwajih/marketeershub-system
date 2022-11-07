@@ -148,11 +148,15 @@ if (!function_exists('getImagesPath')) {
 
 if (!function_exists('uploadImage')) {
 
-    function uploadImage($request, $model)
+    function uploadImage($request, $model, $isPrefixed = true)
     {
         $path         = "/Images/" . $model;
         $originalName =  $request->getClientOriginalName(); // Get file Original Name
-        $imageName    = 'MH-' . time() . rand(11111, 99999) . $originalName;  // Set Image name based on user name and time
+        $prefix = null;
+        if($isPrefixed){
+            $prefix = 'MH-' . time() . rand(11111, 99999);
+        }
+        $imageName    = $prefix . $originalName;  // Set Image name based on user name and time
         $request->storeAs($path, $imageName, 'public');
         return $imageName;
     }

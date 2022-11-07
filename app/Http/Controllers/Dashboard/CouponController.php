@@ -25,11 +25,6 @@ class CouponController extends Controller
      */
     public function index(Request $request)
     {
-        // $coupons = Coupon::withTrashed()->get();
-        // foreach($coupons as $coupon){
-        //     $coupon->forceDelete();
-        // }
-        // dd($coupons->count());
         $this->authorize('view_coupons');
         // Get Coupons 
         $query = Coupon::query();
