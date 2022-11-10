@@ -125,8 +125,9 @@
                                             <select class="form-select form-select-solid" name="status" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
                                                 >
                                                 <option value="">No One</option>
-                                                <option {{ session('publishers_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
-                                                <option {{ session('publishers_filter_status') == 'inactive' ? 'selected' :''}} value="inactive">{{ __('Inactive') }}</option>
+                                                <option {{ session('publishers_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Live') }}</option>
+                                                <option {{ session('publishers_filter_status') == 'pending' ? 'selected' :''}} value="inactive">{{ __('Paused') }}</option>
+                                                <option {{ session('publishers_filter_status') == 'inactive' ? 'selected' :''}} value="inactive">{{ __('Cancelled') }}</option>
                                             </select>
                                         </div>
                                         <!--end::Input-->
@@ -147,6 +148,20 @@
                         <!--end::Filter-->
                         <!--begin::Add user-->
                         @can('create_publishers')
+                        <a href="{{ route('admin.publishers.upload.form') }}" class="btn btn-success mr-2"
+                                style="display: block !important;margin-right: 9px;">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+                                <span class="svg-icon svg-icon-2">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2"
+                                            rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
+                                        <rect x="4.36396" y="11.364" width="16" height="2" rx="1"
+                                            fill="currentColor" />
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->Bulk Upload
+                            </a>
                             <a href="{{ route('admin.publishers.create') }}" class="btn btn-primary">
                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                                 <span class="svg-icon svg-icon-2">
@@ -158,7 +173,7 @@
                                             fill="currentColor" />
                                     </svg>
                                 </span>
-                                <!--end::Svg Icon-->Add Coupon
+                                <!--end::Svg Icon-->Add Publisher
                             </a>
                         @endcan
                         <!--end::Add user-->
@@ -192,12 +207,12 @@
                                         <input class="form-check-input" id="main_form_check" type="checkbox" data-kt-check="true" value="1" />
                                     </div>
                                 </th>
-                                <th>#</th>
+                                <th>ID</th>
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Email') }}</th>
                                 <th>{{ __('Phone') }}</th>
                                 <th>{{ __('Team') }}</th>
-                                <th>{{ __('AM') }}</th>
+                                <th>{{ __('Acc. Manager') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th>{{ __('Join Date') }}</th>
                                 <th class="text-end min-w-100px">{{ __('Actions') }}</th>
@@ -220,8 +235,9 @@
                                     <td>{{ $publisher->updated_team }}</td>
                                     <td>{{ $publisher->parent ? $publisher->parent->name : '' }}</td>
                                     <td>
-                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $publisher->id }} {{ $publisher->status == 'active' ?: 'd-none' }}">Active</button> 
-                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $publisher->id }} {{ $publisher->status == 'inactive' ?: 'd-none' }}">Inactive</button>
+                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $publisher->id }} {{ $publisher->status == 'active' ?: 'd-none' }}">Live</button> 
+                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'active')" class="btn btn-light-warning btn-sm  pending-btn-{{ $publisher->id }} {{ $publisher->status == 'pending' ?: 'd-none' }}">Paused</button> 
+                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $publisher->id }} {{ $publisher->status == 'inactive' ?: 'd-none' }}">Cancelled</button>
                                     </td>
                                     <td>{{ $publisher->humans_created_at }}</td>
                                     <td>

@@ -81,7 +81,8 @@ class PublisherController extends Controller
                     $q->orWhere('name', 'like', "%{$value}%")
                     ->orWhere('email', 'like', "%{$value}%")
                     ->orWhere('phone', 'like', "%{$value}%")
-                    ->orWhere('ho_id', 'like', "%{$value}%");
+                    ->orWhere('ho_id', 'like', "%{$value}%")
+                    ->orWhere('id', 'like', "%{$value}%");
                 }
             });
         }
@@ -161,7 +162,7 @@ class PublisherController extends Controller
             'cities' => City::all(),
             'countries' => Country::all(),
             'categories' => Category::whereType('affiliate')->get(),
-            'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'users' => User::where('position', 'account_manager')->whereTeam('affiliate')->whereStatus('active')->get(),
             'currencies' => Currency::all(),
         ]);
     }
@@ -179,12 +180,11 @@ class PublisherController extends Controller
             'name'                      => 'required|max:255',
             'email'                     => 'required|unique:users|max:255',
             'phone'                     => 'required|unique:users|max:255',
-            // 'password'                  => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            // 'password'                  => ['required','confirmed', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
             'gender'                    => 'required|in:male,female',
-            'status'                    => 'required|in:active,pending,closed',
             'team'                      => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate,prepaid',
             'skype'                     => 'nullable|max:255',
             'address'                   => 'nullable|max:255',
@@ -201,6 +201,11 @@ class PublisherController extends Controller
             'iban'                      => 'nullable|max:255',
             'currency_id'               => 'nullable|exists:currencies,id',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'city'                      => 'required_if:team,influencer|max:255',
+            'influencer_type'           => 'required_if:team,influencer|in:performance,prepaid,express',
+            'influencer_rating'         => 'required_if:team,influencer|in:nano,micro,macro,mega,celebrity',
+            'currency'                  => 'required|max:3',
+
 
         ]);
         if ($request->traffic_sources) {
@@ -208,6 +213,7 @@ class PublisherController extends Controller
         }
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
+        $data['status'] = 'active';
         unset($data['social_media']);
         if ($request->hasFile('image')) {
             $data['image'] = uploadImage($request->file('image'), "Users");
@@ -355,6 +361,10 @@ class PublisherController extends Controller
             'categories'                => 'nullable|array|required_if:position,publisher|exists:categories,id',
             'social_media.*.link'       => 'required_if:team,influencer',
             'image'                     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'city'                      => 'required_if:team,influencer|max:255',
+            'influencer_type'           => 'required_if:team,influencer|in:performance,prepaid,express',
+            'influencer_rating'         => 'required_if:team,influencer|in:nano,micro,macro,mega,celebrity',
+            'currency'                  => 'required|max:3',
         ]);
         if ($request->traffic_sources) {
             $data['traffic_sources'] = implode(",", $request->traffic_sources);
@@ -763,7 +773,7 @@ class PublisherController extends Controller
         $this->authorize('update_publishers');
 
         $user = User::findOrFail($request->id);
-        $user->status = $request->status == 'active' ? 'active' : 'closed';
+        $user->status = $request->status;
         $user->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }

@@ -91,7 +91,7 @@
                                             <label class="form-label">Offer Thumbnail</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="file" name="thumbnail" class="form-control mb-2" />
+                                            <input type="file" name="thumbnail" class="form-control mb-2" accept="image/x-png,image/gif,image/jpeg,image/webp"/>
                                             @if ($errors->has('thumbnail'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
                                                     <div data-field="text_input">{{ $errors->first('thumbnail') }}</div>
@@ -112,7 +112,7 @@
                                             <select name="partener" data-control="select2" class="form-select"
                                                 id="select_partener">
                                                 <option {{ old('partener') == 'none' ? 'selected' : '' }} value="none"">
-                                                    {{ __('No one') }}</option>
+                                                    {{ __('None') }}</option>
                                                 <option {{ old('partener') == 'salla' ? 'selected' : '' }} value="salla">
                                                     {{ __('Salla') }}</option>
                                             </select>
@@ -155,7 +155,7 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="advertiser_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
+                                                <option selected value="">{{ __('None') }}</option>
                                                 @foreach ($advertisers as $advertiser)
                                                     <option {{ old('advertiser_id') == $advertiser->id ? 'selected' : '' }}
                                                         value="{{ $advertiser->id }}">{{ $advertiser->company_name }}
@@ -285,7 +285,7 @@
                                         <!--end::Input group-->
                                     </div> --}}
 
-                                    <div class="col-md-12" id="uploadCoupons"
+                                    <div class="col-md-10" id="uploadCoupons"
                                         @if (old('type') != null && old('type') != 'coupon_tracking') style="display: none" @endif>
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -304,27 +304,9 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">Offer Discount Type</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="discount_type" data-control="select2" class="form-select" id="discount_type">
-                                                <option {{ old('discount_type') == 'flat' ? 'selected' : '' }} value="flat">{{ __('Flat') }}</option>
-                                                <option {{ old('discount_type') == 'percentage' ? 'selected' : '' }} value="percentage">{{ __('Percentage') }}</option>
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('discount_type'))
-                                                <div class="fv-plugins-message-container invalid-feedback">
-                                                    <div data-field="text_input">{{ $errors->first('discount_type') }}
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
+                                    <div class="col-md-2">
+                                        <br>
+                                        <a href="{{ asset('dashboard/excel-sheets-examples/coupons.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
                                     </div>
 
                                     <div class="col-md-12">
@@ -340,19 +322,7 @@
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="input-group mb-5">
-                                            <input type="number" class="form-control" name="discount" placeholder="Discount Amount" value="{{ old('discount') }}" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-                                            <span class="input-group-text" id="basic-addon2">
-                                                <div id="currency_sellect">
-                                                    <select name="currency_id" class="form-select" data-control="select2">
-                                                        <option selected disabled value="">{{ __('Currency') }}</option>
-                                                        @foreach ($currencies as $currency)
-                                                            <option {{ old('currency_id') == $currency->id ? 'selected' : '' }}
-                                                                value="{{ $currency->id }}">{{ $currency->code }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div id="percentage_discount">%</div>
-                                            </span>
+                                            <input type="text" class="form-control" name="discount" placeholder="Discount Amount" value="{{ old('discount') }}" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
                                         </div>
                                         <!--end::Input group-->
                                     </div>
@@ -361,7 +331,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Expire Date</label>
+                                            <label class="form-label">Expiry Date</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="date" name="expire_date" class="form-control mb-2" value="{{ old('expire_date') }}" />
@@ -369,30 +339,6 @@
                                             @if ($errors->has('expire_date'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
                                                     <div data-field="text_input">{{ $errors->first('expire_date') }}</div>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">Status</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="status" data-control="select2" class="form-select">
-                                                <option {{ old('status') == 'active' ? 'selected' : '' }} value="active">
-                                                    {{ __('Active') }}</option>
-                                                <option {{ old('status') == 'pending' ? 'selected' : '' }}
-                                                    value="pending">
-                                                    {{ __('Pending') }}</option>
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('status'))
-                                                <div class="fv-plugins-message-container invalid-feedback">
-                                                    <div data-field="text_input">{{ $errors->first('status') }}</div>
                                                 </div>
                                             @endif
                                         </div>

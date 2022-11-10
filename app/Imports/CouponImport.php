@@ -17,6 +17,9 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithS
     public $offerId;
     public $oldId = null;
     public $test = [];
+    public $totlaUploadedSuccessfully = 0;
+    public $totlaUpdatedSuccessfully = 0;
+    public $totlaCreatedSuccessfully = 0;
 
     public function __construct($offerId)
     {
@@ -33,7 +36,6 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithS
         ])->validate();
 
         foreach ($collection as $index => $col) {
-
 
             if (!is_null($col[0])) {
                 $userId = null;
@@ -52,20 +54,28 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithS
                 // }
                 $coupon = Coupon::where([
                     ['coupon', '=',  $col[0]],
-                    [ 'offer_id', '=', $this->offerId] 
+                    ['offer_id', '=', $this->offerId]
                 ])->first();
-                if($coupon){
+                if ($coupon) {
                     $coupon->user_id = $userId;
                     $coupon->save();
-                }else{
+                    $this->totlaUpdatedSuccessfully++;
+                } else {
                     Coupon::create([
                         'coupon' => $col[0],
                         'offer_id' => $this->offerId,
                         'user_id' => $userId,
                     ]);
+                    $this->totlaCreatedSuccessfully++;
                 }
+                $this->totlaUploadedSuccessfully++;
             }
         }
+        session(['upload_coupon_report' => [
+            'totlaUpdatedSuccessfully' => $this->totlaUpdatedSuccessfully++,
+            'totlaCreatedSuccessfully' => $this->totlaCreatedSuccessfully++,
+            'totlaUploadedSuccessfully' => $this->totlaUploadedSuccessfully++,
+        ] ]);
 
     }
 
@@ -78,5 +88,4 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithS
     {
         return 2;
     }
-
 }

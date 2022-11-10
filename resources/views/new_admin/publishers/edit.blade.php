@@ -97,18 +97,13 @@
                         <!--end::Thumbnail settings-->
                         <!--begin::General options-->
                         <div class="card card-flush py-4">
-                            <!--begin::Card header-->
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <h2>General</h2>
-                                </div>
-                            </div>
-                            <!--end::Card header-->
                             <!--begin::Card body-->
                             <div class="card-body pt-0">
                                 <div class="row">
-
-                                    <div class="col-md-6">
+                                    <div class="separator separator-content my-14">
+                                        <span class="w-125px text-white fw-semibold fs-7">Basic Info</span>
+                                    </div>
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -124,23 +119,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Phone</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Phone" value="{{ old('phone') ?? $publisher->phone }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('phone'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -156,63 +135,23 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Password</label>
+                                            <label class="required form-label">Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="password" name="password" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
+                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Phone" value="{{ old('phone') ?? $publisher->phone }}" />
                                             <!--end::Input-->
-                                            @if ($errors->has('password'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password') }}</div></div>
+                                            @if ($errors->has('phone'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Team</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select id="team" name="team" aria-label="Select a Team" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
-                                                <option {{ old('team') == 'affiliate' ? "selected" : ($publisher->team == 'affiliate' ? "selected" : '' )  }} value="affiliate">{{ __('Affiliate') }}</option>
-                                                <option {{ old('team') == 'influencer' ? "selected" : ($publisher->team == 'influencer' ? "selected" : '' )  }} value="influencer">{{ __('Influencer') }}</option>
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('team'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('team') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Belongd To</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="parent_id" data-control="select2" class="form-select form-select-sm" id="accountManagers">
-                                                <option selected value="">{{ __('No one') }}</option>
-                                                @foreach ($users as $user)
-                                                    <option {{ old('parent_id') == $user->id ? "selected" : ($publisher->parent_id == $user->id ? "selected" : '') }} value="{{ $user->id }}">{{  $user->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('parent_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('parent_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -231,45 +170,64 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Status</label>
+                                            <label class="form-label">Password</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="status" aria-label="Select a status" data-control="select2" data-placeholder="Select Status" class="form-select form-select-sm">
-                                                <option value="active">{{ __('Active') }}</option>
-                                                    <option {{ old('status') == 'active' ? "selected" : ($publisher->status == 'active' ? "selected" : '' ) }} value="active">{{ __('Active') }}</option>
-                                                    <option {{ old('status') == 'pending' ? "selected" : ($publisher->status == 'pending' ? "selected" : '' ) }} value="pending">{{ __('Pending') }}</option>
-                                                    <option {{ old('status') == 'closed' ? "selected" : ($publisher->status == 'closed' ? "selected" : '' ) }} value="closed">{{ __('Closed') }}</option>
+                                            <input type="password" name="password" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
+                                            <p>Leave it empty if you don't need to update it</p>
+                                            <!--end::Input-->
+                                            @if ($errors->has('password'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Publisher Type</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select id="team" name="team" aria-label="Select a Publisher Type" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
+                                                <option {{ old('team') == 'affiliate' ? "selected" : ($publisher->team == 'affiliate' ? "selected" : '' )  }} value="affiliate">{{ __('Affiliate') }}</option>
+                                                <option {{ old('team') == 'influencer' ? "selected" : ($publisher->team == 'influencer' ? "selected" : '' )  }} value="influencer">{{ __('Influencer') }}</option>
                                             </select>
                                             <!--end::Input-->
-                                            @if ($errors->has('status'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('status') }}</div></div>
+                                            @if ($errors->has('team'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('team') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="form-label">Old Id In Excel sheet (If Exists)</label>
+                                            <label class="required form-label">Account Manager</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="test" name="ho_id" class="form-control mb-2" placeholder="inf-0000" value="{{ old('ho_id') ?? $publisher->ho_id }}" />
-                                            <div class="text-muted fs-7">Add (inf) before id if he is an influencer or (aff) if he is an affiliate</div>
+                                            <select name="parent_id" data-control="select2" class="form-select form-select-sm" id="accountManagers">
+                                                <option selected value="">{{ __('No one') }}</option>
+                                                @foreach ($users as $user)
+                                                    <option {{ old('parent_id') == $user->id ? "selected" : ($publisher->parent_id == $user->id ? "selected" : '') }} value="{{ $user->id }}">{{  $user->name }}</option>
+                                                @endforeach
+                                            </select>
                                             <!--end::Input-->
-                                            @if ($errors->has('ho_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('ho_id') }}</div></div>
+                                            @if ($errors->has('parent_id'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('parent_id') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -289,7 +247,7 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -308,22 +266,12 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">Address</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="address" class="form-control mb-2" placeholder="Address " value="{{ old('address') ?? $publisher->address }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('address'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('address') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
+                                                                     
+                                    <div class="separator separator-content my-14">
+                                        <span class="w-125px text-white fw-semibold fs-7">Additional Info</span>
                                     </div>
-                                    <div class="col-md-6">
+                                   
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
@@ -347,7 +295,7 @@
                                 <div class="affiliate">
                                      <div class="row">
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
@@ -364,7 +312,7 @@
                                         </div>
 
                                         
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
@@ -381,7 +329,7 @@
                                         </div>
 
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
@@ -538,6 +486,81 @@
                                 </div>
 
                                 <div class="influencer">
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">City</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" name="city"  onkeypress="clsAlphaOnly(event)" onpaste="return false;"  class="form-control mb-2" placeholder="City " value="{{ old('city') ?? $publisher->city }}" />
+                                            <!--end::Input-->
+                                            @if ($errors->has('city'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('city') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class=" required form-label">Address</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" name="address" class="form-control mb-2" placeholder="Address " value="{{ old('address') ?? $publisher->address }}" />
+                                            <!--end::Input-->
+                                            @if ($errors->has('address'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('address') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Influencer Type</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select name="influencer_type" aria-label="Select a Influencer Type" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
+                                                <option {{ old('influencer_type') == 'performance' ? "selected" : ($publisher->influencer_type == 'performance' ? "selected" : '' )  }} value="performance">{{ __('Performance') }}</option>
+                                                <option {{ old('influencer_type') == 'prepaid' ? "selected" : ($publisher->influencer_type == 'prepaid' ? "selected" : '' )  }} value="prepaid">{{ __('Prepaid') }}</option>
+                                                <option {{ old('influencer_type') == 'express' ? "selected" : ($publisher->influencer_type == 'express' ? "selected" : '' )  }} value="express">{{ __('Express') }}</option>
+                                            </select>
+                                            <!--end::Input-->
+                                            @if ($errors->has('influencer_type'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('influencer_type') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Influencer Rating</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select name="influencer_rating" aria-label="Select a Influencer Rating" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
+                                                <option {{ old('influencer_rating') == 'nano' ? "selected" : ($publisher->influencer_rating == 'nano' ? "selected" : '' ) }} value="nano">{{ __('Nano') }}</option>
+                                                <option {{ old('influencer_rating') == 'micro' ? "selected" : ($publisher->influencer_rating == 'micro' ? "selected" : '' ) }} value="micro">{{ __('Micro') }}</option>
+                                                <option {{ old('influencer_rating') == 'macro' ? "selected" : ($publisher->influencer_rating == 'macro' ? "selected" : '' ) }} value="macro">{{ __('Macro') }}</option>
+                                                <option {{ old('influencer_rating') == 'mega' ? "selected" : ($publisher->influencer_rating == 'mega' ? "selected" : '' ) }} value="mega">{{ __('Mega') }}</option>
+                                                <option {{ old('influencer_rating') == 'celebrity' ? "selected" : ($publisher->influencer_rating == 'celebrity' ? "selected" : '' ) }} value="celebrity">{{ __('Celebrity') }}</option>
+                                            </select>
+                                            <!--end::Input-->
+                                            @if ($errors->has('influencer_rating'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('influencer_rating') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
                                     <div class="col-12">
                                         <div class="card card-flush py-4">
                                             <!--begin::Card header-->
@@ -698,78 +721,15 @@
                                     <span class="w-125px text-gray-500 fw-semibold fs-7">Bank Account Info</span>
                                 </div>
                                 <div class="row">
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Account Title</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') ?? $publisher->account_title }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('account_title'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('account_title') }}</div></div>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Bank Name</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') ?? $publisher->bank_name}}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('bank_name'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_name') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Bank Branch Code</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') ?? $publisher->bank_branch_code }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('bank_branch_code'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_branch_code') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Swift Code</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="text" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') ?? $publisher->swift_code }}" />
-                                            <!--end::Input-->
-                                            @if ($errors->has('swift_code'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('swift_code') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
                                             <label class="required form-label">IBAN</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') ?? $publisher->iban}}" />
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') ?? $publisher->iban }}" />
+                                            <p>Accepts only letters and digits, no special characters.</p>
                                             <!--end::Input-->
                                             @if ($errors->has('iban'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('iban') }}</div></div>
@@ -778,22 +738,85 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">SWIFT Code</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') ?? $publisher->swift_code }}" />
+                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <!--end::Input-->
+                                            @if ($errors->has('swift_code'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('swift_code') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Bank Account Title</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') ?? $publisher->account_title }}" />
+                                            <p>Accepts only letters, no digits or special characters.</p>
+                                            <!--end::Input-->
+                                            @if ($errors->has('account_title'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('account_title') }}</div></div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Bank Name</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') ?? $publisher->bank_name }}" />
+                                            <p>Accepts only letters, no digits or special characters.</p>
+                                            <!--end::Input-->
+                                            @if ($errors->has('bank_name'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_name') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required form-label">Bank Branch Code</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') ?? $publisher->bank_branch_code }}" />
+                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <!--end::Input-->
+                                            @if ($errors->has('bank_branch_code'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_branch_code') }}</div></div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
                                             <label class="required form-label">Currency</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="currency_id" aria-label="Select Currency" data-control="select2" data-placeholder="Select Currency" class="form-select">
-                                                <option value="">Select Currency</option>
-                                                @foreach ($currencies as $currency)
-                                                    <option {{  old('currency_id') ? 'selected' : ( $publisher->currency_id == $currency->id ? 'selected' : '')  }} value="{{ $currency->id }}">{{ $currency->name }} ({{ $currency->sign }})</option>
-                                                @endFOreach
-                                            </select>                                               
+                                            <input type="text" onkeypress="clsAlphaCapNoOnly(event)" max="3" onpaste="return false;" name="currency" class="form-control mb-2" placeholder="Currency" value="{{ old('currency') ?? $publisher->currency }}" />
+                                             <p>Accepts only 3 uppercase letters, no digits or special characters.</p>  
                                             <!--end::Input-->
-                                            @if ($errors->has('currency_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('currency_id') }}</div></div>
+                                            @if ($errors->has('currency'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('currency') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
@@ -947,4 +970,5 @@
         }
     });
 </script>
+<script src="{{ asset('new_dashboard/js/custimize_inputs.js') }}"></script>
 @endpush

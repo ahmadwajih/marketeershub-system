@@ -50,7 +50,7 @@ class Offer extends Model
     }
 
     public function getDescriptionAttribute(){
-        return $this->attributes['name_'. app()->getLocale()];
+        return $this->attributes['description_'. app()->getLocale()];
     }
 
     public function getNoteAttribute(){

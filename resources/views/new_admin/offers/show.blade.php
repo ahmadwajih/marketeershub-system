@@ -247,7 +247,7 @@
                              <!--end::Svg Icon-->
                              <div class="input-group mb-5">
                                  <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
-                                 <button class="input-group-text" id="basic-addon2">Go</button>
+                                 <button class="input-group-text" id="basic-addon2">Go</button> <span class="mx-3 mt-3"> {{ $coupons->total() }} Coupon</span>
                              </div>
                          </form> 
                      </div>

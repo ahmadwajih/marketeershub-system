@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithStartRow
 {
     public $offerId;
+    public $totlaUploadedSuccessfully = 0;
 
     public function __construct($offerId)
     {
@@ -29,9 +30,11 @@ class OfferCouponImport implements ToCollection, WithChunkReading, ShouldQueue, 
                     'coupon' => $col[0],
                     'offer_id' => $this->offerId,
                 ]);
+                $this->totlaUploadedSuccessfully++;
             }
             
         }
+        session(['totlaUploadedSuccessfully' => 100]);
     }
 
     public function chunkSize(): int

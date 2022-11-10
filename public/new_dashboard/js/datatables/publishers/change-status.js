@@ -8,9 +8,19 @@ function changeStatus(id, name, action){
         text:
             "Are you sure you want to " + action + '?',
         icon: "warning",
+        html:`
+        <div class="mb-10 fv-row">
+            <label class="form-label">Select Status</label>
+            <select onchange="enableSwalConfirmationButton()" id="status" class="form-select form-control form-select-sm">
+                <option value="active">Live</option>
+                <option value="pending">Paused</option>
+                <option value="inactive">Cancelled</option>
+            </select>
+        </div>
+        `,
         showCancelButton: true,
         buttonsStyling: false,
-        confirmButtonText: "Yes " + action + '!',
+        confirmButtonText: 'Submit',
         cancelButtonText: "No, cancel",
         customClass: {
             confirmButton: "btn fw-bold btn-danger",
@@ -19,6 +29,9 @@ function changeStatus(id, name, action){
         },
     }).then(function (result) {
         if (result.value) {
+
+            var status = $('#status').val(); 
+
             $.ajax({
                 method: "POST",
                 headers: {
@@ -31,14 +44,14 @@ function changeStatus(id, name, action){
                     _token: csrfToken,
                     _method: "POST",
                     id: id,
-                    status: action,
+                    status: status,
                 },
             })
                 .done(function (res) {
                     // Simulate delete request -- for demo purpose only
                     Swal.fire({
                         text:
-                            "You have " + action + name +"!",
+                            "Publisher's account status will be changed",
                         icon: "success",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",
@@ -47,14 +60,26 @@ function changeStatus(id, name, action){
                                 "btn fw-bold btn-primary",
                         },
                     }).then(function () {
-                        // delete row data from server and re-draw datatable
-                        datatable.draw();
+                        if(status == 'active'){
+                            $('.active-btn-'+id).removeClass('d-none');
+                            $('.pending-btn-'+id).addClass('d-none');
+                            $('.inactive-btn-'+id).addClass('d-none');
+                        }else if(status == 'pending'){
+                            $('.active-btn-'+id).addClass('d-none');
+                            $('.pending-btn-'+id).removeClass('d-none');
+                            $('.inactive-btn-'+id).addClass('d-none');
+                        }else{
+                            $('.active-btn-'+id).addClass('d-none');
+                            $('.pending-btn-'+id).addClass('d-none');
+                            $('.inactive-btn-'+id).removeClass('d-none');
+                        }
+                        
                     });
                 })
                 .fail(function (res) {
                     Swal.fire({
                         text:
-                        name + " was not " + action,
+                        name + " was not " + status,
                         icon: "error",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",
@@ -64,16 +89,14 @@ function changeStatus(id, name, action){
                         },
                     });
                 });
-        } else if (result.dismiss === "cancel") {
-            Swal.fire({
-                text: name + " was not " + action,
-                icon: "error",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                    confirmButton: "btn fw-bold btn-primary",
-                },
-            });
+        }else{
+            $('.swal2-confirm').prop('disabled', false);
         }
     });
+
+    $('.swal2-confirm').prop('disabled', true);
+}
+
+function enableSwalConfirmationButton(){
+    $('.swal2-confirm').prop('disabled', false);
 }

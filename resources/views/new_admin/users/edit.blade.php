@@ -1,5 +1,5 @@
 @extends('new_admin.layouts.app')
-@section('title', 'Team Members')
+@section('title', 'Users')
 @section('subtitle', 'Edit')
 @section('content')
 
@@ -7,7 +7,7 @@
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Edit Team Member</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Edit User</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -20,7 +20,7 @@
                 <li class="breadcrumb-item text-gray-600">Users</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-600">Team Member</li>
+                <li class="breadcrumb-item text-gray-600">User</li>
                 <!--end::Item-->
                 <!--begin::Item-->
                 <li class="breadcrumb-item text-gray-500">Edit</li>
