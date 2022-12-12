@@ -104,7 +104,6 @@ class PivotReportController extends Controller
             // Notification::send($offer->users, new UpdateValidation($offer));
         }
         userActivity('PivotReport', null, 'upload');
-
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'

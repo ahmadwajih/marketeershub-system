@@ -19,26 +19,6 @@
         }
     </style>
 
-    <style>
-        .uploading-progress-bar{
-            position: fixed;
-            z-index: 999;
-            background: #474761;
-            width: 75%;
-            height: 50%;
-            border-radius: 10px;
-            box-shadow: 8px 13px 33px 1px #171623;
-        }
-        .uploading-progress-bar .progress{
-            margin: auto;
-            margin-top: 3%;
-            height: 26px;
-            width: 96%;
-        }
-        .progress-title{
-            margin-top: 10%;
-        }
-    </style>
 @endpush
 @section('content')
 
@@ -789,7 +769,6 @@
 
                                 }
                             }, 100);
-
                     }
                 })
                 .fail(function(res) {
