@@ -11,19 +11,21 @@ use App\Models\Offer;
 use App\Models\PivotReport;
 use App\Models\User;
 use App\Notifications\UpdateValidation;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Notification;
 use Yajra\DataTables\Facades\DataTables;
 
 class PivotReportController extends Controller
 {
-
-
-    /** 
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
@@ -31,7 +33,7 @@ class PivotReportController extends Controller
         $this->authorize('view_pivot_report');
 
         $query = PivotReport::query();
-       
+
          $tableLength = session('table_length') ?? config('app.pagination_pages');
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
@@ -67,7 +69,7 @@ class PivotReportController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -87,7 +89,7 @@ class PivotReportController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -97,12 +99,17 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
+        //Excel::queueImport(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
+
+        $id = now()->unix();
+        session([ 'import' => $id ]);
         Excel::queueImport(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
 
-        if ($request->type == 'validation') {
-            $offer = Offer::findOrFail($request->offer_id);
+        //if ($request->type == 'validation') {
+            // $offer = Offer::findOrFail($request->offer_id);
             // Notification::send($offer->users, new UpdateValidation($offer));
-        }
+        //}
+
         userActivity('PivotReport', null, 'upload');
 
         $notification = [
@@ -110,6 +117,21 @@ class PivotReportController extends Controller
             'alert-type' => 'success'
         ];
         return redirect()->back()->with($notification);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function status()
+    {
+        $id = session('import');
+
+        return response([
+            'started' => filled(cache("start_date_$id")),
+            'finished' => filled(cache("end_date_$id")),
+            'current_row' => (int) cache("current_row_$id"),
+            'total_rows' => (int) cache("total_rows_$id"),
+        ]);
     }
 
     public function downloadErrors()
@@ -125,12 +147,12 @@ class PivotReportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return void
+     * @throws AuthorizationException
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, int $id)
     {
-       
         $this->authorize('delete_cites');
         if ($request->ajax()) {
             $pivotReport = PivotReport::findOrFail($id);
@@ -156,31 +178,31 @@ class PivotReportController extends Controller
         $haveDateRange = $revenueHaveDateRange || $payoutHaveDateRange ? true : false;
         $haveCountryRange = $revenueHaveCountries || $payoutHaveCountries ? true : false;
         $cpsType = $offer->payout_cps_type;
-       
+
         $link = asset('dashboard/excel-sheets-examples/update-report');
         $title = 'Download example';
-        
+
         if(count($revenue) == 0 && count($payout) == 0 ){
             return response()->json(['data' =>false]);
         }
 
         if ($cpsType == 'static') {
-            // If have date range and countries conditoin 
+            // If have date range and countries conditoin
             if ($haveDateRange && $haveCountryRange) {
                 $link .= '/static-with-date-range-and-countries-condition.xlsx';
                 $title = 'Fixed amount with date range and countries condition';
             }
-            // If have date range conditoin 
+            // If have date range conditoin
             if ($haveDateRange && !$haveCountryRange) {
                 $link .= '/static-with-date-range-condition.xlsx';
                 $title = 'Fixed amount with date range condition';
             }
-            // If have countries conditoin 
+            // If have countries conditoin
             if (!$haveDateRange && $haveCountryRange) {
                 $link .= '/static-with-countries-condition.xlsx';
                 $title = 'Fixed amount with countries condition';
             }
-            // If dosnot have date range and dosner countries conditoin 
+            // If dosnot have date range and dosner countries conditoin
             if (!$haveDateRange && !$haveCountryRange) {
                 $link .= '/static-without-date-range-and-without-countries-condition.xlsx';
                 $title = 'Fixed amount without date range and without countries condition';
@@ -188,22 +210,22 @@ class PivotReportController extends Controller
         }
 
         if ($cpsType == 'new_old') {
-            // If have date range and countries conditoin 
+            // If have date range and countries conditoin
             if ($haveDateRange && $haveCountryRange) {
                 $link .= '/new-old-with-date-range-and-countries-condition.xlsx';
                 $title = 'New-Old with date range and countries condition';
             }
-            // If have date range conditoin 
+            // If have date range conditoin
             if ($haveDateRange && !$haveCountryRange) {
                 $link .= '/new-old-with-date-range-condition.xlsx';
                 $title = 'New-Old with date range condition';
             }
-            // If have countries conditoin 
+            // If have countries conditoin
             if (!$haveDateRange && $haveCountryRange) {
                 $link .= '/new-old-with-countries-condition.xlsx';
                 $title = 'New-Old with countries condition';
             }
-            // If dosnot have date range and dosner countries conditoin 
+            // If dosnot have date range and dosner countries conditoin
             if (!$haveDateRange && !$haveCountryRange) {
                 $link .= '/new-old-without-date-range-and-without-countries-condition.xlsx';
                 $title = 'New-Old without date range and without countries condition';
