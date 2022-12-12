@@ -109,12 +109,8 @@ class PivotReportController extends Controller
 
         //todo use dispatching events instead of exec function
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
-        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type");
-        $notification = [
-            'message' => 'Uploaded successfully',
-            'alert-type' => 'success'
-        ];
-        return redirect()->back()->with($notification);
+        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
+        return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
     }
 
     /**

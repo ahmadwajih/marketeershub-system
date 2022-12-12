@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class PivotReportImport extends Command
+class PivotReportImportCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -56,7 +56,7 @@ class PivotReportImport extends Command
             new UpdateReportImport($this->argument('offer_id'), $this->argument('type'),$id),
             $import_file
         );
-
+        Storage::delete('pivot_report_import.txt');
         return 1;
     }
 }
