@@ -1,7 +1,55 @@
 @extends('new_admin.layouts.app')
 @section('title', 'Update Reports')
 @section('subtitle', 'View')
+@push('styles')
+    <style>
+        .uploading-progress-bar{
+            position: fixed;
+            z-index: 999;
+            background: #474761;
+            width: 37%;
+            height: 20%;
+            border-radius: 10px;
+            box-shadow: 8px 13px 33px 1px #171623;
+            margin: 151px;
+        }
+        .uploading-progress-bar .progress{
+            margin: auto;
+            margin-top: 3%;
+            height: 26px;
+            width: 63%;
+        }
+        .progress-title{
+            margin-top: 10%;
+        }
+    </style>
+@endpush
 @section('content')
+    @if(isset(request()->success) && request()->success == 'true')
+        <!--begin::Alert-->
+        <div class="alert alert-success d-flex align-items-center p-5">
+            <!--begin::Icon-->
+            <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
+            <!--end::Icon-->
+
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-column">
+                <!--begin::Title-->
+                <h4 class="mb-1 text-dark">Success</h4>
+                <!--end::Title-->
+                <!--begin::Content-->
+                <p> __('The report is Uploaded Successfully.') }}</p>
+                <!--end::Content-->
+            </div>
+            <!--end::Wrapper-->
+            <!--begin::Close-->
+            <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                <span class="svg-icon svg-icon-2x svg-icon-light"><i class="fa-solid fa-xmark fa-2x"></i></span>
+            </button>
+            <!--end::Close-->
+        </div>
+        <!--end::Alert-->
+    @endif
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
@@ -30,7 +78,15 @@
     <!--end::Toolbar-->
      <!--begin::Post-->
      <div class="content flex-column-fluid" id="kt_content">
-        <!--begin::Card-->
+         <div class="uploading-progress-bar d-none">
+             <h3 class="text-center progress-title">Uploading...</h3>
+             <div class="progress">
+                 <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><h5 id="progress-bar-percentage"><strong>0%</strong></h5></div>
+             </div>
+
+         </div>
+
+         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->
             <div class="card-header border-0 pt-6">
@@ -44,9 +100,9 @@
                                 <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
                                 <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $reports->total() }} Record</span>
                             </div>
-                            
-                        </form> 
-                       
+
+                        </form>
+
                     </div>
                     <!--end::Search-->
                 </div>
@@ -100,7 +156,7 @@
                                         <!--end::Input-->
                                     </div>
                                     <!--end::Input group-->
-                                    @include('new_admin.components.publishers_filter') 
+                                    @include('new_admin.components.publishers_filter')
 
                                     <!--begin::Input group-->
                                     <div class="mb-10">
@@ -288,7 +344,6 @@
     <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete.js"></script>
     <script>
         $(document).ready(function() {
-
             $('#main_form_check').change(function(){
                 if(this.checked) {
                     $('.table-checkbox').prop('checked', true);
@@ -320,4 +375,34 @@
 
         });
     </script>
+    @if(isset(request()->uploading) && request()->uploading == 'true')
+        <script>
+            let import_status = 0;
+            RepeatFun();
+            let counter;
+            $('.uploading-progress-bar').removeClass('d-none');
+            function RepeatFun() {
+                setInterval(function () {
+                    if (import_status !== 1) {
+                        $.ajax({
+                            url: "{{ route('admin.reports.import.status') }}",
+                        }).done(function (data) {
+                            if(data.started == false){
+                                window.location.href = route+'?success=true';
+                            }
+                            console.log(data);
+                            console.log( typeof data);
+                            if (data.started === true) {
+                                let percent = ((data.current_row /data.total_rows) * 100 );
+                                $('#progress-bar-percentage').html(Math.round(percent) + '%');
+                                $("#progress-bar").width(Math.round(percent) +"%");
+                            }
+                        }).fail(function (data) {
+                            console.log('Job not added....' + data);
+                        });
+                    }
+                }, 3000);
+            }
+        </script>
+    @endif
 @endpush

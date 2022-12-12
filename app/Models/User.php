@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @method static whereId(\Illuminate\Contracts\Foundation\Application|\Illuminate\Session\SessionManager|\Illuminate\Session\Store|mixed $session)
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -151,7 +154,7 @@ class User extends Authenticatable
     public function socialMediaLinks(){
         return $this->hasMany(SocialMediaLink::class);
     }
-    
+
     public function digitalAssets(){
         return $this->hasMany(DigitalAsset::class);
     }
@@ -171,7 +174,7 @@ class User extends Authenticatable
     public function getSumOrdersAttribute()
     {
         $orders = $this->coupons->map(function ($coupon){
-            return $coupon->report()->whereMonth( 
+            return $coupon->report()->whereMonth(
                 'created_at', '>', Carbon::now()->subMonth()->month
             )->get();
         })->flatten();

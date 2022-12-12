@@ -21,42 +21,38 @@
 
 @endpush
 @section('content')
+    @if(isset(request()->success) && request()->success == 'true')
+         <!--begin::Alert-->
+         <div class="alert alert-success d-flex align-items-center p-5">
+            <!--begin::Icon-->
+            <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
+            <!--end::Icon-->
 
-@if(isset(request()->success) && request()->success == 'true')
- <!--begin::Alert-->
- <div class="alert alert-success d-flex align-items-center p-5">
-    <!--begin::Icon-->
-    <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
-    <!--end::Icon-->
-
-    <!--begin::Wrapper-->
-    <div class="d-flex flex-column">
-        <!--begin::Title-->
-        <h4 class="mb-1 text-dark">Success</h4>
-        <!--end::Title-->
-        <!--begin::Content-->
-        <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>
-        <!--end::Content-->
-    </div>
-    <!--end::Wrapper-->
-    <!--begin::Close-->
-        <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-            <span class="svg-icon svg-icon-2x svg-icon-light"><i class="fa-solid fa-xmark fa-2x"></i></span>
-        </button>
-        <!--end::Close-->
-</div>
-<!--end::Alert-->
-@endif
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-column">
+                <!--begin::Title-->
+                <h4 class="mb-1 text-dark">Success</h4>
+                <!--end::Title-->
+                <!--begin::Content-->
+                <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>
+                <!--end::Content-->
+            </div>
+            <!--end::Wrapper-->
+            <!--begin::Close-->
+                <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                    <span class="svg-icon svg-icon-2x svg-icon-light"><i class="fa-solid fa-xmark fa-2x"></i></span>
+                </button>
+                <!--end::Close-->
+        </div>
+        <!--end::Alert-->
+    @endif
     <div class="uploading-progress-bar d-none">
         <h3 class="text-center progress-title">Uploading...</h3>
           <div class="progress">
             <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><h5 id="progress-bar-percentage"><strong>0%</strong></h5></div>
         </div>
-        
+
     </div>
-
-
-
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
@@ -99,9 +95,9 @@
                                 <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
                                 <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $coupons->total() }} Coupon</span>
                             </div>
-                            
-                        </form> 
-                       
+
+                        </form>
+
                     </div>
                     <!--end::Search-->
                 </div>
@@ -294,7 +290,7 @@
                                     <td>{{ $coupon->user ? $coupon->user->id : '' }}</td>
                                     <td>{{ $coupon->user ? $coupon->user->updated_team : '' }}</td>
                                     <td>
-                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button> 
+                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button>
                                         <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'inactive' ?: 'd-none' }}">Inactive</button>
                                     </td>
                                     <td>
@@ -375,7 +371,6 @@
         <!--end::Card-->
     </div>
     <!--end::Post-->
-
     <!--start::Modal-->
     <div class="modal fade" id="payout_details">
         <div class="modal-dialog">
@@ -741,25 +736,25 @@
             $('.uploading-progress-bar').removeClass('d-none');
             var counter = 0;
             var progressInterval = setInterval(function () {
-                counter++;
+                    counter++;
                 $.ajax({
                     method: "GET",
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                     },
                     url: "{{ route('admin.ajax.check.jobs') }}",
-                })
-                .done(function(res) {
+                }).
+                done(function(res) {
                     if(res == 1){
                         if(counter <= 90){
                             $('#progress-bar-percentage').html(counter + '%');
                             $("#progress-bar").width(counter+"%");
                         }
-                        
+
                     }else{
                         clearInterval(progressInterval);
                             var seconInterval = setInterval(function () {
-                                counter++;
+                                    counter++;
                                 $('#progress-bar-percentage').html(counter + '%');
                                 $("#progress-bar").width(counter+"%");
                                 if(counter >= 90){
@@ -774,14 +769,10 @@
                 .fail(function(res) {
                     console.log(res);
                 });
-
                 if(counter == 300){
                     window.location.href = route;
                 }
             }, 600);
         </script>
     @endif
-
-
-
 @endpush

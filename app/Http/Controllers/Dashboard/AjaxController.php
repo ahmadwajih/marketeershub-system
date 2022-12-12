@@ -96,12 +96,12 @@ class AjaxController extends Controller
         ]);
     }
 
-    public function checkJobs(){
+    public function checkJobs(): bool
+    {
         $jobs = DB::table('jobs')->get();
         if(count($jobs) > 0){
             return true;
         }
-
         return false;
     }
 }

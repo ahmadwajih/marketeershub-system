@@ -41,14 +41,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::post('forgot-password', 'AuthController@forgotPassword')->name('forgot.password');
     Route::get('reset-password', 'AuthController@resetPasswordForm')->name('reset.password.form');
     Route::post('reset-password', 'AuthController@resetPassword')->name('reset.password');
-    //Start Auth ajax requests 
+
+    //Start Auth ajax requests
     Route::get('ajax/acount-manager-based-on-team', 'AjaxController@getAccountManagersBasedOnTeam')->name('get.account.managers.based.on.team');
     Route::get('ajax/categories-based-on-team', 'AjaxController@getCategoriesBasedOnTeam')->name('get.categories.based.on.team');
     Route::get('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
-
-    //End Auth ajax requests 
-
-
+    //End Auth ajax requests
 
     Route::middleware(['auth:web'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
@@ -117,9 +115,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('helps-search', 'HelpController@search')->name('helps.search');
         // Route::get('help/{slug}', 'HelpController@showBySlug')->name('helps.show.by.slug');
 
-        
         Route::resource('coupons', CouponController::class);
         Route::resource('reports', PivotReportController::class);
+        Route::get('reports/import/status', 'PivotReportController@status')->name('reports.import.status');
+
         Route::get('reports/clear/sessions', 'PivotReportController@clearFilterSeassoions')->name('reports.clear.sessions');
         Route::get('reports/download/errors', 'PivotReportController@downLoadErrors')->name('reports.deonload.errore');
         Route::get('reports/define/excel/sheet/columns', 'PivotReportController@defineExcelSheetColumns')->name('define.excel.sheet.columns');

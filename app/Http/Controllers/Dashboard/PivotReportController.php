@@ -11,19 +11,26 @@ use App\Models\Offer;
 use App\Models\PivotReport;
 use App\Models\User;
 use App\Notifications\UpdateValidation;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Notification;
 use Yajra\DataTables\Facades\DataTables;
 
 class PivotReportController extends Controller
 {
-
-
-    /** 
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View|Response
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
@@ -31,7 +38,7 @@ class PivotReportController extends Controller
         $this->authorize('view_pivot_report');
 
         $query = PivotReport::query();
-       
+
          $tableLength = session('table_length') ?? config('app.pagination_pages');
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
@@ -67,7 +74,8 @@ class PivotReportController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
+     * @throws AuthorizationException
      */
     public function create()
     {
@@ -86,10 +94,11 @@ class PivotReportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('create_pivot_report');
         $request->validate([
@@ -97,18 +106,27 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::queueImport(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
 
-        if ($request->type == 'validation') {
-            $offer = Offer::findOrFail($request->offer_id);
-            // Notification::send($offer->users, new UpdateValidation($offer));
-        }
-        userActivity('PivotReport', null, 'upload');
-        $notification = [
-            'message' => 'Uploaded successfully',
-            'alert-type' => 'success'
-        ];
-        return redirect()->back()->with($notification);
+        //todo use dispatching events instead of exec function
+        Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
+        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
+        return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function status()
+    {
+        $import_file = Storage::get("import.json");
+        $import_file = json_decode($import_file, true); // returns array("foo" => "bar")
+        $id = $import_file['id'];
+        return response([
+            'started' => filled(cache("start_date_$id")),
+            'finished' => filled(cache("end_date_$id")),
+            'current_row' => (int) cache("current_row_$id"),
+            'total_rows' => (int) cache("total_rows_$id"),
+        ]);
     }
 
     public function downloadErrors()
@@ -124,12 +142,12 @@ class PivotReportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return void
+     * @throws AuthorizationException
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, int $id)
     {
-       
         $this->authorize('delete_cites');
         if ($request->ajax()) {
             $pivotReport = PivotReport::findOrFail($id);
@@ -155,31 +173,31 @@ class PivotReportController extends Controller
         $haveDateRange = $revenueHaveDateRange || $payoutHaveDateRange ? true : false;
         $haveCountryRange = $revenueHaveCountries || $payoutHaveCountries ? true : false;
         $cpsType = $offer->payout_cps_type;
-       
+
         $link = asset('dashboard/excel-sheets-examples/update-report');
         $title = 'Download example';
-        
+
         if(count($revenue) == 0 && count($payout) == 0 ){
             return response()->json(['data' =>false]);
         }
 
         if ($cpsType == 'static') {
-            // If have date range and countries conditoin 
+            // If have date range and countries conditoin
             if ($haveDateRange && $haveCountryRange) {
                 $link .= '/static-with-date-range-and-countries-condition.xlsx';
                 $title = 'Fixed amount with date range and countries condition';
             }
-            // If have date range conditoin 
+            // If have date range conditoin
             if ($haveDateRange && !$haveCountryRange) {
                 $link .= '/static-with-date-range-condition.xlsx';
                 $title = 'Fixed amount with date range condition';
             }
-            // If have countries conditoin 
+            // If have countries conditoin
             if (!$haveDateRange && $haveCountryRange) {
                 $link .= '/static-with-countries-condition.xlsx';
                 $title = 'Fixed amount with countries condition';
             }
-            // If dosnot have date range and dosner countries conditoin 
+            // If it does not have date range and dosner countries conditoin
             if (!$haveDateRange && !$haveCountryRange) {
                 $link .= '/static-without-date-range-and-without-countries-condition.xlsx';
                 $title = 'Fixed amount without date range and without countries condition';
@@ -187,22 +205,22 @@ class PivotReportController extends Controller
         }
 
         if ($cpsType == 'new_old') {
-            // If have date range and countries conditoin 
+            // If have date range and countries conditoin
             if ($haveDateRange && $haveCountryRange) {
                 $link .= '/new-old-with-date-range-and-countries-condition.xlsx';
                 $title = 'New-Old with date range and countries condition';
             }
-            // If have date range conditoin 
+            // If have date range conditoin
             if ($haveDateRange && !$haveCountryRange) {
                 $link .= '/new-old-with-date-range-condition.xlsx';
                 $title = 'New-Old with date range condition';
             }
-            // If have countries conditoin 
+            // If have countries conditoin
             if (!$haveDateRange && $haveCountryRange) {
                 $link .= '/new-old-with-countries-condition.xlsx';
                 $title = 'New-Old with countries condition';
             }
-            // If dosnot have date range and dosner countries conditoin 
+            // If dosnot have date range and dosner countries conditoin
             if (!$haveDateRange && !$haveCountryRange) {
                 $link .= '/new-old-without-date-range-and-without-countries-condition.xlsx';
                 $title = 'New-Old without date range and without countries condition';
@@ -217,7 +235,10 @@ class PivotReportController extends Controller
         return response()->json(['link' => $link,'title' => $title]);
     }
 
-    public function clearFilterSeassoions()
+    /**
+     * @return RedirectResponse
+     */
+    public function clearFilterSeassoions(): \Illuminate\Http\RedirectResponse
     {
         session()->forget('pivot_report_filter_offer_id');
         session()->forget('pivot_report_filter_user_id');

@@ -49,7 +49,6 @@ class ReportController extends Controller
             }
         }
 
-
         return view('admin.reports.index', [
             'offers' => $offers,
             'pendingTotalOrders' => $pendingTotalOrders,

@@ -7,7 +7,7 @@
         <div class="container">
             <!--begin::Card-->
             <div class="card card-custom">
-                
+
                 @if(session()->has('message'))
                 @include('admin.temps.success')
                 @endif
@@ -97,6 +97,5 @@
 <script>
     var route = "{{ route('admin.coupons.index') }}";
 </script>
-
 <script src="{{asset('js/datatables/coupons.js')}}"></script>
 @endpush
