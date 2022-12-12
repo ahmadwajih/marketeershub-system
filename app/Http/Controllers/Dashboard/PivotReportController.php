@@ -16,6 +16,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,7 @@ class PivotReportController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Application|Factory|View|Response
      * @throws AuthorizationException
      */
     public function index(Request $request)
@@ -107,12 +108,8 @@ class PivotReportController extends Controller
         ]);
 
         //todo use dispatching events instead of exec function
-        Storage::put('pivot_report_import.txt', $request->file('file')->store('report'));
-
-        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
-
-        userActivity('PivotReport', null, 'upload');
-
+        Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
+        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type");
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
@@ -125,8 +122,9 @@ class PivotReportController extends Controller
      */
     public function status()
     {
-        $id = session('import');
-
+        $import_file = Storage::get("import.json");
+        $import_file = json_decode($import_file, true); // returns array("foo" => "bar")
+        $id = $import_file['id'];
         return response([
             'started' => filled(cache("start_date_$id")),
             'finished' => filled(cache("end_date_$id")),
@@ -203,7 +201,7 @@ class PivotReportController extends Controller
                 $link .= '/static-with-countries-condition.xlsx';
                 $title = 'Fixed amount with countries condition';
             }
-            // If dosnot have date range and dosner countries conditoin
+            // If it does not have date range and dosner countries conditoin
             if (!$haveDateRange && !$haveCountryRange) {
                 $link .= '/static-without-date-range-and-without-countries-condition.xlsx';
                 $title = 'Fixed amount without date range and without countries condition';
@@ -241,7 +239,10 @@ class PivotReportController extends Controller
         return response()->json(['link' => $link,'title' => $title]);
     }
 
-    public function clearFilterSeassoions()
+    /**
+     * @return RedirectResponse
+     */
+    public function clearFilterSeassoions(): \Illuminate\Http\RedirectResponse
     {
         session()->forget('pivot_report_filter_offer_id');
         session()->forget('pivot_report_filter_user_id');

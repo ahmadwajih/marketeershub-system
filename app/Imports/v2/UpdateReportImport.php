@@ -46,7 +46,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
      */
     public function collection(Collection $collection)
     {
-
         unset($collection[0]);
         $cpsType = $this->offer()->payout_cps_type;
         if ($cpsType == 'static' || $cpsType == 'slaps') {
@@ -412,7 +411,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
-        sleep(5.2);
+        sleep(2.2);
     }
 
     public function registerEvents(): array

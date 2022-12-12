@@ -10,6 +10,7 @@ use Carbon\Carbon;
 
 /**
  * @method static whereStatus(string $string)
+ * @method static orderBy(string $string, string $string1)
  */
 class Offer extends Model
 {
