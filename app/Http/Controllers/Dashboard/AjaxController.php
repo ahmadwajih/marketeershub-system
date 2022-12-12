@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\Financial\Coupons;
 
 class AjaxController extends Controller
@@ -43,9 +44,10 @@ class AjaxController extends Controller
     public function accountManagers(Request $request)
     {
         if ($request->ajax()) {
-            $users = User::where('position', 'account_manager')
-                ->whereStatus('active')
-                ->where('team', $request->team)->get();
+            $users = User::whereStatus('active')
+                ->where('team', $request->team)->whereHas('roles', function($query){
+                    return $query->where('label', 'account_manager');
+                })->get();
             return view('admin.ajax.options', ['options' => $users]);
         }
     }
@@ -66,7 +68,9 @@ class AjaxController extends Controller
     public function getAccountManagersBasedOnTeam(Request $request)
     {
         if ($request->ajax()) {
-            $accountManagers = User::where('position', 'account_manager')->where('team', $request->team)->get();
+            $accountManagers = User::where('team', $request->team)->whereHas('roles', function($query){
+                return $query->where('label', 'account_manager');
+            })->get();
             return view('new_admin.components.option', [
                 'title' => "Select Referral",
                 "items" => $accountManagers
@@ -90,5 +94,14 @@ class AjaxController extends Controller
             'title' => "Select Publisher",
             "items" => $publishers
         ]);
+    }
+
+    public function checkJobs(){
+        $jobs = DB::table('jobs')->get();
+        if(count($jobs) > 0){
+            return true;
+        }
+
+        return false;
     }
 }

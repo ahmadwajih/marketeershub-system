@@ -193,10 +193,10 @@ class User extends Authenticatable
 
     }
 
-    public function getCreatedAtAttribute()
-    {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('Y-m-d');
-    }
+    // public function getCreatedAtAttribute()
+    // {
+    //     return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('Y-m-d');
+    // }
 
     public function getSizeAttribute(){
         if($this->attributes['team'] == 'influencer' || $this->attributes['team'] == 'prepaid'){

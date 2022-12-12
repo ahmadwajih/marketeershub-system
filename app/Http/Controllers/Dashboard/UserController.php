@@ -20,11 +20,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->all());
         $this->authorize('view_users');
-        if ($request->ajax()){
 
-            if(auth()->user()->position == 'super_admin'){
+        if ($request->ajax()){
+            if(in_array('super_admin',   auth()->user()->roles->pluck('label')->toArray())){
                 $users = User::with('parent')->where([
                     ['position', '!=', 'publisher']
                 ]);

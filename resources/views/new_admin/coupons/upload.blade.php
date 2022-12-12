@@ -60,7 +60,7 @@
                                             <label class="required form-label">Coupon Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="file" name="coupons" class="form-control mb-2" placeholder="Coupon Code" value="{{ old('coupons') }}" />
+                                            <input type="file" name="coupons" class="form-control mb-2" placeholder="Coupon Code" value="{{ old('coupons') }}"   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
                                             @if ($errors->has('coupons'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('coupons') }}</div></div>
                                             @endif

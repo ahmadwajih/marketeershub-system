@@ -12,10 +12,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithStartRow
+class CouponImport implements ToCollection, WithStartRow
 {
     public $offerId;
-    public $oldId = null;
     public $test = [];
     public $totlaUploadedSuccessfully = 0;
     public $totlaUpdatedSuccessfully = 0;
@@ -39,23 +38,29 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithS
 
             if (!is_null($col[0])) {
                 $userId = null;
-                // if (!is_null($col[1]) && isset($col[1])) {
-                //     if ($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000') {
-                //         $publisher = User::where('email', 'info@marketeershub.com')->first();
-                //         if ($publisher) {
-                //             $userId = $publisher->id;
-                //         }
-                //     } else {
-                //         $publisher = User::where('ho_id', $this->oldId)->first();
-                //         if ($publisher) {
-                //             $userId = $publisher->id;
-                //         }
-                //     }
-                // }
+                if (!is_null($col[1]) && isset($col[1])) {
+                    if ($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000') {
+                        $publisher = User::where('email', 'info@marketeershub.com')->first();
+                        if ($publisher) {
+                            $userId = $publisher->id;
+                        }
+                    } else {
+                        $publisher = User::where('id', $col[1])->first();
+                        if ($publisher) {
+                            $userId = $publisher->id;
+                        }
+                    }
+                }
                 $coupon = Coupon::where([
                     ['coupon', '=',  $col[0]],
                     ['offer_id', '=', $this->offerId]
                 ])->first();
+
+                $this->test['coupon_code'] = $col[0];
+                $this->test['offer_id'] = $this->offerId;
+                $this->test['user_id'] = $userId;
+                Log::debug($this->test);
+
                 if ($coupon) {
                     $coupon->user_id = $userId;
                     $coupon->save();
@@ -71,17 +76,6 @@ class CouponImport implements ToCollection, WithChunkReading, ShouldQueue, WithS
                 $this->totlaUploadedSuccessfully++;
             }
         }
-        session(['upload_coupon_report' => [
-            'totlaUpdatedSuccessfully' => $this->totlaUpdatedSuccessfully++,
-            'totlaCreatedSuccessfully' => $this->totlaCreatedSuccessfully++,
-            'totlaUploadedSuccessfully' => $this->totlaUploadedSuccessfully++,
-        ] ]);
-
-    }
-
-    public function chunkSize(): int
-    {
-        return 100;
     }
 
     public function startRow(): int

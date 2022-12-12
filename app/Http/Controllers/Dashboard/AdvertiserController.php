@@ -150,12 +150,11 @@ class AdvertiserController extends Controller
     {
         $this->authorize('update_advertisers');
         $data = $request->validate([
-            'name'                  => 'required|max:255',
+            'name'                  => 'nullable|max:255',
             'phone'                 => 'nullable|max:255',
             'email'                 => 'nullable|max:255',
             'ho_user_id'            => 'nullable|max:255',
-            'company_name_ar'       => 'required|max:255',
-            'company_name_en'       => 'nullable|max:255',
+            'company_name_en'       => 'required|max:255',
             'website'               => 'nullable|max:255',
             'categories'            => 'array|required|exists:categories,id',
             'country_id'            => 'required|max:255|exists:countries,id',

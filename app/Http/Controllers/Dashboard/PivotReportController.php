@@ -97,7 +97,7 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
+        Excel::queueImport(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
 
         if ($request->type == 'validation') {
             $offer = Offer::findOrFail($request->offer_id);

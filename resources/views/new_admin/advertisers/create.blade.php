@@ -87,7 +87,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Responsable Person Name</label>
+                                            <label class="form-label">Responsable Person Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="name" class="form-control mb-2" placeholder="Responsable Person Name" value="{{ old('name') }}" />
@@ -103,7 +103,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Responsable Person Phone</label>
+                                            <label class="form-label">Responsable Person Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="phone" class="form-control mb-2" placeholder="Responsable Person Phone" value="{{ old('phone') }}" />
@@ -119,7 +119,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Responsable Person Email</label>
+                                            <label class="form-label">Responsable Person Email</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="email" name="email" class="form-control mb-2" placeholder="Responsable Person Email" value="{{ old('email') }}" />
@@ -135,7 +135,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Website</label>
+                                            <label class="form-label">Website</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="url" name="website" class="form-control mb-2" placeholder="Website" value="{{ old('website') }}" />
@@ -151,7 +151,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Validation Source</label>
+                                            <label class="form-label">Validation Source</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="validation_source" class="form-control mb-2" placeholder="Validation Source" value="{{ old('validation_source') }}" />
@@ -167,7 +167,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Validation Duration</label>
+                                            <label class="form-label">Validation Duration</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="validation_duration" class="form-control mb-2" placeholder="Validation Duration" value="{{ old('validation_duration') }}" />
@@ -242,7 +242,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Address</label>
+                                            <label class="form-label">Address</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="address" class="form-control mb-2" placeholder="Address" value="{{ old('address') }}" />
@@ -258,7 +258,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="form-label">Categories</label>
+                                            <label class="required form-label">Categories</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="categories[]" multiple data-control="select2" class="form-select form-select-sm">
@@ -278,7 +278,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Access Username Or Email</label>
+                                            <label class="form-label">Access Username Or Email</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="access_username" class="form-control mb-2" placeholder="Access Username Or Email" value="{{ old('access_username') }}" />
@@ -294,7 +294,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Access Password</label>
+                                            <label class="form-label">Access Password</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="access_password" class="form-control mb-2" placeholder="Access Password" value="{{ old('access_password') }}" />
@@ -310,7 +310,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="form-label">Currency</label>
+                                            <label class="required form-label">Currency</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="currency_id" data-control="select2" class="form-select">
@@ -356,7 +356,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Contract</label>
+                                            <label class="form-label">Contract</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="file" name="contract" class="form-control mb-2" value="{{ old('contract') }}" />
@@ -372,7 +372,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">NDA</label>
+                                            <label class="form-label">NDA</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="file" name="nda" class="form-control mb-2" value="{{ old('nda') }}" />
@@ -388,7 +388,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">IO</label>
+                                            <label class="form-label">IO</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="file" name="io" class="form-control mb-2" value="{{ old('io') }}" />
@@ -404,7 +404,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Note</label>
+                                            <label class="form-label">Note</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <textarea name="note" class="form-control mb-2" >{{ old('note') }}</textarea>

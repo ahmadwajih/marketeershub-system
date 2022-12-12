@@ -12,6 +12,7 @@ function changeStatus(id, name, action){
         <div class="mb-10 fv-row">
             <label class="form-label">Select Status</label>
             <select onchange="enableSwalConfirmationButton()" id="status" class="form-select form-control form-select-sm">
+                <option value="" selected disabled>Select Status</option>
                 <option value="active">Live</option>
                 <option value="pending">Paused</option>
                 <option value="inactive">Cancelled</option>

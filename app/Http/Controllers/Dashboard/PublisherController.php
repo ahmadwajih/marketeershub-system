@@ -162,7 +162,9 @@ class PublisherController extends Controller
             'cities' => City::all(),
             'countries' => Country::all(),
             'categories' => Category::whereType('affiliate')->get(),
-            'users' => User::where('position', 'account_manager')->whereTeam('affiliate')->whereStatus('active')->get(),
+            'users' => User::whereTeam('affiliate')->whereStatus('active')->whereHas('roles', function($query){
+                return $query->where('label', 'account_manager');
+            })->get(),
             'currencies' => Currency::all(),
         ]);
     }
@@ -179,8 +181,7 @@ class PublisherController extends Controller
         $data = $request->validate([
             'name'                      => 'required|max:255',
             'email'                     => 'required|unique:users|max:255',
-            'phone'                     => 'required|unique:users|max:255',
-            // 'password'                  => ['required','confirmed', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'phone'                     => 'required|unique:users|numeric',
             'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
@@ -214,6 +215,7 @@ class PublisherController extends Controller
         $data['password'] = Hash::make($request->password);
         $data['position'] = 'publisher';
         $data['status'] = 'active';
+        $data['created_at'] = Carbon::now();
         unset($data['social_media']);
         if ($request->hasFile('image')) {
             $data['image'] = uploadImage($request->file('image'), "Users");
@@ -338,7 +340,7 @@ class PublisherController extends Controller
         $data = $request->validate([
             'name'                      => 'required|max:255',
             'email'                     => 'required|max:255|unique:users,email,' . $id,
-            'phone'                     => 'required|max:255|unique:users,phone,' . $id,
+            'phone'                     => 'required|numeric|unique:users,phone,' . $id,
             'password'                  => ['nullable', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',

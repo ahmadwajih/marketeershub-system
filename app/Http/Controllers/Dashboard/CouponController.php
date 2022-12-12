@@ -26,6 +26,17 @@ class CouponController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_coupons');
+        if(isset($request->success) && $request->success == 'true'){
+            $couponsCountBeforUploading = session('coupons_count_before_uploading');
+            $couponsCount = Coupon::count();
+            $totalUploadedCoupons = $couponsCount - $couponsCountBeforUploading;
+            $notification = [
+                'message' => $totalUploadedCoupons . ' Coupon Uploaded Successfully.',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('admin.coupons.index')->with($notification);
+        }
+
         // Get Coupons 
         $query = Coupon::query();
      
@@ -402,15 +413,15 @@ class CouponController extends Controller
             'offer_id'   => 'required|exists:offers,id',
             'coupons'    => 'required|mimes:xlsx,csv',
         ]);
-
-        Excel::queueImport(new CouponImport($request->offer_id, $request->team), request()->file('coupons'));
+        session(['coupons_count_before_uploading' => Coupon::count()]);
+        Excel::import(new CouponImport($request->offer_id), request()->file('coupons'));
         userActivity('Coupon', null, 'upload');
 
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-        return redirect()->route('admin.coupons.index')->with($notification);
+        return redirect()->route('admin.coupons.index', ['uploading'=> 'true']);
     }
 
     public function changeStatus(Request $request)

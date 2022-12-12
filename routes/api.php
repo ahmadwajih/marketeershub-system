@@ -25,13 +25,21 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('order', 'OrderController@store');
     Route::get('order-update-status', 'OrderController@updateStatus');
     
-    // Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+
+        // Get All advertisers 
+        Route::get('offers', 'OfferController@index');
+        Route::get('advertisers', 'AdvertiserController@index');
+        Route::get('publishers', 'PublisherController@index');
+        Route::get('affiliates/{advertiser_id?}', 'PublisherController@affiliates');
+        Route::get('influencers/{advertiser_id?}', 'PublisherController@influencers');
+
         Route::post('register-merchant', 'UserController@registerAdvertiser');
         Route::post('register-affiliate', 'UserController@registerAffiliate');
         Route::post('register-influencer', 'UserController@registerInfluencer');
         Route::post('logout','AuthController@logout');
 
-    // });
+    });
 
 });
 

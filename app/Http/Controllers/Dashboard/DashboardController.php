@@ -398,6 +398,25 @@ class DashboardController extends Controller
 
     public function test(Request $request)
     {
+
+        $jobs = DB::table('jobs')->get();
+        if($jobs){
+
+        }
+
+        
+        foreach($jobs as $job){
+            dd($job);
+        }
+
+        
+        $data = [
+            'old_coupons_count' =>  session('upload_coupon_report')['total_coupons'],
+            'upload_coupons_count' =>  session('upload_coupon_report')['total_uploaded_coupons'],
+            'current_coupons_count' => Coupon::count(),
+        ];
+        dd($data);
+
         abort(404);
         //Marketeers Hub
         // $user = User::create([

@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Facades\Excel;
-
-class UpdateReportImport implements ToCollection
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
+class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $offerId;
     public $coupon;
@@ -390,5 +391,10 @@ class UpdateReportImport implements ToCollection
             }
         }
         return 'Slabs dosen`t match type => ' . $type;
+    }
+
+    public function chunkSize(): int
+    {
+        return 10;
     }
 }

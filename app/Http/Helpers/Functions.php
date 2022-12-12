@@ -262,13 +262,13 @@ if (!function_exists('getCategoryId')) {
 }
 
 if (!function_exists('getCityId')) {
-    function getCityId($cityName): int
+    function getCityId($cityName)
     {
         $city = City::where('name_en', 'like', '%' . $cityName . '%')->orWhere('name_ar', 'like', '%' . $cityName . '%')->first();
         if ($city) {
             return $city->id;
         }
-        return City::first()->id;
+        return null;
     }
 }
 

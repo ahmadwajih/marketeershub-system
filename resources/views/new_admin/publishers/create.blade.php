@@ -42,72 +42,21 @@
                 <!--begin::Tab pane-->
                 <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general" role="tab-panel">
                     <div class="d-flex flex-column gap-7 gap-lg-10">
-                        <!--begin::Thumbnail settings-->
-                        <div class="card card-flush py-4">
-                            <!--begin::Card header-->
-                            <div class="card-header">
-                                <!--begin::Card title-->
-                                <div class="card-title">
-                                    <h2>Thumbnail</h2>
-                                </div>
-                                <!--end::Card title-->
-                            </div>
-                            <!--end::Card header-->
-                            <!--begin::Card body-->
-                            <div class="card-body text-center pt-0">
-                                <!--begin::Image input-->
-                                <!--begin::Image input placeholder-->
-                                <style>.image-input-placeholder { background-image: url('{{ asset("new_dashboard") }}/media/svg/files/blank-image.svg'); } [data-theme="dark"] .image-input-placeholder { background-image: url('{{ asset("new_dashboard") }}/media/svg/files/blank-image-dark.svg'); }</style>
-                                <!--end::Image input placeholder-->
-                                <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true" style="&lt;br /&gt; &lt;b&gt;Warning&lt;/b&gt;: Undefined variable $imageBg in &lt;b&gt;C:\wamp64\www\keenthemes\core\html\dist\view\pages\apps\ecommerce\catalog\edit-product\_thumbnail.php&lt;/b&gt; on line &lt;b&gt;30&lt;/b&gt;&lt;br /&gt;">
-                                    <!--begin::Preview existing avatar-->
-                                    <div class="image-input-wrapper w-150px h-150px"></div>
-                                    <!--end::Preview existing avatar-->
-                                    <!--begin::Label-->
-                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
-                                        <i class="bi bi-pencil-fill fs-7"></i>
-                                        <!--begin::Inputs-->
-                                        <input type="file" name="image" accept=".png, .jpg, .jpeg" />
-                                        <input type="hidden" name="avatar_remove" />
-                                        <!--end::Inputs-->
-                                    </label>
-                                    <!--end::Label-->
-                                    <!--begin::Cancel-->
-                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
-                                        <i class="bi bi-x fs-2"></i>
-                                    </span>
-                                    <!--end::Cancel-->
-                                    <!--begin::Remove-->
-                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
-                                        <i class="bi bi-x fs-2"></i>
-                                    </span>
-                                    <!--end::Remove-->
-                                </div>
-                                <!--end::Image input-->
-                                <!--begin::Description-->
-                                <div class="text-muted fs-7">Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted</div>
-                                <!--end::Description-->
-                                @if ($errors->has('image'))
-                                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('image') }}</div></div>
-                                @endif                            
-                            </div>
-                            <!--end::Card body-->
-                        </div>
-                        <!--end::Thumbnail settings-->
+           
                         <!--begin::General options-->
                         <div class="card card-flush py-4">
 
                             <!--begin::Card body-->
                             <div class="card-body pt-0">
                                 <div class="row">
-                                    <div class="separator separator-content my-14">
+                                    <div class="separator separator-content my-7">
                                         <span class="w-125px text-white fw-semibold fs-7">Basic Info</span>
                                     </div>
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Full Name</label>
+                                            <label class="required form-label">Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="name"  onkeypress="clsAlphaOnly(event)" onpaste="return false;"  class="form-control mb-2" placeholder="Full name" value="{{ old('name') }}" />
@@ -142,7 +91,7 @@
                                             <label class="required form-label">Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="tel" name="phone" class="form-control mb-2" placeholder="0123456789" value="{{ old('phone') }}" />
+                                            <input type="number" name="phone" class="form-control mb-2" placeholder="0123456789" value="{{ old('phone') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('phone'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
@@ -169,36 +118,22 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
+                                    
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label">Password</label>
+                                            <label class="required form-label">Country</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="password" name="password" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
+                                            <select id="country" name="country_id" data-control="select2" class="form-select form-select-sm">
+                                                @foreach ($countries as $country)
+                                                    <option {{ old('country_id') == $country->id ? "selected" : 'null' }} value="{{ $country->id }}">{{  $country->name }}</option>
+                                                @endforeach
+                                            </select>
                                             <!--end::Input-->
-                                            <p >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol min 8 chars') }}</p>
-
-                                            @if ($errors->has('password'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Password Confirmation</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="password" name="password_confirmation" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
-                                            <!--end::Input-->
-                                            @if ($errors->has('password_confirmation'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password_confirmation') }}</div></div>
+                                            @if ($errors->has('country_id'))
+                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('country_id') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
@@ -244,45 +179,6 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Nationality</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select name="nationality" data-control="select2" class="form-select form-select-sm">
-                                                @foreach ($countries as $country)
-                                                    <option {{ old('nationality') == $country->id ? "selected" : 'null' }} value="{{ $country->id }}">{{  $country->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('nationality'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('nationality') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Country</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <select id="country" name="country_id" data-control="select2" class="form-select form-select-sm">
-                                                @foreach ($countries as $country)
-                                                    <option {{ old('country_id') == $country->id ? "selected" : 'null' }} value="{{ $country->id }}">{{  $country->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <!--end::Input-->
-                                            @if ($errors->has('country_id'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('country_id') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
                                  
                                     <div class="separator separator-content my-14">
                                         <span class="w-125px text-white fw-semibold fs-7">Additional Info</span>
@@ -292,7 +188,7 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label  class="required form-label">Categories</label>
+                                            <label  class="required form-label">Category</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select id="categories"  name="categories[]" aria-label="Select Categories" data-control="select2" multiple data-placeholder="Select Categories" class="form-select">
@@ -349,7 +245,7 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <!--begin::Label-->
-                                                <label class="form-label">Traffic Sources</label>
+                                                <label class="form-label">Traffic Source</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <select caria-label="Select Traffic Sources" data-control="select2" data-placeholder="Select Traffic Sources" class="form-select" name="traffic_sources[]" multiple>

@@ -150,6 +150,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('ajax/view-activity-history', 'AjaxController@viewActivityHistory')->name('ajax.view.activity.history');
         Route::post('ajax/read-notification', 'AjaxController@readNotifications')->name('ajax.read.notifications');
         Route::get('ajax/publishers/search', 'AjaxController@publishersSearch')->name('ajax.publishers.search');
+        Route::get('ajax/check/jobs', 'AjaxController@checkJobs')->name('ajax.check.jobs');
         // Delete this routes and views
         Route::group(['prefix' => 'publisher'], function(){
             Route::get('dashboard', 'PublisherController@dashboard')->name('publisher.dashboard');

@@ -106,7 +106,7 @@
                                     <!--end::Input group-->
                                     <!--begin::Input group-->
                                     <div class="mb-10">
-                                        <label class="form-label fs-6 fw-semibold">AM:</label>
+                                        <label class="form-label fs-6 fw-semibold">Acc. Manager:</label>
                                         <select class="form-select form-select-solid fw-bold filter-input" data-column="6" name="parent_id" data-kt-select2="true" data-placeholder="Select option">
                                             <option value="">All</option>
                                             @foreach($accountManagers as $accountManager)
@@ -214,7 +214,7 @@
                                 <th>{{ __('Team') }}</th>
                                 <th>{{ __('Acc. Manager') }}</th>
                                 <th>{{ __('Status') }}</th>
-                                <th>{{ __('Join Date') }}</th>
+                                <th>{{ __('Joined Since') }}</th>
                                 <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
