@@ -13,8 +13,12 @@ use App\Models\User;
 use App\Notifications\UpdateValidation;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Notification;
 use Yajra\DataTables\Facades\DataTables;
@@ -69,7 +73,8 @@ class PivotReportController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return Application|Factory|View
+     * @throws AuthorizationException
      */
     public function create()
     {
@@ -88,10 +93,11 @@ class PivotReportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $this->authorize('create_pivot_report');
         $request->validate([
@@ -99,16 +105,11 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        //Excel::queueImport(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
 
-        $id = now()->unix();
-        session([ 'import' => $id ]);
-        Excel::queueImport(new UpdateReportImport($request->offer_id, $request->type), request()->file('report'));
+        //todo use dispatching events instead of exec function
+        Storage::put('pivot_report_import.txt', $request->file('file')->store('report'));
 
-        //if ($request->type == 'validation') {
-            // $offer = Offer::findOrFail($request->offer_id);
-            // Notification::send($offer->users, new UpdateValidation($offer));
-        //}
+        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
 
         userActivity('PivotReport', null, 'upload');
 

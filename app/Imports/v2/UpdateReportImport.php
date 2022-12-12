@@ -4,7 +4,9 @@ namespace App\Imports\V2;
 
 use App\Exports\PivotReportErrorsExport;
 use App\Models\Country;
+use Exception;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Coupon;
@@ -12,12 +14,17 @@ use App\Models\Offer;
 use App\Models\PivotReport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
-class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
+use Maatwebsite\Excel\Row;
+
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading, ShouldQueue
 {
     public $offerId;
     public $coupon;
@@ -25,11 +32,13 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
     public $revenue;
     public $payout;
     public $columnHaveIssue = [];
+    public $id;
 
-    public function __construct($offerId, $type)
+    public function __construct($offerId, $type,int $id)
     {
         $this->offerId = $offerId;
         $this->type = $type;
+        $this->id = $id;
     }
 
     /**
@@ -68,8 +77,8 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
                 session(['columnHaveIssue' => $this->columnHaveIssue]);
                 return false;
             }
-            
-            // 1- Fixed Model 
+
+            // 1- Fixed Model
             if ($col[1]) {
                 $coupon  = Coupon::where([
                     ['coupon', '=', $col[1]],
@@ -77,7 +86,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
                 ])->first();
             }
 
-            // Check if this coupons is belong to user in the same team 
+            // Check if this coupons is belong to user in the same team
             if ($coupon) {
                 if (!$coupon->user) {
                     $coupon->user_id = marketersHubPublisherInfo()->id;
@@ -88,7 +97,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
 
                 $this->coupon = $coupon;
 
-                //Cheeck If exists 
+                //Cheeck If exists
                 $pivotReport  = PivotReport::where([
                     ['coupon_id', '=', $coupon->id],
                     ['date', '=', $col[0]],
@@ -136,13 +145,12 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
                 // $coupon = Coupon::create([
                 //     'coupon' => $col[0],
                 //     'offer_id' => $this->offerId,
-                //     'user_id' => marketersHubPublisherInfo()->id // here add marketeers hub affiliate default publisher account 
+                //     'user_id' => marketersHubPublisherInfo()->id // here add marketeers hub affiliate default publisher account
                 // ]);
                 $col[] = "Coupons doesn't exists";
                 $this->columnHaveIssue[] = $col;
             }
         }
-
         session(['columnHaveIssue' => $this->columnHaveIssue]);
     }
 
@@ -195,7 +203,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
 
     public function static($type, $col, $haveCustomPayout = false)
     {
-        // Get Revenu details 
+        // Get Revenu details
         if ($haveCustomPayout) {
             $revenue_details = $this->coupon->cps->where('type', $type)->where('cps_type', 'static');
         } else {
@@ -205,7 +213,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
         $haveDateRange = $revenue_details->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
         $haveCountries = $revenue_details->where('countries', 1)->where('countries_ids', '!=', null)->first();
 
-        // Validate same dates 
+        // Validate same dates
         if ($haveDateRange && !$haveCountries) {
             $dateRangeOptions = $revenue_details->where('from_date', '<=', $col[0]->format('Y-m-d'))->where('to_date', '>=', $col[0]->format('Y-m-d'))->first();
 
@@ -222,7 +230,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
         }
 
 
-        // Validate same country 
+        // Validate same country
         if ($haveCountries && !$haveDateRange) {
             $countriesOptions = $revenue_details->where('countries', 1)->where('countries_ids', '!=', null);
             foreach ($countriesOptions as $option) {
@@ -242,7 +250,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
             return 'The country condition was not match type => ' . $type;
         }
 
-        // Validate same country and same dates 
+        // Validate same country and same dates
         if ($haveCountries && $haveDateRange) {
             $options = $revenue_details->where('from_date', '<=', $col[0]->format('Y-m-d'))->where('to_date', '>=', $col[0]->format('Y-m-d'))->where('countries', 1)->where('countries_ids', '!=', null);
             if ($options) {
@@ -263,7 +271,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
             return 'The country condition and date range condition was not match type => ' . $type;
         }
 
-        // No date no countries  
+        // No date no countries
         if (!$haveDateRange && !$haveCountries) {
             $option = $revenue_details->where('date_range', 0)->where('countries', 0)->first();
             if ($option) {
@@ -282,7 +290,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
     public function new_old($type, $col, $haveCustomPayout = false)
     {
         $revenue = 0;
-        // Get Revenu details 
+        // Get Revenu details
         if ($haveCustomPayout) {
             $revenue_details = $this->coupon->cps->where('type', $type)->where('cps_type', 'new_old');
         } else {
@@ -291,7 +299,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
         $haveDateRange = $revenue_details->where('date_range', 1)->where('from_date', '!=', null)->where('to_date', '!=', null)->first();
         $haveCountries = $revenue_details->where('countries', 1)->where('countries_ids', '!=', null)->first();
 
-        // Validate same dates 
+        // Validate same dates
         if ($haveDateRange && !$haveCountries) {
             $dateRangeOptions = $revenue_details->where('from_date', '<=', $col[0]->format('Y-m-d'))->where('to_date', '>=', $col[0]->format('Y-m-d'))->first();
 
@@ -310,7 +318,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
         }
 
 
-        // Validate same country 
+        // Validate same country
         if ($haveCountries && !$haveDateRange) {
             $countriesOptions = $revenue_details->where('countries', 1)->where('countries_ids', '!=', null);
             foreach ($countriesOptions as $option) {
@@ -334,7 +342,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
             return 'The country condition was not match type => ' . $type;
         }
 
-        // Validate same country and same dates 
+        // Validate same country and same dates
 
         if ($haveCountries && $haveDateRange) {
             $options = $revenue_details->where('from_date', '<=', $col[0]->format('Y-m-d'))->where('to_date', '>=', $col[0]->format('Y-m-d'))->where('countries', 1)->where('countries_ids', '!=', null);
@@ -358,7 +366,7 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
             return 'The country condition and date range condition was not match type => ' . $type;
         }
 
-        // No date no countries  
+        // No date no countries
         if (!$haveDateRange && !$haveCountries) {
             $option = $revenue_details->where('date_range', 0)->where('countries', 0)->first();
             if ($option) {
@@ -376,9 +384,8 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
         }
     }
 
-    public function slaps($type, $col,  $haveCustomPayout = false)
+    public function slaps($type, $col,  $haveCustomPayout = false): string
     {
-        $revenue = 0;
         if ($haveCustomPayout) {
             $slaps = $this->coupon->cps->where('type', $type)->where('cps_type', 'slaps');
         } else {
@@ -390,11 +397,41 @@ class UpdateReportImport implements ToCollection, WithChunkReading, ShouldQueue
                 return $revenue;
             }
         }
-        return 'Slabs dosen`t match type => ' . $type;
+        return "Slabs doesn't match type => " . $type;
     }
 
     public function chunkSize(): int
     {
-        return 10;
+        return 100;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function onRow(Row $row)
+    {
+        $rowIndex = $row->getIndex();
+        cache()->forever("current_row_{$this->id}", $rowIndex);
+        sleep(5.2);
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeImport::class => function (BeforeImport $event) {
+                $totalRows = $event->getReader()->getTotalRows();
+
+                if (filled($totalRows)) {
+                    cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);
+                    cache()->forever("start_date_{$this->id}", now()->unix());
+                }
+            },
+            AfterImport::class => function () {
+                cache(["end_date_{$this->id}" => now()], now()->addMinute());
+                cache()->forget("total_rows_{$this->id}");
+                cache()->forget("start_date_{$this->id}");
+                cache()->forget("current_row_{$this->id}");
+            },
+        ];
     }
 }

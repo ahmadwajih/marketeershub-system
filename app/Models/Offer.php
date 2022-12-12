@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+/**
+ * @method static whereStatus(string $string)
+ */
 class Offer extends Model
 {
     use SoftDeletes;
@@ -69,7 +72,7 @@ class Offer extends Model
     public function currency(){
         return $this->belongsTo(Currency::class);
     }
-  
+
     public function coupons(){
         return $this->hasMany(Coupon::class);
     }
@@ -119,9 +122,9 @@ class Offer extends Model
     public function reportPerTeam($team){
         return $this->hasOne(PivotReport::class)
         ->select(
-            DB::raw('orders as orders'), 
-            DB::raw('sales as sales'), 
-            DB::raw('revenue as revenue'),  
+            DB::raw('orders as orders'),
+            DB::raw('sales as sales'),
+            DB::raw('revenue as revenue'),
             DB::raw('payout as payout'))
             ->join('coupons', 'pivot_reports.coupon_id', '=', 'coupons.id')
             ->join('users', 'coupons.user_id', '=', 'users.id')

@@ -120,7 +120,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
 
         Route::resource('coupons', CouponController::class);
         Route::resource('reports', PivotReportController::class);
-        Route::get('reports/import-status', [PivotReportController::class, 'status']);
+        Route::get('reports/import/status', 'PivotReportController@status')->name('reports.import.status');
 
         Route::get('reports/clear/sessions', 'PivotReportController@clearFilterSeassoions')->name('reports.clear.sessions');
         Route::get('reports/download/errors', 'PivotReportController@downLoadErrors')->name('reports.deonload.errore');
