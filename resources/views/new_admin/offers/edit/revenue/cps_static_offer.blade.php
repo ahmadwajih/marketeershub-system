@@ -8,8 +8,8 @@
             <!--end::Label-->
             <!--begin::Input-->
             <select name="static_revenue_type" data-control="select2" class="form-select">
-                <option {{ old('static_revenue_type') == 'flat' ? 'selected' : ($offer->static_revenue_type == '' ? 'selected' : 'flat') }} value="flat">{{ __('Per Order') }}</option>
-                <option {{ old('static_revenue_type') == 'percentage' ? 'selected' : ($offer->static_revenue_type == '' ? 'selected' : 'percentage') }} value="percentage">{{ __('Percentage') }}</option>
+                <option {{ old('static_revenue_type') == 'flat' ? 'selected' : ($offer->revenue_cps_type == 'static' && $offer->cps->where('type', 'revenue') && $offer->cps->where('type', 'revenue')->first()->amount_type == 'flat' ? 'selected' : 'flat') }} value="flat">{{ __('Per Order') }}</option>
+                <option {{ old('static_revenue_type') == 'percentage' ? 'selected' : ($offer->revenue_cps_type == 'static' && $offer->cps->where('type', 'revenue') && $offer->cps->where('type', 'revenue')->first()->amount_type == 'percentage' ? 'selected' : 'percentage') }} value="percentage">{{ __('Percentage') }}</option>
             </select>
             <!--end::Input-->
             @if ($errors->has('static_revenue_type'))

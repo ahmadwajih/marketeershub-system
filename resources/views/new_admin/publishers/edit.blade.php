@@ -248,15 +248,17 @@
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <select caria-label="Select Traffic Sources" data-control="select2" data-placeholder="Select Traffic Sources" class="form-select" name="traffic_sources[]" multiple>
-                                                <option {{ old('traffic_sources') !== null && in_array('website', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'google_ad_words' ? 'selected' : '') }} value="google_ad_words">{{ __('Google Ad words.') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('website', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'facebook_ig_ads' ? 'selected' : '') }} value="facebook_ig_ads">{{ __('Facebook & IG Ads.') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('instagram', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'instagram' ? 'selected' : '') }} value="instagram">{{ __('Instagram') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('twitter', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'twitter' ? 'selected' : '') }} value="twitter">{{ __('Twitter') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('snapchat', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'snapchat' ? 'selected' : '') }} value="snapchat">{{ __('Snapchat') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('tiktok', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'tiktok' ? 'selected' : '') }} value="tiktok">{{ __('Tiktok') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('youtube', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'youtube' ? 'selected' : '') }} value="youtube">{{ __('Youtube') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('pinterest', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'pinterest' ? 'selected' : '') }} value="pinterest">{{ __('Pinterest') }}</option>
-                                                <option {{ old('traffic_sources') !== null && in_array('other', old('traffic_sources')) ? 'selected' : ($publisher->traffic_source == 'other' ? 'selected' : '') }} value="other">{{ __('Other') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('website', old('traffic_sources')) ? 'selected' : ($publisher->traffic_sources !== null && in_array('google_ad_words', $publisher->traffic_sources) ? 'selected' : '') }} value="google_ad_words">{{ __('Google Ad words.') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('website', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('facebook_ig_ads', $publisher->traffic_sources) ? 'selected' : '') }} value="facebook_ig_ads">{{ __('Facebook & IG Ads.') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('instagram', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('instagram', $publisher->traffic_sources) ? 'selected' : '') }} value="instagram">{{ __('Instagram') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('twitter', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('twitter', $publisher->traffic_sources) ? 'selected' : '') }} value="twitter">{{ __('Twitter') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('snapchat', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('snapchat', $publisher->traffic_sources) ? 'selected' : '') }} value="snapchat">{{ __('Snapchat') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('tiktok', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('tiktok', $publisher->traffic_sources) ? 'selected' : '') }} value="tiktok">{{ __('Tiktok') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('youtube', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('youtube', $publisher->traffic_sources) ? 'selected' : '') }} value="youtube">{{ __('Youtube') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('pinterest', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('pinterest', $publisher->traffic_sources) ? 'selected' : '') }} value="pinterest">{{ __('Pinterest') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('coupon_app', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('coupon_app', $publisher->traffic_sources) ? 'selected' : '') }} value="coupon_app">{{ __('Coupon App') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('coupon_website', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('coupon_website', $publisher->traffic_sources) ? 'selected' : '') }} value="coupon_website">{{ __('Coupon Website') }}</option>
+                                                <option {{ old('traffic_sources') !== null && in_array('other', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('other', $publisher->traffic_sources) ? 'selected' : '') }} value="other">{{ __('Other') }}</option>
                                             </select>                                                
                                             <!--end::Input-->
                                                 @if ($errors->has('affiliate_networks'))
@@ -405,7 +407,7 @@
                                             <label class="required form-label">City</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="city"  onkeypress="clsAlphaOnly(event)" onpaste="return false;"  class="form-control mb-2" placeholder="City " value="{{ old('city') ?? $publisher->city }}" />
+                                            <input type="text" name="city"  onkeypress="clsAlphaOnly(event)"  class="form-control mb-2" placeholder="City " value="{{ old('city') ?? $publisher->city }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('city'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('city') }}</div></div>
@@ -639,8 +641,7 @@
                                             <label class="required form-label">IBAN</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') ?? $publisher->iban }}" />
-                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') ?? $publisher->iban }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('iban'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('iban') }}</div></div>
@@ -656,8 +657,7 @@
                                             <label class="required form-label">SWIFT Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') ?? $publisher->swift_code }}" />
-                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') ?? $publisher->swift_code }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('swift_code'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('swift_code') }}</div></div>
@@ -673,8 +673,7 @@
                                             <label class="required form-label">Bank Account Title</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') ?? $publisher->account_title }}" />
-                                            <p>Accepts only letters, no digits or special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') ?? $publisher->account_title }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('account_title'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('account_title') }}</div></div>
@@ -689,8 +688,7 @@
                                             <label class="required form-label">Bank Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') ?? $publisher->bank_name }}" />
-                                            <p>Accepts only letters, no digits or special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') ?? $publisher->bank_name }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('bank_name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_name') }}</div></div>
@@ -706,8 +704,7 @@
                                             <label class="required form-label">Bank Branch Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') ?? $publisher->bank_branch_code }}" />
-                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') ?? $publisher->bank_branch_code }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('bank_branch_code'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_branch_code') }}</div></div>
@@ -723,8 +720,13 @@
                                             <label class="required form-label">Currency</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaCapNoOnly(event)" max="3" onpaste="return false;" name="currency" class="form-control mb-2" placeholder="Currency" value="{{ old('currency') ?? $publisher->currency }}" />
-                                             <p>Accepts only 3 uppercase letters, no digits or special characters.</p>  
+                                            <select name="currency" aria-label="Select a Currency" data-control="select2" data-placeholder="Select Currency" class="form-select form-select-sm">
+                                                <option {{ old('currency') == 'USD' ? "selected" : ($publisher->currency == 'USD' ? "selected" : '') }} value="USD">USD</option>
+                                                <option {{ old('currency') == 'SAR' ? "selected" : ($publisher->currency == 'SAR' ? "selected" : '') }} value="SAR">SAR</option>
+                                                <option {{ old('currency') == 'AED' ? "selected" : ($publisher->currency == 'AED' ? "selected" : '') }} value="AED">AED</option>
+                                                <option {{ old('currency') == 'KWD' ? "selected" : ($publisher->currency == 'KWD' ? "selected" : '') }} value="KWD">KWD</option>
+                                                <option {{ old('currency') == 'EGP' ? "selected" : ($publisher->currency == 'EGP' ? "selected" : '') }} value="EGP">EGP</option>
+                                            </select>                                            
                                             <!--end::Input-->
                                             @if ($errors->has('currency'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('currency') }}</div></div>
