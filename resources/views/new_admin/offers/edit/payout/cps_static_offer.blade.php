@@ -8,11 +8,8 @@
             <!--end::Label-->
             <!--begin::Input-->
             <select name="static_payout_type" data-control="select2" class="form-select">
-                <option {{ old('static_payout_type') == 'flat' ? 'selected' : '' }} value="flat">{{ __('Per Order') }}
-                </option>
-                <option {{ old('static_payout_type') == 'percentage' ? 'selected' : '' }} value="percentage">
-                    {{ __('Percentage') }}
-                </option>
+                <option {{ old('static_payout_type') == 'flat' ? 'selected' : ($offer->payout_cps_type == 'static' && $offer->cps->where('type', 'payout') && $offer->cps->where('type', 'payout')->first()->amount_type == 'flat' ? 'selected' : 'flat') }} value="flat">{{ __('Per Order') }}</option>
+                <option {{ old('static_payout_type') == 'percentage' ? 'selected' : ($offer->payout_cps_type == 'static' && $offer->cps->where('type', 'payout') && $offer->cps->where('type', 'payout')->first()->amount_type == 'percentage' ? 'selected' : 'percentage') }} value="percentage">{{ __('Percentage') }}</option>
             </select>
             <!--end::Input-->
             @if ($errors->has('static_payout_type'))

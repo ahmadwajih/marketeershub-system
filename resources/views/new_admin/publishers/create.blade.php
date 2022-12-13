@@ -59,7 +59,7 @@
                                             <label class="required form-label">Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="name"  onkeypress="clsAlphaOnly(event)" onpaste="return false;"  class="form-control mb-2" placeholder="Full name" value="{{ old('name') }}" />
+                                            <input type="text" name="name"  onkeypress="clsAlphaOnly(event)"  class="form-control mb-2" placeholder="Full name" value="{{ old('name') }}" />
                                             @if ($errors->has('name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('name') }}</div></div>
                                             @endif
@@ -257,6 +257,8 @@
                                                     <option {{ old('traffic_sources') !== null && in_array('tiktok', old('traffic_sources')) ? 'selected' : '' }} value="tiktok">{{ __('Tiktok') }}</option>
                                                     <option {{ old('traffic_sources') !== null && in_array('youtube', old('traffic_sources')) ? 'selected' : '' }} value="youtube">{{ __('Youtube') }}</option>
                                                     <option {{ old('traffic_sources') !== null && in_array('pinterest', old('traffic_sources')) ? 'selected' : '' }} value="pinterest">{{ __('Pinterest') }}</option>
+                                                    <option {{ old('traffic_sources') !== null && in_array('coupon_app', old('traffic_sources')) ? 'selected' : '' }} value="coupon_app">{{ __('Coupon App') }}</option> 
+                                                    <option {{ old('traffic_sources') !== null && in_array('coupon_website', old('traffic_sources')) ? 'selected' : '' }} value="coupon_website">{{ __('Coupon Website') }}</option> 
                                                     <option {{ old('traffic_sources') !== null && in_array('other', old('traffic_sources')) ? 'selected' : '' }} value="other">{{ __('Other') }}</option>
                                                 </select>                                                
                                                 <!--end::Input-->
@@ -375,7 +377,7 @@
                                             <label class="required form-label">City</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="city"  onkeypress="clsAlphaOnly(event)" onpaste="return false;"  class="form-control mb-2" placeholder="City " value="{{ old('city') }}" />
+                                            <input type="text" name="city"  onkeypress="clsAlphaOnly(event)"  class="form-control mb-2" placeholder="City " value="{{ old('city') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('city'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('city') }}</div></div>
@@ -391,7 +393,7 @@
                                             <label class="required form-label">Address</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="address"  onkeypress="clsAlphaNoOnly(event)" onpaste="return false;"  class="form-control mb-2" placeholder="Address " value="{{ old('address') }}" />
+                                            <input type="text" name="address"  onkeypress="clsAlphaNoOnly(event)"  class="form-control mb-2" placeholder="Address " value="{{ old('address') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('address'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('address') }}</div></div>
@@ -568,8 +570,7 @@
                                             <label class="required form-label">IBAN</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') }}" />
-                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('iban'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('iban') }}</div></div>
@@ -585,8 +586,7 @@
                                             <label class="required form-label">SWIFT Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') }}" />
-                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('swift_code'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('swift_code') }}</div></div>
@@ -602,8 +602,7 @@
                                             <label class="required form-label">Bank Account Title</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') }}" />
-                                            <p>Accepts only letters, no digits or special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('account_title'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('account_title') }}</div></div>
@@ -618,8 +617,7 @@
                                             <label class="required form-label">Bank Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') }}" />
-                                            <p>Accepts only letters, no digits or special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('bank_name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_name') }}</div></div>
@@ -635,8 +633,7 @@
                                             <label class="required form-label">Bank Branch Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" onpaste="return false;" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') }}" />
-                                            <p>Accepts only letters and digits, no special characters.</p>
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('bank_branch_code'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_branch_code') }}</div></div>
@@ -652,9 +649,13 @@
                                             <label class="required form-label">Currency</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaCapNoOnly(event)" max="3" onpaste="return false;" name="currency" class="form-control mb-2" placeholder="Currency" value="{{ old('currency') }}" />
-                                             <p>Accepts only 3 uppercase letters, no digits or special characters.</p>  
-                                            <!--end::Input-->
+                                            <select name="currency" aria-label="Select a Currency" data-control="select2" data-placeholder="Select Currency" class="form-select form-select-sm">
+                                                <option {{ old('currency') == 'USD' ? "selected" : '' }} value="USD">USD</option>
+                                                <option {{ old('currency') == 'SAR' ? "selected" : '' }} value="SAR">SAR</option>
+                                                <option {{ old('currency') == 'AED' ? "selected" : '' }} value="AED">AED</option>
+                                                <option {{ old('currency') == 'KWD' ? "selected" : '' }} value="KWD">KWD</option>
+                                                <option {{ old('currency') == 'EGP' ? "selected" : '' }} value="EGP">EGP</option>
+                                            </select>                                             <!--end::Input-->
                                             @if ($errors->has('currency'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('currency') }}</div></div>
                                             @endif

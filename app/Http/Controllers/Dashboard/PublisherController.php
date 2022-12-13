@@ -162,7 +162,7 @@ class PublisherController extends Controller
             'cities' => City::all(),
             'countries' => Country::all(),
             'categories' => Category::whereType('affiliate')->get(),
-            'users' => User::whereTeam('affiliate')->whereStatus('active')->whereHas('roles', function($query){
+            'users' => User::whereStatus('active')->whereHas('roles', function($query){
                 return $query->where('label', 'account_manager');
             })->get(),
             'currencies' => Currency::all(),
