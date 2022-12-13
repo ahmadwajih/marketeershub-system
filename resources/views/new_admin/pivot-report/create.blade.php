@@ -145,6 +145,9 @@
 @endsection
 @push('scripts')
     <script>
+        let route = "{{ route('admin.reports.index') }}";
+    </script>
+    <script>
     $(document).ready(function(){
         document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -158,13 +161,12 @@
                 if(body.error){
                     error = true;
                 }
-                window.location.href = route + '?success=true';
-
+                window.location.href = route + '?uploading=true';
             }catch (e) {
                 console.log(e);
-                window.location.href = route + '?success=true';
+                window.location.href = route + '?uploading=true';
             }
-            window.location.href = route + '?success=true';
+            window.location.href = route + '?uploading=true';
 
         });
         $("#offer").change(function() {

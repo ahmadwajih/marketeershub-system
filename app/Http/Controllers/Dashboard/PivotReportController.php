@@ -104,22 +104,7 @@ class PivotReportController extends Controller
         ]);
         //todo use dispatching events instead of exec function
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
-
-        // begin importing
-        $id = now()->unix();
-        session([ 'import' => $id ]);
-        $data = [
-            "id" => $id,
-        ];
-        Storage::put('import.json', json_encode($data));
-        $import_file = Storage::get("pivot_report_import.txt");
-        Excel::queueImport(
-            new UpdateReportImport($request->offer_id, $request->type,$id),
-            $import_file
-        );
-        // end of begin
-
-        //shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
+        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type > /dev/null &");
         return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
     }
     /**
