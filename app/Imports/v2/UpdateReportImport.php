@@ -6,6 +6,7 @@ use App\Exports\PivotReportErrorsExport;
 use App\Models\Country;
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
@@ -401,7 +402,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
 
     public function chunkSize(): int
     {
-        return 100;
+        return 10;
     }
 
     /**
@@ -419,7 +420,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
         return [
             BeforeImport::class => function (BeforeImport $event) {
                 $totalRows = $event->getReader()->getTotalRows();
-
                 if (filled($totalRows)) {
                     cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);
                     cache()->forever("start_date_{$this->id}", now()->unix());
@@ -430,6 +430,8 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                 cache()->forget("total_rows_{$this->id}");
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
+                Storage::delete('pivot_report_import.txt');
+                Storage::delete('import.json');
             },
         ];
     }

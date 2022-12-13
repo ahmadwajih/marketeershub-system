@@ -34,7 +34,6 @@ class PivotReportController extends Controller
      */
     public function index(Request $request)
     {
-        // return redirect()->back();
         $this->authorize('view_pivot_report');
 
         $query = PivotReport::query();
@@ -70,7 +69,6 @@ class PivotReportController extends Controller
             'publisherForFilter' => $publisherForFilter
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -84,21 +82,19 @@ class PivotReportController extends Controller
             'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get(),
         ]);
     }
-
     public function edit()
     {
         abort(404);
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param \App\Requests\Request $request
+     * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->authorize('create_pivot_report');
         $request->validate([
@@ -106,21 +102,22 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-
         //todo use dispatching events instead of exec function
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
         shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
         return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
     }
-
     /**
      * @throws Exception
      */
     public function status()
     {
-        $import_file = Storage::get("import.json");
-        $import_file = json_decode($import_file, true); // returns array("foo" => "bar")
-        $id = $import_file['id'];
+        $id = 0;
+        if (Storage::has('import.json')){
+            $import_file = Storage::get("import.json");
+            $import_file = json_decode($import_file, true);
+            $id = $import_file['id'];
+        }
         return response([
             'started' => filled(cache("start_date_$id")),
             'finished' => filled(cache("end_date_$id")),
@@ -128,7 +125,6 @@ class PivotReportController extends Controller
             'total_rows' => (int) cache("total_rows_$id"),
         ]);
     }
-
     public function downloadErrors()
     {
         if (session('columnHaveIssue')) {
@@ -142,6 +138,7 @@ class PivotReportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param int $id
      * @return void
      * @throws AuthorizationException
@@ -155,14 +152,11 @@ class PivotReportController extends Controller
             $pivotReport->delete();
         }
     }
-
-    public function defineExcelSheetColumns(Request $request)
+    public function defineExcelSheetColumns(Request $request): \Illuminate\Http\JsonResponse
     {
-
         $request->validate([
             'offer_id' => 'required|numeric|exists:offers,id',
         ]);
-
         $offer = Offer::findOrFail($request->offer_id);
         $revenue = $offer->cps->where('type', 'revenue');
         $payout = $offer->cps->where('type', 'payout');
@@ -231,14 +225,13 @@ class PivotReportController extends Controller
             $link .= '/slabs.xlsx';
             $title = 'Slabs';
         }
-
         return response()->json(['link' => $link,'title' => $title]);
     }
 
     /**
      * @return RedirectResponse
      */
-    public function clearFilterSeassoions(): \Illuminate\Http\RedirectResponse
+    public function clearFilterSeassoions(): RedirectResponse
     {
         session()->forget('pivot_report_filter_offer_id');
         session()->forget('pivot_report_filter_user_id');

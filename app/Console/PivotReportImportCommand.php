@@ -56,7 +56,6 @@ class PivotReportImportCommand extends Command
             new UpdateReportImport($this->argument('offer_id'), $this->argument('type'),$id),
             $import_file
         );
-        Storage::delete('pivot_report_import.txt');
         return 1;
     }
 }
