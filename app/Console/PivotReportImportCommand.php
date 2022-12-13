@@ -52,12 +52,10 @@ class PivotReportImportCommand extends Command
         ];
         Storage::put('import.json', json_encode($data));
         $import_file = Storage::get("pivot_report_import.txt");
-        var_dump("begin import");
-        Excel::import(
+        Excel::queueImport(
             new UpdateReportImport($this->argument('offer_id'), $this->argument('type'),$id),
             $import_file
         );
-
         return 1;
     }
 }
