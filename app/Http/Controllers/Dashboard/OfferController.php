@@ -89,8 +89,6 @@ class OfferController extends Controller
      */
     public function store(Request $request)
     {
-        
-        // dd($request->all());
         $this->authorize('create_offers');
         $data = $request->validate([
             // Genral Info
@@ -403,7 +401,7 @@ class OfferController extends Controller
     {
         // $array = [1, 3];
         // $array = json_encode($array);
-        // dd($array);
+        // dd($offer->cps()->get());
         $this->authorize('update_offers');
         return view('new_admin.offers.edit', [
             'offer' => $offer,
@@ -423,9 +421,8 @@ class OfferController extends Controller
      */
     public function update(Request $request, Offer $offer)
     {
-
+        // dd($request->all());
         $this->authorize('update_offers');
-      
         $data = $request->validate([
             // Genral Info
             'name_en' => 'required|max:255',
@@ -488,6 +485,7 @@ class OfferController extends Controller
 
 
         userActivity('Offer', $offer->id, 'update', $data, $offer);
+
         $offer->update([
             'name_en' => $request->name_en,
             'advertiser_id' => $request->advertiser_id,
