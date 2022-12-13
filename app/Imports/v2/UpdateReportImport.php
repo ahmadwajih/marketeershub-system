@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Imports\V2;
+namespace App\Imports\v2;
 
 use App\Exports\PivotReportErrorsExport;
 use App\Models\Country;
@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading, ShouldQueue
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading,ShouldQueue
 {
     public $offerId;
     public $coupon;
@@ -47,7 +47,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
      */
     public function collection(Collection $collection)
     {
-        var_dump("test");
         unset($collection[0]);
         $cpsType = $this->offer()->payout_cps_type;
         if ($cpsType == 'static' || $cpsType == 'slaps') {
@@ -157,7 +156,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
 
     public function calcRevenue($col)
     {
-
         // Get revenue_cps_type ('static', 'new_old', 'slaps')
         $revenue_cps_type = $this->offer()->revenue_cps_type;
 

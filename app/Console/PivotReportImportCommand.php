@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Imports\V2\UpdateReportImport;
+use App\Imports\v2\UpdateReportImport;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
