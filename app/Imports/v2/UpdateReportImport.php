@@ -401,7 +401,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
 
     public function chunkSize(): int
     {
-        return 10;
+        return 5;
     }
 
     /**
