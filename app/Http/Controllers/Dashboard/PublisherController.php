@@ -23,7 +23,13 @@ use App\Models\User;
 use App\Models\Coupon;
 use App\Notifications\PublisherNeedToUpdateHisInfo;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -42,16 +48,16 @@ class PublisherController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Application|Factory|View
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
         $tableLength = session('table_length') ?? config('app.pagination_pages');
         $query = User::query();
-        
-        
+
+
         // Filter
         if (isset($request->team) && $request->team  != null) {
             $query->where('team', $request->team);
@@ -99,8 +105,8 @@ class PublisherController extends Controller
             } else {
                 $publishers = $publishers->groupBy('users.id');
             }
-  
-            $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength); 
+
+            $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength);
         if (auth()->user()->position == 'super_admin') {
             $accountManagers = User::where('position', 'account_manager')->get();
         } else {
@@ -332,11 +338,9 @@ class PublisherController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         if (auth()->user()->id != $id) {
             $this->authorize('update_publishers');
         }
-        $message = 'Updated successfully';
         $data = $request->validate([
             'name'                      => 'required|max:255',
             'email'                     => 'required|max:255|unique:users,email,' . $id,
@@ -406,7 +410,7 @@ class PublisherController extends Controller
             if ($publisher->parent_id != null) {
                 // Get AM
                 $accountManager = User::where('id', $publisher->parent_id)->first();
-                // Check if AM exists 
+                // Check if AM exists
                 if ($accountManager) {
                     // Send notification to AM
                     Notification::send($accountManager, new PublisherNeedToUpdateHisInfo($publisher));
@@ -429,7 +433,7 @@ class PublisherController extends Controller
         }
 
         if ($request->categories) {
-            // Unasign categories
+            // detach categories
             $publisher->categories()->detach();
             // Assign Categories
             foreach ($request->categories as $categoryId) {
@@ -437,7 +441,6 @@ class PublisherController extends Controller
                 $publisher->assignCategory($category);
             }
         }
-
 
         // Asign Role
         if ($request['roles']) {
@@ -474,7 +477,7 @@ class PublisherController extends Controller
                             'user_id' => $publisher->id,
                         ]);
                     }
-                    
+
                 }
             }
         }
@@ -573,7 +576,7 @@ class PublisherController extends Controller
         $startDate = Carbon::now(); //returns current day
         $firstDay = $startDate->firstOfMonth()->format('Y-m-d');
         $lastDay = $startDate->lastOfMonth()->format('Y-m-d');
-        // Date 
+        // Date
         $where = [
             ['pivot_reports.date', '>=', $firstDay],
             ['pivot_reports.date', '<=', $lastDay]
@@ -592,7 +595,7 @@ class PublisherController extends Controller
         // dd(gettype($activeOffers));
         // dd(count($activeOffers));
         // dd($payments);
-        //Start Charts 
+        //Start Charts
         $chartCoupons = PublisherCharts::coupons($childrens, $where);
         $chartActiveOffers = PublisherCharts::activeOffers($childrens, $where);
         // Offer Charts
@@ -669,7 +672,8 @@ class PublisherController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View|\Illuminate\Http\Response
+     * @throws AuthorizationException
      */
     public function upload()
     {
@@ -680,21 +684,17 @@ class PublisherController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws AuthorizationException
      */
     public function storeUpload(Request $request)
     {
-
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-
-        // Excel::import(new InfluencerImport($request->team, $request->parent_id),request()->file('publishers'));
-
-
         if ($request->team == 'affiliate') {
             Excel::import(new PublishersImport($request->team), request()->file('publishers'));
             // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
@@ -734,11 +734,11 @@ class PublisherController extends Controller
         ];
         return redirect()->route('admin.publishers.index');
     }
+
     /**
      * Show account manager details.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|RedirectResponse|View
      */
     public function myAccountManager()
     {
@@ -748,14 +748,13 @@ class PublisherController extends Controller
                 'accountManager' => $accountManager,
             ]);
         }
-
         try {
             return redirect()->back()->withErrors(['message' => __('You do not have account manager')]);
         } catch (\Throwable $th) {
             return redirect()->route('admin.publisher.profile');
         }
     }
-    // .  
+    // .
     public function checkIfExists(Request $request)
     {
         $user = User::where('phone', $request->column)->orWhere('email', $request->column)->first();
