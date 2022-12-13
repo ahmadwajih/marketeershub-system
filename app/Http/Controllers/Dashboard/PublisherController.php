@@ -50,8 +50,8 @@ class PublisherController extends Controller
         $this->authorize('view_publishers');
         $tableLength = session('table_length') ?? config('app.pagination_pages');
         $query = User::query();
-        
-        
+
+
         // Filter
         if (isset($request->team) && $request->team  != null) {
             $query->where('team', $request->team);
@@ -99,8 +99,8 @@ class PublisherController extends Controller
             } else {
                 $publishers = $publishers->groupBy('users.id');
             }
-  
-            $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength); 
+
+            $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength);
         if (auth()->user()->position == 'super_admin') {
             $accountManagers = User::where('position', 'account_manager')->get();
         } else {
@@ -406,7 +406,7 @@ class PublisherController extends Controller
             if ($publisher->parent_id != null) {
                 // Get AM
                 $accountManager = User::where('id', $publisher->parent_id)->first();
-                // Check if AM exists 
+                // Check if AM exists
                 if ($accountManager) {
                     // Send notification to AM
                     Notification::send($accountManager, new PublisherNeedToUpdateHisInfo($publisher));
@@ -474,7 +474,7 @@ class PublisherController extends Controller
                             'user_id' => $publisher->id,
                         ]);
                     }
-                    
+
                 }
             }
         }
@@ -573,7 +573,7 @@ class PublisherController extends Controller
         $startDate = Carbon::now(); //returns current day
         $firstDay = $startDate->firstOfMonth()->format('Y-m-d');
         $lastDay = $startDate->lastOfMonth()->format('Y-m-d');
-        // Date 
+        // Date
         $where = [
             ['pivot_reports.date', '>=', $firstDay],
             ['pivot_reports.date', '<=', $lastDay]
@@ -592,7 +592,7 @@ class PublisherController extends Controller
         // dd(gettype($activeOffers));
         // dd(count($activeOffers));
         // dd($payments);
-        //Start Charts 
+        //Start Charts
         $chartCoupons = PublisherCharts::coupons($childrens, $where);
         $chartActiveOffers = PublisherCharts::activeOffers($childrens, $where);
         // Offer Charts
@@ -694,7 +694,6 @@ class PublisherController extends Controller
 
         // Excel::import(new InfluencerImport($request->team, $request->parent_id),request()->file('publishers'));
 
-
         if ($request->team == 'affiliate') {
             Excel::import(new PublishersImport($request->team), request()->file('publishers'));
             // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
@@ -755,7 +754,7 @@ class PublisherController extends Controller
             return redirect()->route('admin.publisher.profile');
         }
     }
-    // .  
+    // .
     public function checkIfExists(Request $request)
     {
         $user = User::where('phone', $request->column)->orWhere('email', $request->column)->first();

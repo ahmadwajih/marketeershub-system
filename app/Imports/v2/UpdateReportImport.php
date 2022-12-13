@@ -47,6 +47,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
      */
     public function collection(Collection $collection)
     {
+        var_dump("test");
         unset($collection[0]);
         $cpsType = $this->offer()->payout_cps_type;
         if ($cpsType == 'static' || $cpsType == 'slaps') {
