@@ -7,15 +7,14 @@
             position: fixed;
             z-index: 999;
             background: #474761;
-            width: 37%;
-            height: 20%;
+            width: 37% !important;
+            height: 20% !important;
             border-radius: 10px;
             box-shadow: 8px 13px 33px 1px #171623;
             margin: 151px;
         }
         .uploading-progress-bar .progress{
-            margin: auto;
-            margin-top: 3%;
+            margin: 3% auto auto;
             height: 26px;
             width: 63%;
         }
@@ -38,7 +37,7 @@
                 <h4 class="mb-1 text-dark">Success</h4>
                 <!--end::Title-->
                 <!--begin::Content-->
-                <p> __('The report is Uploaded Successfully.') }}</p>
+                <p> {{ __('The report is Uploaded Successfully.') }}</p>
                 <!--end::Content-->
             </div>
             <!--end::Wrapper-->
@@ -339,7 +338,7 @@
 @endsection
 @push('scripts')
     <script>
-        var route = "{{ route('admin.reports.index') }}";
+        let route = "{{ route('admin.reports.index') }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete.js"></script>
     <script>
@@ -354,7 +353,7 @@
                     $('#delete_btn').addClass('d-none');
                     $('#add_btn').removeClass('d-none');
                 }
-                var numberOfChecked = $('.table-checkbox:checked').length;
+                let numberOfChecked = $('.table-checkbox:checked').length;
                 $('#selected_count').html(numberOfChecked);
             });
 
@@ -372,7 +371,6 @@
                 numberOfChecked = $('.table-checkbox:checked').length;
                 $('#selected_count').html(numberOfChecked);
             });
-
         });
     </script>
     @if(isset(request()->uploading) && request()->uploading == 'true')
@@ -386,18 +384,18 @@
                     if (import_status !== 1) {
                         $.ajax({
                             url: "{{ route('admin.reports.import.status') }}",
-                        }).done(function (data) {
-                            if(data.started == false){
-                                window.location.href = route+'?success=true';
+                        }).
+                        done(function (data) {
+                            if(data.started === false){
+                                window.location.href = route + '?success=true';
                             }
-                            console.log(data);
-                            console.log( typeof data);
                             if (data.started === true) {
                                 let percent = ((data.current_row /data.total_rows) * 100 );
                                 $('#progress-bar-percentage').html(Math.round(percent) + '%');
                                 $("#progress-bar").width(Math.round(percent) +"%");
                             }
-                        }).fail(function (data) {
+                        }).
+                        fail(function (data) {
                             console.log('Job not added....' + data);
                         });
                     }

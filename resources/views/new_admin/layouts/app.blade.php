@@ -49,7 +49,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
             margin:  20px 0;
         }
     </style>
-        <style>
+    <style>
             .uploading-progress-bar{
                 position: fixed;
                 z-index: 999;
