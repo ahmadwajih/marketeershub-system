@@ -11,6 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property $type
  * @property $status
  * @property mixed $team
+ * @property mixed $column
  */
 final class Request extends FormRequest {
     /**

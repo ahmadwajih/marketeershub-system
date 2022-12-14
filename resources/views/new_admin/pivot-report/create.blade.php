@@ -180,8 +180,6 @@
                     $('#loading').show()
                 },
                 success: function(data) {
-                    console.log(data.data);
-
                     if(data.link || data.title){
                         $('#download_btn').removeClass('d-none');
                         $('#download_btn').attr("href", data.link);
@@ -189,7 +187,6 @@
                     }else{
                         $('#download_btn').addClass('d-none');
                     }
-
                 },
                 complete: function() {
                     $('#loading').hide()

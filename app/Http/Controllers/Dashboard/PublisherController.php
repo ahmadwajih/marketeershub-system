@@ -48,13 +48,13 @@ class PublisherController extends Controller
      *
      * @return Application|Factory|View
      * @throws AuthorizationException
+     * @noinspection PhpUndefinedFieldInspection
      */
     public function index(Request $request)
     {
         $this->authorize('view_publishers');
         $tableLength = session('table_length') ?? config('app.pagination_pages');
         $query = User::query();
-
 
         // Filter
         if (isset($request->team) && $request->team  != null) {
@@ -90,10 +90,9 @@ class PublisherController extends Controller
                 }
             });
         }
-
         $publishers = $query->wherePosition('publisher')->with('parent', 'categories', 'socialMediaLinks', 'offers', 'country', 'city');
 
-            if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
+        if (in_array(auth()->user()->team, ['media_buying', 'influencer', 'affiliate', 'prepaid']) && $request->parent_id == null) {
                 $publishers = $publishers->where(function ($query) {
                     $childrens = auth()->user()->childrens()->pluck('id')->toArray();
                     array_push($childrens, auth()->user()->id);
@@ -678,10 +677,10 @@ class PublisherController extends Controller
     /**
      * import using execute command on "Linux servers"
      * @param \App\Http\Requests\Request $request
-     * @return RedirectResponse
+     * @return Application|\Illuminate\Contracts\Routing\ResponseFactory|RedirectResponse|Response
      * @throws AuthorizationException
      */
-    public function storeUpload(\App\Http\Requests\Request $request): RedirectResponse
+    public function storeUpload(\App\Http\Requests\Request $request)
     {
         $this->authorize('create_publishers');
         $request->validate([
@@ -691,11 +690,10 @@ class PublisherController extends Controller
         Storage::put('publishers_import.json', $request->file('publishers')->store('files'));
         shell_exec("php " . base_path() . "/artisan import:publishers $request->team > /dev/null &");
         userActivity('User', null, 'upload', 'Upload Publishers');
-        $notification = [
-            'message' => 'Uploaded successfully',
-            'alert-type' => 'success'
-        ];
-        return redirect()->route('admin.publishers.index')->with($notification);
+        return response([
+            'team' => $request->team,
+            'import_in_progress' => true,
+        ]);
     }
     /**
      * @throws Exception
@@ -756,7 +754,6 @@ class PublisherController extends Controller
             return redirect()->route('admin.publisher.profile');
         }
     }
-    // .
     public function checkIfExists(Request $request): ?string
     {
         $user = User::where('phone', $request->column)->orWhere('email', $request->column)->first();

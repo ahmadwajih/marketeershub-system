@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * @method static whereId(\Illuminate\Contracts\Foundation\Application|\Illuminate\Session\SessionManager|\Illuminate\Session\Store|mixed $session)
  * @method static findOrFail(mixed $id)
+ * @method static where(string $string, mixed $column)
  */
 class User extends Authenticatable
 {

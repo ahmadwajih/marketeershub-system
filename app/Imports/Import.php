@@ -37,9 +37,8 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("total_rows_{$this->id}");
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
-                Storage::delete('publishers_import.txt');
+                Storage::delete('publishers_import.json');
             },
         ];
     }
-
 }

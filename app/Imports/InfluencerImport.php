@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
+class InfluencerImport extends Import implements ToCollection, WithChunkReading, ShouldQueue
 {
     public $team;
     public $status;
@@ -38,10 +38,10 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
     public function collection(Collection $collection)
     {
         unset($collection[0]);
-        foreach ($collection as $index => $col) 
+        foreach ($collection as $index => $col)
         {
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
-                // Get Account Manager 
+                // Get Account Manager
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
                 if($accountManager){
                     $this->accouManagerId = $accountManager->id;
@@ -68,7 +68,7 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                     $this->status = 'closed';
                 }
 
-                // Get Cerrency Id 
+                // Get Cerrency Id
                 // $currency = Currency::select('id')->where('name_en', 'like', '%'.trim($col[16]).'%')
                 //     ->orWhere('name_ar', 'like', '%'.trim($col[16]).'%')
                 //     ->orWhere('code', trim($col[16]))
@@ -78,9 +78,9 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                 //         $this->currrencyId = $currency->id;
                 //     }
 
-                // Get Category Id 
+                // Get Category Id
                 $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
-                
+
                 $publisher = User::whereEmail($col[3])->first();
                 if($publisher){
 
@@ -114,8 +114,8 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                             'parent_id' => $this->accouManagerId,
                             'gender' => $col[5] ?? 'male',
                             'status' => $this->status,
-                            'country_id' => $this->countryId,  
-                            'city_id' => $this->cityId,  
+                            'country_id' => $this->countryId,
+                            'city_id' => $this->cityId,
                             'address' => $col[9] ?? null,
                             // 'account_title' => $col[11],
                             // 'bank_name' => $col[12],
@@ -178,7 +178,7 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                         'followers' => $col[24] ?? 0,
                     ]);
                 }
-               
+
                 // Tiktok
                 if(!is_null($col[25])){
                     SocialMediaLink::updateOrCreate([
@@ -204,12 +204,9 @@ class InfluencerImport implements ToCollection, WithChunkReading, ShouldQueue
                 $this->cityId = null;
                 // $this->accouManagerId = null;
                 $this->currrencyId = null;
-                
             }
 
         }
-
-        
     }
     public function chunkSize(): int
     {

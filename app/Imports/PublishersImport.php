@@ -11,9 +11,6 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
@@ -40,12 +37,9 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
         unset($collection[0]);
         foreach ($collection as $index => $col)
         {
-
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
-
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com'){
-
                 try {
                     // Get Account Manager
                     $accountManager = User::select('id')->where('email',trim($col[20]))->first();
@@ -53,7 +47,6 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
                         $this->accouManagerId = $accountManager->id;
                         $this->data['accountManager'] = $accountManager->id;
                     }
-
                     if(trim($col[20]) == 'MarketeersHub'){
                         $this->accouManagerId = User::whereEmail('info@marketeershub.com')->orWhere('name', 'MarketeersHub')->first()->id;
                     }
@@ -63,14 +56,11 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
                     if($country){
                         $this->countryId = $country->id;
                     }
-
                      // Get City Id
                     $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
                     if($city){
                         $this->cityId = $city->id;
                     }
-
-                    // Get Status
                     // Get Status
                     $this->status = 'paused';
                     if($col[4] == 'live'){
