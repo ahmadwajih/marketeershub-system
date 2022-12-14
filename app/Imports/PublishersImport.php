@@ -11,14 +11,11 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
+class PublishersImport extends Import implements ToCollection, WithChunkReading
 {
     public $team;
     public $status;
@@ -27,9 +24,11 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
     public $accouManagerId = null;
     public $currrencyId = null;
     public $data = [];
-    public function __construct($team)
+
+    public function __construct($team,$id)
     {
         $this->team = $team;
+        $this->id = $id;
     }
 
     /**
@@ -38,22 +37,18 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
     public function collection(Collection $collection)
     {
         unset($collection[0]);
-        foreach ($collection as $index => $col) 
+        foreach ($collection as $index => $col)
         {
-      
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
-            
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com'){
-
                 try {
-                    // Get Account Manager 
+                    // Get Account Manager
                     $accountManager = User::select('id')->where('email',trim($col[20]))->first();
                     if($accountManager){
                         $this->accouManagerId = $accountManager->id;
                         $this->data['accountManager'] = $accountManager->id;
                     }
-
                     if(trim($col[20]) == 'MarketeersHub'){
                         $this->accouManagerId = User::whereEmail('info@marketeershub.com')->orWhere('name', 'MarketeersHub')->first()->id;
                     }
@@ -63,14 +58,11 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
                     if($country){
                         $this->countryId = $country->id;
                     }
-
                      // Get City Id
                     $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
                     if($city){
                         $this->cityId = $city->id;
                     }
-
-                    // Get Status
                     // Get Status
                     $this->status = 'paused';
                     if($col[4] == 'live'){
@@ -81,14 +73,14 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
                         $this->status = 'closed';
                     }
 
-                    // Get Cerrency Id 
+                    // Get Cerrency Id
                     $currency = Currency::where('name_en', 'like', '%'.$col[11].'%')
                         ->orWhere('name_ar', 'like', '%'.$col[11].'%')
                         ->orWhere('code', $col[14])
                         ->orWhere('sign', $col[14])
                         ->first();
 
-                    // Get Category Id 
+                    // Get Category Id
                     $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
 
 
@@ -97,8 +89,8 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
                 }
                 $this->data['accouManagerId'] = $this->accouManagerId;
                 // Log::debug( $this->data);
-       
-                
+
+
                 $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
                     $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
@@ -136,8 +128,8 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
                         'gender' => $col[3] ?? 'male',
                         'status' => $this->status,
                         'account_title' => $col[5],
-                        'country_id' => $this->countryId,  
-                        'city_id' => $this->cityId, 
+                        'country_id' => $this->countryId,
+                        'city_id' => $this->cityId,
                         'owened_digital_assets' => $col[9],
                         'affiliate_networks' => $col[10],
                         'bank_branch_code' => $col[12],
@@ -166,8 +158,8 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
                 //     'gender' => $col[3] ?? 'male',
                 //     'status' => $this->status,
                 //     'account_title' => $col[5],
-                //     'country_id' => $this->countryId,  
-                //     'city_id' => $this->cityId, 
+                //     'country_id' => $this->countryId,
+                //     'city_id' => $this->cityId,
                 //     'owened_digital_assets' => $col[9],
                 //     'affiliate_networks' => $col[10],
                 //     'bank_branch_code' => $col[12],
@@ -196,7 +188,7 @@ class PublishersImport implements ToCollection, WithChunkReading, ShouldQueue
 
     public function chunkSize(): int
     {
-        return 100;
+        return 10;
     }
 
 }

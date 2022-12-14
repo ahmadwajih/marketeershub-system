@@ -4,13 +4,9 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Exports\PivotReportErrorsExport;
 use App\Http\Controllers\Controller;
-use App\Imports\PivotReportImport;
-use App\Imports\V2\UpdateReportImport;
-use App\Imports\ValidationPivotReportImport;
 use App\Models\Offer;
 use App\Models\PivotReport;
 use App\Models\User;
-use App\Notifications\UpdateValidation;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -21,8 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Notification;
-use Yajra\DataTables\Facades\DataTables;
 
 class PivotReportController extends Controller
 {
@@ -90,7 +84,7 @@ class PivotReportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Requests\Request $request
+     * @param \App\Http\Requests\Request $request
      * @return RedirectResponse
      * @throws AuthorizationException
      */
@@ -104,22 +98,7 @@ class PivotReportController extends Controller
         ]);
         //todo use dispatching events instead of exec function
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
-
-        // begin importing
-        $id = now()->unix();
-        session([ 'import' => $id ]);
-        $data = [
-            "id" => $id,
-        ];
-        Storage::put('import.json', json_encode($data));
-        $import_file = Storage::get("pivot_report_import.txt");
-        Excel::queueImport(
-            new UpdateReportImport($request->offer_id, $request->type,$id),
-            $import_file
-        );
-        // end of begin
-
-        //shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type &");
+        shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type > /dev/null &");
         return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
     }
     /**

@@ -2,7 +2,6 @@
 @section('title', 'Update Reports')
 @section('subtitle', 'Upload')
 @section('content')
-
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
@@ -68,7 +67,7 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-                                    
+
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -144,8 +143,28 @@
 
 @endsection
 @push('scripts')
-<script>
+    <script>
+        let route = "{{ route('admin.reports.index') }}";
+    </script>
+    <script>
     $(document).ready(function(){
+        document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                const resp = await fetch(event.target.action, {
+                    method: "POST",
+                    body: new FormData(event.target),
+                });
+                const body = await resp.json();
+                console.log(body);
+                if(body.error){
+                    let error = true;
+                }
+            }catch (e) {
+                console.log(e);
+            }
+            window.location.href = route + '?uploading=true';
+        });
         $("#offer").change(function() {
             $.ajaxSetup({
                 headers: {
@@ -161,8 +180,6 @@
                     $('#loading').show()
                 },
                 success: function(data) {
-                    console.log(data.data);
-         
                     if(data.link || data.title){
                         $('#download_btn').removeClass('d-none');
                         $('#download_btn').attr("href", data.link);
@@ -170,7 +187,6 @@
                     }else{
                         $('#download_btn').addClass('d-none');
                     }
-
                 },
                 complete: function() {
                     $('#loading').hide()

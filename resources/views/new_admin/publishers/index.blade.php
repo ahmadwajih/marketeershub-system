@@ -1,8 +1,57 @@
 @extends('new_admin.layouts.app')
 @section('title', 'Publishers')
 @section('subtitle', 'View')
+@push('styles')
+    <style>
+        .uploading-progress-bar{
+            position: fixed;
+            z-index: 999;
+            background: #474761;
+            width: 37% !important;
+            height: 20% !important;
+            border-radius: 10px;
+            box-shadow: 8px 13px 33px 1px #171623;
+            margin: 151px;
+        }
+        .uploading-progress-bar .progress{
+            margin: 3% auto auto;
+            height: 26px;
+            width: 63%;
+        }
+        .progress-title{
+            margin-top: 10%;
+        }
+    </style>
+@endpush
 @section('content')
-
+    @if(isset(request()->success) && request()->success == 'true')
+        <!--begin::Alert-->
+        <div class="alert alert-success d-flex align-items-center p-5">
+            <!--begin::Icon-->
+            <span class="svg-icon svg-icon-2hx svg-icon-success me-3">
+                <i class="fa-solid fa-check fa-2x"></i>
+            </span>
+            <!--end::Icon-->
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-column">
+                <!--begin::Title-->
+                <h4 class="mb-1 text-dark">Success</h4>
+                <!--end::Title-->
+                <!--begin::Content-->
+                <p> {{ __('The publishers is Uploaded Successfully.') }}</p>
+                <!--end::Content-->
+            </div>
+            <!--end::Wrapper-->
+            <!--begin::Close-->
+            <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                <span class="svg-icon svg-icon-2x svg-icon-light">
+                    <i class="fa-solid fa-xmark fa-2x"></i>
+                </span>
+            </button>
+            <!--end::Close-->
+        </div>
+        <!--end::Alert-->
+    @endif
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
@@ -33,6 +82,18 @@
     <!--end::Toolbar-->
     <!--begin::Post-->
     <div class="content flex-column-fluid" id="kt_content">
+        <div class="uploading-progress-bar d-none">
+            <h3 class="text-center progress-title">Uploading...</h3>
+            <div class="progress">
+                <div id="progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                >
+                    <h5 id="progress-bar-percentage"><strong>0%</strong></h5>
+                </div>
+            </div>
+        </div>
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->
@@ -47,9 +108,9 @@
                                 <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
                                 <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $publishers->total() }} Publisher</span>
                             </div>
-                            
-                        </form> 
-                    
+
+                        </form>
+
                     </div>
                     <!--end::Search-->
                 </div>
@@ -235,8 +296,8 @@
                                     <td>{{ $publisher->updated_team }}</td>
                                     <td>{{ $publisher->parent ? $publisher->parent->name : '' }}</td>
                                     <td>
-                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $publisher->id }} {{ $publisher->status == 'active' ?: 'd-none' }}">Live</button> 
-                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'active')" class="btn btn-light-warning btn-sm  pending-btn-{{ $publisher->id }} {{ $publisher->status == 'pending' ?: 'd-none' }}">Paused</button> 
+                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $publisher->id }} {{ $publisher->status == 'active' ?: 'd-none' }}">Live</button>
+                                        <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'active')" class="btn btn-light-warning btn-sm  pending-btn-{{ $publisher->id }} {{ $publisher->status == 'pending' ?: 'd-none' }}">Paused</button>
                                         <button onclick="changeStatus('{{ $publisher->id }}','{{ $publisher->name }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $publisher->id }} {{ $publisher->status == 'inactive' ?: 'd-none' }}">Cancelled</button>
                                     </td>
                                     <td>{{ $publisher->humans_created_at }}</td>
@@ -312,13 +373,41 @@
     <!--end::Post-->
 @endsection
 @push('scripts')
-<script>
-var route = "{{route('admin.publishers.index')}}";
-var publishersRoute = "{{route('admin.publisher.profile')}}";
-</script>
-<script src="{{ asset('new_dashboard') }}/js/datatables/publishers/change-status.js"></script>
-<script src="{{ asset('new_dashboard') }}/js/datatables/publishers/delete.js"></script>
-
-<script src="{{ asset('new_dashboard') }}/js/tables_btns.js"></script>
-
+    <script>
+        let route = "{{route('admin.publishers.index')}}";
+        let publishersRoute = "{{route('admin.publisher.profile')}}";
+    </script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/change-status.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/delete.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/tables_btns.js"></script>
+    @if(isset(request()->uploading) && request()->uploading == 'true')
+        <script>
+        let import_status = 0;
+        RepeatFun();
+        let counter;
+        $('.uploading-progress-bar').removeClass('d-none');
+        function RepeatFun() {
+            setInterval(function () {
+                if (import_status !== 1) {
+                    $.ajax({
+                        url: "{{ route('admin.publishers.import.status') }}",
+                    }).
+                    done(function (data) {
+                        if(data.started === false){
+                            window.location.href = route + '?success=true';
+                        }
+                        if (data.started === true) {
+                            let percent = ((data.current_row /data.total_rows) * 100 );
+                            $('#progress-bar-percentage').html(Math.round(percent) + '%');
+                            $("#progress-bar").width(Math.round(percent) +"%");
+                        }
+                    }).
+                    fail(function (data) {
+                        console.log('Job not added....' + data);
+                    });
+                }
+            }, 3000);
+        }
+    </script>
+    @endif
 @endpush

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Imports\V2;
+namespace App\Imports\v2;
 
 use App\Exports\PivotReportErrorsExport;
 use App\Models\Country;
@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading, ShouldQueue
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading
 {
     public $offerId;
     public $coupon;
@@ -47,7 +47,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
      */
     public function collection(Collection $collection)
     {
-        var_dump("test");
         unset($collection[0]);
         $cpsType = $this->offer()->payout_cps_type;
         if ($cpsType == 'static' || $cpsType == 'slaps') {
@@ -157,7 +156,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
 
     public function calcRevenue($col)
     {
-
         // Get revenue_cps_type ('static', 'new_old', 'slaps')
         $revenue_cps_type = $this->offer()->revenue_cps_type;
 
@@ -384,7 +382,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
             }
         }
     }
-
     public function slaps($type, $col,  $haveCustomPayout = false): string
     {
         if ($haveCustomPayout) {
@@ -400,12 +397,10 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
         }
         return "Slabs doesn't match type => " . $type;
     }
-
     public function chunkSize(): int
     {
-        return 10;
+        return 5;
     }
-
     /**
      * @throws Exception
      */
@@ -415,7 +410,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
         cache()->forever("current_row_{$this->id}", $rowIndex);
         //sleep(2.2);
     }
-
     public function registerEvents(): array
     {
         return [
@@ -432,7 +426,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
                 Storage::delete('pivot_report_import.txt');
-                Storage::delete('import.json');
             },
         ];
     }
