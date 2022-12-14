@@ -209,6 +209,6 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     }
     public function chunkSize(): int
     {
-        return 20;
+        return 5;
     }
 }
