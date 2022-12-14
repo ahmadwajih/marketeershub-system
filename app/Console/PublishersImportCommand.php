@@ -4,7 +4,6 @@ namespace App\Console;
 
 use App\Imports\InfluencerImport;
 use App\Imports\PublishersImport;
-use App\Imports\v2\UpdateReportImport;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -50,7 +49,7 @@ class PublishersImportCommand extends Command
         session([ 'import' => $id ]);
         $data = ["id" => $id];
         Storage::put('publishers_import_data.json', json_encode($data));
-        $import_file = Storage::get("publisher_import.json");
+        $import_file = Storage::get("publishers_import.json");
         $team = $this->argument('team');
         if ($team == 'affiliate') {
             Excel::import(new PublishersImport($team), $import_file);

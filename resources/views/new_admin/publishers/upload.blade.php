@@ -133,9 +133,6 @@
         <!--end::Main column-->
     </form>
     <!--end::Form-->
-
 @endsection
 @push('scripts')
-
-
 @endpush

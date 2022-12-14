@@ -157,7 +157,8 @@ class PublisherController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return Application|Factory|View
+     * @throws AuthorizationException
      */
     public function create()
     {
@@ -687,7 +688,7 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-        Storage::put('publisher_import.json', $request->file('publishers')->store('files'));
+        Storage::put('publishers_import.json', $request->file('publishers')->store('files'));
         shell_exec("php " . base_path() . "/artisan import:publishers $request->team > /dev/null &");
         userActivity('User', null, 'upload', 'Upload Publishers');
         $notification = [
@@ -700,7 +701,7 @@ class PublisherController extends Controller
      * @throws Exception
      * @noinspection PhpUndefinedMethodInspection
      */
-    public function upload_status()
+    public function importStatus()
     {
         $id = 0;
         if (Storage::has('publishers_import_data.json')){

@@ -75,6 +75,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         // Upload Publishers
         Route::get('publishers/upload/form', 'PublisherController@upload')->name('publishers.upload.form');
         Route::post('publishers/upload', 'PublisherController@storeUpload')->name('publishers.upload.store');
+        Route::get('publishers/import/status', 'PublisherController@importStatus')->name('publishers.import.status');
 
         // Upload update hasoffer id by email
         Route::get('publishers/upload/update-hasoffer-id-by-email/form', 'PublisherController@uploadUpdateHasOfferIdByEmail')->name('publishers.upload.update.hasoffer.id.by.email.form');
