@@ -2,7 +2,6 @@
 @section('title', 'Update Reports')
 @section('subtitle', 'Upload')
 @section('content')
-
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
@@ -159,15 +158,12 @@
                 const body = await resp.json();
                 console.log(body);
                 if(body.error){
-                    error = true;
+                    let error = true;
                 }
-                window.location.href = route + '?uploading=true';
             }catch (e) {
                 console.log(e);
-                window.location.href = route + '?uploading=true';
             }
             window.location.href = route + '?uploading=true';
-
         });
         $("#offer").change(function() {
             $.ajaxSetup({

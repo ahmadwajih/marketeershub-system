@@ -2,7 +2,6 @@
 @section('title', 'Publishers')
 @section('subtitle', 'Upload')
 @section('content')
-
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
@@ -42,7 +41,7 @@
                 <!--begin::Tab pane-->
                 <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general" role="tab-panel">
                     <div class="d-flex flex-column gap-7 gap-lg-10">
-                  
+
                         <!--begin::General options-->
                         <div class="card card-flush py-4">
                             <!--begin::Card header-->
@@ -62,7 +61,7 @@
                                             <label class="required form-label">File</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="file" name="publishers" class="form-control mb-2" required/>
+                                            <input type="file" name="publishers" class="form-control mb-2" />
                                             @if ($errors->has('publishers'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('name') }}</div></div>
                                             @endif

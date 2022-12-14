@@ -41,7 +41,7 @@
                                         <div class="form-group row">
                                             <div class="col-lg-3">
                                                 <label>* {{ __('Upload File') }} :</label>
-                                                <input type="file" name="publishers" class="form-control"  value="{{old('publishers')}}" required />
+                                                <input type="file" name="publishers" class="form-control"  value="{{old('publishers')}}" />
                                                 @if ($errors->has('publishers'))
                                                     <div>
                                                         <p class="invalid-input">{{ $errors->first('publishers') }}</p>

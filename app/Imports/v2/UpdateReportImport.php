@@ -382,7 +382,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
             }
         }
     }
-
     public function slaps($type, $col,  $haveCustomPayout = false): string
     {
         if ($haveCustomPayout) {
@@ -398,12 +397,10 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
         }
         return "Slabs doesn't match type => " . $type;
     }
-
     public function chunkSize(): int
     {
         return 5;
     }
-
     /**
      * @throws Exception
      */
@@ -429,7 +426,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
                 Storage::delete('pivot_report_import.txt');
-                Storage::delete('import.json');
             },
         ];
     }

@@ -23,25 +23,23 @@ use App\Models\User;
 use App\Models\Coupon;
 use App\Notifications\PublisherNeedToUpdateHisInfo;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use Matrix\Exception;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Notification;
 use App\Facades\PublisherCharts;
 use App\Facades\PublisherProfile;
-use Illuminate\Support\Facades\Cache;
 
 class PublisherController extends Controller
 {
@@ -136,7 +134,7 @@ class PublisherController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getBasedOnType(Request $request, $type)
     {
@@ -159,7 +157,7 @@ class PublisherController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -178,8 +176,8 @@ class PublisherController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -285,7 +283,7 @@ class PublisherController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -303,7 +301,7 @@ class PublisherController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -332,9 +330,9 @@ class PublisherController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -497,7 +495,7 @@ class PublisherController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updateAccountManager(Request $request)
     {
@@ -528,7 +526,7 @@ class PublisherController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Request $request, $id)
     {
@@ -544,7 +542,7 @@ class PublisherController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
 
@@ -629,7 +627,7 @@ class PublisherController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View|Response
      */
     public function payments(Request $request, int $id = null)
     {
@@ -639,7 +637,6 @@ class PublisherController extends Controller
         $publisher = ($id == null) ? auth()->user() : User::findOrFail($id);
         $childrens = $publisher->childrens()->pluck('id')->toArray();
         array_push($childrens, $userId);
-
         $payments = Payment::whereHas('publisher', function ($q) use ($childrens) {
             $q->whereIn('publisher_id', $childrens);
         })->get();
@@ -650,7 +647,6 @@ class PublisherController extends Controller
                 ->editColumn('parent_id', function ($row) {
                     return !empty($row->parent->name) ? $row->parent->name : '';
                 })
-
                 ->addColumn('action', function ($row) {
                     $btn = '<a href="' . route('admin.payments.show', $row->id) . '" class="show btn btn-primary btn-xs m-1"><i class="fas fa-eye"></i></a>';
                     return $btn;
@@ -662,17 +658,15 @@ class PublisherController extends Controller
                 ->rawColumns(['action', 'slip'])
                 ->make(true);
         }
-
         return view('admin.publishers.payments', [
             'payments' => $payments
         ]);
     }
-
     /** Upload Publishers */
     /**
      * Show the form for creating a new resource.
      *
-     * @return Application|Factory|View|\Illuminate\Http\Response
+     * @return Application|Factory|View
      * @throws AuthorizationException
      */
     public function upload()
@@ -680,42 +674,47 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         return view('new_admin.publishers.upload');
     }
-
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * import using execute command on "Linux servers"
+     * @param \App\Http\Requests\Request $request
+     * @return RedirectResponse
      * @throws AuthorizationException
      */
-    public function storeUpload(Request $request)
+    public function storeUpload(\App\Http\Requests\Request $request): RedirectResponse
     {
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-
-        // Excel::import(new InfluencerImport($request->team, $request->parent_id),request()->file('publishers'));
-
-        if ($request->team == 'affiliate') {
-            Excel::import(new PublishersImport($request->team), request()->file('publishers'));
-            // Excel::queueImport(new PublishersImport($request->team),request()->file('publishers'));
-        }
-        if ($request->team == 'influencer') {
-            Excel::import(new InfluencerImport($request->team), request()->file('publishers'));
-            // Excel::queueImport(new InfluencerImport($request->team),request()->file('publishers'));
-        }
-
+        Storage::put('publisher_import.json', $request->file('publishers')->store('files'));
+        shell_exec("php " . base_path() . "/artisan import:publishers $request->team > /dev/null &");
         userActivity('User', null, 'upload', 'Upload Publishers');
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
         ];
-
         return redirect()->route('admin.publishers.index')->with($notification);
     }
-
+    /**
+     * @throws Exception
+     * @noinspection PhpUndefinedMethodInspection
+     */
+    public function upload_status()
+    {
+        $id = 0;
+        if (Storage::has('publishers_import_data.json')){
+            $import_file = Storage::get("publishers_import_data.json");
+            $import_file = json_decode($import_file, true);
+            $id = $import_file['id'];
+        }
+        return response([
+            'started' => filled(cache("start_date_$id")),
+            'finished' => filled(cache("end_date_$id")),
+            'current_row' => (int) cache("current_row_$id"),
+            'total_rows' => (int) cache("total_rows_$id"),
+        ]);
+    }
     public function uploadUpdateHasOfferIdByEmail()
     {
         $this->authorize('update_publishers');
@@ -724,7 +723,6 @@ class PublisherController extends Controller
 
     public function storeUploadUpdateHasOfferIdByEmail(Request $request)
     {
-
         $this->authorize('create_publishers');
         $request->validate([
             'publishers' => 'required|mimes:xlsx,csv',
@@ -758,7 +756,7 @@ class PublisherController extends Controller
         }
     }
     // .
-    public function checkIfExists(Request $request)
+    public function checkIfExists(Request $request): ?string
     {
         $user = User::where('phone', $request->column)->orWhere('email', $request->column)->first();
         if ($user) {
@@ -772,17 +770,18 @@ class PublisherController extends Controller
         }
         return null;
     }
-
-    public function changeStatus(Request $request){
+    /**
+     * @throws AuthorizationException
+     */
+    public function changeStatus(Request $request): JsonResponse
+    {
         $this->authorize('update_publishers');
-
         $user = User::findOrFail($request->id);
         $user->status = $request->status;
         $user->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }
-
-    public function clearFilterSeassoions()
+    public function clearFilterSeassoions(): RedirectResponse
     {
         session()->forget('publishers_filter_team');
         session()->forget('publishers_filter_parent_id');
