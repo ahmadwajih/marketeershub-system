@@ -11,14 +11,13 @@ use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithStartRow;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-class InfluencerImport extends Import implements ToCollection, WithChunkReading
+
+class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,OnEachRow
 {
     public $team;
     public $status;
@@ -26,10 +25,10 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading
     public $cityId = null;
     public $accouManagerId = null;
     public $currrencyId = null;
-    public function __construct($team)
+    public function __construct($team,$id)
     {
         $this->team = $team;
-
+        $this->id = $id;
     }
 
     /**
@@ -37,6 +36,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading
     */
     public function collection(Collection $collection)
     {
+        var_dump("test");
         unset($collection[0]);
         foreach ($collection as $index => $col)
         {
@@ -46,7 +46,6 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading
                 if($accountManager){
                     $this->accouManagerId = $accountManager->id;
                 }
-
                 // Get Country Id
                 $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();
                 if($country){
@@ -210,6 +209,6 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading
     }
     public function chunkSize(): int
     {
-        return 100;
+        return 20;
     }
 }

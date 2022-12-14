@@ -52,10 +52,10 @@ class PublishersImportCommand extends Command
         $import_file = Storage::get("publishers_import.json");
         $team = $this->argument('team');
         if ($team == 'affiliate') {
-            Excel::import(new PublishersImport($team), $import_file);
+            Excel::import(new PublishersImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
-            Excel::import(new InfluencerImport($team), $import_file);
+            Excel::import(new InfluencerImport($team,$id), $import_file);
         }
         return 1;
     }
