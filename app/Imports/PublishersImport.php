@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class PublishersImport extends Import implements ToCollection, WithChunkReading, ShouldQueue
+class PublishersImport extends Import implements ToCollection, WithChunkReading
 {
     public $team;
     public $status;

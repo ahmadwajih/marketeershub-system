@@ -136,7 +136,7 @@
 @endsection
 @push('scripts')
     <script>
-        let route = "{{ route('admin.reports.index') }}";
+        let route = "{{ route('admin.publishers.index') }}";
         document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
             event.preventDefault();
             try {

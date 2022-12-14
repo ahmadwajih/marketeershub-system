@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-class InfluencerImport extends Import implements ToCollection, WithChunkReading, ShouldQueue
+class InfluencerImport extends Import implements ToCollection, WithChunkReading
 {
     public $team;
     public $status;
@@ -135,7 +135,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 $category ? $publisher->categories()->sync($category->id) : '';
 
                 // Facebook
-                if(!is_null($col[17])){
+                if(isset($col[17])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'facebook',
                         'user_id' => $publisher->id
@@ -146,7 +146,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     ]);
                 }
                  // Instagram
-                 if(!is_null($col[19])){
+                 if(isset($col[19])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'instagram',
                         'user_id' => $publisher->id
@@ -157,7 +157,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }
 
                 // Twitter
-                if(!is_null($col[21])){
+                if(isset($col[21])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'twitter',
                         'user_id' => $publisher->id
@@ -168,7 +168,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }
 
                 // Snapchat
-                if(!is_null($col[23])){
+                if(isset($col[23])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'snapchat',
                         'user_id' => $publisher->id,
@@ -180,7 +180,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }
 
                 // Tiktok
-                if(!is_null($col[25])){
+                if(isset($col[25])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'tiktok',
                         'user_id' => $publisher->id
@@ -190,7 +190,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     ]);
                 }
                 // Youtube
-                if(!is_null($col[27])){
+                if(isset($col[27])){
                     SocialMediaLink::updateOrCreate([
                         'platform' => 'youtube',
                         'user_id' => $publisher->id
