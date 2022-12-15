@@ -374,7 +374,7 @@
 @endsection
 @push('scripts')
     <script>
-        let route = "{{route('admin.publishers.index')}}";
+        const route = "{{ route('admin.publishers.index') }}";
         let publishersRoute = "{{route('admin.publisher.profile')}}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/change-status.js"></script>
@@ -408,6 +408,6 @@
                 }
             }, 3000);
         }
-    </script>
+        </script>
     @endif
 @endpush

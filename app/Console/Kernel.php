@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         PivotReportImportCommand::class,
-        PublishersImportCommand::class
+        PublishersImportCommand::class,
+        CouponsImportCommand::class
     ];
 
     /**

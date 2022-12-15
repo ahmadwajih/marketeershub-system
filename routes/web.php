@@ -125,6 +125,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('reports/define/excel/sheet/columns', 'PivotReportController@defineExcelSheetColumns')->name('define.excel.sheet.columns');
         Route::get('coupons/upload/form', 'CouponController@uploadForm')->name('coupons.upload.form');
         Route::post('coupons/upload','CouponController@upload')->name('coupons.upload');
+        Route::get('coupons/upload/status', 'CouponController@importStatus')->name('coupons.upload.status');
         Route::post('coupons/change/status', 'CouponController@changeStatus');
         Route::post('coupons/change/revenue', 'CouponController@bulkChangeRevenue');
         Route::get('coupons/load/payout', 'CouponController@loadPayout');

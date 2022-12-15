@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -677,10 +678,10 @@ class PublisherController extends Controller
     /**
      * import using execute command on "Linux servers"
      * @param \App\Http\Requests\Request $request
-     * @return Application|\Illuminate\Contracts\Routing\ResponseFactory|RedirectResponse|Response
+     * @return Application|Response|ResponseFactory
      * @throws AuthorizationException
      */
-    public function storeUpload(\App\Http\Requests\Request $request)
+    public function storeUpload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
     {
         $this->authorize('create_publishers');
         $request->validate([
@@ -699,7 +700,7 @@ class PublisherController extends Controller
      * @throws Exception
      * @noinspection PhpUndefinedMethodInspection
      */
-    public function importStatus()
+    public function importStatus(): Response|Application|ResponseFactory
     {
         $id = 0;
         if (Storage::has('publishers_import_data.json')){
