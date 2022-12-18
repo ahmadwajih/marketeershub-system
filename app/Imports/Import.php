@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Row;
 
 class Import implements WithEvents,OnEachRow
 {
-    public $id;
+    public int $id;
     /**
      * @throws Exception
      */

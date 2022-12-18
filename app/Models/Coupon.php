@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static count()
+ * @method static findOrFail(mixed $id)
+ */
 class Coupon extends Model
 {
     use HasFactory;
@@ -52,7 +56,7 @@ class Coupon extends Model
     public function report(){
         return $this->hasOne(PivotReport::class);
     }
-    
+
     public function cps(){
         return $this->hasMany(CouponCps::class);
     }

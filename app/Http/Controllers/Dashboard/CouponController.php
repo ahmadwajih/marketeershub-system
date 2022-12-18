@@ -10,18 +10,21 @@ use App\Models\CouponCps;
 use App\Models\Offer;
 use App\Models\User;
 use App\Notifications\CodeRecycled;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
-use Maatwebsite\Excel\Facades\Excel;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class CouponController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -37,9 +40,9 @@ class CouponController extends Controller
             return redirect()->route('admin.coupons.index')->with($notification);
         }
 
-        // Get Coupons 
+        // Get Coupons
         $query = Coupon::query();
-     
+
          $tableLength = session('table_length') ?? config('app.pagination_pages');
 
         // Filter
@@ -91,7 +94,7 @@ class CouponController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function create()
     {
@@ -108,7 +111,7 @@ class CouponController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -226,7 +229,7 @@ class CouponController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -240,7 +243,7 @@ class CouponController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Coupon $coupon)
     {
@@ -259,7 +262,7 @@ class CouponController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Coupon $coupon)
     {
@@ -372,7 +375,7 @@ class CouponController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Request $request, Coupon $coupon)
     {
@@ -390,9 +393,10 @@ class CouponController extends Controller
     /**
      * Show the form for uploading a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
+     * @throws AuthorizationException
      */
-    public function uploadForm()
+    public function uploadForm(): View|Factory|Application
     {
         $this->authorize('create_coupons');
         return view('new_admin.coupons.upload', [
@@ -400,13 +404,14 @@ class CouponController extends Controller
         ]);
     }
 
-
     /**
      * Show the form for uploading a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\Request $request
+     * @return Application|ResponseFactory|Response
+     * @throws AuthorizationException
      */
-    public function upload(Request $request)
+    public function upload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
     {
         $this->authorize('create_coupons');
         $request->validate([
@@ -414,17 +419,38 @@ class CouponController extends Controller
             'coupons'    => 'required|mimes:xlsx,csv',
         ]);
         session(['coupons_count_before_uploading' => Coupon::count()]);
-        Excel::import(new CouponImport($request->offer_id), request()->file('coupons'));
+        Storage::put('coupons_import_file.json', $request->file('coupons')->store('files'));
+        shell_exec("php " . base_path() . "/artisan import:coupons $request->offer_id > /dev/null &");
         userActivity('Coupon', null, 'upload');
-
-        $notification = [
-            'message' => 'Uploaded successfully',
-            'alert-type' => 'success'
-        ];
-        return redirect()->route('admin.coupons.index', ['uploading'=> 'true']);
+        return response([
+            'offer_id' => $request->offer_id,
+            'import_in_progress' => true,
+        ]);
     }
 
-    public function changeStatus(Request $request)
+    /**
+     * @throws Exception
+     * @noinspection PhpUndefinedMethodInspection
+     */
+    public function importStatus(): Response|Application|ResponseFactory
+    {
+        $id = 0;
+        if (Storage::has('coupons_import_data.json')){
+            $import_file = Storage::get("coupons_import_data.json");
+            $import_file = json_decode($import_file, true);
+            $id = $import_file['id'];
+        }
+        return response([
+            'started' => filled(cache("start_date_$id")),
+            'finished' => filled(cache("end_date_$id")),
+            'current_row' => (int) cache("current_row_$id"),
+            'total_rows' => (int) cache("total_rows_$id"),
+        ]);
+    }
+    /**
+     * @throws AuthorizationException
+     */
+    public function changeStatus(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->authorize('update_coupons');
         $coupon = Coupon::findOrFail($request->id);
@@ -432,7 +458,6 @@ class CouponController extends Controller
         $coupon->save();
         return response()->json(['message' => 'Updated Succefuly']);
     }
-
     public function bulckEdit(Request $request)
     {
         return view('new_admin.coupons.bulck-edit-form');
@@ -512,8 +537,6 @@ class CouponController extends Controller
                 }
             }
         }
-
-
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'

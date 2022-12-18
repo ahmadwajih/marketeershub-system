@@ -12,24 +12,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class CouponImport implements ToCollection, WithStartRow
+class CouponImport extends Import implements ToCollection, WithStartRow,WithChunkReading
 {
     public $offerId;
     public $test = [];
     public $totlaUploadedSuccessfully = 0;
     public $totlaUpdatedSuccessfully = 0;
-    public $totlaCreatedSuccessfully = 0;
-
-    public function __construct($offerId)
+    public int $totlaCreatedSuccessfully = 0;
+    public function __construct($offerId,$id)
     {
         $this->offerId = $offerId;
+        $this->id = $id;
     }
     /**
      * @param Collection $collection
      */
     public function collection(Collection $collection)
     {
-
         Validator::make($collection->toArray(), [
             '*.0' => 'required|max:20',
         ])->validate();
@@ -77,9 +76,13 @@ class CouponImport implements ToCollection, WithStartRow
             }
         }
     }
-
     public function startRow(): int
     {
         return 2;
+    }
+
+    public function chunkSize(): int
+    {
+        return 10;
     }
 }

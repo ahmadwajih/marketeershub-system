@@ -141,8 +141,24 @@
         <!--end::Main column-->
     </form>
     <!--end::Form-->
-
 @endsection
 @push('scripts')
-
+    <script>let route = "{{ route('admin.coupons.index') }}";</script>
+    <script>
+        document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
+            event.preventDefault();
+            try {
+                const resp = await fetch(event.target.action, {
+                    method: "POST",
+                    body: new FormData(event.target),
+                });
+                const body = await resp.json();
+                console.log(body);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            window.location.href = route + '?uploading=true';
+        });
+    </script>
 @endpush

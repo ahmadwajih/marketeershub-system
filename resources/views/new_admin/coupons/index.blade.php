@@ -51,7 +51,6 @@
           <div class="progress">
             <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><h5 id="progress-bar-percentage"><strong>0%</strong></h5></div>
         </div>
-
     </div>
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
@@ -719,60 +718,21 @@
                             confirmButton: "btn fw-bold btn-primary",
                         },
                     });
-                });
+                })
+            ;
         }
     </script>
     <script>
-
         $(document).ready(function() {
             $("#mySelect2").select2({
                 dropdownParent: $("#kt_modal_scrollable_1")
             });
         });
-        </script>
-
+    </script>
     @if(isset(request()->uploading) && request()->uploading == 'true')
         <script>
-            $('.uploading-progress-bar').removeClass('d-none');
-            var counter = 0;
-            var progressInterval = setInterval(function () {
-                    counter++;
-                $.ajax({
-                    method: "GET",
-                    headers: {
-                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                    },
-                    url: "{{ route('admin.ajax.check.jobs') }}",
-                }).
-                done(function(res) {
-                    if(res == 1){
-                        if(counter <= 90){
-                            $('#progress-bar-percentage').html(counter + '%');
-                            $("#progress-bar").width(counter+"%");
-                        }
-
-                    }else{
-                        clearInterval(progressInterval);
-                            var seconInterval = setInterval(function () {
-                                    counter++;
-                                $('#progress-bar-percentage').html(counter + '%');
-                                $("#progress-bar").width(counter+"%");
-                                if(counter >= 90){
-                                    clearInterval(seconInterval);
-                                    // alert(counter);
-                                    window.location.href = route+'?success=true';
-
-                                }
-                            }, 100);
-                    }
-                })
-                .fail(function(res) {
-                    console.log(res);
-                });
-                if(counter == 300){
-                    window.location.href = route;
-                }
-            }, 600);
+            let status_url = "{{ route('admin.coupons.upload.status') }}";
         </script>
+        <script src="{{ asset('new_dashboard') }}/js/import.js"></script>
     @endif
 @endpush
