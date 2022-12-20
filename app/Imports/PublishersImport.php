@@ -24,7 +24,7 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading
     public $accouManagerId = null;
     public $currrencyId = null;
     public $data = [];
-
+    public string $module_name = 'publishers';
     public function __construct($team,$id)
     {
         $this->team = $team;

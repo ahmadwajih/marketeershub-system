@@ -49,7 +49,7 @@ class PublishersImportCommand extends Command
         session([ 'import' => $id ]);
         $data = ["id" => $id];
         Storage::put('publishers_import_data.json', json_encode($data));
-        $import_file = Storage::get("publishers_import.json");
+        $import_file = Storage::get("publishers_import_file.json");
         $team = $this->argument('team');
         if ($team == 'affiliate') {
             Excel::import(new PublishersImport($team,$id), $import_file);

@@ -13,6 +13,8 @@ use Maatwebsite\Excel\Row;
 class Import implements WithEvents,OnEachRow
 {
     public int $id;
+
+    public string $module_name;
     /**
      * @throws Exception
      */
@@ -37,7 +39,7 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("total_rows_{$this->id}");
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
-                Storage::delete('publishers_import.json');
+                Storage::delete($this->module_name.'_import_file.json');
             },
         ];
     }
