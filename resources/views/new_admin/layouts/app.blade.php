@@ -75,21 +75,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
 
 <body data-kt-name="metronic" id="kt_body" class="header-fixed header-tablet-and-mobile-fixed">
     <!--begin::Theme mode setup on page load-->
-    <script>
-        if (document.documentElement) {
-            const defaultThemeMode = "system";
-            const name = document.body.getAttribute("data-kt-name");
-            let themeMode = localStorage.getItem("kt_" + (name !== null ? name + "_" : "") + "theme_mode_value");
-            if (themeMode === null) {
-                if (defaultThemeMode === "system") {
-                    themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-                } else {
-                    themeMode = defaultThemeMode;
-                }
-            }
-            document.documentElement.setAttribute("data-theme", 'dark');
-        }
-    </script>
+ 
     <!--end::Theme mode setup on page load-->
     <!--begin::Main-->
     <!--begin::Root-->
@@ -198,6 +184,28 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
     <script>
         var csrfToken = "{{ csrf_token() }}";
     </script>
+    <script>
+        var defaultThemeMode = "dark";
+        var themeMode;
+        
+        if ( document.documentElement ) {
+            if ( document.documentElement.hasAttribute("data-theme-mode")) {
+                themeMode = document.documentElement.getAttribute("data-theme-mode");
+            } else {
+                if ( localStorage.getItem("data-theme") !== null ) {
+                    themeMode = localStorage.getItem("data-theme");
+                } else {
+                    themeMode = defaultThemeMode;
+                }
+            }
+        
+            if (themeMode === "system") {
+                themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            }
+        
+            document.documentElement.setAttribute("data-theme", themeMode);
+        }
+        </script>
     @stack('scripts')
     <!--end::Javascript-->
 </body>

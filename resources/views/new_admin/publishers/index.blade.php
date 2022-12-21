@@ -187,7 +187,7 @@
                                                 >
                                                 <option value="">No One</option>
                                                 <option {{ session('publishers_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Live') }}</option>
-                                                <option {{ session('publishers_filter_status') == 'pending' ? 'selected' :''}} value="inactive">{{ __('Paused') }}</option>
+                                                <option {{ session('publishers_filter_status') == 'pending' ? 'selected' :''}} value="pending">{{ __('Paused') }}</option>
                                                 <option {{ session('publishers_filter_status') == 'inactive' ? 'selected' :''}} value="inactive">{{ __('Cancelled') }}</option>
                                             </select>
                                         </div>

@@ -105,10 +105,15 @@ class PublisherController extends Controller
             }
 
             $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength);
-        if (auth()->user()->position == 'super_admin') {
-            $accountManagers = User::where('position', 'account_manager')->get();
+            
+        if (in_array('super_admin', auth()->user()->roles->pluck('label')->toArray())) {
+            $accountManagers = User::whereHas('roles', function($query){
+                    return $query->where('label', 'account_manager');
+                })->get();
         } else {
-            $accountManagers = auth()->user()->childrens()->where('position', 'account_manager')->get();
+            $accountManagers = auth()->user()->childrens()->whereHas('roles', function($query){
+                    return $query->where('label', 'account_manager');
+                })->get();
         }
 
         return view('new_admin.publishers.index', [
@@ -185,8 +190,8 @@ class PublisherController extends Controller
         $this->authorize('create_publishers');
         $data = $request->validate([
             'name'                      => 'required|max:255',
-            'email'                     => 'required|unique:users|max:255',
-            'phone'                     => 'required|unique:users|numeric',
+            'email'                     => 'required|unique:users|max:255|email:rfc,filter',
+            'phone'                     => 'required|unique:users|numeric|min:1',
             'parent_id'                 => 'required|numeric|exists:users,id',
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
@@ -342,8 +347,8 @@ class PublisherController extends Controller
         }
         $data = $request->validate([
             'name'                      => 'required|max:255',
-            'email'                     => 'required|max:255|unique:users,email,' . $id,
-            'phone'                     => 'required|numeric|unique:users,phone,' . $id,
+            'email'                     => 'required|max:255|email:rfc,filter|unique:users,email,' . $id,
+            'phone'                     => 'required|numeric|min:1|unique:users,phone,' . $id,
             'password'                  => ['nullable', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'country_id'                => 'nullable|exists:countries,id',
             'city_id'                   => 'nullable|exists:cities,id',
@@ -591,9 +596,6 @@ class PublisherController extends Controller
         $activeOffers = PublisherProfile::activeOffers($childrens, $where);
         $totalNumbers = PublisherProfile::totalNumbers($childrens, $where);
         $payments = PublisherProfile::payments($childrens);
-        // dd(gettype($activeOffers));
-        // dd(count($activeOffers));
-        // dd($payments);
         //Start Charts
         $chartCoupons = PublisherCharts::coupons($childrens, $where);
         $chartActiveOffers = PublisherCharts::activeOffers($childrens, $where);

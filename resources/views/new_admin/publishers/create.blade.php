@@ -50,7 +50,7 @@
                             <div class="card-body pt-0">
                                 <div class="row">
                                     <div class="separator separator-content my-7">
-                                        <span class="w-125px text-white fw-semibold fs-7">Basic Info</span>
+                                        <span class="w-125px  fw-semibold fs-7">Basic Info</span>
                                     </div>
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
@@ -91,7 +91,7 @@
                                             <label class="required form-label">Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="number" name="phone" class="form-control mb-2" placeholder="0123456789" value="{{ old('phone') }}" />
+                                            <input type="text" onkeypress="clsNoOnly(event)" name="phone" class="form-control mb-2" placeholder="0123456789" value="{{ old('phone') }}" required minlength="8"/>
                                             <!--end::Input-->
                                             @if ($errors->has('phone'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
@@ -181,7 +181,7 @@
 
                                  
                                     <div class="separator separator-content my-14">
-                                        <span class="w-125px text-white fw-semibold fs-7">Additional Info</span>
+                                        <span class="w-125px  fw-semibold fs-7">Additional Info</span>
                                     </div>
 
                                     <div class="col-md-12">
@@ -560,7 +560,7 @@
                                 </div>
 
                                 <div class="separator separator-content my-14">
-                                    <span class="w-125px text-white fw-semibold fs-7">Payment Details</span>
+                                    <span class="w-125px  fw-semibold fs-7">Payment Details</span>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
