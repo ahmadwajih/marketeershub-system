@@ -336,7 +336,7 @@
     <script>
         let route = "{{ route('admin.reports.index') }}";
     </script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete_v2.js?v=60112212022"></script>
     <script>
         $(document).ready(function() {
             $('#main_form_check').change(function(){
