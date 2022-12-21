@@ -18,7 +18,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
-
 class CouponController extends Controller
 {
     /**
@@ -476,8 +475,6 @@ class CouponController extends Controller
 
                 // If payout_cps_type is static
                 if ($request->amount_type) {
-
-
                     if ($request->payout_cps_type == 'static') {
                         if ($request->static_payout && count($request->static_payout) > 0) {
                             foreach ($request->static_payout as $staticPayout) {

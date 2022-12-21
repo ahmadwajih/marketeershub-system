@@ -25,6 +25,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     public $cityId = null;
     public $accouManagerId = null;
     public $currrencyId = null;
+    public string $module_name = 'publishers';
     public function __construct($team,$id)
     {
         $this->team = $team;

@@ -14,11 +14,13 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class CouponImport extends Import implements ToCollection, WithStartRow,WithChunkReading
 {
+    public string $module_name = 'coupons';
     public $offerId;
     public $test = [];
     public $totlaUploadedSuccessfully = 0;
     public $totlaUpdatedSuccessfully = 0;
     public int $totlaCreatedSuccessfully = 0;
+
     public function __construct($offerId,$id)
     {
         $this->offerId = $offerId;

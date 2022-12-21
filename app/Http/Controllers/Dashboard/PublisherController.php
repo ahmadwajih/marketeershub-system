@@ -690,7 +690,7 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-        Storage::put('publishers_import.json', $request->file('publishers')->store('files'));
+        Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         shell_exec("php " . base_path() . "/artisan import:publishers $request->team > /dev/null &");
         userActivity('User', null, 'upload', 'Upload Publishers');
         return response([
@@ -698,6 +698,7 @@ class PublisherController extends Controller
             'import_in_progress' => true,
         ]);
     }
+
     /**
      * @throws Exception
      * @noinspection PhpUndefinedMethodInspection
