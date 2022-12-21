@@ -18,6 +18,26 @@
             z-index: 10050;
         }
     </style>
+    <style>
+        .uploading-progress-bar{
+            position: fixed;
+            z-index: 999;
+            background: #474761;
+            width: 37% !important;
+            height: 20% !important;
+            border-radius: 10px;
+            box-shadow: 8px 13px 33px 1px #171623;
+            margin: 151px;
+        }
+        .uploading-progress-bar .progress{
+            margin: 3% auto auto;
+            height: 26px;
+            width: 63%;
+        }
+        .progress-title{
+            margin-top: 10%;
+        }
+    </style>
 
 @endpush
 @section('content')
