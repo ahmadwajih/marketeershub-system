@@ -77,9 +77,8 @@ class AjaxController extends Controller
             ]);
         }
     }
-
-    public function publishersSearch(Request $request){
-
+    public function publishersSearch(Request $request): \Illuminate\Http\JsonResponse
+    {
         $key = explode(' ', $request->publisher_input);
 
         $publishers = User::wherePosition('publisher')->where(function ($q) use ($key) {
@@ -90,10 +89,7 @@ class AjaxController extends Controller
             }
         })->get();
 
-        return view('new_admin.components.option', [
-            'title' => "Select Publisher",
-            "items" => $publishers
-        ]);
+        return response()->json(['items' => $publishers]);
     }
 
     public function checkJobs(): bool

@@ -24,8 +24,15 @@
                         $('#loading').show()
                     },
                     success: function(data) {
-                        console.log(data);
-                        $('.publishers_filter').html(data)
+                        $('#publishers_filter').find('option').remove().end();
+                        let select = document.getElementById('publishers_filter');
+                        for (const key in data.items) {
+                            let opt = document.createElement('option');
+                            opt.value = data.items[key].id;
+                            opt.innerHTML = data.items[key].name;
+                            select.appendChild(opt);
+                        }
+                        $(".publishers_filter .select2-selection__placeholder").html("Select Publisher");
                     },
                     complete: function() {
                         $('#loading').hide()
