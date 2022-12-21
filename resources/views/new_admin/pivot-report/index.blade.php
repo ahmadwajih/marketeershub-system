@@ -94,7 +94,9 @@
                        <form action="{{ route('admin.reports.index') }}">
                             <!--end::Svg Icon-->
                             <div class="input-group mb-5">
-                                <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
+                                <input type="text" class="form-control" id="search" name="search" placeholder="Search" aria-label="Search"
+                                       aria-describedby="basic-addon2" value="{{ request()->search }}"
+                                />
                                 <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $reports->total() }} Record</span>
                             </div>
 
@@ -319,7 +321,7 @@
                             @include('new_admin.components.table_length')
                         </div>
                         <div>
-                            {!! $reports->links() !!}
+                            {!! $reports->withQueryString()->links() !!}
                         </div>
                     </div>
                 </div><!--end::Table-->
@@ -363,6 +365,27 @@
                 $('#selected_count').html(numberOfChecked);
             });
         });
+        //setup before functions
+        let typingTimer;                //timer identifier
+        let doneTypingInterval = 1000;  //time in ms, 5 seconds for example
+        let input = $('#search');
+        //on keyup, start the countdown
+        input.on('keyup', function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(doneTyping, doneTypingInterval);
+        });
+        //on keydown, clear the countdown
+        input.on('keydown', function () {
+            clearTimeout(typingTimer);
+        });
+        //user is "finished typing," do something
+        function doneTyping() {
+            let search = "{{ request()->search }}";
+            let val = $("#search").val();
+            if(val === "" && search !== ""){
+                window.location = route ;
+            }
+        }
     </script>
     @if(isset(request()->uploading) && request()->uploading == 'true')
         <script>

@@ -52,6 +52,12 @@ class PivotReportController extends Controller
             $query->whereHas('coupon', function($couponQuery)use($request){
                 return  $couponQuery->where('coupon', $request->search);
             });
+            $query->orWhereHas('offer', function($couponQuery)use($request){
+                return $couponQuery
+                    ->where('name_en','like' ,"%$request->search%")
+                    ->orWhere('name_ar','like' ,"%$request->search%")
+                ;
+            });
         }
         $publisherForFilter = User::whereId(session('pivot_report_filter_user_id'))->first();
         $reports = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
