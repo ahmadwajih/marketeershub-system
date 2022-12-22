@@ -55,7 +55,7 @@
         <!--begin::Tab pane-->
         <div id="kt_project_users_card_pane" class="tab-pane fade">
             <!--begin::Row-->
-           
+
             <div class="row g-6 g-xl-9">
                 @foreach ($offers as $offer)
                  <!--begin::Col-->
@@ -111,7 +111,7 @@
             @endforeach
             </div>
             <!--end::Row-->
-       
+
         </div>
         <!--end::Tab pane-->
         <!--begin::Tab pane-->
@@ -130,7 +130,7 @@
                                     <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
                                     <button class="input-group-text" id="basic-addon2">Go</button>
                                 </div>
-                            </form> 
+                            </form>
                         </div>
                         <!--end::Search-->
                     </div>
@@ -214,7 +214,7 @@
                                             <!--end::User-->
                                         </td>
                                         <td data-order="{{ $offer->status }}">
-                                            <button onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $offer->id }} {{ $offer->status == 'active' ?: 'd-none' }}">Active</button> 
+                                            <button onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $offer->id }} {{ $offer->status == 'active' ?: 'd-none' }}">Active</button>
                                             <button onclick="changeStatus('{{ $offer->id }}','{{ $offer->name }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $offer->id }} {{ $offer->status != 'active' ?: 'd-none' }}">Inactive</button>
                                         </td>
                                         <td>{{ $offer->cps_type == 'static' ? $offer->revenue_type : '' }} {{ $offer->cps_type == 'new_old' ? ($offer->newOld ? $offer->newOld->new_revenue_type : '') : '' }}</td>
@@ -284,7 +284,8 @@
 @endsection
 @push('scripts')
 <script>
-    var route = "{{route('admin.offers.index')}}";
+    let route = "{{route('admin.offers.index')}}";
+    let search = "{{ request()->search }}";
 </script>
 {{-- <script src="{{ asset('new_dashboard') }}/js/datatables/offers/table.js"></script> --}}
 <script src="{{ asset('new_dashboard') }}/js/datatables/offers/delete.js"></script>
@@ -293,7 +294,6 @@
 
 <script>
     $(document).ready(function() {
-
         $('#main_form_check').change(function(){
             if(this.checked) {
                 $('.table-checkbox').prop('checked', true);
@@ -322,9 +322,7 @@
             numberOfChecked = $('.table-checkbox:checked').length;
             $('#selected_count').html(numberOfChecked);
         });
-
     });
 </script>
-
-
+<script src="{{ asset('new_dashboard') }}/js/datatables/search.js?v=60112212022"></script>
 @endpush

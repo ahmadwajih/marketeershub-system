@@ -376,10 +376,12 @@
     <script>
         const route = "{{ route('admin.publishers.index') }}";
         let publishersRoute = "{{route('admin.publisher.profile')}}";
+        let search = "{{ request()->search }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/change-status.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/delete.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/tables_btns.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/search.js?v=60112212022"></script>
     @if(isset(request()->uploading) && request()->uploading == 'true')
         <script>
         let import_status = 0;

@@ -335,8 +335,10 @@
 @push('scripts')
     <script>
         let route = "{{ route('admin.reports.index') }}";
+        let search = "{{ request()->search }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete_v2.js?v=60112212022"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/search.js?v=60112212022"></script>
     <script>
         $(document).ready(function() {
             $('#main_form_check').change(function(){
@@ -368,27 +370,6 @@
                 $('#selected_count').html(numberOfChecked);
             });
         });
-        //setup before functions
-        let typingTimer;                //timer identifier
-        let doneTypingInterval = 1000;  //time in ms, 5 seconds for example
-        let input = $('#search');
-        //on keyup, start the countdown
-        input.on('keyup', function () {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(doneTyping, doneTypingInterval);
-        });
-        //on keydown, clear the countdown
-        input.on('keydown', function () {
-            clearTimeout(typingTimer);
-        });
-        //user is "finished typing," do something
-        function doneTyping() {
-            let search = "{{ request()->search }}";
-            let val = $("#search").val();
-            if(val === "" && search !== ""){
-                window.location = route ;
-            }
-        }
     </script>
     @if(isset(request()->uploading) && request()->uploading == 'true')
         <script>

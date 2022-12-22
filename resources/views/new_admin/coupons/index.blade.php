@@ -111,7 +111,7 @@
                        <form action="{{ route('admin.coupons.index') }}">
                             <!--end::Svg Icon-->
                             <div class="input-group mb-5">
-                                <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}"/>
+                                <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}" disabled />
                                 <button class="input-group-text" id="basic-addon2">Go</button>  <span class="mx-3 mt-3"> {{ $coupons->total() }} Coupon</span>
                             </div>
 
@@ -516,6 +516,7 @@
 @push('scripts')
     <script>
         var route = "{{ route('admin.coupons.index') }}";
+        let search = "{{ request()->search }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/delete.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/edit.js"></script>
@@ -755,4 +756,5 @@
         </script>
         <script src="{{ asset('new_dashboard') }}/js/import.js"></script>
     @endif
+    <script src="{{ asset('new_dashboard') }}/js/datatables/search.js?v=60112212022"></script>
 @endpush
