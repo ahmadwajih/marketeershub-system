@@ -22,8 +22,6 @@
             th {
                 position: sticky;
                 top: 69px;
-                background: #000;
-                background-color: #1e1e2d !important;
                 color: white;
             }
             .separate-tr{
