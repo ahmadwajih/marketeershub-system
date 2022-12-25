@@ -33,8 +33,6 @@ class AuthController extends Controller
 
 
     public function login(Request $request){
-        $request->session()->regenerate();
-        //die;
         $credentials = $this->validate($request, [
             'email' => 'required|email|max:255',
             'password' => 'required|min:6'
@@ -44,6 +42,7 @@ class AuthController extends Controller
             $remember = true;
         }
         if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
             LoginUser::create([
                 'user_id' => auth()->user()->id,
                 'name' => auth()->user()->name,
