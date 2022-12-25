@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading,ShouldQueue
 {
     public $offerId;
     public $coupon;
@@ -399,7 +399,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     }
     public function chunkSize(): int
     {
-        return 5;
+        return 10;
     }
     /**
      * @throws Exception
