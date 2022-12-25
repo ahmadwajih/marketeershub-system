@@ -124,8 +124,15 @@
                 <!--begin::Button-->
                 <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
                     <span class="indicator-label">Save Changes</span>
-                    <span class="indicator-progress">Please wait...
-                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                    <span class="indicator-progress">
+                        Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+                <button id="loading-button" class="btn btn-primary d-none" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Loading...</span>
+                    Please wait...
                 </button>
                 <!--end::Button-->
             </div>
@@ -139,6 +146,8 @@
         let route = "{{ route('admin.publishers.index') }}";
         document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
             event.preventDefault();
+            $("#loading-button").removeClass("d-none");
+            $("#kt_ecommerce_add_product_submit").addClass("d-none");
             try {
                 const resp = await fetch(event.target.action, {
                     method: "POST",
