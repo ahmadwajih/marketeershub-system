@@ -53,7 +53,7 @@ class CouponsImportCommand extends Command
         Storage::put($this->module_name.'_import_data.json', json_encode($data));
         $import_file = Storage::get($this->module_name."_import_file.json");
         $offer_id = $this->argument('offer_id');
-        Excel::import(new CouponImport($offer_id,$id), $import_file);
+        Excel::queueImport(new CouponImport($offer_id,$id), $import_file);
         return 1;
     }
 }

@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class CouponImport extends Import implements ToCollection, WithStartRow,WithChunkReading
+class CouponImport extends Import implements ToCollection, WithStartRow,WithChunkReading,ShouldQueue
 {
     public string $module_name = 'coupons';
     public $offerId;

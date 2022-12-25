@@ -9,6 +9,7 @@ use App\Models\Currency;
 use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\OnEachRow;
@@ -17,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,OnEachRow
+class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,OnEachRow,ShouldQueue
 {
     public $team;
     public $status;
