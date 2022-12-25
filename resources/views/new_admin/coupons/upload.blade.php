@@ -136,6 +136,11 @@
                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                 </button>
                 <!--end::Button-->
+                <button id="loading-button" class="btn btn-primary d-none" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Loading...</span>
+                    Please wait...
+                </button>
             </div>
         </div>
         <!--end::Main column-->
@@ -147,6 +152,8 @@
     <script>
         document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
             event.preventDefault();
+            $("#loading-button").removeClass("d-none");
+            $("#kt_ecommerce_add_product_submit").addClass("d-none")
             try {
                 const resp = await fetch(event.target.action, {
                     method: "POST",
