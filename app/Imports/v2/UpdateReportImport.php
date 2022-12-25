@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading,ShouldQueue
 {
     public $offerId;
     public $coupon;
@@ -37,11 +37,6 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
 
     public function __construct($offerId, $type,int $id)
     {
-        ini_set('max_execution_time', 120000);
-        ini_set('post_max_size', 120000);
-        ini_set('upload_max_filesize', 100000);
-        ini_set('memory_limit', '2048M');
-
         $this->offerId = $offerId;
         $this->type = $type;
         $this->id = $id;
