@@ -406,7 +406,7 @@
                         console.log('Job not added....' + data);
                     });
                 }
-            }, 3000);
+            }, 2000);
         }
         </script>
     @endif

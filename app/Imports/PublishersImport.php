@@ -188,7 +188,7 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading
 
     public function chunkSize(): int
     {
-        return 10;
+        return 5;
     }
 
 }

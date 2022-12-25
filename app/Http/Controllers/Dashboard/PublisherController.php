@@ -105,7 +105,7 @@ class PublisherController extends Controller
             }
 
             $publishers = $publishers->orderBy('id', 'desc')->paginate($tableLength);
-            
+
         if (in_array('super_admin', auth()->user()->roles->pluck('label')->toArray())) {
             $accountManagers = User::whereHas('roles', function($query){
                     return $query->where('label', 'account_manager');
@@ -691,7 +691,8 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
-        shell_exec("php " . base_path() . "/artisan import:publishers $request->team > /dev/null &");
+        //shell_exec("php " . base_path() . "/artisan import:publishers $request->team >/dev/null 2>&1");
+        $this->execute_command("import:publishers $request->team");
         userActivity('User', null, 'upload', 'Upload Publishers');
         return response([
             'team' => $request->team,
