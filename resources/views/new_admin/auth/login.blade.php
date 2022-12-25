@@ -1,8 +1,6 @@
 @extends('new_admin.auth.layouts.app')
 @section('title', 'Login')
 @section('content')
-
-    
     <!--begin::Theme mode setup on page load-->
     <script>
         if (document.documentElement) {
@@ -56,7 +54,7 @@
 									<!--end::Subtitle=-->
 								</div>
 								<!--begin::Heading-->
-						
+
 								<!--begin::Separator-->
 								<div class="separator separator-content my-14">
 									<span class="w-125px text-gray-500 fw-semibold fs-7">with email</span>
@@ -110,8 +108,8 @@
 									<!--end::Link-->
 								</div>
 								<!--end::Wrapper-->
-                                
-                                
+
+
 
 								<!--begin::Submit button-->
 								<div class="d-grid mb-10">

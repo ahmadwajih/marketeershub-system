@@ -31,7 +31,7 @@ class AuthController extends Controller
         return view('new_admin.auth.login');
     }
 
-    
+
     public function login(Request $request){
         $credentials = $this->validate($request, [
             'email' => 'required|email|max:255',
@@ -137,7 +137,7 @@ class AuthController extends Controller
                         'platform' => $link['platform'],
                         'user_id' => $publisher->id,
                     ]);
-                    
+
                 }
 
             }
@@ -154,7 +154,7 @@ class AuthController extends Controller
                             'user_id' => $publisher->id,
                         ]);
                     }
-                    
+
                 }
 
             }
@@ -162,7 +162,7 @@ class AuthController extends Controller
         Auth::login($publisher);
         return response()->json($publisher);
         return redirect()->route('admin.publisher.profile');
-        
+
     }
 
     public function loginAs($userId){
@@ -173,7 +173,7 @@ class AuthController extends Controller
             return redirect()->route('admin.publisher.profile');
         }
         return redirect()->route('admin.user.profile');
-    
+
     }
 
     public function forgotPasswordForm(){
@@ -221,7 +221,7 @@ class AuthController extends Controller
             if(!$user){
                 return redirect()->route('admin.forgot.password')->withErrors('This email dosne`t exists');
             }
-            $user->password = Hash::make($request->password); 
+            $user->password = Hash::make($request->password);
             $user->save();
             return redirect()->route('admin.login.form');
         }
@@ -230,7 +230,7 @@ class AuthController extends Controller
 
 
 
-    
+
     /**
      * Log the user out of the application.
      *
