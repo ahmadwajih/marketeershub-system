@@ -22,7 +22,7 @@ class Import implements WithEvents,OnEachRow
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
-        sleep(1.1);
+        //sleep(1.1);
     }
     public function registerEvents(): array
     {
