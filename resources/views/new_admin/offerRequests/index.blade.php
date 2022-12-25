@@ -48,9 +48,9 @@
                                 <button class="input-group-text" id="basic-addon2">Go</button> --}}
                                 <span class="mx-3 mt-3"> {{ $offerRequests->total() }} Requests</span>
                             </div>
-                            
-                        </form> 
-                       
+
+                        </form>
+
                     </div>
                     <!--end::Search-->
                 </div>
@@ -104,7 +104,7 @@
                                         <!--end::Input-->
                                     </div>
                                     <!--end::Input group-->
-                                    @include('new_admin.components.publishers_filter') 
+                                    @include('new_admin.components.publishers_filter')
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <!--begin::Label-->
@@ -226,10 +226,10 @@
                                     <td>{{ $offerRequest->offer ? $offerRequest->offer->name :'' }}</td>
 
                                     <td>
-                                        <button onclick="changeStatus('{{ $offerRequest->id }}','{{ $offerRequest->user->name }}', 'rejected')" class="btn btn-light-success btn-sm  active-btn-{{ $offerRequest->id }} {{ $offerRequest->status == 'approved' ?: 'd-none' }}">Approved</button> 
+                                        <button onclick="changeStatus('{{ $offerRequest->id }}','{{ $offerRequest->user->name }}', 'rejected')" class="btn btn-light-success btn-sm  active-btn-{{ $offerRequest->id }} {{ $offerRequest->status == 'approved' ?: 'd-none' }}">Approved</button>
                                         <button onclick="changeStatus('{{ $offerRequest->id }}','{{ $offerRequest->user->name }}', 'approved')" class="btn btn-light-danger btn-sm inactive-btn-{{ $offerRequest->id }} {{ $offerRequest->status == 'rejected' ?: 'd-none' }}">Rejected</button>
                                     </td>
-         
+
                                     <td>
                                         @can('update_offer_requests')
                                             <a href="#" class="btn btn-light btn-active-light-primary btn-sm"
@@ -312,8 +312,6 @@
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/delete.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/change-status.js"></script>
-
-
     <script>
         $(document).ready(function() {
             $('#main_form_check').change(function(){
