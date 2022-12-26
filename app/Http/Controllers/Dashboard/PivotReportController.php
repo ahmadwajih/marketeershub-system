@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Exports\PivotReportErrorsExport;
 use App\Http\Controllers\Controller;
+use App\Imports\v2\UpdateReportImport;
 use App\Models\Offer;
 use App\Models\PivotReport;
 use App\Models\User;
@@ -77,10 +78,6 @@ class PivotReportController extends Controller
      */
     public function create()
     {
-        echo exec(
-            "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan queue:listen --once"
-        );
-        die;
         $this->authorize('create_pivot_report');
         return view('new_admin.pivot-report.create', [
             'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get(),
@@ -110,7 +107,18 @@ class PivotReportController extends Controller
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
         //shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type > /dev/null &");
         //php import:pivot_report 1 update
-        $this->execute_command("import:pivot_report $request->offer_id $request->type");
+        //$this->execute_command("import:pivot_report $request->offer_id $request->type");
+        $id = now()->unix();
+        session([ 'import' => $id ]);
+        $data = [
+            "id" => $id,
+        ];
+        Storage::put('import.json', json_encode($data));
+        $import_file = Storage::get("pivot_report_import.txt");
+        Excel::queueImport(
+            new UpdateReportImport($this->argument('offer_id'), $this->argument('type'),$id),
+            $import_file
+        );
         return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
     }
     /**
