@@ -77,7 +77,7 @@ class PivotReportController extends Controller
      */
     public function create()
     {
-        echo shell_exec(
+        echo exec(
             "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan queue:listen --once"
         );
         die;
