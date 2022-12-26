@@ -24,7 +24,6 @@ class Import implements WithEvents,OnEachRow
         cache()->forever("current_row_{$this->id}", $rowIndex);
         sleep(0.1);
     }
-
     public function registerEvents(): array
     {
         return [
