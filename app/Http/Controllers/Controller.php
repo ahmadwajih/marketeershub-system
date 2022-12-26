@@ -14,7 +14,7 @@ class Controller extends BaseController
     protected function execute_command(string $command)
     {
         shell_exec(
-            "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan queue:listen --once"
+            "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan queue:listen"
         );
 
         shell_exec(
