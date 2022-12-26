@@ -45,7 +45,7 @@ class PivotReportImportCommand extends Command
      */
     public function handle(): int
     {
-        ini_set('memory_limit', '64M');
+        //ini_set('memory_limit', '64M');
         $id = now()->unix();
         session([ 'import' => $id ]);
         $data = [
@@ -53,7 +53,7 @@ class PivotReportImportCommand extends Command
         ];
         Storage::put('import.json', json_encode($data));
         $import_file = Storage::get("pivot_report_import.txt");
-        Excel::import(
+        Excel::queueImport(
             new UpdateReportImport($this->argument('offer_id'), $this->argument('type'),$id),
             $import_file
         );
