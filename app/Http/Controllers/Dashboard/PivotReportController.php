@@ -77,6 +77,10 @@ class PivotReportController extends Controller
      */
     public function create()
     {
+        echo shell_exec(
+            "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan queue:listen --once"
+        );
+        die;
         $this->authorize('create_pivot_report');
         return view('new_admin.pivot-report.create', [
             'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get(),
