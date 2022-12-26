@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading,ShouldQueue
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading
 {
     public $offerId;
     public $coupon;
