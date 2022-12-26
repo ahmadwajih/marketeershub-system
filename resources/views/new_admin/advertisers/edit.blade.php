@@ -318,7 +318,7 @@
                                             <select name="currency_id" data-control="select2" class="form-select">
                                                 <option selected value="">{{ __('No one') }}</option>
                                                 @foreach ($currencies as $currency)
-                                                    <option {{ old('currency_id')?($currency->id == old('currency_id') ?'selected': ($advertiser->currency_id == $currency->id ? 'selected' : '')):''  }} value="{{ $currency->id }}">{{ $currency->name }}</option>
+                                                    <option {{ old('currency_id') == $currency->id ? 'selected' : ($advertiser->currency_id == $currency->id ? 'selected' : '') }} value="{{ $currency->id }}">{{ $currency->name }}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
