@@ -426,8 +426,6 @@ class CouponController extends Controller
         ]);
         session(['coupons_count_before_uploading' => Coupon::count()]);
         Storage::put('coupons_import_file.json', $request->file('coupons')->store('files'));
-        //shell_exec("php " . base_path() . "/artisan import:coupons $request->offer_id > /dev/null &");
-        //$this->execute_command("import:coupons $request->offer_id");
         $id = now()->unix();
         session([ 'import' => $id ]);
         $data = ["id" => $id];

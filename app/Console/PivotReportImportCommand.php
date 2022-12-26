@@ -45,7 +45,6 @@ class PivotReportImportCommand extends Command
      */
     public function handle(): int
     {
-        //ini_set('memory_limit', '64M');
         $id = now()->unix();
         session([ 'import' => $id ]);
         $data = [

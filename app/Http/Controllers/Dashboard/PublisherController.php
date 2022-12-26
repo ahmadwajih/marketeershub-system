@@ -691,8 +691,6 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
-        //shell_exec("php " . base_path() . "/artisan import:publishers $request->team >/dev/null 2>&1");
-        //$this->execute_command("import:publishers $request->team");
         $id = now()->unix();
         session([ 'import' => $id ]);
         $data = ["id" => $id];

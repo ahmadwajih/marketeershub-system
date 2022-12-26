@@ -103,11 +103,7 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        //todo use dispatching events instead of exec function
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
-        //shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type > /dev/null &");
-        //php import:pivot_report 1 update
-        //$this->execute_command("import:pivot_report $request->offer_id $request->type");
         $id = now()->unix();
         session([ 'import' => $id ]);
         $data = [
