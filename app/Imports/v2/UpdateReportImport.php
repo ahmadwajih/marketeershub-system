@@ -399,7 +399,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     }
     public function chunkSize(): int
     {
-        return 50;
+        return 20;
     }
     /**
      * @throws Exception
@@ -408,7 +408,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
-        //sleep(2.2);
+        //sleep(0.5);
     }
     public function registerEvents(): array
     {

@@ -691,8 +691,18 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
-        //shell_exec("php " . base_path() . "/artisan import:publishers $request->team >/dev/null 2>&1");
-        $this->execute_command("import:publishers $request->team");
+        $id = now()->unix();
+        session([ 'import' => $id ]);
+        $data = ["id" => $id];
+        Storage::put('publishers_import_data.json', json_encode($data));
+        $import_file = Storage::get("publishers_import_file.json");
+        $team = $request->team;
+        if ($team == 'affiliate') {
+            Excel::queueImport(new PublishersImport($team,$id), $import_file);
+        }
+        if ($team == 'influencer') {
+            Excel::queueImport(new InfluencerImport($team,$id), $import_file);
+        }
         userActivity('User', null, 'upload', 'Upload Publishers');
         return response([
             'team' => $request->team,
