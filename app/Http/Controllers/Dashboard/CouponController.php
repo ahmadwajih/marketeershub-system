@@ -20,12 +20,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+
 class CouponController extends Controller
 {
+    public string $module_name = 'coupons';
+
     /**
      * Display a listing of the resource.
      *
-     * @return RedirectResponse
+     * @param Request $request
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
@@ -84,7 +89,7 @@ class CouponController extends Controller
         ]);
     }
 
-    public function clearFilterSeassoions()
+    public function clearFilterSeassoions(): RedirectResponse
     {
         session()->forget('coupons_filter_offer_id');
         session()->forget('coupons_filter_user_id');
@@ -422,8 +427,14 @@ class CouponController extends Controller
         session(['coupons_count_before_uploading' => Coupon::count()]);
         Storage::put('coupons_import_file.json', $request->file('coupons')->store('files'));
         //shell_exec("php " . base_path() . "/artisan import:coupons $request->offer_id > /dev/null &");
-        $this->execute_command("import:coupons $request->offer_id");
-
+        //$this->execute_command("import:coupons $request->offer_id");
+        $id = now()->unix();
+        session([ 'import' => $id ]);
+        $data = ["id" => $id];
+        Storage::put($this->module_name.'_import_data.json', json_encode($data));
+        $import_file = Storage::get($this->module_name."_import_file.json");
+        $offer_id = $request->offer_id;
+        Excel::queueImport(new CouponImport($offer_id,$id), $import_file);
         userActivity('Coupon', null, 'upload');
         return response([
             'offer_id' => $request->offer_id,
