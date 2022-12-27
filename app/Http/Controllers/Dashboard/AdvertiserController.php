@@ -57,8 +57,8 @@ class AdvertiserController extends Controller
         $this->authorize('create_advertisers');
         $data = $request->validate([
             'name'                  => 'nullable|max:255',
-            'phone'                 => 'nullable|max:255',
-            'email'                 => 'nullable|max:255',
+            'phone'                 => 'nullable|numeric|min:1',
+            'email'                 => 'nullable|max:255|email:rfc,filter',
             'ho_user_id'            => 'nullable|max:255',
             'company_name_en'       => 'required|max:255',
             'website'               => 'nullable|max:255',
@@ -151,8 +151,8 @@ class AdvertiserController extends Controller
         $this->authorize('update_advertisers');
         $data = $request->validate([
             'name'                  => 'nullable|max:255',
-            'phone'                 => 'nullable|max:255',
-            'email'                 => 'nullable|max:255',
+            'phone'                 => 'nullable|numeric|min:1',
+            'email'                 => 'nullable|max:255|email:rfc,filter',
             'ho_user_id'            => 'nullable|max:255',
             'company_name_en'       => 'required|max:255',
             'website'               => 'nullable|max:255',

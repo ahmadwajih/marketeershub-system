@@ -106,7 +106,7 @@
                                             <label class="form-label">Responsable Person Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="phone" class="form-control mb-2" placeholder="Responsable Person Phone" value="{{ old('phone') }}" />
+                                            <input type="text" onkeypress="clsNoOnly(event)" name="phone" class="form-control mb-2" placeholder="Responsable Person Phone" value="{{ old('phone') }}" minlength="8" />
                                             @if ($errors->has('phone'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
                                             @endif
@@ -446,5 +446,6 @@
 
 @endsection
 @push('scripts')
+<script src="{{ asset('new_dashboard/js/custimize_inputs.js') }}"></script>
 
 @endpush
