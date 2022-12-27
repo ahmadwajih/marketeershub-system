@@ -14,6 +14,11 @@ class Import implements WithEvents,OnEachRow
 {
     public int $id;
 
+    public array $importing_counts = [
+        'new'=>0,
+        'updated'=>0,
+        'failed'=>0,
+    ];
     public string $module_name;
     /**
      * @throws Exception
@@ -39,7 +44,9 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("total_rows_{$this->id}");
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
-                Storage::delete($this->module_name.'_import_file.json');
+                // remove this line and run the following to test the importing
+                //php artisan import:publishers affiliate
+                //Storage::delete($this->module_name.'_import_file.json');
             },
         ];
     }
