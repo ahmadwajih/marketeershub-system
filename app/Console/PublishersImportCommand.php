@@ -18,7 +18,6 @@ class PublishersImportCommand extends Command
      */
     protected $signature = 'import:publishers {team}';
 
-
     /**
      * The console command description.
      *
@@ -46,7 +45,7 @@ class PublishersImportCommand extends Command
     {
         $id = now()->unix();
         session([ 'import' => $id ]);
-
+        session()->put('affiliates_failed_rows', []);
         $data = ["id" => $id];
         Storage::put('publishers_import_data.json', json_encode($data));
         $import_file = Storage::get("publishers_import_file.json");
