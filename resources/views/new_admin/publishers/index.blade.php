@@ -45,6 +45,9 @@
                         <li>Updated : {{  json_decode($import_file)->updated  }}</li>
                         <li>Failed : {{  json_decode($import_file)->failed  }}</li>
                     </ul>
+                    @if(json_decode($import_file)->failed)
+                        <a href="#" class="btn btn-danger btn-sm">Download Faileds</a>
+                    @endif
                 @endif
                 <!--end::Content-->
             </div>
