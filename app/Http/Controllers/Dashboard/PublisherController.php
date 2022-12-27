@@ -75,7 +75,6 @@ class PublisherController extends Controller
         } elseif (session('publishers_filter_status')) {
             $query->where('status', session('publishers_filter_status'));
         }
-
         if (isset($request->search) && $request->search  != null) {
             $key = explode(' ', $request->search);
             $query->where(function ($q) use ($key) {
@@ -113,8 +112,11 @@ class PublisherController extends Controller
                 })->get();
         }
 
-        $import_file = Storage::get($this->module_name.'_importing_counts.json');
-
+        $import_file = Storage::has($this->module_name.'_importing_counts.json');
+        
+        if($import_file){
+            $import_file = Storage::get($this->module_name.'_importing_counts.json');
+        }
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
@@ -679,6 +681,7 @@ class PublisherController extends Controller
      */
     public function storeUpload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
     {
+        session()->put($this->module_name.'_failed_rows', []);
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',

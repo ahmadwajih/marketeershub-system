@@ -16,7 +16,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class AffiliatesImport extends Import implements ToCollection, WithChunkReading
+class AffiliatesImport extends Import implements ToCollection, WithChunkReading, ShouldQueue
 {
     public string $team;
     public string $status;
@@ -37,9 +37,11 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading
     */
     public function collection(Collection $collection)
     {
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+        }
         $category = null;
         //unset($collection[0]);
-        $i =0;
         foreach ($collection as $col)
         {
             $this->data['publisher_ho_id'] = $col[0];
@@ -156,17 +158,29 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading
                 $this->currrencyId = null;
             }
             else{
-                $this->importing_counts['failed']++;
+                $col_array = $col->toArray();
+                if (!$this->containsOnlyNull($col_array)){
+                    $this->importing_counts['failed']++;
+                }
+                session()->push('publishers_failed_rows', $col_array);
             }
         }
         Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
     }
     public function chunkSize(): int
     {
-        return 5;
+        return 10;
     }
     public function startRow(): int
     {
         return 2;
+    }
+
+    function containsOnlyNull($input): bool
+    {
+        return empty(array_filter(
+            $input,
+            function ($a) {return $a !== null;}
+        ));
     }
 }

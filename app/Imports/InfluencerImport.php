@@ -32,7 +32,6 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
         $this->team = $team;
         $this->id = $id;
     }
-
     /**
     * @param Collection $collection
     */

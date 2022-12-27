@@ -18,7 +18,6 @@ class PublishersImportCommand extends Command
      */
     protected $signature = 'import:publishers {team}';
 
-
     /**
      * The console command description.
      *
@@ -46,15 +45,17 @@ class PublishersImportCommand extends Command
     {
         $id = now()->unix();
         session([ 'import' => $id ]);
-
+        session()->put('publishers_failed_rows', []);
         $data = ["id" => $id];
         Storage::put('publishers_import_data.json', json_encode($data));
         $import_file = Storage::get("publishers_import_file.json");
         $team = $this->argument('team');
         if ($team == 'affiliate') {
+//            Excel::import(new AffiliatesImport($team,$id), $import_file);
             Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
+//            Excel::import(new InfluencerImport($team,$id), $import_file);
             Excel::queueImport(new InfluencerImport($team,$id), $import_file);
         }
         return 1;
