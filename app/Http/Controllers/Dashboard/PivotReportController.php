@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Exports\PivotReportErrorsExport;
 use App\Http\Controllers\Controller;
+use App\Imports\v2\UpdateReportImport;
 use App\Models\Offer;
 use App\Models\PivotReport;
 use App\Models\User;
@@ -102,11 +103,18 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
-        //todo use dispatching events instead of exec function
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
-        //shell_exec("php " . base_path() . "/artisan import:pivot_report $request->offer_id $request->type > /dev/null &");
-        //php import:pivot_report 1 update
-        $this->execute_command("import:pivot_report $request->offer_id $request->type");
+        $id = now()->unix();
+        session([ 'import' => $id ]);
+        $data = [
+            "id" => $id,
+        ];
+        Storage::put('import.json', json_encode($data));
+        $import_file = Storage::get("pivot_report_import.txt");
+        Excel::queueImport(
+            new UpdateReportImport($request->offer_id, $request->type,$id),
+            $import_file
+        );
         return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
     }
     /**

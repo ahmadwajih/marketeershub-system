@@ -3,8 +3,6 @@
 namespace App\Console;
 
 use App\Imports\CouponImport;
-use App\Imports\InfluencerImport;
-use App\Imports\PublishersImport;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
