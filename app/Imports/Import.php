@@ -48,8 +48,8 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("current_row_{$this->id}");
                 Storage::delete($this->module_name.'_import_file.json');
                 //todo check if it's a good practice to save all this data in the session or not
-                if(count(session()->get('affiliates_failed_rows'))){
-                    Excel::store(new AffiliatesExport(session()->get('affiliates_failed_rows')),
+                if(count(session()->get('publishers_failed_rows'))){
+                    Excel::store(new AffiliatesExport(session()->get('publishers_failed_rows')),
                         "missing/affiliates/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
