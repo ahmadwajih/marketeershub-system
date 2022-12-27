@@ -735,6 +735,9 @@ class PublisherController extends Controller
         return view('admin.publishers.upload_update_hasoffer_id_by_email');
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function storeUploadUpdateHasOfferIdByEmail(Request $request)
     {
         $this->authorize('create_publishers');
@@ -743,10 +746,6 @@ class PublisherController extends Controller
         ]);
         Excel::import(new PublishersUpdateHasofferIdByEmail(), request()->file('publishers'));
         userActivity('User', null, 'upload', 'Upload and Update HasOffer Id ByEmail');
-        $notification = [
-            'message' => 'Uploaded successfully',
-            'alert-type' => 'success'
-        ];
         return redirect()->route('admin.publishers.index');
     }
 
