@@ -37,7 +37,9 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
-        $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+        }
         $category = null;
         //unset($collection[0]);
         foreach ($collection as $col)
