@@ -158,8 +158,10 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $this->currrencyId = null;
             }
             else{
-                $this->importing_counts['failed']++;
                 $col_array = $col->toArray();
+                if (!$this->containsOnlyNull($col_array)){
+                    $this->importing_counts['failed']++;
+                }
                 session()->push('publishers_failed_rows', $col_array);
             }
         }
@@ -172,5 +174,13 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public function startRow(): int
     {
         return 2;
+    }
+
+    function containsOnlyNull($input): bool
+    {
+        return empty(array_filter(
+            $input,
+            function ($a) {return $a !== null;}
+        ));
     }
 }
