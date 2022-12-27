@@ -475,29 +475,31 @@ class CouponController extends Controller
                     $coupon->user_id = $request->user_id;
                     $coupon->save();
                 }
+                // dd($request->all());
                 $coupon->cps()->delete();
 
                 // If payout_cps_type is static
-                if ($request->amount_type) {
+                if ($request->have_custom_payout == 'on') {
+                    // If payout_cps_type is static
                     if ($request->payout_cps_type == 'static') {
                         if ($request->static_payout && count($request->static_payout) > 0) {
                             foreach ($request->static_payout as $staticPayout) {
                                 CouponCps::create([
                                     'type' => 'payout',
                                     'cps_type' => 'static',
-                                    'amount_type' => $request->payout_type,
+                                    'amount_type' => $request->static_payout_type,
                                     'amount' => $staticPayout['payout'],
                                     'date_range' => isset($staticPayout['date_range']) && $staticPayout['date_range'][0] == 'on' ? true : false,
                                     'from_date' => $staticPayout['from_date'] ?? null,
                                     'to_date' => $staticPayout['to_date'] ?? null,
                                     'countries' => isset($staticPayout['countries']) && $staticPayout['countries'][0] == 'on' ? true : false,
                                     'countries_ids' => isset($staticPayout['countries_ids']) ? json_encode($staticPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
-                                    'coupon_id' => $couponId,
+                                    'coupon_id' => $coupon->id,
                                 ]);
                             }
                         }
                     }
-
+        
                     // If payout_cps_type is new_old
                     if ($request->payout_cps_type == 'new_old') {
                         if ($request->new_old_payout && count($request->new_old_payout) > 0) {
@@ -505,7 +507,7 @@ class CouponController extends Controller
                                 CouponCps::create([
                                     'type' => 'payout',
                                     'cps_type' => 'new_old',
-                                    'amount_type' => $request->payout_type,
+                                    'amount_type' => $request->new_old_payout_type,
                                     'new_amount' => $newOldPayout['new_payout'],
                                     'old_amount' => $newOldPayout['old_payout'],
                                     'date_range' => isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0] == 'on' ? true : false,
@@ -513,12 +515,12 @@ class CouponController extends Controller
                                     'to_date' => $newOldPayout['to_date'] ?? null,
                                     'countries' => isset($newOldPayout['countries']) && $newOldPayout['countries'][0] == 'on' ? true : false,
                                     'countries_ids' => isset($newOldPayout['countries_ids']) ? json_encode($newOldPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
-                                    'coupon_id' => $couponId,
+                                    'coupon_id' => $coupon->id,
                                 ]);
                             }
                         }
                     }
-
+        
                     // If payout_cps_type is slaps
                     if ($request->payout_cps_type == 'slaps') {
                         if ($request->payout_slaps && count($request->payout_slaps) > 0) {
@@ -526,11 +528,11 @@ class CouponController extends Controller
                                 CouponCps::create([
                                     'type' => 'payout',
                                     'cps_type' => 'slaps',
-                                    'amount_type' => $request->payout_type,
+                                    'amount_type' => 'flat',
                                     'amount' => $slapsPayout['payout'],
                                     'from' => $slapsPayout['from'] ?? null,
                                     'to' => $slapsPayout['to'] ?? null,
-                                    'coupon_id' => $couponId,
+                                    'coupon_id' => $coupon->id,
                                 ]);
                             }
                         }
