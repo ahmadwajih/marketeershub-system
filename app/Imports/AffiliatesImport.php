@@ -48,6 +48,9 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
         //unset($collection[0]);
         foreach ($collection as $col)
         {
+            if (Storage::has($this->module_name.'_importing_counts.json')){
+                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+            }
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com')
