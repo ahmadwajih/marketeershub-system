@@ -689,6 +689,7 @@ class PublisherController extends Controller
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json.json');
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         $id = now()->unix();
         session([ 'import' => $id ]);

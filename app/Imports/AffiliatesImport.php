@@ -26,6 +26,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public int|null $currrencyId = null;
     public array $data = [];
     public string $module_name = 'publishers';
+    private array $failed_rows = [];
 
     public function __construct($team,$id)
     {
@@ -37,9 +38,12 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
-        // if (Storage::has($this->module_name.'_importing_counts.json')){
-        //     $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
-        // }
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+        }
+        if (Storage::has($this->module_name.'_failed_rows.json')){
+            $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+        }
         $category = null;
         //unset($collection[0]);
         foreach ($collection as $col)
@@ -164,11 +168,12 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $col_array = $col->toArray();
                 if (!$this->containsOnlyNull($col_array)){
                     $this->importing_counts['failed']++;
+                    $this->failed_rows[] = $col_array;
                 }
-                session()->push('publishers_failed_rows', $col_array);
             }
         }
         Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
+        Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
     }
     public function chunkSize(): int
     {
