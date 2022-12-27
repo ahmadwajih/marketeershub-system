@@ -118,12 +118,22 @@ class PublisherController extends Controller
             $import_file = Storage::get($this->module_name.'_importing_counts.json');
         }
 
+        $fileUrl = null;
+        $directory = "public/missing/publishers";
+        $files = Storage::allFiles($directory);
+        if($files){
+            $fileName = explode('/', end($files));
+            $fileName = end($fileName);
+            $fileUrl = asset('storage/missing/publishers/'.$fileName);
+        }
+
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
             'publishers' => $publishers,
             'import_file'=>$import_file,
+            'fileUrl' => $fileUrl,
         ]);
     }
 
