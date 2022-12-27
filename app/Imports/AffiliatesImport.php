@@ -37,6 +37,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
+        $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
         $category = null;
         //unset($collection[0]);
         foreach ($collection as $col)
@@ -156,7 +157,8 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
             }
             else{
                 $this->importing_counts['failed']++;
-                session()->push('companies', $col);
+                $col_array = $col->toArray();
+                session()->push('publishers_failed_rows', $col_array);
             }
         }
         Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));

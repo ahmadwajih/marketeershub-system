@@ -75,7 +75,6 @@ class PublisherController extends Controller
         } elseif (session('publishers_filter_status')) {
             $query->where('status', session('publishers_filter_status'));
         }
-
         if (isset($request->search) && $request->search  != null) {
             $key = explode(' ', $request->search);
             $query->where(function ($q) use ($key) {
@@ -682,6 +681,7 @@ class PublisherController extends Controller
      */
     public function storeUpload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
     {
+        session()->put($this->module_name.'_failed_rows', []);
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',

@@ -50,7 +50,7 @@ class Import implements WithEvents,OnEachRow
                 //todo check if it's a good practice to save all this data in the session or not
                 if(count(session()->get('affiliates_failed_rows'))){
                     Excel::store(new AffiliatesExport(session()->get('affiliates_failed_rows')),
-                        'missing/affiliates/failed_affiliates_rows.' . date('m-d-Y_hia') . '.xlsx'
+                        "missing/affiliates/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
             },
