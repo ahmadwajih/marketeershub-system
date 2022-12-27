@@ -17,31 +17,32 @@ use Illuminate\Support\Facades\Log;
 
 class PublishersImport extends Import implements ToCollection, WithChunkReading,ShouldQueue
 {
-    public $team;
-    public $status;
-    public $countryId = null;
-    public $cityId = null;
-    public $accouManagerId = null;
-    public $currrencyId = null;
-    public $data = [];
+    public string $team;
+    public string $status;
+    public int|null $countryId = null;
+    public int|null $cityId = null;
+    public int|null $accouManagerId = null;
+    public int|null $currrencyId = null;
+    public array $data = [];
     public string $module_name = 'publishers';
     public function __construct($team,$id)
     {
         $this->team = $team;
         $this->id = $id;
     }
-
     /**
     * @param Collection $collection
     */
     public function collection(Collection $collection)
     {
+        $category = null;
         unset($collection[0]);
-        foreach ($collection as $index => $col)
+        foreach ($collection as $col)
         {
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
-            if(!is_null($col[1]) && !is_null($col[2]) && $col[1] != 'info@marketeershub.com'){
+            if(!is_null($col[1]) && !is_null($col[2]) && $col[1] != 'info@marketeershub.com')
+            {
                 try {
                     // Get Account Manager
                     $accountManager = User::select('id')->where('email',trim($col[20]))->first();
@@ -52,7 +53,7 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
                     if(trim($col[20]) == 'MarketeersHub'){
                         $this->accouManagerId = User::whereEmail('info@marketeershub.com')->orWhere('name', 'MarketeersHub')->first()->id;
                     }
-                    // Get Country Id
+                    // Get Country ID
                     $countryName = $col[6] ?? $col[7];
                     $country = Country::select('id')->where('name_en', 'like', '%'.trim($countryName).'%')->orWhere('name_ar', 'like', '%'.trim($countryName).'%')->first();
                     if($country){
@@ -72,25 +73,21 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
                     }elseif($col[4] == 'closed'){
                         $this->status = 'closed';
                     }
-
-                    // Get Cerrency Id
+                    // Get Currency
                     $currency = Currency::where('name_en', 'like', '%'.$col[11].'%')
                         ->orWhere('name_ar', 'like', '%'.$col[11].'%')
                         ->orWhere('code', $col[14])
                         ->orWhere('sign', $col[14])
-                        ->first();
-
-                    // Get Category Id
+                        ->first()
+                    ;
+                    // Get Category ID
                     $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
-
-
-                } catch (\Throwable $th) {
+                }
+                catch (\Throwable $th) {
                     Log::debug($th);
                 }
                 $this->data['accouManagerId'] = $this->accouManagerId;
                 // Log::debug( $this->data);
-
-
                 $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
                     $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
@@ -115,11 +112,9 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->team                = $this->team;
                     $publisher->parent_id           = $this->accouManagerId;
                     $publisher->save();
-
-                    Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
-
-                }else{
-
+                    Log::debug(implode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
+                }
+                else{
                     $publisher = User::create([
                         'ho_id' => $col[0] ? 'aff-'.$col[0] : null,
                         'password' => Hash::make('00000000'),
@@ -143,41 +138,11 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
                         'team' => $this->team,
                         'parent_id' => $this->accouManagerId
                     ]);
-                    Log::debug( ['status' => 'not_Exist', 'publisher' => $publisher]);
-
+                    Log::debug( implode(['status' => 'not_Exist', 'publisher' => $publisher]));
                 }
-
-
-                // $publisher = User::updateOrCreate([
-                //     'email' => $col[1]
-                // ],[
-                //     'ho_id' => $col[0] ? 'aff-'.$col[0] : null,
-                //     'password' => Hash::make('00000000'),
-                //     'email' => $col[1],
-                //     'name' => $col[2],
-                //     'gender' => $col[3] ?? 'male',
-                //     'status' => $this->status,
-                //     'account_title' => $col[5],
-                //     'country_id' => $this->countryId,
-                //     'city_id' => $this->cityId,
-                //     'owened_digital_assets' => $col[9],
-                //     'affiliate_networks' => $col[10],
-                //     'bank_branch_code' => $col[12],
-                //     'bank_name' => $col[13],
-                //     'years_of_experience' => $col[15],
-                //     'iban' => $col[16],
-                //     'swift_code' => $col[17],
-                //     'phone' => $col[18],
-                //     'traffic_sources' => $col[19],
-                //     'currency_id' => $currency ? $currency->id : null,
-                //     'team' => $this->team,
-                //     'parent_id' => $this->accouManagerId
-                // ]);
-
                 $role = Role::whereLabel('publisher')->first();
                 $publisher->roles()->sync($role);
-                $category ? $publisher->categories()->sync($category->id) : '';
-
+                $category ? $publisher->categories()->sync($category->id):"";
                 $this->countryId = null;
                 $this->cityId = null;
                 $this->accouManagerId = null;
@@ -185,10 +150,8 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
             }
         }
     }
-
     public function chunkSize(): int
     {
         return 5;
     }
-
 }

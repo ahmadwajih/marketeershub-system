@@ -16,6 +16,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -380,22 +381,23 @@ class CouponController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Request $request
+     * @param Coupon $coupon
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function destroy(Request $request, Coupon $coupon)
+    public function destroy(Request $request, Coupon $coupon): JsonResponse
     {
         $this->authorize('delete_coupons');
         if ($request->ajax()) {
             if ($coupon->report && $coupon->report->count() > 0) {
-                return response()->json(['message' => __('You cannot delete this coupout because it have transactions.')], 422);
+                return response()->json(['message' => __('You cannot delete this coupon because it have transactions.')], 422);
             }
             userActivity('Coupon', $coupon->id, 'delete');
             $coupon->delete();
         }
+        return response()->json(['message' => __('Success.')]);
     }
-
-
     /**
      * Show the form for uploading a new resource.
      *
@@ -409,7 +411,6 @@ class CouponController extends Controller
             'offers' => Offer::whereStatus("active")->orderBy('id', 'desc')->get()
         ]);
     }
-
     /**
      * Show the form for uploading a new resource.
      *
@@ -462,7 +463,7 @@ class CouponController extends Controller
     /**
      * @throws AuthorizationException
      */
-    public function changeStatus(Request $request): \Illuminate\Http\JsonResponse
+    public function changeStatus(Request $request): JsonResponse
     {
         $this->authorize('update_coupons');
         $coupon = Coupon::findOrFail($request->id);
