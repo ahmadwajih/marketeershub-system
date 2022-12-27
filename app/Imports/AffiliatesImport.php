@@ -169,7 +169,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     }
     public function chunkSize(): int
     {
-        return 5;
+        return 10;
     }
     public function startRow(): int
     {

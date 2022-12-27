@@ -112,10 +112,12 @@ class PublisherController extends Controller
                 })->get();
         }
 
-        $import_file="";
+
+       $import_file="";
         if (Storage::has($this->module_name.'_importing_counts.json')){
             $import_file = Storage::get($this->module_name.'_importing_counts.json');
         }
+
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
