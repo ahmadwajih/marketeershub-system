@@ -26,7 +26,7 @@
         <!--begin::Topbar-->
         <div class="d-flex align-items-center flex-shrink-0">
             <!--begin::Search-->
-            <div id="kt_header_search" class="header-search d-flex align-items-stretch" data-kt-search-keypress="true" data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu" data-kt-menu-trigger="auto" data-kt-menu-overflow="false" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-end">
+            {{-- <div id="kt_header_search" class="header-search d-flex align-items-stretch" data-kt-search-keypress="true" data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu" data-kt-menu-trigger="auto" data-kt-menu-overflow="false" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-end">
                 <!--begin::Search toggle-->
                 <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
                     <div class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-30px h-30px h-40px w-40px">
@@ -763,10 +763,10 @@
                     <!--end::Preferences-->
                 </div>
                 <!--end::Menu-->
-            </div>
+            </div> --}}
             <!--end::Search-->
             <!--begin::Activities-->
-            <div class="d-flex align-items-center ms-1">
+            {{-- <div class="d-flex align-items-center ms-1">
                 <!--begin::Drawer toggle-->
                 <div class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-30px h-30px h-40px w-40px" id="kt_activities_toggle">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen032.svg-->
@@ -781,10 +781,10 @@
                     <!--end::Svg Icon-->
                 </div>
                 <!--end::Drawer toggle-->
-            </div>
+            </div> --}}
             <!--end::Activities-->
             <!--begin::Chat-->
-            <div class="d-flex align-items-center ms-1">
+            {{-- <div class="d-flex align-items-center ms-1">
                 <!--begin::Menu wrapper-->
                 <div class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-30px h-30px h-40px w-40px position-relative" id="kt_drawer_chat_toggle">
                     <!--begin::Svg Icon | path: icons/duotune/communication/com012.svg-->
@@ -801,10 +801,10 @@
                     <!--begin::Animation notification-->
                 </div>
                 <!--end::Menu wrapper-->
-            </div>
+            </div> --}}
             <!--end::Chat-->
             <!--begin::Quick links-->
-            <div class="d-flex align-items-center ms-1">
+            {{-- <div class="d-flex align-items-center ms-1">
                 <!--begin::Menu wrapper-->
                 <div class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-30px h-30px h-40px w-40px" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
@@ -914,10 +914,10 @@
                 </div>
                 <!--end::Menu-->
                 <!--end::Menu wrapper-->
-            </div>
+            </div> --}}
             <!--end::Quick links-->
             <!--begin::Theme mode-->
-            <div class="d-flex align-items-center ms-1">
+            {{-- <div class="d-flex align-items-center ms-1">
                 <!--begin::Menu toggle-->
                 <a href="#" class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-30px h-30px h-40px w-40px" data-kt-menu-trigger="{default:'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen060.svg-->
@@ -994,7 +994,7 @@
                     <!--end::Menu item-->
                 </div>
                 <!--end::Menu-->
-            </div>
+            </div> --}}
             <!--end::Theme mode-->
             <!--begin::User-->
             <div class="d-flex align-items-center ms-1" id="kt_header_user_menu_toggle">
