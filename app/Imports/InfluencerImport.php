@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -27,6 +28,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     public $accouManagerId = null;
     public $currrencyId = null;
     public string $module_name = 'publishers';
+    private array $failed_rows = [];
     public function __construct($team,$id)
     {
         $this->team = $team;
@@ -37,6 +39,12 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     */
     public function collection(Collection $collection)
     {
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+        }
+        if (Storage::has($this->module_name.'_failed_rows.json')){
+            $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+        }
         //unset($collection[0]);
         foreach ($collection as $index => $col)
         {
@@ -63,10 +71,8 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                 }elseif($col[6] == 'closed'){
                     $this->status = 'closed';
                 }
-
                 // Get Category Id
                 $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
-
                 $publisher = User::whereEmail($col[3])->first();
                 if($publisher){
                     // Count Updated
@@ -89,6 +95,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     $publisher->team = $publisher->team ??  $this->team;
                     $publisher->save();
                     Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
+                    $this->importing_counts['new']++;
                 }else{
                     // count added
                     $publisher = User::create(
@@ -112,11 +119,10 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                             'currency_id' => $this->currrencyId,
                             'team' => $this->team,
                         ]
-                        );
+                    );
                     Log::debug( ['status' => 'No_Exists', 'publisher' => $publisher]);
-
+                    $this->importing_counts['new']++;
                 }
-
                 $role = Role::whereLabel('publisher')->first();
                 $publisher->roles()->sync($role);
                 $category ? $publisher->categories()->sync($category->id) : '';
@@ -153,7 +159,6 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                         'followers' => $col[22] ?? 0,
                     ]);
                 }
-
                 // Snapchat
                 if(isset($col[23])){
                     SocialMediaLink::updateOrCreate([
@@ -165,7 +170,6 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                         'followers' => $col[24] ?? 0,
                     ]);
                 }
-
                 // Tiktok
                 if(isset($col[25])){
                     SocialMediaLink::updateOrCreate([
@@ -186,14 +190,21 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                         'followers' => $col[28] ?? 0,
                     ]);
                 }
-
                 $this->countryId = null;
                 $this->cityId = null;
                 // $this->accouManagerId = null;
                 $this->currrencyId = null;
             }
-
+            else{
+                $col_array = $col->toArray();
+                if (!$this->containsOnlyNull($col_array)){
+                    $this->importing_counts['failed']++;
+                    $this->failed_rows[] = $col_array;
+                }
+            }
         }
+        Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
+        Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
     }
     public function chunkSize(): int
     {
@@ -203,5 +214,11 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     {
         return 2;
     }
-
+    function containsOnlyNull($input): bool
+    {
+        return empty(array_filter(
+            $input,
+            function ($a) {return $a !== null;}
+        ));
+    }
 }

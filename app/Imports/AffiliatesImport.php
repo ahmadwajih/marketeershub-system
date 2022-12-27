@@ -125,7 +125,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->parent_id           = $this->accouManagerId;
                     $publisher->save();
                     Log::debug(implode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
-                    // todo updated
                     $this->importing_counts['updated']++;
                 }
                 else{
@@ -153,7 +152,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                         'parent_id' => $this->accouManagerId
                     ]);
                     Log::debug( implode(['status' => 'not_Exist', 'publisher' => $publisher]));
-                    // todo created
                     $this->importing_counts['new']++;
                 }
                 $role = Role::whereLabel('publisher')->first();
@@ -183,7 +181,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     {
         return 2;
     }
-
     function containsOnlyNull($input): bool
     {
         return empty(array_filter(
