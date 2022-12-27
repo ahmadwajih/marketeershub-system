@@ -46,11 +46,12 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("total_rows_{$this->id}");
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
-                Storage::delete($this->module_name.'_import_file.json');
+                //Storage::delete($this->module_name.'_import_file.json');
                 //todo check if it's a good practice to save all this data in the session or not
-                if(count(session()->get('publishers_failed_rows'))){
-                    Excel::store(new AffiliatesExport(session()->get('publishers_failed_rows')),
-                        "missing/affiliates/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
+                $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+                if(count($publishers_failed_rows)){
+                    Excel::store(new AffiliatesExport($publishers_failed_rows),
+                        "missing/$this->module_name/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
             },
