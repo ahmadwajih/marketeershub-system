@@ -41,7 +41,7 @@ class PublishersImport extends Import implements ToCollection, WithChunkReading,
         {
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
-            if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com'){
+            if(!is_null($col[1]) && !is_null($col[2]) && $col[1] != 'info@marketeershub.com'){
                 try {
                     // Get Account Manager
                     $accountManager = User::select('id')->where('email',trim($col[20]))->first();
