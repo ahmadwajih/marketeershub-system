@@ -45,8 +45,8 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
                 // remove this line and run the following to test the importing
-                //php artisan import:publishers affiliate
-                //Storage::delete($this->module_name.'_import_file.json');
+                // php artisan import:publishers affiliate
+                // Storage::delete($this->module_name.'_import_file.json');
             },
         ];
     }
