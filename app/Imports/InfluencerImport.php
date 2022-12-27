@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,OnEachRow,ShouldQueue
+class InfluencerImport extends PublishersImport implements ToCollection, WithChunkReading,WithEvents,OnEachRow,ShouldQueue
 {
     public $team;
     public $status;
@@ -38,8 +38,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
-        var_dump("test");
-        unset($collection[0]);
+        //unset($collection[0]);
         foreach ($collection as $index => $col)
         {
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
@@ -48,17 +47,14 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 if($accountManager){
                     $this->accouManagerId = $accountManager->id;
                 }
-                // Get Country Id
+                // Get Country ID
                 $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();
-                if($country){
-                    $this->countryId = $country->id;
-                }
-                // Get City Id
+                if($country){$this->countryId = $country->id;}
+                // Get City ID
                 $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
                 if($city){
                     $this->cityId = $city->id;
                 }
-
                 // Get Status
                 $this->status = 'paused';
                 if($col[6] == 'live'){
@@ -68,16 +64,6 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }elseif($col[6] == 'closed'){
                     $this->status = 'closed';
                 }
-
-                // Get Cerrency Id
-                // $currency = Currency::select('id')->where('name_en', 'like', '%'.trim($col[16]).'%')
-                //     ->orWhere('name_ar', 'like', '%'.trim($col[16]).'%')
-                //     ->orWhere('code', trim($col[16]))
-                //     ->orWhere('sign', trim($col[16]))
-                //     ->first();
-                //     if($currency){
-                //         $this->currrencyId = $currency->id;
-                //     }
 
                 // Get Category Id
                 $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
@@ -214,4 +200,9 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     {
         return 5;
     }
+    public function startRow(): int
+    {
+        return 2;
+    }
+
 }

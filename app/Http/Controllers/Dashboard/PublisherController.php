@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Charts\PublisherOfferProfileChart;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Extended\MhDataTables;
+use App\Imports\AffiliatesImport;
 use App\Imports\InfluencerImport;
-use App\Imports\PublisherImportV2;
-use App\Imports\PublishersImport;
-use App\Imports\PublishersImportNasedOnAcountManagerAndTeam;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\Category;
 use App\Models\City;
@@ -44,6 +40,7 @@ use App\Facades\PublisherProfile;
 
 class PublisherController extends Controller
 {
+    public string $module_name = 'publishers';
     /**
      * Display a listing of the resource.
      *
@@ -116,11 +113,14 @@ class PublisherController extends Controller
                 })->get();
         }
 
+        $import_file = Storage::get($this->module_name.'_importing_counts.json');
+
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
-            'publishers' => $publishers
+            'publishers' => $publishers,
+            'import_file'=>$import_file,
         ]);
     }
 
@@ -129,7 +129,6 @@ class PublisherController extends Controller
         $publisher = User::findOrFail(Auth::user()->id);
         return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);
     }
-
     public function offers()
     {
         $offers = Offer::paginate();
@@ -320,7 +319,6 @@ class PublisherController extends Controller
             return redirect()->route('admin.users.edit', $id);
         }
         $publisher->traffic_sources = explode(',', $publisher->traffic_sources);
-
         return view('new_admin.publishers.edit', [
             'publisher' => $publisher,
             'countries' => Country::all(),
@@ -550,12 +548,8 @@ class PublisherController extends Controller
      * @param  int  $id
      * @return Response
      */
-
-
     public function profile(Request $request, int $id = null)
     {
-
-
         $request->validate([
             'from' => "nullable|before:to",
             'to' => "nullable|after:from",
@@ -690,6 +684,7 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
+        Storage::delete($this->module_name.'_importing_counts.json');
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         $id = now()->unix();
         session([ 'import' => $id ]);
@@ -698,7 +693,7 @@ class PublisherController extends Controller
         $import_file = Storage::get("publishers_import_file.json");
         $team = $request->team;
         if ($team == 'affiliate') {
-            Excel::queueImport(new PublishersImport($team,$id), $import_file);
+            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
             Excel::queueImport(new InfluencerImport($team,$id), $import_file);
@@ -735,6 +730,9 @@ class PublisherController extends Controller
         return view('admin.publishers.upload_update_hasoffer_id_by_email');
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function storeUploadUpdateHasOfferIdByEmail(Request $request)
     {
         $this->authorize('create_publishers');
@@ -743,10 +741,6 @@ class PublisherController extends Controller
         ]);
         Excel::import(new PublishersUpdateHasofferIdByEmail(), request()->file('publishers'));
         userActivity('User', null, 'upload', 'Upload and Update HasOffer Id ByEmail');
-        $notification = [
-            'message' => 'Uploaded successfully',
-            'alert-type' => 'success'
-        ];
         return redirect()->route('admin.publishers.index');
     }
 
@@ -755,7 +749,7 @@ class PublisherController extends Controller
      *
      * @return Application|Factory|RedirectResponse|View
      */
-    public function myAccountManager()
+    public function myAccountManager(): View|Factory|RedirectResponse|Application
     {
         if (auth()->user()->parent) {
             $accountManager = auth()->user()->parent;

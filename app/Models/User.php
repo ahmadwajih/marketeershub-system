@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\DB;
  * @method static whereId(\Illuminate\Contracts\Foundation\Application|\Illuminate\Session\SessionManager|\Illuminate\Session\Store|mixed $session)
  * @method static findOrFail(mixed $id)
  * @method static where(string $string, mixed $column)
+ * @method static whereEmail(string $string)
+ * @method static select(string $string)
+ * @method static create(array $array)
  */
 class User extends Authenticatable
 {
