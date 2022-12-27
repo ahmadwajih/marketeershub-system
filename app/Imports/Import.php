@@ -51,7 +51,7 @@ class Import implements WithEvents,OnEachRow
                 $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
                 if(count($publishers_failed_rows)){
                     Excel::store(new AffiliatesExport($publishers_failed_rows),
-                        "missing/$this->module_name/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
+                        "public/missing/$this->module_name/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
             },
