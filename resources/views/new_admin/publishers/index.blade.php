@@ -39,6 +39,7 @@
                 <!--end::Title-->
                 <!--begin::Content-->
                 <p> {{ __('The publishers is Uploaded Successfully.') }}</p>
+                <p>{{$import_file}}</p>
                 <!--end::Content-->
             </div>
             <!--end::Wrapper-->

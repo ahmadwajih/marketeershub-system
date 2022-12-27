@@ -2,8 +2,8 @@
 
 namespace App\Console;
 
+use App\Imports\AffiliatesImport;
 use App\Imports\InfluencerImport;
-use App\Imports\PublishersImport;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,7 +35,6 @@ class PublishersImportCommand extends Command
     {
         parent::__construct();
     }
-
     /**
      * Execute the console command.
      *
@@ -47,12 +46,13 @@ class PublishersImportCommand extends Command
     {
         $id = now()->unix();
         session([ 'import' => $id ]);
+
         $data = ["id" => $id];
         Storage::put('publishers_import_data.json', json_encode($data));
         $import_file = Storage::get("publishers_import_file.json");
         $team = $this->argument('team');
         if ($team == 'affiliate') {
-            Excel::queueImport(new PublishersImport($team,$id), $import_file);
+            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
             Excel::queueImport(new InfluencerImport($team,$id), $import_file);
