@@ -16,7 +16,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class AffiliatesImport extends Import implements ToCollection, WithChunkReading
+class AffiliatesImport extends Import implements ToCollection, WithChunkReading, ShouldQueue
 {
     public string $team;
     public string $status;
@@ -39,7 +39,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading
     {
         $category = null;
         //unset($collection[0]);
-        $i =0;
         foreach ($collection as $col)
         {
             $this->data['publisher_ho_id'] = $col[0];
@@ -157,6 +156,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading
             }
             else{
                 $this->importing_counts['failed']++;
+                session()->push('companies', $col);
             }
         }
         Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
