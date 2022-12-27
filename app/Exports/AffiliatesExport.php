@@ -15,11 +15,26 @@ class AffiliatesExport implements FromCollection, WithHeadings, WithStartRow
     public function headings(): array
     {
         return [
-            'English',
-            'Arabic',
-            'Link',
-            'Category',
-            'Errors'
+            'ID',
+            'Email',
+            'Full Name',
+            'Gender',
+            'Status',
+            'Bank account title',
+            'Validated Country',
+            'Un Validated Country',
+            'City',
+            "Digital Assets (9)",
+            "Affiliate Networks (10)",
+            "Category (11)",
+            "Bank branch code (12)",
+            "Bank name (13)",
+            "Years of e experience (15)",
+            "Iban (16)",
+            "Swift code (17)",
+            "Phone (18)",
+            "Traffic sources used (19)",
+            "AM (Email) (20)"
         ];
     }
 
