@@ -19,6 +19,7 @@ class Import implements WithEvents,OnEachRow
     public array $importing_counts = [
         'new'=>0,
         'updated'=>0,
+        'duplicated'=>0,
         'failed'=>0,
     ];
     public string $module_name;
