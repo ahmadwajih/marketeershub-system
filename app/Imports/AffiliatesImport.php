@@ -15,8 +15,9 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AffiliatesImport extends Import implements ToCollection, WithChunkReading, ShouldQueue
+class AffiliatesImport extends Import implements ToCollection, WithChunkReading, ShouldQueue,WithStartRow
 {
     public string $team;
     public string $status;
