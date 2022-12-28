@@ -20,6 +20,7 @@ class Import implements WithEvents,OnEachRow
         'new'=>0,
         'updated'=>0,
         'failed'=>0,
+        'rows_num' =>0,
     ];
     public string $module_name;
     /**
