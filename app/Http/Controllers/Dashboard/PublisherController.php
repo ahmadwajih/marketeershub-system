@@ -692,14 +692,13 @@ class PublisherController extends Controller
      */
     public function storeUpload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
     {
-        session()->put($this->module_name.'_failed_rows', []);
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
         Storage::delete($this->module_name.'_importing_counts.json');
-        Storage::delete($this->module_name.'_failed_rows.json.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         $id = now()->unix();
         session([ 'import' => $id ]);

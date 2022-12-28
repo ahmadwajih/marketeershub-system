@@ -26,8 +26,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public int|null $currrencyId = null;
     public array $data = [];
     public string $module_name = 'publishers';
-    private array $failed_rows = [];
-
+    public array $failed_rows = [];
     public function __construct($team,$id)
     {
         $this->team = $team;
