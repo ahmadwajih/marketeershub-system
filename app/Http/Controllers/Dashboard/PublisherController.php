@@ -136,12 +136,12 @@ class PublisherController extends Controller
     public function download()
     {
         ob_end_clean();
-        $path = storage_path('app\public\missing\\'.$this->module_name);
+        $path = storage_path('app/public/missing/'.$this->module_name);
         $filesInFolder = file_exists($path)?\File::files($path):[];
         $count = count($filesInFolder);
         if (file_exists($path) and $count) {
             $array = pathinfo($filesInFolder[$count - 1]);
-            return response()->download($path . "\\" . $array['basename']);
+            return response()->download($path . "/" . $array['basename']);
         }
         return "not found";
     }
