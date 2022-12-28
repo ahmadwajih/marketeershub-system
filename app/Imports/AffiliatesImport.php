@@ -53,6 +53,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
             }
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
+            $col_array = $col->toArray();
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com')
             {
                 try {
@@ -125,7 +126,13 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->parent_id           = $this->accouManagerId;
                     $publisher->save();
                     Log::debug(implode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
-                    $this->importing_counts['updated']++;
+                    if ($publisher->wasChanged()){
+                        $this->importing_counts['updated']++;
+                    }
+                    else{
+                        $this->importing_counts['duplicated']++;
+                        $this->failed_rows[] = $col_array;
+                    }
                 }
                 else{
                     $publisher = User::create([
@@ -163,7 +170,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $this->currrencyId = null;
             }
             else{
-                $col_array = $col->toArray();
                 if (!$this->containsOnlyNull($col_array)){
                     $this->importing_counts['failed']++;
                     $this->failed_rows[] = $col_array;
