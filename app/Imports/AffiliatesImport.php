@@ -48,6 +48,8 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
         //unset($collection[0]);
         foreach ($collection as $col)
         {
+            $col_array = $col->toArray();
+
             if (Storage::has($this->module_name.'_importing_counts.json')){
                 $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
             }
@@ -96,7 +98,12 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
                 }
                 catch (\Throwable $th) {
+                    if (!$this->containsOnlyNull($col_array)){
+                        $this->importing_counts['failed']++;
+                        $this->failed_rows[] = $col_array;
+                    }
                     Log::debug($th);
+
                 }
                 $this->data['accouManagerId'] = $this->accouManagerId;
                 // Log::debug( $this->data);
@@ -163,7 +170,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $this->currrencyId = null;
             }
             else{
-                $col_array = $col->toArray();
                 if (!$this->containsOnlyNull($col_array)){
                     $this->importing_counts['failed']++;
                     $this->failed_rows[] = $col_array;
