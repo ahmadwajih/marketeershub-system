@@ -46,7 +46,7 @@
                         <li>Failed : {{  json_decode($import_file)->failed  }}</li>
                     </ul>
                     @if(json_decode($import_file)->failed && $fileUrl)
-                        <a download href="{{ $fileUrl }}" class="btn btn-danger btn-sm">Download Faild rows</a>
+                        <a download href="{{ $fileUrl }}" class="btn btn-danger btn-sm">Download Failed rows</a>
                     @endif
                 @endif
                 <!--end::Content-->
