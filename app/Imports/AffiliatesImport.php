@@ -38,21 +38,20 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
-        if (Storage::has($this->module_name.'_importing_counts.json')){
-            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
-        }
-        if (Storage::has($this->module_name.'_failed_rows.json')){
-            $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
-        }
         $category = null;
         //unset($collection[0]);
         foreach ($collection as $col)
         {
-            $col_array = $col->toArray();
-
             if (Storage::has($this->module_name.'_importing_counts.json')){
                 $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
             }
+            if (Storage::has($this->module_name.'_failed_rows.json')){
+                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            }
+            $col_array = $col->toArray();
+
+            $this->importing_counts['rows_num'] = $this->importing_counts['rows_num'] + 1;
+
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com')
@@ -103,12 +102,12 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                         $this->failed_rows[] = $col_array;
                     }
                     Log::debug($th);
-
                 }
                 $this->data['accouManagerId'] = $this->accouManagerId;
                 // Log::debug( $this->data);
                 $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
+                    $this->importing_counts['updated']++;
                     $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->email           = $col[1];
@@ -132,7 +131,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->parent_id           = $this->accouManagerId;
                     $publisher->save();
                     Log::debug(implode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
-                    $this->importing_counts['updated']++;
                 }
                 else{
                     $publisher = User::create([
@@ -175,9 +173,9 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $this->failed_rows[] = $col_array;
                 }
             }
+            Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
+            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
         }
-        Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
-        Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
     }
     public function chunkSize(): int
     {
