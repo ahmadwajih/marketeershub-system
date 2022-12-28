@@ -22,6 +22,7 @@ class Import implements WithEvents,OnEachRow
         'failed'=>0,
         'rows_num' =>0,
     ];
+
     public string $module_name;
     /**
      * @throws Exception

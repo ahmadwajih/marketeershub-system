@@ -49,7 +49,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
             }
             $col_array = $col->toArray();
-
             $this->importing_counts['rows_num'] = $this->importing_counts['rows_num'] + 1;
 
             $this->data['publisher_ho_id'] = $col[0];

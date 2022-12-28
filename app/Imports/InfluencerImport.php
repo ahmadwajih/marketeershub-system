@@ -39,15 +39,19 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     */
     public function collection(Collection $collection)
     {
-        if (Storage::has($this->module_name.'_importing_counts.json')){
-            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
-        }
-        if (Storage::has($this->module_name.'_failed_rows.json')){
-            $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
-        }
         //unset($collection[0]);
         foreach ($collection as $index => $col)
         {
+            if (Storage::has($this->module_name.'_importing_counts.json')){
+                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+            }
+            if (Storage::has($this->module_name.'_failed_rows.json')){
+                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            }
+            $col_array = $col->toArray();
+
+            $this->importing_counts['rows_num'] = $this->importing_counts['rows_num'] + 1;
+
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
@@ -94,8 +98,8 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     $publisher->currency_id = $publisher->currency_id ??  $this->currrencyId;
                     $publisher->team = $publisher->team ??  $this->team;
                     $publisher->save();
+                    $this->importing_counts['updated']++;
                     Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
-                    $this->importing_counts['new']++;
                 }else{
                     // count added
                     $publisher = User::create(
