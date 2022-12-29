@@ -38,6 +38,10 @@ class Import implements WithEvents,OnEachRow
     {
         return [
             BeforeImport::class => function (BeforeImport $event) {
+                ini_set('max_execution_time', 120000);
+                ini_set('post_max_size', 120000);
+                ini_set('upload_max_filesize', 100000);
+                ini_set('memory_limit', '2048M');
                 $totalRows = $event->getReader()->getTotalRows();
                 if (filled($totalRows)) {
                     cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);
