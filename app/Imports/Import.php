@@ -31,7 +31,7 @@ class Import implements WithEvents,OnEachRow
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
-        sleep(0.1);
+        //sleep(0.1);
     }
     public function registerEvents(): array
     {
@@ -48,7 +48,7 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("total_rows_{$this->id}");
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
-                Storage::delete($this->module_name.'_import_file.json');
+                //Storage::delete($this->module_name.'_import_file.json');
                 //todo check if it's a good practice to save all this data in the session or not
                 $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
                 if(count($publishers_failed_rows)){

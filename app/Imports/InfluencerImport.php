@@ -206,6 +206,8 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     $this->failed_rows[] = $col_array;
                 }
             }
+            var_dump($this->importing_counts);
+            var_dump("test");
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
         }
