@@ -40,7 +40,7 @@ class InfluencerImportWithNoQueue extends Import implements ToCollection, WithCh
     */
     public function collection(Collection $collection)
     {
-        var_dump("test 2");
+        set_time_limit(0);
         //unset($collection[0]);
         foreach ($collection as $col)
         {

@@ -45,6 +45,7 @@ class PublishersImportCommand extends Command
      */
     public function handle(): int
     {
+        set_time_limit(0);
         Storage::delete($this->module_name.'_importing_counts.json');
         Storage::delete($this->module_name.'_failed_rows.json');
         $id = now()->unix();
