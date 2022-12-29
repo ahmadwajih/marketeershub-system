@@ -39,14 +39,14 @@
                 <!--end::Title-->
                 <!--begin::Content-->
                 <p> {{ __('The publishers is Uploaded Successfully.') }}</p>
-                @if(gettype($import_file) == 'string')
+                @if($import_file != "" &&  gettype($import_file) == 'string')
                     <ul>
                         <li>Added : {{  json_decode($import_file)->new  }}</li>
                         <li>Updated : {{  json_decode($import_file)->updated  }}</li>
                         <li>Failed : {{  json_decode($import_file)->failed  }}</li>
                     </ul>
                     @if(json_decode($import_file)->failed && $fileUrl)
-                        <a download href="{{ $fileUrl }}" class="btn btn-danger btn-sm">Download Faileds</a>
+                        <a download href="{{ $fileUrl }}" class="btn btn-danger btn-sm">Download Failed rows</a>
                     @endif
                 @endif
                 <!--end::Content-->

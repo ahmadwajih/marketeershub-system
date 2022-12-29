@@ -122,11 +122,8 @@ class PublisherController extends Controller
         $directory = "public/missing/publishers";
         $files = Storage::allFiles($directory);
         if($files){
-            $fileName = explode('/', end($files));
-            $fileName = end($fileName);
-            $fileUrl = asset('storage/missing/publishers/'.$fileName);
+            $fileUrl = route('admin.publishers.files.download');
         }
-
         return view('new_admin.publishers.index', [
             'categories' => Category::whereType('publishers')->get(),
             'accountManagers' =>  $accountManagers,
@@ -136,7 +133,18 @@ class PublisherController extends Controller
             'fileUrl' => $fileUrl,
         ]);
     }
-
+    public function download()
+    {
+        ob_end_clean();
+        $path = storage_path('app/public/missing/'.$this->module_name);
+        $filesInFolder = file_exists($path)?\File::files($path):[];
+        $count = count($filesInFolder);
+        if (file_exists($path) and $count) {
+            $array = pathinfo($filesInFolder[$count - 1]);
+            return response()->download($path . "/" . $array['basename']);
+        }
+        return "not found";
+    }
     public function dashboard()
     {
         $publisher = User::findOrFail(Auth::user()->id);

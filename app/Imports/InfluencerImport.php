@@ -18,8 +18,9 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class InfluencerImport extends PublishersImport implements ToCollection, WithChunkReading,WithEvents,OnEachRow,ShouldQueue
+class InfluencerImport extends PublishersImport implements ToCollection, WithChunkReading,WithEvents,OnEachRow,ShouldQueue,WithStartRow
 {
     public $team;
     public $status;
@@ -40,7 +41,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     public function collection(Collection $collection)
     {
         //unset($collection[0]);
-        foreach ($collection as $index => $col)
+        foreach ($collection as $col)
         {
             if (Storage::has($this->module_name.'_importing_counts.json')){
                 $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
@@ -50,7 +51,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
             }
             $col_array = $col->toArray();
 
-            $this->importing_counts['rows_num'] = $this->importing_counts['rows_num'] + 1;
+            $this->importing_counts['rows_num']++;
 
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager
@@ -99,7 +100,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     $publisher->team = $publisher->team ??  $this->team;
                     $publisher->save();
                     $this->importing_counts['updated']++;
-                    Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
+                    //Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
                 }else{
                     // count added
                     $publisher = User::create(
@@ -124,8 +125,8 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                             'team' => $this->team,
                         ]
                     );
-                    Log::debug( ['status' => 'No_Exists', 'publisher' => $publisher]);
                     $this->importing_counts['new']++;
+                    //Log::debug( ['status' => 'No_Exists', 'publisher' => $publisher]);
                 }
                 $role = Role::whereLabel('publisher')->first();
                 $publisher->roles()->sync($role);
@@ -200,15 +201,14 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                 $this->currrencyId = null;
             }
             else{
-                $col_array = $col->toArray();
                 if (!$this->containsOnlyNull($col_array)){
                     $this->importing_counts['failed']++;
                     $this->failed_rows[] = $col_array;
                 }
             }
+            Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
+            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
         }
-        Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
-        Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
     }
     public function chunkSize(): int
     {
