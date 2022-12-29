@@ -40,6 +40,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     */
     public function collection(Collection $collection)
     {
+        var_dump("test 2");
         //unset($collection[0]);
         foreach ($collection as $col)
         {

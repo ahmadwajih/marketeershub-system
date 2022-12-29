@@ -55,6 +55,7 @@ class PublishersImportCommand extends Command
 //            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
+            var_dump("test");
             Excel::import(new InfluencerImport($team,$id), $import_file);
 //            Excel::queueImport(new InfluencerImport($team,$id), $import_file);
         }
