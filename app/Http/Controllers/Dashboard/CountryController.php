@@ -47,8 +47,8 @@ class CountryController extends Controller
     {
         $this->authorize('create_countries');
         $data = $request->validate([
-            'name_en' => 'required|unique:countries|max:255',
-            'name_ar' => 'required|unique:countries|max:255',
+            'name_en' => 'required|max:255|unique:countries',
+            'name_ar' => 'required|max:255|unique:countries',
             'code'    => 'required|max:20'
         ]);
 
