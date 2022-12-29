@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Imports\AffiliatesImport;
+use App\Imports\InfluencerImport;
 use App\Imports\InfluencerImportWithNoQueue;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
