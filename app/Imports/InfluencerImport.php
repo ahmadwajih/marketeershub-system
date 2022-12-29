@@ -105,7 +105,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     // count added
                     $publisher = User::create(
                         [
-                            'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
+                             'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
                             'name' => $col[1],
                             'phone' => $col[2],
                             'email' => $col[3],
@@ -206,13 +206,15 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     $this->failed_rows[] = $col_array;
                 }
             }
+            var_dump($this->importing_counts);
+            var_dump("test");
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
         }
     }
     public function chunkSize(): int
     {
-        return 5;
+        return 20;
     }
     public function startRow(): int
     {
