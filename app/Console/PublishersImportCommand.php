@@ -52,7 +52,7 @@ class PublishersImportCommand extends Command
        // dd($import_file);
         $team = $this->argument('team');
         if ($team == 'affiliate') {
-            Excel::import(new AffiliatesImport$team,$id), $import_file);
+            Excel::import(new AffiliatesImport($team,$id), $import_file);
 //            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
