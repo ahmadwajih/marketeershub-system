@@ -13,7 +13,7 @@ class Controller extends BaseController
 
     protected function execute_command(string $command)
     {
-        echo shell_exec(
+        shell_exec(
             "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan $command > /dev/null &"
         );
     }
