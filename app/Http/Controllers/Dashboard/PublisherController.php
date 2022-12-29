@@ -137,8 +137,6 @@ class PublisherController extends Controller
     }
     public function download()
     {
-        $key = Cache::get('key');
-dd($key);
         ob_end_clean();
         $path = storage_path('app/public/missing/'.$this->module_name);
         $filesInFolder = file_exists($path)?\File::files($path):[];
@@ -732,8 +730,8 @@ dd($key);
             Excel::queueImport(new AffiliatesImport($team,$id), $request->file('publishers')->store('files'));
         }
         if ($team == 'influencer') {
-            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
-//            Excel::import(new InfluencerImportWithNoQueue($team,$id), $request->file('publishers')->store('files'));
+//            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
+            Excel::import(new InfluencerImportWithNoQueue($team,$id), $request->file('publishers')->store('files'));
 //            $this->execute_command("import:publishers $request->team");
         }
         userActivity('User', null, 'upload', 'Upload Publishers');

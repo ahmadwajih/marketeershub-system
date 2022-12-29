@@ -11,7 +11,6 @@ use App\Models\SocialMediaLink;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\OnEachRow;
@@ -41,7 +40,6 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
-        var_dump("test 2");
         //unset($collection[0]);
         foreach ($collection as $col)
         {
@@ -55,7 +53,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
 
             $this->importing_counts['rows_num']++;
 
-            session()->put('_importing_counts', $this->importing_counts['rows_num']);
+            Storage::put($this->module_name.'_importing_counts_2.json', json_encode($this->importing_counts));
 
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager
@@ -210,14 +208,8 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $this->failed_rows[] = $col_array;
                 }
             }
-            var_dump($this->importing_counts);
-            var_dump("test");
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
-            Cache::put('key',$this->importing_counts['rows_num']);
-            $key = Cache::get('key');
-            $key[] = 'sad';
-            Cache::put('key', $key);
         }
     }
     public function chunkSize(): int
