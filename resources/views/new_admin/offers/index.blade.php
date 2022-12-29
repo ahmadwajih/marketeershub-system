@@ -98,7 +98,7 @@
                                 <p class="p-0 m-0">CPS Type: {{ $offer->cps_type }}</p>
                                 <hr>
                                 @if($offer->discount)
-                                <p class="p-0 m-0">Discount: {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' . ($offer->currency ? $offer->currency->code : '') }}</p>
+                                <p class="p-0 m-0">Discount: {{ $offer->discount }}</p>
                                 @endif
                             </div>
                             <!--end::Info-->
