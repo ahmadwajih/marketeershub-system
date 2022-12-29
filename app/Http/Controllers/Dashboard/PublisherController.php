@@ -699,9 +699,9 @@ class PublisherController extends Controller
      */
     public function storeUpload(\App\Http\Requests\Request $request)
     {
-        if (Storage::has($this->module_name.'_import_file.json')) {
-            return 'import in progress';
-        }
+//        if (Storage::has($this->module_name.'_import_file.json')) {
+//            return 'import in progress';
+//        }
 
         $this->authorize('create_publishers');
         $request->validate([
