@@ -24,6 +24,7 @@ class PublishersImportCommand extends Command
      * @var string
      */
     protected $description = 'Importing publisher based on the team option.';
+    private $module_name = 'publishers';
 
     /**
      * Create a new command instance.
@@ -43,6 +44,8 @@ class PublishersImportCommand extends Command
      */
     public function handle(): int
     {
+        Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
         $id = now()->unix();
         session([ 'import' => $id ]);
         session()->put('publishers_failed_rows', []);
