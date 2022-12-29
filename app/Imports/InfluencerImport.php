@@ -13,13 +13,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class InfluencerImport extends PublishersImport implements ToCollection, WithChunkReading,WithEvents,ShouldQueue,WithStartRow
+class InfluencerImport extends PublishersImport implements ToCollection, WithChunkReading,WithEvents,WithStartRow
 {
     public $team;
     public $status;
