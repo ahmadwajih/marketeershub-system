@@ -718,10 +718,10 @@ class PublisherController extends Controller
         $import_file = Storage::get("publishers_import_file.json");
         $team = $request->team;
         if ($team == 'affiliate') {
-            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
+            Excel::queueImport(new AffiliatesImport($team,$id), $request->file('publishers')->store('files'));
         }
         if ($team == 'influencer') {
-            Excel::queueImport(new InfluencerImport($team,$id), $import_file);
+            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
         }
         userActivity('User', null, 'upload', 'Upload Publishers');
         return response([
