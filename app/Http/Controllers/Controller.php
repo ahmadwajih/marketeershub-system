@@ -17,7 +17,7 @@ class Controller extends BaseController
             "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan queue:listen"
         );
 
-        shell_exec(
+        echo shell_exec(
             "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan $command > /dev/null &"
         );
     }
