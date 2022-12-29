@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Imports\AffiliatesImport;
 use App\Imports\InfluencerImport;
+use App\Imports\InfluencerImportWithNoQueue;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\Category;
 use App\Models\City;
@@ -725,7 +726,7 @@ class PublisherController extends Controller
             Excel::queueImport(new AffiliatesImport($team,$id), $request->file('publishers')->store('files'));
         }
         if ($team == 'influencer') {
-            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
+            Excel::queueImport(new InfluencerImportWithNoQueue($team,$id), $request->file('publishers')->store('files'));
         }
         userActivity('User', null, 'upload', 'Upload Publishers');
         return response([
