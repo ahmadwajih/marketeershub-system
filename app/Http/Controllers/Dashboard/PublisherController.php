@@ -730,8 +730,8 @@ class PublisherController extends Controller
             Excel::queueImport(new AffiliatesImport($team,$id), $request->file('publishers')->store('files'));
         }
         if ($team == 'influencer') {
-//            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
-            Excel::import(new InfluencerImportWithNoQueue($team,$id), $request->file('publishers')->store('files'));
+            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
+//            Excel::import(new InfluencerImportWithNoQueue($team,$id), $request->file('publishers')->store('files'));
 //            $this->execute_command("import:publishers $request->team");
         }
         userActivity('User', null, 'upload', 'Upload Publishers');
