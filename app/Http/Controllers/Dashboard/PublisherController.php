@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Imports\AffiliatesImport;
 use App\Imports\InfluencerImport;
-use App\Imports\InfluencerImportWithNoQueue;
 use App\Imports\PublishersUpdateHasofferIdByEmail;
 use App\Models\Category;
 use App\Models\City;
@@ -702,10 +701,6 @@ class PublisherController extends Controller
      */
     public function storeUpload(\App\Http\Requests\Request $request)
     {
-//        if (Storage::has($this->module_name.'_import_file.json')) {
-//            return 'import in progress';
-//        }
-
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',

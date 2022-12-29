@@ -53,8 +53,6 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
 
             $this->importing_counts['rows_num']++;
 
-            Storage::put($this->module_name.'_importing_counts_2.json', json_encode($this->importing_counts));
-
             if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
