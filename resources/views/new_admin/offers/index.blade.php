@@ -98,7 +98,7 @@
                                 <p class="p-0 m-0">CPS Type: {{ $offer->cps_type }}</p>
                                 <hr>
                                 @if($offer->discount)
-                                <p class="p-0 m-0">Discount: {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' . ($offer->currency ? $offer->currency->code : '') }}</p>
+                                <p class="p-0 m-0">Discount: {{ $offer->discount }}</p>
                                 @endif
                             </div>
                             <!--end::Info-->
@@ -226,7 +226,7 @@
                                                 @endif
                                             @endforeach
                                         </td>
-                                        <td> {{ $offer->discount }}{{ $offer->discount_type == 'percentage' ? '%' : ' ' . ($offer->currency ? $offer->currency->code : '') }}
+                                        <td> {{ $offer->discount }} </td>
                                         <td class="text-end">
                                             <a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
                                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
