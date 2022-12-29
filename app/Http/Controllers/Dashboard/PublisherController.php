@@ -139,6 +139,8 @@ class PublisherController extends Controller
         ob_end_clean();
         $path = storage_path('app/public/missing/'.$this->module_name);
         $filesInFolder = file_exists($path)?\File::files($path):[];
+
+        dd($filesInFolder);
         $count = count($filesInFolder);
         if (file_exists($path) and $count) {
             $array = pathinfo($filesInFolder[$count - 1]);
