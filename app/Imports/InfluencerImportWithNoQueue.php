@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,WithStartRow,ShouldQueue
+class InfluencerImportWithNoQueue extends Import implements ToCollection, WithChunkReading,WithEvents,WithStartRow
 {
     public $team;
     public $status;
@@ -40,6 +40,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     */
     public function collection(Collection $collection)
     {
+        set_time_limit(0);
         //unset($collection[0]);
         foreach ($collection as $col)
         {
@@ -206,6 +207,8 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $this->failed_rows[] = $col_array;
                 }
             }
+            var_dump($this->importing_counts);
+            var_dump("test");
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
         }

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Exports\AffiliatesExport;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -31,12 +32,15 @@ class Import implements WithEvents,OnEachRow
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
-        //sleep(0.1);
+        Log::debug($rowIndex);
+//        sleep(0.1);
     }
     public function registerEvents(): array
     {
         return [
             BeforeImport::class => function (BeforeImport $event) {
+                ini_set('max_execution_time', 0);
+                ini_set('memory_limit', "4095M");
                 $totalRows = $event->getReader()->getTotalRows();
                 if (filled($totalRows)) {
                     cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);

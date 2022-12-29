@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Imports\AffiliatesImport;
 use App\Imports\InfluencerImport;
+use App\Imports\InfluencerImportWithNoQueue;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,6 +25,7 @@ class PublishersImportCommand extends Command
      * @var string
      */
     protected $description = 'Importing publisher based on the team option.';
+    private $module_name = 'publishers';
 
     /**
      * Create a new command instance.
@@ -43,6 +45,9 @@ class PublishersImportCommand extends Command
      */
     public function handle(): int
     {
+        set_time_limit(0);
+        Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
         $id = now()->unix();
         session([ 'import' => $id ]);
         session()->put('publishers_failed_rows', []);
@@ -51,12 +56,12 @@ class PublishersImportCommand extends Command
         $import_file = Storage::get("publishers_import_file.json");
         $team = $this->argument('team');
         if ($team == 'affiliate') {
-//            Excel::import(new AffiliatesImport($team,$id), $import_file);
-            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
+            Excel::import(new AffiliatesImport($team,$id), $import_file);
+//            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
         }
         if ($team == 'influencer') {
-//            Excel::import(new InfluencerImport($team,$id), $import_file);
-            Excel::queueImport(new InfluencerImport($team,$id), $import_file);
+            Excel::import(new InfluencerImportWithNoQueue($team,$id), $import_file);
+//            Excel::queueImport(new InfluencerImport($team,$id), $import_file);
         }
         return 1;
     }
