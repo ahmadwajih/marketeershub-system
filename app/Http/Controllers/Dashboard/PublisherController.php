@@ -695,11 +695,14 @@ class PublisherController extends Controller
     /**
      * import using execute command on "Linux servers"
      * @param \App\Http\Requests\Request $request
-     * @return Application|Response|ResponseFactory
      * @throws AuthorizationException
      */
-    public function storeUpload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
+    public function storeUpload(\App\Http\Requests\Request $request)
     {
+        if (Storage::has($this->module_name.'_import_file.json')) {
+            return 'import in progress';
+        }
+
         $this->authorize('create_publishers');
         $request->validate([
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
