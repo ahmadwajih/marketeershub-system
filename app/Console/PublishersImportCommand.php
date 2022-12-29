@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use App\Imports\AffiliatesImport;
-use App\Imports\InfluencerImport;
+use App\Imports\InfluencerImportWithNoQueue;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -62,7 +62,7 @@ class PublishersImportCommand extends Command
         }
         if ($team == 'influencer') {
             var_dump("test");
-            Excel::import(new InfluencerImport($team,$id), $import_file);
+            Excel::import(new InfluencerImportWithNoQueue($team,$id), $import_file);
 //            Excel::queueImport(new InfluencerImport($team,$id), $import_file);
         }
         return 1;
