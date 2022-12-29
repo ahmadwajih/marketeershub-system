@@ -31,6 +31,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -136,6 +137,8 @@ class PublisherController extends Controller
     }
     public function download()
     {
+        $key = Cache::get('key');
+dd($key);
         ob_end_clean();
         $path = storage_path('app/public/missing/'.$this->module_name);
         $filesInFolder = file_exists($path)?\File::files($path):[];
@@ -716,6 +719,8 @@ class PublisherController extends Controller
         Storage::delete($files);
         Storage::delete($this->module_name.'_importing_counts.json');
         Storage::delete($this->module_name.'_failed_rows.json');
+        session()->put('_importing_counts', []);
+
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         $id = now()->unix();
         session([ 'import' => $id ]);
@@ -727,9 +732,9 @@ class PublisherController extends Controller
             Excel::queueImport(new AffiliatesImport($team,$id), $request->file('publishers')->store('files'));
         }
         if ($team == 'influencer') {
-//            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
+            Excel::queueImport(new InfluencerImport($team,$id), $request->file('publishers')->store('files'));
 //            Excel::import(new InfluencerImportWithNoQueue($team,$id), $request->file('publishers')->store('files'));
-            $this->execute_command("import:publishers $request->team");
+//            $this->execute_command("import:publishers $request->team");
         }
         userActivity('User', null, 'upload', 'Upload Publishers');
         return response([
