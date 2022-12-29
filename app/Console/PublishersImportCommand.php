@@ -51,6 +51,8 @@ class PublishersImportCommand extends Command
         $import_file = Storage::get("publishers_import_file.json");
        // dd($import_file);
         $team = $this->argument('team');
+        var_dump("test");
+
         if ($team == 'affiliate') {
             Excel::import(new AffiliatesImport($team,$id), $import_file);
 //            Excel::queueImport(new AffiliatesImport($team,$id), $import_file);
