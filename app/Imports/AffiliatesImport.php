@@ -31,7 +31,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
 
     public function __construct($team,$id)
     {
-        dd('t');
         $this->team = $team;
         $this->id = $id;
     }
