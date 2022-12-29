@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class InfluencerImport extends PublishersImport implements ToCollection, WithChunkReading,WithEvents,WithStartRow
+class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,WithStartRow
 {
     public $team;
     public $status;
