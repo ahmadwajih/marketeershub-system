@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Exports\AffiliatesExport;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -31,6 +32,8 @@ class Import implements WithEvents,OnEachRow
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
+        Log::debug(json_encode($row));
+
         //sleep(0.1);
     }
     public function registerEvents(): array
