@@ -105,7 +105,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
                     // count added
                     $publisher = User::create(
                         [
-                            'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
+                             'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
                             'name' => $col[1],
                             'phone' => $col[2],
                             'email' => $col[3],
@@ -212,7 +212,7 @@ class InfluencerImport extends PublishersImport implements ToCollection, WithChu
     }
     public function chunkSize(): int
     {
-        return 5;
+        return 20;
     }
     public function startRow(): int
     {
