@@ -32,7 +32,7 @@ class Import implements WithEvents,OnEachRow
     {
         $rowIndex = $row->getIndex();
         cache()->forever("current_row_{$this->id}", $rowIndex);
-        Log::debug(json_encode($row));
+        Log::debug($rowIndex);
 
         //sleep(0.1);
     }
