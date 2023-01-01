@@ -86,7 +86,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->password = $publisher->password ??  Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->parent_id = $publisher->parent_id ??  $this->accouManagerId;
                     $publisher->gender = $publisher->gender ??  $col[5] ?? 'male';
-                    $publisher->status = $this->status;
+                    //$publisher->status = $this->status;
                     $publisher->country_id = $publisher->country_id ??  $this->countryId;
                     $publisher->city_id = $publisher->city_id ??  $this->cityId;
                     $publisher->address = $publisher->address ??  $col[9] ?? null;
