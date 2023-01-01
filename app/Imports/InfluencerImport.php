@@ -5,7 +5,6 @@ namespace App\Imports;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
-use App\Models\Currency;
 use App\Models\Role;
 use App\Models\SocialMediaLink;
 use App\Models\User;
@@ -13,7 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Illuminate\Support\Facades\Log;
@@ -69,7 +67,8 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }
                 // Get Status
                 $this->status = 'paused';
-                if($col[6] == 'live'){
+                $col[6] = strtolower($col[6]);
+                if( $col[6] == 'live'){
                     $this->status = 'active';
                 }elseif($col[6] == 'paused'){
                     $this->status = 'pending';
@@ -99,13 +98,18 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->currency_id = $publisher->currency_id ??  $this->currrencyId;
                     $publisher->team = $publisher->team ??  $this->team;
                     $publisher->save();
-                    $this->importing_counts['updated']++;
-                    //Log::debug( ['status' => 'Yes_Exists', 'publisher' => $publisher]);
+                    if ($publisher->wasChanged()){
+                        $this->importing_counts['updated']++;
+                    }else{
+                        // already updated
+                        $this->importing_counts['duplicated']++;
+                    }
+                    Log::debug( json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
                 }else{
                     // count added
                     $publisher = User::create(
                         [
-                             'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
+                            'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
                             'name' => $col[1],
                             'phone' => $col[2],
                             'email' => $col[3],

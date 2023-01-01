@@ -41,7 +41,6 @@ class InfluencerImportWithNoQueue extends Import implements ToCollection, WithCh
     public function collection(Collection $collection)
     {
         set_time_limit(0);
-        //unset($collection[0]);
         foreach ($collection as $col)
         {
             if (Storage::has($this->module_name.'_importing_counts.json')){
@@ -208,7 +207,6 @@ class InfluencerImportWithNoQueue extends Import implements ToCollection, WithCh
                 }
             }
             var_dump($this->importing_counts);
-            var_dump("test");
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
         }
