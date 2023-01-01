@@ -112,13 +112,10 @@ class PublisherController extends Controller
                     return $query->where('label', 'account_manager');
                 })->get();
         }
-
-
        $import_file="";
         if (Storage::has($this->module_name.'_importing_counts.json')){
             $import_file = Storage::get($this->module_name.'_importing_counts.json');
         }
-
         $fileUrl = null;
         $directory = "public/missing/publishers";
         $files = Storage::allFiles($directory);
