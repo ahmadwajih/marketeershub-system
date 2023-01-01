@@ -81,6 +81,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 if($publisher){
                     // Count Updated
                     if ($publisher->ho_id !=  'aff-'.$col[0]){
+                        Log::debug("aff");
                         $publisher->ho_id = $col[0] ? 'aff-'.$col[0] : null;
                     }
                     $publisher->name = $publisher->name ??  $col[1];
