@@ -66,7 +66,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $this->cityId = $city->id;
                 }
                 // Get Status
-                $this->status = 'paused';
+                $this->status = 'pending';
                 $col[6] = strtolower($col[6]);
                 if( $col[6] == 'live'){
                     $this->status = 'active';
