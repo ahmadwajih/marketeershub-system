@@ -96,6 +96,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('my-offers', 'OfferController@myOffers')->name('my-offers');
         Route::get('upload/offers', 'OfferController@upload')->name('upload.offers');
         Route::get('offers/coupons/{offer}', 'OfferController@coupons')->name('offers.coupons');
+        Route::get('offers/clear/sessions', 'OfferController@clearFilterSeassoions')->name('offers.clear.sessions');
+
         Route::resource('offerRequests', OfferRequestController::class);
         Route::get('ajax/offerRequests/form', 'OfferRequestController@offerRequestAjaxForm')->name('offerRequest.ajax.form');
         Route::post('ajax/offerRequests', 'OfferRequestController@offerRequestAjax')->name('offerRequest.ajax');

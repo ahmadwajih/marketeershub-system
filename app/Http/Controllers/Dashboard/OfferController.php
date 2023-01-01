@@ -37,11 +37,33 @@ class OfferController extends Controller
     {
         $this->authorize('view_offers');
         $query = Offer::query();
-         $tableLength = session('table_length') ?? config('app.pagination_pages');
+        // Filter
+        if (isset($request->status) && $request->status  != null) {
+            $query->where('status', $request->status);
+            session()->put('offers_filter_status', $request->status);
+        } elseif (session('offers_filter_status')) {
+            $query->where('status', session('offers_filter_status'));
+        }
 
-        if(isset($request->search ) && $request->search  != null){
-            $query->where('name_ar', 'like',  "%{$request->search}%" )
-                    ->orWhere('name_en', 'like', "%{$request->search}%");
+        if (isset($request->revenue_cps_type) && $request->revenue_cps_type  != null) {
+            $query->where('revenue_cps_type', $request->revenue_cps_type);
+            session()->put('offers_filter_revenue_cps_type', $request->revenue_cps_type);
+        } elseif (session('offers_filter_revenue_cps_type')) {
+            $query->where('revenue_cps_type', session('offers_filter_revenue_cps_type'));
+        }
+
+        if (isset($request->payout_cps_type) && $request->payout_cps_type  != null) {
+            $query->where('payout_cps_type', $request->payout_cps_type);
+            session()->put('offers_filter_payout_cps_type', $request->payout_cps_type);
+        } elseif (session('offers_filter_payout_cps_type')) {
+            $query->where('payout_cps_type', session('offers_filter_payout_cps_type'));
+        }
+
+        $tableLength = session('table_length') ?? config('app.pagination_pages');
+
+        if (isset($request->search) && $request->search  != null) {
+            $query->where('name_ar', 'like',  "%{$request->search}%")
+                ->orWhere('name_en', 'like', "%{$request->search}%");
         }
 
         $offers = $query->with(['advertiser', 'categories', 'countries'])->latest()->paginate($tableLength);
@@ -166,7 +188,7 @@ class OfferController extends Controller
                 'revenue_type' => $request->revenue_cps_type == 'static' ? $request->static_revenue_type : $request->new_old_revenue_type,
                 'payout_cps_type' => $request->payout_cps_type,
                 'payout_type' => $request->payout_cps_type == 'static' ? $request->static_payout_type : $request->new_old_payout_type,
-                
+
             ]);
 
             userActivity('Offer', $offer->id, 'create');
@@ -362,23 +384,23 @@ class OfferController extends Controller
 
             ->get();
 
-            // Get Coupons 
-            $query = Coupon::query();
+        // Get Coupons 
+        $query = Coupon::query();
 
-            // Filter
-            if(isset($request->user_id ) && $request->user_id  != null){
-                $query->where('user_id', $request->user_id);
-            }
+        // Filter
+        if (isset($request->user_id) && $request->user_id  != null) {
+            $query->where('user_id', $request->user_id);
+        }
 
-            if(isset($request->status ) && $request->status  != null){
-                $query->where('status', $request->status);
-            }
+        if (isset($request->status) && $request->status  != null) {
+            $query->where('status', $request->status);
+        }
 
-            if(isset($request->search ) && $request->search  != null){
-                $query->where('coupon', $request->search);
-            }
-             $tableLength = session('table_length') ?? config('app.pagination_pages');
-            $coupons = $query->where('offer_id', $id)->with(['offer', 'user'])->paginate($tableLength);
+        if (isset($request->search) && $request->search  != null) {
+            $query->where('coupon', $request->search);
+        }
+        $tableLength = session('table_length') ?? config('app.pagination_pages');
+        $coupons = $query->where('offer_id', $id)->with(['offer', 'user'])->paginate($tableLength);
         // userActivity('Offer', $offer->id, 'view');
         //
         return view('new_admin.offers.show', [
@@ -677,5 +699,13 @@ class OfferController extends Controller
             $coupons = Coupon::where('offer_id', $offer)->with(['offer', 'user'])->get();
             return DataTables::of($coupons)->make(true);
         }
+    }
+
+    public function clearFilterSeassoions()
+    {
+        session()->forget('offers_filter_status');
+        session()->forget('offers_filter_revenue_cps_type');
+        session()->forget('offers_filter_payout_cps_type');
+        return redirect()->route('admin.offers.index');
     }
 }
