@@ -128,7 +128,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                             // 'bank_name' => $col[12],
                             // 'iban' => $col[15],
                             // 'bank_branch_code' => $col[13],
-                            // 'swift_code' => $col[14],
+                            // 'swift_code'  => $col[14],
                             'currency_id' => $this->currrencyId,
                             'team' => $this->team,
                         ]
