@@ -80,6 +80,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     }
                     // Get Status
                     $this->status = 'paused';
+                    $col[4] = strtolower($col[4]);
                     if($col[4] == 'live'){
                         $this->status = 'active';
                     }elseif($col[4] == 'paused'){
@@ -108,7 +109,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 // Log::debug( $this->data);
                 $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
-                    $this->importing_counts['updated']++;
                     $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->email           = $col[1];
@@ -131,6 +131,12 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->team                = $this->team;
                     $publisher->parent_id           = $this->accouManagerId;
                     $publisher->save();
+                    if ($publisher->wasChanged()){
+                        $this->importing_counts['updated']++;
+                    }else{
+                        // already updated
+                        $this->importing_counts['duplicated']++;
+                    }
                     Log::debug(implode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
                 }
                 else{

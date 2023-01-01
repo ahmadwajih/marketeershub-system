@@ -67,7 +67,8 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }
                 // Get Status
                 $this->status = 'paused';
-                if($col[6] == 'live'){
+                $col[6] = strtolower($col[6]);
+                if( $col[6] == 'live'){
                     $this->status = 'active';
                 }elseif($col[6] == 'paused'){
                     $this->status = 'pending';
@@ -100,6 +101,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
                     }else{
+                        // already updated
                         $this->importing_counts['duplicated']++;
                     }
                     Log::debug( json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
