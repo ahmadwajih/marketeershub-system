@@ -100,6 +100,9 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->save();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
+                        $changes = $publisher->getChanges();
+                        Log::debug("changes");
+                        Log::debug( json_encode($changes));
                     }else{
                         // already updated
                         $this->importing_counts['duplicated']++;
