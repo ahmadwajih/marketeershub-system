@@ -105,6 +105,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                         Log::debug( json_encode($changes));
                     }else{
                         // already updated
+                        Log::debug("duplicated");
                         $this->importing_counts['duplicated']++;
                     }
                     Log::debug( json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
