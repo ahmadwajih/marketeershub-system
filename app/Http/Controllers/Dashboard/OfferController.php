@@ -39,10 +39,20 @@ class OfferController extends Controller
         $query = Offer::query();
         // Filter
         if (isset($request->status) && $request->status  != null) {
-            $query->where('status', $request->status);
+            $status = $request->status;
+            if ($status == 'active') {
+                $query->where('status', 'active');
+            } else {
+                $query->where('status', '!=', 'active');
+            }
             session()->put('offers_filter_status', $request->status);
         } elseif (session('offers_filter_status')) {
-            $query->where('status', session('offers_filter_status'));
+            $status = session('offers_filter_status');
+            if ($status == 'active') {
+                $query->where('status', 'active');
+            } else {
+                $query->where('status','!=', 'active');
+            }
         }
 
         if (isset($request->revenue_cps_type) && $request->revenue_cps_type  != null) {
