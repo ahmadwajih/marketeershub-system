@@ -273,7 +273,7 @@
                             <!--end::Head-->
                             <!--begin::Body-->
                             <tbody class="fs-6">
-                                @foreach ($offers as $offer)
+                                @forelse ($offers as $offer)
                                     <tr class="tr-{{ $offer->id }}">
                                         <td>
                                             <div class="form-check form-check-sm form-check-custom form-check-solid">
@@ -346,7 +346,9 @@
                                                 <!--end::Menu-->
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <div class="alert alert-danger text-center">No data</div>
+                                @endforelse
 
                             </tbody>
                             <!--end::Body-->
