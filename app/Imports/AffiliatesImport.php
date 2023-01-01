@@ -109,7 +109,9 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 // Log::debug( $this->data);
                 $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
-                    $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
+                    if ($publisher->ho_id !=  'aff-'.$col[0]){
+                        $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
+                    }
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->email           = $col[1];
                     $publisher->name            = $publisher->name ?? $col[2];

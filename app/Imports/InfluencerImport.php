@@ -80,7 +80,9 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 $publisher = User::whereEmail($col[3])->first();
                 if($publisher){
                     // Count Updated
-                    $publisher->ho_id = $col[0] ? 'inf-' . $col[0] : null;
+                    if ($publisher->ho_id !=  'aff-'.$col[0]){
+                        $publisher->ho_id = $col[0] ? 'aff-'.$col[0] : null;
+                    }
                     $publisher->name = $publisher->name ??  $col[1];
                     $publisher->phone = $publisher->phone ??  $col[2];
                     $publisher->password = $publisher->password ??  Hash::make('hhgEDfvgbhKmJhMjnBNKM');
