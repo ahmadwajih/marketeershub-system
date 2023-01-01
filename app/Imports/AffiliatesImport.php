@@ -116,6 +116,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->email           = $col[1];
                     $publisher->name            = $publisher->name ?? $col[2];
                     $publisher->gender          = $col[3] ?? 'male';
+                    Log::debug( json_encode($publisher->status));
                     if ($this->status != $publisher->status){$publisher->status = $this->status;}
                     $publisher->account_title   = $publisher->account_title ?? $col[5];
                     $publisher->country_id      = $publisher->country_id ?? $this->countryId;
