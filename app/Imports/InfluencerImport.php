@@ -66,27 +66,28 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $this->cityId = $city->id;
                 }
                 // Get Status
-                $this->status = 'paused';
+                $this->status = 'pending';
                 $col[6] = strtolower($col[6]);
+                if ($col[6]){$this->status=$col[6];}
                 if( $col[6] == 'live'){
                     $this->status = 'active';
                 }elseif($col[6] == 'paused'){
                     $this->status = 'pending';
-                }elseif($col[6] == 'closed'){
-                    $this->status = 'closed';
                 }
                 // Get Category Id
                 $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
                 $publisher = User::whereEmail($col[3])->first();
                 if($publisher){
                     // Count Updated
-                    $publisher->ho_id = $col[0] ? 'inf-' . $col[0] : null;
+                    if ($publisher->ho_id !=  'aff-'.$col[0]){
+                        $publisher->ho_id = $col[0] ? 'aff-'.$col[0] : null;
+                    }
                     $publisher->name = $publisher->name ??  $col[1];
                     $publisher->phone = $publisher->phone ??  $col[2];
                     $publisher->password = $publisher->password ??  Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->parent_id = $publisher->parent_id ??  $this->accouManagerId;
                     $publisher->gender = $publisher->gender ??  $col[5] ?? 'male';
-                    $publisher->status = $this->status;
+                    if ($this->status != $publisher->status){$publisher->status = $this->status;}
                     $publisher->country_id = $publisher->country_id ??  $this->countryId;
                     $publisher->city_id = $publisher->city_id ??  $this->cityId;
                     $publisher->address = $publisher->address ??  $col[9] ?? null;
@@ -100,8 +101,14 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->save();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
+                        $original = $publisher->getOriginal(); // Array of original attributes...
+                        Log::debug( json_encode($original));
+                        $changes = $publisher->getChanges();
+                        Log::debug("changes");
+                        Log::debug( json_encode($changes));
                     }else{
                         // already updated
+                        Log::debug("duplicated");
                         $this->importing_counts['duplicated']++;
                     }
                     Log::debug( json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
@@ -124,7 +131,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                             // 'bank_name' => $col[12],
                             // 'iban' => $col[15],
                             // 'bank_branch_code' => $col[13],
-                            // 'swift_code' => $col[14],
+                            // 'swift_code'  => $col[14],
                             'currency_id' => $this->currrencyId,
                             'team' => $this->team,
                         ]

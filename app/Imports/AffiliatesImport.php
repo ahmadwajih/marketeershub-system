@@ -79,8 +79,9 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                         $this->cityId = $city->id;
                     }
                     // Get Status
-                    $this->status = 'paused';
+                    $this->status = 'pending';
                     $col[4] = strtolower($col[4]);
+                    if ($col[4]){$this->status=$col[4];}
                     if($col[4] == 'live'){
                         $this->status = 'active';
                     }elseif($col[4] == 'paused'){
@@ -109,12 +110,17 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 // Log::debug( $this->data);
                 $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
-                    $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
+                    if ($publisher->ho_id !=  'aff-'.$col[0]){
+                        $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
+                    }
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->email           = $col[1];
                     $publisher->name            = $publisher->name ?? $col[2];
                     $publisher->gender          = $col[3] ?? 'male';
-                    $publisher->status          = $this->status;
+                    if ($this->status != $publisher->status){
+                        Log::debug( json_encode($publisher->status));
+                        $publisher->status = $this->status;
+                    }
                     $publisher->account_title   = $publisher->account_title ?? $col[5];
                     $publisher->country_id      = $publisher->country_id ?? $this->countryId;
                     $publisher->city_id         = $publisher->city_id ?? $this->cityId;
@@ -133,6 +139,11 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->save();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
+                        $original = $publisher->getOriginal(); // Array of original attributes...
+                        Log::debug( json_encode($original));
+                        $changes = $publisher->getChanges();
+                        Log::debug("changes");
+                        Log::debug( json_encode($changes));
                     }else{
                         // already updated
                         $this->importing_counts['duplicated']++;
