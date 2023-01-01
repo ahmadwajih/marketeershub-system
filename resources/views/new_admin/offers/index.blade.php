@@ -175,10 +175,8 @@
                                         <div>
                                             <select class="form-select form-select-solid" name="status" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a">
                                                 <option value="">No One</option>
-                                                <option {{ session('offers_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Live') }}</option>
-                                                <option {{ session('offers_filter_status') == 'pused' ? 'selected' :''}} value="pused">{{ __('Paused') }}</option>
-                                                <option {{ session('offers_filter_status') == 'pending' ? 'selected' :''}} value="pending">{{ __('Paused') }}</option>
-                                                <option {{ session('offers_filter_status') == 'expire' ? 'selected' :''}} value="expire">{{ __('Expire') }}</option>
+                                                <option {{ session('offers_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
+                                                <option {{ session('offers_filter_status') == 'inactive' ? 'selected' :''}} value="inactive">{{ __('Inactive') }}</option>
                                             </select>
                                         </div>
                                         <!--end::Input-->
