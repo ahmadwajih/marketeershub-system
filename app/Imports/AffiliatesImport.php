@@ -135,6 +135,11 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->save();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
+                        $original = $publisher->getOriginal(); // Array of original attributes...
+                        Log::debug( json_encode($original));
+                        $changes = $publisher->getChanges();
+                        Log::debug("changes");
+                        Log::debug( json_encode($changes));
                     }else{
                         // already updated
                         $this->importing_counts['duplicated']++;
