@@ -81,6 +81,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     // Get Status
                     $this->status = 'pending';
                     $col[4] = strtolower($col[4]);
+                    if ($col[4]){$this->status=$col[4];}
                     if($col[4] == 'live'){
                         $this->status = 'active';
                     }elseif($col[4] == 'paused'){

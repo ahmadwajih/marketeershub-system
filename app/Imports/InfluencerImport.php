@@ -68,12 +68,11 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 // Get Status
                 $this->status = 'pending';
                 $col[6] = strtolower($col[6]);
+                if ($col[6]){$this->status=$col[6];}
                 if( $col[6] == 'live'){
                     $this->status = 'active';
                 }elseif($col[6] == 'paused'){
                     $this->status = 'pending';
-                }elseif($col[6] == 'closed'){
-                    $this->status = 'closed';
                 }
                 // Get Category Id
                 $category = Category::select('id')->where('title_ar', 'l~ike', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
