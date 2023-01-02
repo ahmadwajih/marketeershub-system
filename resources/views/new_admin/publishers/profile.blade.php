@@ -567,8 +567,8 @@
                 <div class="card-header pt-7">
                     <!--begin::Title-->
                     <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-gray-800">My Payments </span>
-                        <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ count($payments) }} Paid payment</span>
+                        <span class="card-label fw-bold text-gray-800">My Coupons </span>
+                        <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ count($coupons) }} Coupon</span>
                     </h3>
                     <!--end::Title-->
         
@@ -576,7 +576,7 @@
                 <!--end::Card header-->
                 <!--begin::Card body-->
                 <div class="card-body pt-2">
-                    <!--begin::Table-->* 
+                    <!--begin::Table-->
                     <table class="table align-middle table-row-dashed fs-6 gy-3" id="kt_table_widget_4_table">
                         <!--begin::Table head-->
                         <thead>
@@ -594,18 +594,20 @@
                         <!--end::Table head-->
                         <!--begin::Table body-->
                         <tbody class="fw-bold text-gray-600">
-                            @foreach($coupons as $coupon)
-                                <tr>
-                                    <td>
-                                        <a href="javascript:void(0)" class="text-gray-800 text-hover-primary">#MH-1000{{ $coupon->id }}</a>
-                                    </td>
-                                    <td class="text-end">{{ $coupon->coupon }}</td>
-                                    <td class="text-end">{{ $coupon->offer_name }}</td>
-                                    <td class="text-end">{{ $coupon->orders }}</td>
-                                    <td class="text-end">{{ $coupon->sales }}$</td>
-                                    <td class="text-end">{{ $coupon->revenue }}</td>
-                                </tr>
-                            @endforeach
+                            @forelse ($coupons as $coupon)
+                            <tr>
+                                <td>
+                                    <a href="javascript:void(0)" class="text-gray-800 text-hover-primary">#MH-1000{{ $coupon->id }}</a>
+                                </td>
+                                <td class="text-end">{{ $coupon->coupon }}</td>
+                                <td class="text-end">{{ $coupon->offer_name }}</td>
+                                <td class="text-end">{{ $coupon->orders }}</td>
+                                <td class="text-end">{{ $coupon->sales }}$</td>
+                                <td class="text-end">{{ $coupon->revenue }}</td>
+                            </tr>
+                            @empty
+                                    <div class="alert alert-danger">No Coupons Yet</div>
+                            @endforelse
                         </tbody>
                         <!--end::Table body-->
                     </table>

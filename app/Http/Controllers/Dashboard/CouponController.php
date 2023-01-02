@@ -279,20 +279,20 @@ class CouponController extends Controller
             'offer_id'        => 'required|numeric|exists:offers,id',
             'user_id'        => 'nullable|numeric|exists:users,id',
             // Payout Validation
-            'payout_cps_type' => 'required_if:have_custom_payout,on|in:static,new_old,slaps',
-            'static_payout_type' => 'required_if:payout_cps_type,static|in:flat,percentage',
-            'new_old_payout_type' => 'required_if:payout_cps_type,new_old|in:flat,percentage',
-            'static_payout' => 'required_if:payout_cps_type,static|array',
-            'static_payout.*.payout' => 'required_if:payout_cps_type,static',
+            // 'payout_cps_type' => 'required_if:have_custom_payout,on|in:static,new_old,slaps',
+            // 'static_payout_type' => 'required_if:payout_cps_type,static|in:flat,percentage',
+            // 'new_old_payout_type' => 'required_if:payout_cps_type,new_old|in:flat,percentage',
+            // 'static_payout' => 'required_if:payout_cps_type,static|array',
+            // 'static_payout.*.payout' => 'required_if:payout_cps_type,static',
 
-            'new_old_payout' => 'required_if:payout_cps_type,new_old|array',
-            'new_old_payout.*.new_payout' => 'required_if:payout_cps_type,new_old',
-            'new_old_payout.*.old_payout' => 'required_if:payout_cps_type,new_old',
+            // 'new_old_payout' => 'required_if:payout_cps_type,new_old|array',
+            // 'new_old_payout.*.new_payout' => 'required_if:payout_cps_type,new_old',
+            // 'new_old_payout.*.old_payout' => 'required_if:payout_cps_type,new_old',
 
-            'payout_slaps' => 'required_if:payout_cps_type,slaps|array',
-            'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
-            'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
-            'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
+            // 'payout_slaps' => 'required_if:payout_cps_type,slaps|array',
+            // 'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
+            // 'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
+            // 'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
         ]);
         $data['coupon'] = strtolower(trim(str_replace(' ', '', trim($request->coupon))));
         $data['have_custom_payout'] = isset($request->have_custom_payout) && $request->have_custom_payout == 'on' ? true : false;
