@@ -59,7 +59,7 @@
                                             <label class="required form-label">Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" name="name"  onkeypress="clsAlphaOnly(event)"  class="form-control mb-2" placeholder="Full name" value="{{ old('name') }}" />
+                                            <input type="text" name="name"  onkeypress="clsAlphaOnly(event)"  class="form-control mb-2" placeholder="Full name" value="{{ old('name') }}" required/>
                                             @if ($errors->has('name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('name') }}</div></div>
                                             @endif
@@ -75,7 +75,7 @@
                                             <label class="required form-label">Email</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" value="{{ old('email') }}" />
+                                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" value="{{ old('email') }}" required/>
                                             <!--end::Input-->
                                             @if ($errors->has('email'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('email') }}</div></div>
@@ -91,7 +91,7 @@
                                             <label class="required form-label">Phone</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsNoOnly(event)" name="phone" class="form-control mb-2" placeholder="0123456789" value="{{ old('phone') }}" required minlength="8"/>
+                                            <input type="text" onkeypress="clsNoOnly(event)" name="phone" class="form-control mb-2" placeholder="0123456789" value="{{ old('phone') }}" required minlength="8" required/>
                                             <!--end::Input-->
                                             @if ($errors->has('phone'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('phone') }}</div></div>
@@ -107,7 +107,7 @@
                                             <label class="required form-label">Gender</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="gender" aria-label="Select a Gender" data-control="select2" data-placeholder="Select Gender" class="form-select form-select-sm">
+                                            <select name="gender" aria-label="Select a Gender" data-control="select2" data-placeholder="Select Gender" class="form-select form-select-sm" required>
                                                 <option {{ old('gender') == 'male' ? "selected" : '' }} value="male">{{ __('Male') }}</option>
                                                 <option {{ old('gender') == 'female' ? "selected" : '' }} value="female">{{ __('Female') }}</option>
                                             </select>
@@ -126,7 +126,7 @@
                                             <label class="required form-label">Country</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select id="country" name="country_id" data-control="select2" class="form-select form-select-sm">
+                                            <select id="country" name="country_id" data-control="select2" class="form-select form-select-sm" required>
                                                 @foreach ($countries as $country)
                                                     <option {{ old('country_id') == $country->id ? "selected" : 'null' }} value="{{ $country->id }}">{{  $country->name }}</option>
                                                 @endforeach
@@ -146,7 +146,7 @@
                                             <label class="required form-label">Publisher Type</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select id="team" name="team" aria-label="Select a Publisher Type" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
+                                            <select id="team" name="team" aria-label="Select a Publisher Type" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm" required>
                                                 <option {{ old('team') == 'affiliate' ? "selected" : '' }} value="affiliate">{{ __('Affiliate') }}</option>
                                                 <option {{ old('team') == 'influencer' ? "selected" : '' }} value="influencer">{{ __('Influencer') }}</option>
                                             </select>
@@ -165,7 +165,7 @@
                                             <label class="required form-label">Account Manager</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="parent_id" data-control="select2" class="form-select form-select-sm" id="accountManagers">
+                                            <select name="parent_id" data-control="select2" class="form-select form-select-sm" id="accountManagers" required>
                                                 <option selected value="">{{ __('No one') }}</option>
                                                 @foreach ($users as $user)
                                                     <option {{ old('parent_id') == $user->id ? "selected" : '' }} value="{{ $user->id }}">{{  $user->name }}</option>
@@ -570,7 +570,7 @@
                                             <label class="required form-label">IBAN</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') }}" />
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="iban" class="form-control mb-2" placeholder="IBAN" value="{{ old('iban') }}" required/>
                                             <!--end::Input-->
                                             @if ($errors->has('iban'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('iban') }}</div></div>
@@ -586,7 +586,7 @@
                                             <label class="required form-label">SWIFT Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') }}" />
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="swift_code" class="form-control mb-2" placeholder="Swift Code" value="{{ old('swift_code') }}"required />
                                             <!--end::Input-->
                                             @if ($errors->has('swift_code'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('swift_code') }}</div></div>
@@ -602,7 +602,7 @@
                                             <label class="required form-label">Bank Account Title</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') }}" />
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') }}" required/>
                                             <!--end::Input-->
                                             @if ($errors->has('account_title'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('account_title') }}</div></div>
@@ -617,7 +617,7 @@
                                             <label class="required form-label">Bank Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') }}" />
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') }}" required />
                                             <!--end::Input-->
                                             @if ($errors->has('bank_name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_name') }}</div></div>
@@ -633,7 +633,7 @@
                                             <label class="required form-label">Bank Branch Code</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') }}" />
+                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_branch_code" class="form-control mb-2" placeholder="Bank Branch Code" value="{{ old('bank_branch_code') }}" required/>
                                             <!--end::Input-->
                                             @if ($errors->has('bank_branch_code'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_branch_code') }}</div></div>
@@ -649,7 +649,7 @@
                                             <label class="required form-label">Currency</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select name="currency" aria-label="Select a Currency" data-control="select2" data-placeholder="Select Currency" class="form-select form-select-sm">
+                                            <select name="currency" aria-label="Select a Currency" data-control="select2" data-placeholder="Select Currency" class="form-select form-select-sm" required>
                                                 <option {{ old('currency') == 'USD' ? "selected" : '' }} value="USD">USD</option>
                                                 <option {{ old('currency') == 'SAR' ? "selected" : '' }} value="SAR">SAR</option>
                                                 <option {{ old('currency') == 'AED' ? "selected" : '' }} value="AED">AED</option>
