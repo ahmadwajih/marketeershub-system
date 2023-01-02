@@ -285,7 +285,7 @@
                         </div>
                     </div>
                     <!--end::Col-->
-                    <!--begin::Col-->
+                    {{-- <!--begin::Col-->
                     <div class="col">
                         <div class="card card-dashed flex-center min-w-175px my-3 p-6">
                             <span class="fs-4 fw-semibold text-primary pb-1 px-2">Payout</span>
@@ -293,15 +293,15 @@
                             <span data-kt-countup="true" data-kt-countup-value="{{ $totalNumbers->payout ?? 0 }}">0</span></span>
                         </div>
                     </div>
-                    <!--end::Col-->
+                    <!--end::Col--> --}}
                     <!--begin::Col-->
-                    <div class="col">
+                    {{-- <div class="col">
                         <div class="card card-dashed flex-center min-w-175px my-3 p-6">
                             <span class="fs-4 fw-semibold text-warning pb-1 px-2">Gross Margin</span>
                             <span class="fs-lg-2tx fw-bold d-flex justify-content-center">$
                             <span data-kt-countup="true" data-kt-countup-value="{{ (isset($totalNumbers->payout) && isset($totalNumbers->revenue)) ? $totalNumbers->revenue - $totalNumbers->payout : 0 }}">0</span></span>
                         </div>
-                    </div>
+                    </div> --}}
                     <!--end::Col-->
                 </div>
                 <!--end::Stats-->
@@ -600,10 +600,10 @@
                                     <a href="javascript:void(0)" class="text-gray-800 text-hover-primary">#MH-1000{{ $coupon->id }}</a>
                                 </td>
                                 <td class="text-end">{{ $coupon->coupon }}</td>
-                                <td class="text-end">{{ $coupon->offer_name }}</td>
-                                <td class="text-end">{{ $coupon->orders }}</td>
-                                <td class="text-end">{{ $coupon->sales }}$</td>
-                                <td class="text-end">{{ $coupon->revenue }}</td>
+                                <td class="text-end">{{ $coupon->offer_name ?? $coupon->offer->name }}</td>
+                                <td class="text-end">{{ $coupon->orders ?? 0 }}</td>
+                                <td class="text-end">{{ $coupon->sales ?? 0 }}$</td>
+                                <td class="text-end">{{ $coupon->revenue ?? 0 }}</td>
                             </tr>
                             @empty
                                     <div class="alert alert-danger">No Coupons Yet</div>
