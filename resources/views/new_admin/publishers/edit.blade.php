@@ -673,7 +673,7 @@
                                             <label class="required form-label">Bank Account Title</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') ?? $publisher->account_title }}" />
+                                            <input type="text" onkeypress="clsAlphaOnly(event)" name="account_title" class="form-control mb-2" placeholder="Account Title" value="{{ old('account_title') ?? $publisher->account_title }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('account_title'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('account_title') }}</div></div>
@@ -688,7 +688,7 @@
                                             <label class="required form-label">Bank Name</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="text" onkeypress="clsAlphaNoOnly(event)" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') ?? $publisher->bank_name }}" />
+                                            <input type="text" onkeypress="clsAlphaOnly(event)" name="bank_name" class="form-control mb-2" placeholder="Bank Name" value="{{ old('bank_name') ?? $publisher->bank_name }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('bank_name'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('bank_name') }}</div></div>
