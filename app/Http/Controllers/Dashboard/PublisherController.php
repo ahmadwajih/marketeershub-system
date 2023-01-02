@@ -38,6 +38,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Notification;
 use App\Facades\PublisherCharts;
 use App\Facades\PublisherProfile;
+use Illuminate\Support\Collection;
 
 class PublisherController extends Controller
 {
@@ -623,7 +624,11 @@ class PublisherController extends Controller
         $couponsOrdersChart = PublisherCharts::chart($chartCoupons, 'coupon', 'orders', 'bar', 'Coupons');
         $couponsSalesChart = PublisherCharts::chart($chartCoupons, 'coupon', 'sales', 'bar', 'Coupons');
         $couponsRevenueChart = PublisherCharts::chart($chartCoupons, 'coupon','revenue', 'bar', 'Coupons');
-
+        // dd($childrens);
+        $assignedCoupons = Coupon::whereIn('user_id', $childrens)->get();
+        $couponsFromReports = new Collection($coupons);
+        $assignedCoupons = new Collection($assignedCoupons);
+        $coupons = $assignedCoupons->merge($couponsFromReports); // Contains foo and bar.
         return view('new_admin.publishers.profile', [
             'publisher' => $publisher,
             'offers' => $offers,
