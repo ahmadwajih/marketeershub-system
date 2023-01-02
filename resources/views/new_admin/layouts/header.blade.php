@@ -917,7 +917,7 @@
             </div> --}}
             <!--end::Quick links-->
             <!--begin::Theme mode-->
-            {{-- <div class="d-flex align-items-center ms-1">
+            <div class="d-flex align-items-center ms-1">
                 <!--begin::Menu toggle-->
                 <a href="#" class="btn btn-icon btn-color-white bg-hover-white bg-hover-opacity-10 w-30px h-30px h-40px w-40px" data-kt-menu-trigger="{default:'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen060.svg-->
@@ -946,6 +946,7 @@
                     </span>
                     <!--end::Svg Icon-->
                 </a>
+                
                 <!--begin::Menu toggle-->
                 <!--begin::Menu-->
                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-muted menu-active-bg menu-state-color fw-semibold py-4 fs-base w-175px" data-kt-menu="true" data-kt-element="theme-mode-menu">
@@ -994,7 +995,7 @@
                     <!--end::Menu item-->
                 </div>
                 <!--end::Menu-->
-            </div> --}}
+            </div>
             <!--end::Theme mode-->
             <!--begin::User-->
             <div class="d-flex align-items-center ms-1" id="kt_header_user_menu_toggle">

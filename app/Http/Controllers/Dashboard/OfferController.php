@@ -431,9 +431,6 @@ class OfferController extends Controller
      */
     public function edit(Offer $offer)
     {
-        // $array = [1, 3];
-        // $array = json_encode($array);
-        // dd($offer->cps()->get());
         $this->authorize('update_offers');
         return view('new_admin.offers.edit', [
             'offer' => $offer,
@@ -461,7 +458,7 @@ class OfferController extends Controller
             'advertiser_id' => 'nullable|exists:advertisers,id',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:1024',
             'offer_url' => 'required|url|max:255',
             'categories' => 'array|required|exists:categories,id',
             'coupons' => 'nullable|file',
