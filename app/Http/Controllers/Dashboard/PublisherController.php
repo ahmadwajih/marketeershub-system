@@ -641,7 +641,7 @@ class PublisherController extends Controller
             'couponsSalesChart' => $couponsSalesChart,
             'couponsRevenueChart' => $couponsRevenueChart,
             'payments' => $payments,
-            'coupons' => $coupons,
+            'coupons' => $coupons->unique(),
         ]);
     }
 
