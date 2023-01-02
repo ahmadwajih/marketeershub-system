@@ -509,10 +509,7 @@ class OfferController extends Controller
             $thumbnail = time() . rand(11111, 99999) . '.' . $request->thumbnail->extension();
             $request->thumbnail->storeAs('Images/Offers/', $thumbnail, 'public');
         }
-
-
-
-
+        unset($data['thumbnail']);
         userActivity('Offer', $offer->id, 'update', $data, $offer);
 
         $offer->update([
