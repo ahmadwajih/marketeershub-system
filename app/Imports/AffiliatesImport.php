@@ -28,6 +28,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public array $data = [];
     public string $module_name = 'publishers';
     private array $failed_rows = [];
+    private int $columns_count = 21;
 
     public function __construct($team,$id)
     {
@@ -40,9 +41,12 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public function collection(Collection $collection)
     {
         $category = null;
-        //unset($collection[0]);
         foreach ($collection as $col)
         {
+            // todo remove duplicated code
+            $col_array = $col->toArray();
+            $row = array_slice($col_array, 0, $this->columns_count, true);
+            if($this->containsOnlyNull($row))continue;
             if (Storage::has($this->module_name.'_importing_counts.json')){
                 $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
             }
@@ -100,11 +104,8 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
                 }
                 catch (\Throwable $th) {
-                    if (!$this->containsOnlyNull($col_array)){
-                        $this->importing_counts['failed']++;
-                        $this->failed_rows[] = $col_array;
-                    }
-                    Log::debug($th);
+                    $this->importing_counts['failed']++;
+                    $this->failed_rows[] = $col_array;
                 }
                 $this->data['accouManagerId'] = $this->accouManagerId;
                 // Log::debug( $this->data);
@@ -118,7 +119,6 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->name            = $publisher->name ?? $col[2];
                     $publisher->gender          = $col[3] ?? 'male';
                     if ($this->status != $publisher->status){
-                        Log::debug( json_encode($publisher->status));
                         $publisher->status = $this->status;
                     }
                     $publisher->account_title   = $publisher->account_title ?? $col[5];
@@ -202,12 +202,5 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public function startRow(): int
     {
         return 2;
-    }
-    function containsOnlyNull($input): bool
-    {
-        return empty(array_filter(
-            $input,
-            function ($a) {return $a !== null;}
-        ));
     }
 }
