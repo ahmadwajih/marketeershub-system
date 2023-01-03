@@ -41,29 +41,13 @@ use PHPUnit\Framework\Constraint\Count;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-
-        // $coupon = Coupon::whereCoupon('mwpx')->where('offer_id', 98)->first();
-        // $coupon->user_id = 6628;
-        // $coupon->save();
-        // dd($coupon);
-        // $coupons = Coupon::whereHas('user', function($user){
-        //     $user->where('team', 'media_buying');
-        // })->where('offer_id', 98)->get();
-        // dd($coupons);
-        // $reports = PivotReport::all();
-        // foreach($reports as $report){
-        //     $report->delete();
-        // }
-
-        // $coupons = Coupon::get();
-        // foreach($coupons as $coupon){
-        //     $coupon->forceDelete();
-        // }
-
         $this->authorize('view_dashboard');
-        if (session()->has('from_date') == false) {
+        if ($request->from_date && $request->to_date) {
+            session()->put('from_date', $request->from_date);
+            session()->put('to_date', $request->to_date);
+        }else{
             session()->put('from_date', now()->firstOfMonth()->format('Y-m-d'));
             session()->put('to_date', now()->lastOfMonth()->format('Y-m-d'));
         }
@@ -97,11 +81,11 @@ class DashboardController extends Controller
             $map[$index]['offer']['name'] = $offerDetils->name;
             $map[$index]['offer']['thumbnail'] = $offerDetils->thumbnail;
             $map[$index]['offer']['id'] = $offerDetils->id;
-            $map[$index]['offer']['orders'] = $offerDetils->prvotReports->sum('orders');
-            $map[$index]['offer']['sales'] = $offerDetils->prvotReports->sum('sales');
-            $map[$index]['offer']['revenue'] = $offerDetils->prvotReports->sum('revenue');
-            $map[$index]['offer']['payout'] = $offerDetils->prvotReports->sum('payout');
-            $map[$index]['offer']['gross_margin'] = $offerDetils->prvotReports->sum('revenue') - $offerDetils->prvotReports->sum('payout');
+            $map[$index]['offer']['orders'] = $offerDetils->prvotReports()->whereBetween('date', [$from . ' 00:00:00', $to . ' 23:59:29'])->sum('orders');
+            $map[$index]['offer']['sales'] = $offerDetils->prvotReports()->whereBetween('date', [$from . ' 00:00:00', $to . ' 23:59:29'])->sum('sales');
+            $map[$index]['offer']['revenue'] = $offerDetils->prvotReports()->whereBetween('date', [$from . ' 00:00:00', $to . ' 23:59:29'])->sum('revenue');
+            $map[$index]['offer']['payout'] = $offerDetils->prvotReports()->whereBetween('date', [$from . ' 00:00:00', $to . ' 23:59:29'])->sum('payout');
+            $map[$index]['offer']['gross_margin'] = $offerDetils->prvotReports()->whereBetween('date', [$from . ' 00:00:00', $to . ' 23:59:29'])->sum('revenue') - $offerDetils->prvotReports()->whereBetween('date', [$from . ' 00:00:00', $to . ' 23:59:29'])->sum('payout');
 
             // Teams
             $temsTotal =  DB::table('pivot_reports')

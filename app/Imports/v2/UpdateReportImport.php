@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading,ShouldQueue
+class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading, ShouldQueue
 {
     public $offerId;
     public $coupon;
@@ -35,7 +35,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     public $columnHaveIssue = [];
     public $id;
 
-    public function __construct($offerId, $type,int $id)
+    public function __construct($offerId, $type, int $id)
     {
         $this->offerId = $offerId;
         $this->type = $type;
@@ -71,10 +71,11 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
         foreach ($collection as $index => $col) {
             try {
                 $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
-
+                Log::info(['date' =>  $col[0]]);
             } catch (\Throwable $th) {
                 $this->columnHaveIssue[] = ['Please make sure the first column is valid date.'];
                 session(['columnHaveIssue' => $this->columnHaveIssue]);
+                Log::info($this->columnHaveIssue);
                 return false;
             }
 
@@ -94,31 +95,16 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                     $col[] = 'Coupons Not assigned';
                     $this->columnHaveIssue[] = $col;
                 }
-
                 $this->coupon = $coupon;
-
                 //Cheeck If exists
                 $pivotReport  = PivotReport::where([
                     ['coupon_id', '=', $coupon->id],
-                    ['date', '=', $col[0]],
+                    ['date', '=', $col[0]->format('Y-m-d')],
                 ])->first();
 
 
                 if ($pivotReport) {
-                    // $pivotReport->update([
-                    //     'orders' => $col[1],
-                    //     'sales' => $col[2],
-                    //     'revenue' => $this->calcRevenue($col[1] , $col[2], $col[5]),
-                    //     'payout' => $this->calcPayout($col[1] , $col[2], $col[5]),
-                    //     'type' => $this->type,
-                    //     'offer_id' => $this->offerId,
-                    // ]);
-                    $col[] = "Dublicate date for same coupon in same day";
-                    $this->columnHaveIssue[] = $col;
-                }
-
-                if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
-                    PivotReport::create([
+                    $pivotReport->update([
                         'coupon_id' => $coupon->id,
                         'user_id' => $coupon->user_id,
                         'orders' => $col[2],
@@ -126,18 +112,34 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                         'revenue' => $this->calcRevenue($col),
                         'payout' => $this->calcPayout($col),
                         'type' => $this->type,
-                        'date' => now(),
+                        // 'date' => $col[0]->format('Y-m-d'),
                         'offer_id' => $this->offerId,
                     ]);
+                    $col[] = "Dublicate date for same coupon in same day";
+                    $this->columnHaveIssue[] = $col;
                 } else {
+                    if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
+                        PivotReport::create([
+                            'coupon_id' => $coupon->id,
+                            'user_id' => $coupon->user_id,
+                            'orders' => $col[2],
+                            'sales' => $col[3],
+                            'revenue' => $this->calcRevenue($col),
+                            'payout' => $this->calcPayout($col),
+                            'type' => $this->type,
+                            'date' => $col[0]->format('Y-m-d'),
+                            'offer_id' => $this->offerId,
+                        ]);
+                    } else {
 
-                    if (gettype($this->calcRevenue($col)) != 'int') {
-                        $col[] = $this->calcRevenue($col);
-                        $this->columnHaveIssue[] = $col;
-                    }
-                    if (gettype($this->calcPayout($col)) != 'int') {
-                        $col[] = $this->calcPayout($col);
-                        $this->columnHaveIssue[] = $col;
+                        if (gettype($this->calcRevenue($col)) != 'int') {
+                            $col[] = $this->calcRevenue($col);
+                            $this->columnHaveIssue[] = $col;
+                        }
+                        if (gettype($this->calcPayout($col)) != 'int') {
+                            $col[] = $this->calcPayout($col);
+                            $this->columnHaveIssue[] = $col;
+                        }
                     }
                 }
             } else {
