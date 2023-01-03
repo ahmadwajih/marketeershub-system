@@ -64,4 +64,12 @@ class Import implements WithEvents,OnEachRow
             },
         ];
     }
+    function containsOnlyNull($input): bool
+    {
+        return empty(array_filter(
+            $input,
+            function ($a) {return $a !== null;}
+        ));
+    }
 }
+
