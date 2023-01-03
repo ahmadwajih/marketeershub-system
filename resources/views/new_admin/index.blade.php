@@ -315,6 +315,42 @@
             </div>
             <!--end::Details-->
             <div class="separator"></div>
+            <div class="form">
+                <form class="mx-auto w-100 pt-5 pb-0" novalidate="novalidate" id="kt_modal_create_project_form" action="{{ route('admin.index') }}" method="get">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="fv-row mb-9">
+                                <!--begin::Label-->
+                                <label class="d-flex align-items-center fs-6 fw-semibold form-label mb-2">
+                                    <span class="required">From Date</span>
+                                    <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Specify project name"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="date" class="form-control form-control-solid" placeholder="Enter From Date"  value="{{ session('from_date') }}"  name="from_date" />
+                                <!--end::Input-->
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="fv-row mb-9">
+                                <!--begin::Label-->
+                                <label class="d-flex align-items-center fs-6 fw-semibold form-label mb-2">
+                                    <span class="required">To Date</span>
+                                    <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Specify project name"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="date" class="form-control form-control-solid" placeholder="Enter To Date"  value="{{ session('to_date') }}" name="to_date" />
+                                <!--end::Input-->
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-primary mt-9 btn-block">Change Dates</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="separator"></div>
             <!--begin::Nav-->
             <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
                 <!--begin::Nav item-->
