@@ -108,7 +108,7 @@
                 <!--end:Users-->
                 @endif
                 <!--end:Publishers-->
-                @can('view_roles') 
+                @can('view_roles')
                 <!--begin:Menu item-->
                 <div class="menu-item">
                    <!--begin:Menu link-->
@@ -163,7 +163,7 @@
                     <!--end:Menu link-->
                 </div
                 @endcan
-                @can('view_pivot_report') 
+                @can('view_pivot_report')
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -211,7 +211,7 @@
                     <!--end:Menu link-->
                 </div>
                 <!--end:Menu item-->
-             
+
                 @endcan
                 @can('view_coupons')
                    <!--begin:Menu item-->
@@ -265,7 +265,7 @@
                 <!--end:Menu item-->
                 @endcan
                 <!--end:Team Members-->
-                @can('view_advertisers') 
+                @can('view_advertisers')
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -286,7 +286,7 @@
                 </div>
                 <!--end:Menu item-->
                 @endcan
-                @can('view_targets') 
+                @can('view_targets')
                  <!--begin:Menu item-->
                  {{-- <div class="menu-item">
                     <!--begin:Menu link-->
@@ -308,7 +308,7 @@
                 </div> --}}
                 <!--end:Menu item-->
                 @endcan
-                @can('view_categories') 
+                @can('view_categories')
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -329,7 +329,7 @@
                 </div>
                 <!--end:Menu item-->
                 @endcan
-                @can('view_countries') 
+                @can('view_countries')
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -350,7 +350,7 @@
                 </div>
                 <!--end:Menu item-->
                 @endcan
-                @can('view_cites') 
+                @can('view_cites')
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -370,7 +370,7 @@
                 </div>
                 <!--end:Menu item-->
                 @endcan
-                @can('view_payments') 
+                @can('view_payments')
                  <!--begin:Menu item-->
                  <div class="menu-item">
                     <!--begin:Menu link-->
@@ -406,7 +406,7 @@
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                    
+
                         <span class="menu-title">Trashed</span>
                         <span class="menu-arrow"></span>
                     </span>
@@ -493,7 +493,30 @@
                     <!--end:Menu sub-->
                 </div>
                 @endcan
-    
+
+                @can('view_user_activities')
+                 <!--begin:Menu item-->
+                 <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link {{ Request::segment(2)=='user-activities'?'active':'' }}" href="{{ route('admin.user.activities.index') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/art/art007.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.28548 15.0861C7.34369 13.1814 9.35142 12 11.5304 12H12.4696C14.6486 12 16.6563 13.1814 17.7145 15.0861L19.3493 18.0287C20.0899 19.3618 19.1259 21 17.601 21H6.39903C4.87406 21 3.91012 19.3618 4.65071 18.0287L6.28548 15.0861Z" fill="currentColor" />
+                                    <rect opacity="0.3" x="8" y="3" width="8" height="8" rx="4" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+
+                        <span class="menu-title">User Activities</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+                @endcan
+
                 {{-- <!--begin:Menu item-->
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                     <!--begin:Menu link-->
@@ -558,7 +581,7 @@
                 </div>
                 <!--end:Menu item--> --}}
 
-   
+
                 @can('view_helps')
                 <!--begin:Menu item-->
                 <div class="menu-item pt-5">
