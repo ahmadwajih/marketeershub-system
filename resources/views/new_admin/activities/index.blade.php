@@ -1,45 +1,9 @@
 @extends('new_admin.layouts.app')
 @section('title', 'User Activites')
 @section('subtitle', 'View')
-@push('styles')
-    <style>
-        .uploading-progress-bar{
-            position: fixed;
-            z-index: 999;
-            background: #474761;
-            width: 37% !important;
-            height: 20% !important;
-            border-radius: 10px;
-            box-shadow: 8px 13px 33px 1px #171623;
-            margin: 151px;
-        }
-        .uploading-progress-bar .progress{
-            margin: 3% auto auto;
-            height: 26px;
-            width: 63%;
-        }
-        .progress-title{
-            margin-top: 10%;
-        }
-    </style>
-@endpush
+
 @section('content')
-    @if(isset(request()->success) && request()->success == 'true')
-        <!--begin::Alert-->
-        <div class="alert alert-success d-flex align-items-center p-5">
-            <!--begin::Icon-->
-            <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
-            <!--end::Icon-->
 
-
-            <!--begin::Close-->
-            <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-                <span class="svg-icon svg-icon-2x svg-icon-light"><i class="fa-solid fa-xmark fa-2x"></i></span>
-            </button>
-            <!--end::Close-->
-        </div>
-        <!--end::Alert-->
-    @endif
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
