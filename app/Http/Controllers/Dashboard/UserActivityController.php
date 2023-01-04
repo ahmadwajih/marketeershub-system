@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
 use App\Models\UserActivity;
-use App\Notifications\ApprovedUserProfileUpdates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\ApprovedUserProfileUpdates;
 
 class UserActivityController extends Controller
 {
@@ -19,12 +19,12 @@ class UserActivityController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view_user_activities');
-        if($request->ajax()){
-            $activities = getModelData('UserActivity', $request, ['user']);
-            return response()->json($activities);
-        }
-        return view('admin.activities.index');
 
+        $tableLength = session('table_length') ?? config('app.pagination_pages');
+
+        $activities = UserActivity::with('user')->paginate($tableLength);
+
+        return view('new_admin.activities.index', compact('activities'));
     }
 
     public function updateUserActivityApproval(Request $request){
@@ -42,7 +42,7 @@ class UserActivityController extends Controller
 
         $model = "App\Models\\".$request->object;
         $object = $model::findOrFail($request->object_id);
-       
+
         $data = [];
         foreach($request->keys as $index => $key){
             $data[$key] = $request->values[$index];
@@ -58,7 +58,7 @@ class UserActivityController extends Controller
         } catch (\Throwable $th) {
             Log::debug($th);
         }
-        
+
 
         return redirect()->back();
 
