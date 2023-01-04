@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,5 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class PublishersImport extends Import
 {
-
+    protected function handleCollection()
+    {
+    }
 }
