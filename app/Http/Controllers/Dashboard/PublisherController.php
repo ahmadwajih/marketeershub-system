@@ -710,20 +710,10 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
-
-        // Get all files in a directory
-        $files = Storage::allFiles("public/missing/publishers");
-        Storage::delete($files);
-        Storage::delete($this->module_name.'_importing_counts.json');
-        Storage::delete($this->module_name.'_failed_rows.json');
-        session()->put('_importing_counts', []);
-
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         $id = now()->unix();
-        session([ 'import' => $id ]);
         $data = ["id" => $id];
         Storage::put('publishers_import_data.json', json_encode($data));
-        $import_file = Storage::get("publishers_import_file.json");
         $team = $request->team;
         if ($team == 'affiliate') {
             Excel::queueImport(new AffiliatesImport($team,$id), $request->file('publishers')->store('files'));

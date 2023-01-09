@@ -26,9 +26,14 @@ class Import implements WithEvents,OnEachRow
     ];
 
     public string $module_name;
+    public string $exportClass;
+
     /**
      * @throws Exception
      */
+    protected array $failed_rows = [];
+    protected array $duplicated_rows = [];
+
     public function onRow(Row $row)
     {
         $rowIndex = $row->getIndex();
@@ -40,6 +45,12 @@ class Import implements WithEvents,OnEachRow
     {
         return [
             BeforeImport::class => function (BeforeImport $event) {
+                $files = Storage::allFiles("public/missing/$this->module_name");
+                Storage::delete($files);
+                Storage::delete($this->module_name.'_importing_counts.json');
+                Storage::delete($this->module_name.'_failed_rows.json');
+                Storage::delete($this->module_name.'_duplicated_rows.json');
+
                 ini_set('max_execution_time', 0);
                 ini_set('memory_limit', "4095M");
                 $totalRows = $event->getReader()->getTotalRows();
@@ -56,14 +67,15 @@ class Import implements WithEvents,OnEachRow
                 //Storage::delete($this->module_name.'_import_file.json');
                 //todo check if it's a good practice to save all this data in the session or not
                 $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+                $className = 'App\Exports\\'.$this->exportClass.'Export';
                 if(count($publishers_failed_rows)){
-                    Excel::store(new AffiliatesExport($publishers_failed_rows),
+                    Excel::store(new $className($publishers_failed_rows),
                         "public/missing/$this->module_name/failed/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
                 $publishers_duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
                 if(count($publishers_duplicated_rows)){
-                    Excel::store(new AffiliatesExport($publishers_failed_rows),
+                    Excel::store(new $className($publishers_duplicated_rows),
                         "public/missing/$this->module_name/duplicated/duplicated_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
@@ -76,6 +88,22 @@ class Import implements WithEvents,OnEachRow
             $input,
             function ($a) {return $a !== null;}
         ));
+    }
+    protected function getCurrentCount()
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+        }
+        /** @noinspection PhpUndefinedMethodInspection */
+        if (Storage::has($this->module_name.'_failed_rows.json')){
+            $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+        }
+        /** @noinspection PhpUndefinedMethodInspection */
+        if (Storage::has($this->module_name.'_duplicated_rows.json')){
+            $this->failed_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+        }
+        $this->importing_counts['rows_num'] = $this->importing_counts['rows_num']++;
     }
 }
 

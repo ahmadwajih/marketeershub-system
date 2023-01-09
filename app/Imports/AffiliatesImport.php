@@ -27,7 +27,8 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public int|null $currrencyId = null;
     public array $data = [];
     public string $module_name = 'publishers';
-    private array $failed_rows = [];
+    public string $exportClass = 'Affiliates';
+
     private int $columns_count = 21;
 
     public function __construct($team,$id)
@@ -47,16 +48,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
             $col_array = $col->toArray();
             $row = array_slice($col_array, 0, $this->columns_count, true);
             if($this->containsOnlyNull($row))continue;
-            if (Storage::has($this->module_name.'_importing_counts.json')){
-                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
-            }
-            if (Storage::has($this->module_name.'_failed_rows.json')){
-                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
-            }
-            $this->importing_counts['rows_num'] = $this->importing_counts['rows_num']++;
-
-            $col_array = $col->toArray();
-
+            $this->getCurrentCount();
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com')
@@ -74,10 +66,8 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     // Get Country ID
                     $countryName = $col[6] ?? $col[7];
                     $country = Country::select('id')->where('name_en', 'like', '%'.trim($countryName).'%')->orWhere('name_ar', 'like', '%'.trim($countryName).'%')->first();
-                    if($country){
-                        $this->countryId = $country->id;
-                    }
-                    // Get City Id
+                    if($country){$this->countryId = $country->id;}
+                    // Get City ID
                     $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
                     if($city){
                         $this->cityId = $city->id;
@@ -117,7 +107,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->email           = $col[1];
                     $publisher->name            = $publisher->name ?? $col[2];
-                    $publisher->gender          = $col[3] ?? 'male';
+                    $publisher->gender          = strtolower($col[3]) ?? 'male';
                     if ($this->status != $publisher->status){
                         $publisher->status = $this->status;
                     }
@@ -139,14 +129,10 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->save();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
-                        $original = $publisher->getOriginal(); // Array of original attributes...
-                        Log::debug( json_encode($original));
-                        $changes = $publisher->getChanges();
-                        Log::debug("changes");
-                        Log::debug( json_encode($changes));
                     }else{
                         // already updated
                         $this->importing_counts['duplicated']++;
+                        $this->duplicated_rows[] = $col_array;
                     }
                     Log::debug(implode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
                 }
@@ -193,6 +179,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
             }
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
+            Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
         }
     }
     public function chunkSize(): int

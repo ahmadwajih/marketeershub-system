@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @method static count()
  * @method static findOrFail(mixed $id)
+ * @method static where(array[] $array)
+ * @method static create(array $array)
  * @property mixed $report
  */
 class Coupon extends Model

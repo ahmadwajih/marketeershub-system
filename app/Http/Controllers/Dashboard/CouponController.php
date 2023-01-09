@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CouponController extends Controller
 {
@@ -31,12 +32,14 @@ class CouponController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     * @return Application|Factory|View|RedirectResponse
      * @throws AuthorizationException
      */
     public function index(Request $request)
     {
         $this->authorize('view_coupons');
         if(isset($request->success) && $request->success == 'true'){
+            //todo fix typo
             $couponsCountBeforUploading = session('coupons_count_before_uploading');
             $couponsCount = Coupon::count();
             $totalUploadedCoupons = $couponsCount - $couponsCountBeforUploading;
@@ -82,14 +85,30 @@ class CouponController extends Controller
         $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
         $offers = Offer::orderBy('id', 'desc')->get();
+        $import_file="";
+        $fileUrl = $this->bulk_import_result($import_file);
         return view('new_admin.coupons.index', [
             'countries' => $countries,
             'coupons' => $coupons,
             'offers' => $offers,
-            'publisherForFilter' => $publisherForFilter
+            'publisherForFilter' => $publisherForFilter,
+            'import_file'=>json_decode($import_file),
+            'fileUrl' => $fileUrl,
         ]);
     }
-
+    public function download($dir): BinaryFileResponse|string
+    {
+        ob_end_clean();
+        $path = storage_path("app/public/missing/$this->module_name/$dir/");
+        $filesInFolder = file_exists($path)?\File::files($path):[];
+        $count = count($filesInFolder);
+        if (file_exists($path) and $count) {
+            $array = pathinfo($filesInFolder[$count - 1]);
+            return response()->download($path . "/" . $array['basename']);
+        }
+        return "not found";
+    }
+    //todo fix func. name typo
     public function clearFilterSeassoions(): RedirectResponse
     {
         session()->forget('coupons_filter_offer_id');
@@ -426,21 +445,17 @@ class CouponController extends Controller
             'coupons'    => 'required|mimes:xlsx,csv',
         ]);
         session(['coupons_count_before_uploading' => Coupon::count()]);
-        Storage::put('coupons_import_file.json', $request->file('coupons')->store('files'));
         $id = now()->unix();
-        session([ 'import' => $id ]);
         $data = ["id" => $id];
         Storage::put($this->module_name.'_import_data.json', json_encode($data));
-        $import_file = Storage::get($this->module_name."_import_file.json");
         $offer_id = $request->offer_id;
-        Excel::queueImport(new CouponImport($offer_id,$id), $import_file);
+        Excel::queueImport(new CouponImport($offer_id,$id), $request->file('coupons')->store('files'));
         userActivity('Coupon', null, 'upload');
         return response([
             'offer_id' => $request->offer_id,
             'import_in_progress' => true,
         ]);
     }
-
     /**
      * @throws Exception
      * @noinspection PhpUndefinedMethodInspection
@@ -509,7 +524,7 @@ class CouponController extends Controller
                             }
                         }
                     }
-        
+
                     // If payout_cps_type is new_old
                     if ($request->payout_cps_type == 'new_old') {
                         if ($request->new_old_payout && count($request->new_old_payout) > 0) {
@@ -530,7 +545,7 @@ class CouponController extends Controller
                             }
                         }
                     }
-        
+
                     // If payout_cps_type is slaps
                     if ($request->payout_cps_type == 'slaps') {
                         if ($request->payout_slaps && count($request->payout_slaps) > 0) {

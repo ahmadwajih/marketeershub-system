@@ -41,7 +41,7 @@
 
 @endpush
 @section('content')
-    @if(isset(request()->success) && request()->success == 'true')
+    @if((isset(request()->success) && request()->success == 'true') || session()->has('message'))
          <!--begin::Alert-->
          <div class="alert alert-success d-flex align-items-center p-5">
             <!--begin::Icon-->
@@ -51,10 +51,30 @@
             <!--begin::Wrapper-->
             <div class="d-flex flex-column">
                 <!--begin::Title-->
-                <h4 class="mb-1 text-dark">Success</h4>
+{{--                <h4 class="mb-1 text-dark">Success</h4>--}}
                 <!--end::Title-->
                 <!--begin::Content-->
-                <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>
+{{--                <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>--}}
+                @if($import_file)
+                    <ul>
+                        <li>Added : {{ $import_file->new  }}</li>
+                        <li>Updated : {{ $import_file->updated }}</li>
+                        <li>Failed : {{ $import_file->failed }}
+                            @if($import_file->failed > 0)
+                                <a download href="{{ $fileUrl }}/failed" class="btn btn-danger btn-sm">Download</a>
+                            @endif
+                        </li>
+                        @if($import_file->duplicated > 0)
+                            <br/>
+                        @endif
+                        <li>
+                            Duplicated : {{ $import_file->duplicated }}
+                            @if($import_file->duplicated > 0)
+                                <a download href="{{ $fileUrl }}/duplicated" class="btn btn-danger btn-sm">Download</a>
+                            @endif
+                        </li>
+                    </ul>
+                @endif
                 <!--end::Content-->
             </div>
             <!--end::Wrapper-->

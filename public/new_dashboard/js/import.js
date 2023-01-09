@@ -10,6 +10,9 @@ $(document).ready(function() {
                 }).
                 done(function ({current_row, started, total_rows}) {
                     if(started === false){
+                        import_status = 1;
+                        $('#progress-bar-percentage').html('100%');
+                        $("#progress-bar").width("100%");
                         window.location.href = route + '?success=true';
                     }
                     if (started === true) {
