@@ -20,7 +20,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,WithStartRow,ShouldQueue
 {
-    public $team;
+    public string $team;
     public $status;
     public $countryId = null;
     public $cityId = null;
@@ -29,6 +29,8 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     public string $module_name = 'publishers';
     private array $failed_rows = [];
     private int $columns_count = 28;
+    private array $duplicated_rows = [];
+
     public function __construct($team,$id)
     {
         $this->team = $team;
@@ -42,19 +44,22 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
         //unset($collection[0]);
         foreach ($collection as $col)
         {
+            // todo: refactor - remove the duplicated code
+            // todo fix method not found
             $col_array = $col->toArray();
             $row = array_slice($col_array, 0, $this->columns_count, true);
             if ($this->containsOnlyNull($row)){continue;}
-            // todo: refactor - remove the duplicated code
-            // todo fix method not found
             if (Storage::has($this->module_name.'_importing_counts.json')){
                 $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
             }
             if (Storage::has($this->module_name.'_failed_rows.json')){
                 $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
             }
+            if (Storage::has($this->module_name.'_duplicated_rows.json')){
+                $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+            }
             $this->importing_counts['rows_num']++;
-            if(isset($col[3]) && isset($col[1]) && $col[1] != 'info@marketeershub.com'){
+            if(isset($col[3]) && isset($col[1]) && $col[3] != 'info@marketeershub.com'){
                 // Get Account Manager
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
                 if($accountManager){
@@ -107,6 +112,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     }else{
                         // already updated
                         $this->importing_counts['duplicated']++;
+                        $this->duplicated_rows[] = $col_array;
                     }
                     Log::debug( json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
                 }else{
@@ -214,6 +220,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
             }
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
+            Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
         }
     }
     public function chunkSize(): int

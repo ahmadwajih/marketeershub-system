@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Notification;
 use App\Facades\PublisherCharts;
@@ -50,8 +51,10 @@ class PublisherController extends Controller
      * @throws AuthorizationException
      * @noinspection PhpUndefinedFieldInspection
      */
-    public function index(Request $request)
+    public function index(Request $request): View|Factory|Application
     {
+        //todo check page slowness
+        //todo complete download duplicated feature
         $this->authorize('view_publishers');
         $tableLength = session('table_length') ?? config('app.pagination_pages');
         $query = User::query();
@@ -118,7 +121,7 @@ class PublisherController extends Controller
             $import_file = Storage::get($this->module_name.'_importing_counts.json');
         }
         $fileUrl = null;
-        $directory = "public/missing/publishers";
+        $directory = "public/missing/$this->module_name";
         $files = Storage::allFiles($directory);
         if($files){
             $fileUrl = route('admin.publishers.files.download');
@@ -128,16 +131,15 @@ class PublisherController extends Controller
             'accountManagers' =>  $accountManagers,
             'countries' => Country::all(),
             'publishers' => $publishers,
-            'import_file'=>$import_file,
+            'import_file'=>json_decode($import_file),
             'fileUrl' => $fileUrl,
         ]);
     }
-    public function download()
+    public function download($dir): BinaryFileResponse|string
     {
         ob_end_clean();
-        $path = storage_path('app/public/missing/'.$this->module_name);
+        $path = storage_path("app/public/missing/$this->module_name/$dir/");
         $filesInFolder = file_exists($path)?\File::files($path):[];
-
         $count = count($filesInFolder);
         if (file_exists($path) and $count) {
             $array = pathinfo($filesInFolder[$count - 1]);
@@ -145,7 +147,7 @@ class PublisherController extends Controller
         }
         return "not found";
     }
-    public function dashboard()
+    public function dashboard(): Factory|View|Application
     {
         $publisher = User::findOrFail(Auth::user()->id);
         return view('admin.publishers.new.dashboard', ['publisher' => $publisher]);

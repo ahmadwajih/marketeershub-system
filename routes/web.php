@@ -65,7 +65,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('publishers-check-exists', 'PublisherController@checkIfExists')->name('publishers.check.exists');
         Route::post('publishers/change/status', 'PublisherController@changeStatus');
         Route::get('publishers/clear/sessions', 'PublisherController@clearFilterSeassoions')->name('publishers.clear.sessions');
-        Route::get('publishers/files/download', 'PublisherController@download')->name('publishers.files.download');
+        Route::get('publishers/files/download/{dir?}', 'PublisherController@download')->name('publishers.files.download');
 
         // Publisher Profile
         Route::get('publisher/profile/{id?}', 'PublisherController@profile')->name('publisher.profile');

@@ -39,16 +39,25 @@
                 <!--end::Title-->
                 <!--begin::Content-->
                 <p> {{ __('The publishers is Uploaded Successfully.') }}</p>
-                @if($import_file != "" &&  gettype($import_file) == 'string')
+                @if($import_file != "")
                     <ul>
-                        <li>Added : {{ json_decode($import_file)->new  }}</li>
-                        <li>Updated : {{ json_decode($import_file)->updated }}</li>
-                        <li>Failed : {{ json_decode($import_file)->failed }}</li>
-                        <li>Duplicated : {{ json_decode($import_file)->duplicated }}</li>
+                        <li>Added : {{ $import_file->new  }}</li>
+                        <li>Updated : {{ $import_file->updated }}</li>
+                        <li>Failed : {{ $import_file->failed }}
+                            @if($import_file->failed > 0)
+                                <a download href="{{ $fileUrl }}/failed" class="btn btn-danger btn-sm">Download</a>
+                            @endif
+                        </li>
+                        @if($import_file->duplicated > 0)
+                            <br/>
+                        @endif
+                        <li>
+                            Duplicated : {{ $import_file->duplicated }}
+                            @if($import_file->duplicated > 0)
+                                <a download href="{{ $fileUrl }}/duplicated" class="btn btn-danger btn-sm">Download</a>
+                            @endif
+                        </li>
                     </ul>
-                    @if(json_decode($import_file)->failed && $fileUrl)
-                        <a download href="{{ $fileUrl }}" class="btn btn-danger btn-sm">Download Failed rows</a>
-                    @endif
                 @endif
                 <!--end::Content-->
             </div>
@@ -407,6 +416,7 @@
                     }).
                     done(function (data) {
                         if(data.started === false){
+                            import_status = 1;
                             window.location.href = route + '?success=true';
                         }
                         if (data.started === true) {
@@ -417,9 +427,10 @@
                     }).
                     fail(function (data) {
                         console.log('Job not added....' + data);
+                        import_status = 1;
                     });
                 }
-            }, 2000);
+            }, 2500);
         }
         </script>
     @endif
