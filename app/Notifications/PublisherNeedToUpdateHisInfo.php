@@ -44,7 +44,7 @@ class PublisherNeedToUpdateHisInfo extends Notification
     {
         return (new MailMessage)
                 ->line('There is an publisher need to update his personal information.')
-                ->line('Publisher name: ' . $this->publisher->name_en)
+                ->line('Publisher name: ' . $this->publisher->name)
                 ->line('Publisher email: ' . $this->publisher->email)
                 ->action('View Publisher', route('admin.publishers.show', $this->publisher->id));
     }
