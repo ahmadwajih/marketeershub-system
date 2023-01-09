@@ -444,7 +444,6 @@ class CouponController extends Controller
             'import_in_progress' => true,
         ]);
     }
-
     /**
      * @throws Exception
      * @noinspection PhpUndefinedMethodInspection

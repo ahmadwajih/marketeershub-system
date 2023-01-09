@@ -41,7 +41,7 @@
 
 @endpush
 @section('content')
-    @if(isset(request()->success) && request()->success == 'true')
+    @if((isset(request()->success) && request()->success == 'true') || auth()->user()->notifications->count() > 0)
          <!--begin::Alert-->
          <div class="alert alert-success d-flex align-items-center p-5">
             <!--begin::Icon-->
