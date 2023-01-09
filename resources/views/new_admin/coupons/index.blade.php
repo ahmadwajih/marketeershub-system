@@ -41,7 +41,7 @@
 
 @endpush
 @section('content')
-    @if((isset(request()->success) && request()->success == 'true') || auth()->user()->notifications->count() > 0)
+    @if((isset(request()->success) && request()->success == 'true') || session()->has('message'))
          <!--begin::Alert-->
          <div class="alert alert-success d-flex align-items-center p-5">
             <!--begin::Icon-->
@@ -51,10 +51,10 @@
             <!--begin::Wrapper-->
             <div class="d-flex flex-column">
                 <!--begin::Title-->
-                <h4 class="mb-1 text-dark">Success</h4>
+{{--                <h4 class="mb-1 text-dark">Success</h4>--}}
                 <!--end::Title-->
                 <!--begin::Content-->
-                <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>
+{{--                <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>--}}
                 @if($import_file)
                     <ul>
                         <li>Added : {{ $import_file->new  }}</li>
