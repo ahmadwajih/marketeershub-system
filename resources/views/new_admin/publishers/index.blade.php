@@ -39,7 +39,7 @@
                 <!--end::Title-->
                 <!--begin::Content-->
                 <p> {{ __('The publishers is Uploaded Successfully.') }}</p>
-                @if($import_file != "")
+                @if($import_file)
                     <ul>
                         <li>Added : {{ $import_file->new  }}</li>
                         <li>Updated : {{ $import_file->updated }}</li>

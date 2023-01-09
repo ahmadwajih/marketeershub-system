@@ -27,9 +27,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     public $accouManagerId = null;
     public $currrencyId = null;
     public string $module_name = 'publishers';
-    private array $failed_rows = [];
     private int $columns_count = 28;
-    private array $duplicated_rows = [];
 
     public function __construct($team,$id)
     {

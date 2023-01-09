@@ -6,6 +6,7 @@ use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,21 +36,20 @@ class CouponImport extends Import implements ToCollection, WithStartRow,WithChun
             '*.0' => 'required|max:20',
         ])->validate();
 
-        foreach ($collection as $index => $col) {
-
+        foreach ($collection as $col) {
+            $col_array = $col->toArray();
+            if($this->containsOnlyNull($col_array))continue;
+            $this->getCurrentCount();
             if (!is_null($col[0])) {
                 $userId = null;
-                if (!is_null($col[1]) && isset($col[1])) {
+                if (isset($col[1])) {
                     if ($col[1] == 1000 || $col[1] == 'inf-1000' || $col[1] == 'aff-1000') {
                         $publisher = User::where('email', 'info@marketeershub.com')->first();
-                        if ($publisher) {
-                            $userId = $publisher->id;
-                        }
                     } else {
                         $publisher = User::where('id', $col[1])->first();
-                        if ($publisher) {
-                            $userId = $publisher->id;
-                        }
+                    }
+                    if ($publisher) {
+                        $userId = $publisher->id;
                     }
                 }
                 $coupon = Coupon::where([
@@ -65,6 +65,13 @@ class CouponImport extends Import implements ToCollection, WithStartRow,WithChun
                 if ($coupon) {
                     $coupon->user_id = $userId;
                     $coupon->save();
+                    if ($coupon->wasChanged()){
+                        $this->importing_counts['updated']++;
+                    }else{
+                        // already updated
+                        $this->importing_counts['duplicated']++;
+                        $this->duplicated_rows[] = $col_array;
+                    }
                     $this->totlaUpdatedSuccessfully++;
                 } else {
                     Coupon::create([
@@ -72,10 +79,20 @@ class CouponImport extends Import implements ToCollection, WithStartRow,WithChun
                         'offer_id' => $this->offerId,
                         'user_id' => $userId,
                     ]);
+                    $this->importing_counts['new']++;
                     $this->totlaCreatedSuccessfully++;
                 }
                 $this->totlaUploadedSuccessfully++;
+            }else{
+                if (!$this->containsOnlyNull($col_array)){
+                    $this->importing_counts['failed']++;
+                    $this->failed_rows[] = $col_array;
+                }
             }
+            Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
+            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
+            Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
+
         }
     }
     public function startRow(): int

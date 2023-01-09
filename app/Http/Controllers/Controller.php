@@ -6,15 +6,25 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Storage;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function execute_command(string $command)
+    public string $module_name = '';
+
+    protected function bulk_import_result(&$import_file): ?string
     {
-        shell_exec(
-            "/usr/local/bin/ea-php80 /home/systemmh/public_html/artisan $command > /dev/null &"
-        );
+        /** @noinspection PhpUndefinedMethodInspection */
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $import_file = Storage::get($this->module_name.'_importing_counts.json');
+        }
+        $directory = "public/missing/$this->module_name";
+        $files = Storage::allFiles($directory);
+        if($files){
+            return route('admin.publishers.files.download');
+        }
+        return null;
     }
 }

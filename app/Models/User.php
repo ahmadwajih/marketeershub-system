@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
  * @method static whereEmail(string $string)
  * @method static select(string $string)
  * @method static create(array $array)
+ * @method static whereStatus(string $string)
  */
 class User extends Authenticatable
 {
