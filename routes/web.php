@@ -110,6 +110,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::get('coupons/bulk-edit', 'CouponController@bulkEdit')->name('coupons.bulk.edit');
         Route::post('coupons/bulk-update', 'CouponController@bulckUpdate')->name('coupons.bulk.update');
         Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
+        Route::get('coupons/files/download/{dir?}', 'CouponController@download')->name('coupons.files.download');
+
         Route::get('trashed', 'TrashedController@index')->name('trashed.index');
         Route::put('trashed/restore', 'TrashedController@restore')->name('trashed.restore');
 

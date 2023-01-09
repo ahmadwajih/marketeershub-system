@@ -23,7 +23,7 @@ class Controller extends BaseController
         $directory = "public/missing/$this->module_name";
         $files = Storage::allFiles($directory);
         if($files){
-            return route('admin.publishers.files.download');
+            return route("admin.$this->module_name.files.download");
         }
         return null;
     }

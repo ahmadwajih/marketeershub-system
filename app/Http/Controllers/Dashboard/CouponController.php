@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CouponController extends Controller
 {
@@ -95,7 +96,18 @@ class CouponController extends Controller
             'fileUrl' => $fileUrl,
         ]);
     }
-
+    public function download($dir): BinaryFileResponse|string
+    {
+        ob_end_clean();
+        $path = storage_path("app/public/missing/$this->module_name/$dir/");
+        $filesInFolder = file_exists($path)?\File::files($path):[];
+        $count = count($filesInFolder);
+        if (file_exists($path) and $count) {
+            $array = pathinfo($filesInFolder[$count - 1]);
+            return response()->download($path . "/" . $array['basename']);
+        }
+        return "not found";
+    }
     //todo fix func. name typo
     public function clearFilterSeassoions(): RedirectResponse
     {

@@ -22,6 +22,8 @@ class CouponImport extends Import implements ToCollection, WithStartRow,WithChun
     public $totlaUpdatedSuccessfully = 0;
     public int $totlaCreatedSuccessfully = 0;
 
+    public string $exportClass = 'Coupons';
+
     public function __construct($offerId,$id)
     {
         $this->offerId = $offerId;

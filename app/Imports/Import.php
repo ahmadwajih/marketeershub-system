@@ -26,6 +26,8 @@ class Import implements WithEvents,OnEachRow
     ];
 
     public string $module_name;
+    public string $exportClass;
+
     /**
      * @throws Exception
      */
@@ -65,14 +67,15 @@ class Import implements WithEvents,OnEachRow
                 //Storage::delete($this->module_name.'_import_file.json');
                 //todo check if it's a good practice to save all this data in the session or not
                 $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+                $className = 'App\Exports\\'.$this->exportClass.'Export';
                 if(count($publishers_failed_rows)){
-                    Excel::store(new AffiliatesExport($publishers_failed_rows),
+                    Excel::store(new $className($publishers_failed_rows),
                         "public/missing/$this->module_name/failed/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
                 $publishers_duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
                 if(count($publishers_duplicated_rows)){
-                    Excel::store(new AffiliatesExport($publishers_duplicated_rows),
+                    Excel::store(new $className($publishers_duplicated_rows),
                         "public/missing/$this->module_name/duplicated/duplicated_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
                 }
