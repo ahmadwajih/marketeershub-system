@@ -117,7 +117,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->email           = $col[1];
                     $publisher->name            = $publisher->name ?? $col[2];
-                    $publisher->gender          = $col[3] ?? 'male';
+                    $publisher->gender          = strtolower($col[3]) ?? 'male';
                     if ($this->status != $publisher->status){
                         $publisher->status = $this->status;
                     }
