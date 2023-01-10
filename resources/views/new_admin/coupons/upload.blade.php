@@ -77,7 +77,7 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="offer_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
+                                                <option selected value="">{{ __('Please select offer') }}</option>
                                                 @foreach($offers as $offer)
                                                         <option {{old('offer_id')==$offer->id?"selected":""}} value="{{$offer->id}}">{{$offer->name}}</option>
                                                     @endforeach
