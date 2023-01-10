@@ -29,7 +29,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     public string $module_name = 'publishers';
     private int $columns_count = 28;
 
-    public string $exportClass = 'Affiliates';
+    public string $exportClass = 'Influencers';
 
     public function __construct($team,$id)
     {
