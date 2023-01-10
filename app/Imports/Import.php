@@ -45,11 +45,6 @@ class Import implements WithEvents,OnEachRow
     {
         return [
             BeforeImport::class => function (BeforeImport $event) {
-                $files = Storage::allFiles("public/missing/$this->module_name");
-                Storage::delete($files);
-                Storage::delete($this->module_name.'_importing_counts.json');
-                Storage::delete($this->module_name.'_failed_rows.json');
-                Storage::delete($this->module_name.'_duplicated_rows.json');
 
                 ini_set('max_execution_time', 0);
                 ini_set('memory_limit', "4095M");
@@ -91,19 +86,7 @@ class Import implements WithEvents,OnEachRow
     }
     protected function getCurrentCount()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        if (Storage::has($this->module_name.'_importing_counts.json')){
-            $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
-        }
-        /** @noinspection PhpUndefinedMethodInspection */
-        if (Storage::has($this->module_name.'_failed_rows.json')){
-            $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
-        }
-        /** @noinspection PhpUndefinedMethodInspection */
-        if (Storage::has($this->module_name.'_duplicated_rows.json')){
-            $this->failed_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
-        }
-        $this->importing_counts['rows_num'] = $this->importing_counts['rows_num']++;
+
     }
 }
 

@@ -710,6 +710,13 @@ class PublisherController extends Controller
             'team'       => 'required|in:management,digital_operation,finance,media_buying,influencer,affiliate',
             'publishers' => 'required|mimes:xlsx,csv',
         ]);
+
+        $files = Storage::allFiles("public/missing/$this->module_name");
+        Storage::delete($files);
+        Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
+        Storage::delete($this->module_name.'_duplicated_rows.json');
+
         Storage::put('publishers_import_file.json', $request->file('publishers')->store('files'));
         $id = now()->unix();
         $data = ["id" => $id];

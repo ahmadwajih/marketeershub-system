@@ -41,7 +41,19 @@ class CouponImport extends Import implements ToCollection, WithStartRow,WithChun
         foreach ($collection as $col) {
             $col_array = $col->toArray();
             if($this->containsOnlyNull($col_array))continue;
-            $this->getCurrentCount();
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_importing_counts.json')){
+                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_failed_rows.json')){
+                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_duplicated_rows.json')){
+                $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+            }
+            $this->importing_counts['rows_num']++;
             if (!is_null($col[0])) {
                 $userId = null;
                 if (isset($col[1])) {
@@ -94,7 +106,6 @@ class CouponImport extends Import implements ToCollection, WithStartRow,WithChun
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
             Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
-
         }
     }
     public function startRow(): int

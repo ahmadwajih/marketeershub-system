@@ -444,6 +444,13 @@ class CouponController extends Controller
             'offer_id'   => 'required|exists:offers,id',
             'coupons'    => 'required|mimes:xlsx,csv',
         ]);
+
+        $files = Storage::allFiles("public/missing/$this->module_name");
+        Storage::delete($files);
+        Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
+        Storage::delete($this->module_name.'_duplicated_rows.json');
+
         session(['coupons_count_before_uploading' => Coupon::count()]);
         $id = now()->unix();
         $data = ["id" => $id];
