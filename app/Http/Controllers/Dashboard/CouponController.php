@@ -437,7 +437,7 @@ class CouponController extends Controller
      * @return Application|ResponseFactory|Response
      * @throws AuthorizationException
      */
-    public function upload(\App\Http\Requests\Request $request): Response|Application|ResponseFactory
+    public function upload(\App\Http\Requests\Request $request)
     {
         $this->authorize('create_coupons');
         $request->validate([
@@ -458,10 +458,8 @@ class CouponController extends Controller
         $offer_id = $request->offer_id;
         Excel::queueImport(new CouponImport($offer_id,$id), $request->file('coupons')->store('files'));
         userActivity('Coupon', null, 'upload');
-        return response([
-            'offer_id' => $request->offer_id,
-            'import_in_progress' => true,
-        ]);
+        return redirect()->route('admin.coupons.index', ['uploading'=> 'true']);
+
     }
     /**
      * @throws Exception

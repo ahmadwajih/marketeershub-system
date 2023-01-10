@@ -145,21 +145,8 @@
     <script>
         let route = "{{ route('admin.publishers.index') }}";
         document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
-            event.preventDefault();
             $("#loading-button").removeClass("d-none");
             $("#kt_ecommerce_add_product_submit").addClass("d-none");
-            try {
-                const resp = await fetch(event.target.action, {
-                    method: "POST",
-                    body: new FormData(event.target),
-                });
-                const body = await resp.json();
-                console.log(body);
-            }
-            catch (e) {
-                console.log(e);
-            }
-            window.location.href = route + '?uploading=true';
         });
     </script>
 @endpush

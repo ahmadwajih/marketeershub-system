@@ -731,10 +731,8 @@ class PublisherController extends Controller
 //            $this->execute_command("import:publishers $request->team");
         }
         userActivity('User', null, 'upload', 'Upload Publishers');
-        return response([
-            'team' => $request->team,
-            'import_in_progress' => true,
-        ]);
+        return redirect()->route('admin.publishers.index', ['uploading'=> 'true']);
+
     }
 
     /**
