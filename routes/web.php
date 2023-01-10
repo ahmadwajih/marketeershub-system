@@ -30,7 +30,6 @@ Route::get('/', function () {
 // Dashboard Routes
 Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.'], function(){
     Route::post('mh-login', 'AuthController@login')->name('mh-login');
-
     Route::get('change-lang/{lang}', 'DashboardController@changeLang')->name('change.lang');
     Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
@@ -47,7 +46,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::get('ajax/categories-based-on-team', 'AjaxController@getCategoriesBasedOnTeam')->name('get.categories.based.on.team');
     //End Auth ajax requests
 
-    Route::middleware(['auth:web'])->group(function (){
+    Route::middleware(['auth:web','dashboard'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         // Charts
         Route::get('charts/offers-analytics', 'DashboardController@chartOffersAnalytics')->name('chart.offers-analytics');
@@ -169,14 +168,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     });
 });
 
-
 // Salla Routes
 Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.'], function(){
-
     Route::get('install', 'SallaInfoController@installApp');
     Route::view('success', 'admin.salla.install-success')->name('installed.successfully');
     Route::view('failed', 'admin.salla.install-failed')->name('installed.failed');
-
 });
 
 
