@@ -24,7 +24,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 // Web Routes
 
 // Dashboard Routes
@@ -146,7 +145,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('chat/single/{user?}', 'ChatController@singleChat')->name('chat.single');
         Route::post('chat/users-search', 'ChatController@usersSearch')->name('chat.users.search');
 
-        Route::post('logout', 'AuthController@logout')->name('logout');
+        Route::group([
+            'excluded_middleware' => ['dashboard'],
+        ], function () {
+            Route::post('logout', 'AuthController@logout')->name('logout');
+        });
 
         // Ajax requests
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
@@ -174,7 +177,6 @@ Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.']
     Route::view('success', 'admin.salla.install-success')->name('installed.successfully');
     Route::view('failed', 'admin.salla.install-failed')->name('installed.failed');
 });
-
 
 Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
 Route::get('test', 'Dashboard\DashboardController@test')->name("test");

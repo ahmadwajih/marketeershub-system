@@ -23,6 +23,6 @@ class DashboardMiddleware
         if (\auth()->user() && auth()->user()->position != "publisher") {
             return $next($request);
         }
-        return redirect('/publisher/home');
+        return redirect('/publisher');
     }
 }
