@@ -48,7 +48,19 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
             $col_array = $col->toArray();
             $row = array_slice($col_array, 0, $this->columns_count, true);
             if($this->containsOnlyNull($row))continue;
-            $this->getCurrentCount();
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_importing_counts.json')){
+                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_failed_rows.json')){
+                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_duplicated_rows.json')){
+                $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+            }
+            $this->importing_counts['rows_num']++;
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
             if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com')
@@ -172,10 +184,8 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $this->currrencyId = null;
             }
             else{
-                if (!$this->containsOnlyNull($col_array)){
-                    $this->importing_counts['failed']++;
-                    $this->failed_rows[] = $col_array;
-                }
+                $this->importing_counts['failed']++;
+                $this->failed_rows[] = $col_array;
             }
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
