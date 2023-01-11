@@ -34,6 +34,7 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     public $payout;
     public $columnHaveIssue = [];
     public $id;
+    private string $module_name = "pivot_report";
 
     public function __construct($offerId, $type, int $id)
     {
@@ -68,62 +69,43 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
 //                '*.5' => 'required|numeric',
 //            ])->validate();
 //        }
-        foreach ($collection as $index => $col) {
-            $col_array = $col->toArray();
+        foreach ($collection as  $col) {
+            $col = $col->toArray();
+            $col = array_slice($col, 0, 8, true);
+
+            if (Storage::has($this->module_name.'_failed_rows.json')){
+                $this->columnHaveIssue = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            }
             // skip if contains null only
-            $row = array_slice($col_array, 0, 8, true);
-            if ($this->containsOnlyNull($row)) continue;
+            if ($this->containsOnlyNull($col)) continue;
             try {
                 $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
-                Log::info(['date' =>  $col[0]]);
-            } catch (\Throwable $th) {
-                $this->columnHaveIssue[] = ['Please make sure the first column is valid date.'];
-                session(['columnHaveIssue' => $this->columnHaveIssue]);
-                Log::info($this->columnHaveIssue);
-                //return false;
-            }
-            try {
-                // 1- Fixed Model
-                if ($col[1]) {
-                    $coupon  = Coupon::where([
-                        ['coupon', '=', $col[1]],
-                        ['offer_id', '=', $this->offerId]
-                    ])->first();
-                }
-                // Check if this coupons is belong to user in the same team
-                if ($coupon) {
-                    if (!$coupon->user) {
-                        $coupon->user_id = marketersHubPublisherInfo()->id;
-                        $coupon->update();
-                        $col[] = 'Coupons Not assigned';
-                        $this->columnHaveIssue[] = $col;
+                Log::info(implode(['date' =>  $col[0]]));
+                try {
+                    // 1- Fixed Model
+                    if ($col[1]) {
+                        $coupon  = Coupon::where([
+                            ['coupon', '=', $col[1]],
+                            ['offer_id', '=', $this->offerId]
+                        ])->first();
                     }
-                    $this->coupon = $coupon;
-                    //Cheeck If exists
-                    $pivotReport  = PivotReport::where([
-                        ['coupon_id', '=', $coupon->id],
-                        ['date', '=', $col[0]->format('Y-m-d')],
-                    ])->first();
+                    // Check if this coupons is belong to user in the same team
+                    if ($coupon) {
+                        if (!$coupon->user) {
+                            $coupon->user_id = marketersHubPublisherInfo()->id;
+                            $coupon->update();
+                            $col[] = 'Coupons Not assigned';
+                            $this->columnHaveIssue[] = $col;
+                        }
+                        $this->coupon = $coupon;
+                        //Cheeck If exists
+                        $pivotReport  = PivotReport::where([
+                            ['coupon_id', '=', $coupon->id],
+                            ['date', '=', $col[0]->format('Y-m-d')],
+                        ])->first();
 
-
-                    if ($pivotReport) {
-                        $pivotReport->update([
-                            'coupon_id' => $coupon->id,
-                            'user_id' => $coupon->user_id,
-                            'orders' => $col[2],
-                            'sales' => $col[3],
-                            'revenue' => $this->calcRevenue($col),
-                            'payout' => $this->calcPayout($col),
-                            'type' => $this->type,
-                            // 'date' => $col[0]->format('Y-m-d'),
-                            'offer_id' => $this->offerId,
-                        ]);
-                        $col[] = "Dublicate date for same coupon in same day";
-                        $this->columnHaveIssue[] = $col;
-                    }
-                    else {
-                        if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
-                            PivotReport::create([
+                        if ($pivotReport) {
+                            $pivotReport->update([
                                 'coupon_id' => $coupon->id,
                                 'user_id' => $coupon->user_id,
                                 'orders' => $col[2],
@@ -131,39 +113,63 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                                 'revenue' => $this->calcRevenue($col),
                                 'payout' => $this->calcPayout($col),
                                 'type' => $this->type,
-                                'date' => $col[0]->format('Y-m-d'),
+                                // 'date' => $col[0]->format('Y-m-d'),
                                 'offer_id' => $this->offerId,
                             ]);
-                        } else {
+                            $col[] = "Duplicate date for same coupon in same day";
+                            $this->columnHaveIssue[] = $col;
+                        }
+                        else {
+                            if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
+                                PivotReport::create([
+                                    'coupon_id' => $coupon->id,
+                                    'user_id' => $coupon->user_id,
+                                    'orders' => $col[2],
+                                    'sales' => $col[3],
+                                    'revenue' => $this->calcRevenue($col),
+                                    'payout' => $this->calcPayout($col),
+                                    'type' => $this->type,
+                                    'date' => $col[0]->format('Y-m-d'),
+                                    'offer_id' => $this->offerId,
+                                ]);
+                            } else {
 
-                            if (gettype($this->calcRevenue($col)) != 'int') {
-                                $col[] = $this->calcRevenue($col);
-                                $this->columnHaveIssue[] = $col;
-                            }
-                            if (gettype($this->calcPayout($col)) != 'int') {
-                                $col[] = $this->calcPayout($col);
-                                $this->columnHaveIssue[] = $col;
+                                if (gettype($this->calcRevenue($col)) != 'int') {
+                                    $col[] = $this->calcRevenue($col);
+                                    $this->columnHaveIssue[] = $col;
+                                }
+                                if (gettype($this->calcPayout($col)) != 'int') {
+                                    $col[] = $this->calcPayout($col);
+                                    $this->columnHaveIssue[] = $col;
+                                }
                             }
                         }
                     }
-                }
-                else {
+                    else {
 
-                    // $coupon = Coupon::create([
-                    //     'coupon' => $col[0],
-                    //     'offer_id' => $this->offerId,
-                    //     'user_id' => marketersHubPublisherInfo()->id // here add marketeers hub affiliate default publisher account
-                    // ]);
-                    $col[] = "Coupons doesn't exists";
+                        // $coupon = Coupon::create([
+                        //     'coupon' => $col[0],
+                        //     'offer_id' => $this->offerId,
+                        //     'user_id' => marketersHubPublisherInfo()->id // here add marketeers hub affiliate default publisher account
+                        // ]);
+                        $col[] = "Coupons doesn't exists";
+                        $this->columnHaveIssue[] = $col;
+                    }
+                } catch (\Throwable $th) {
+                    $col[] = $th->getMessage();
                     $this->columnHaveIssue[] = $col;
+                    session(['columnHaveIssue' => $this->columnHaveIssue]);
+                    Log::debug( $th->getMessage());
+                    Log::debug( implode(['status' => 'error', '$col' => $col]));
                 }
             } catch (\Throwable $th) {
-                $col_array[] = $th->getMessage();
-                $this->columnHaveIssue[] = $col_array;
+                $col[] = 'Please make sure the first column is valid date.';
+                $this->columnHaveIssue[] = $col;
+
                 session(['columnHaveIssue' => $this->columnHaveIssue]);
-                Log::debug( $th->getMessage());
-                Log::debug( implode(['status' => 'error', '$col' => $col]));
+                Log::info($this->columnHaveIssue);
             }
+            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->columnHaveIssue));
         }
         session(['columnHaveIssue' => $this->columnHaveIssue]);
     }
@@ -440,6 +446,12 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                 cache()->forget("start_date_{$this->id}");
                 cache()->forget("current_row_{$this->id}");
                 Storage::delete('pivot_report_import.txt');
+                $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+                if(count($publishers_failed_rows)){
+                    Excel::store(new PivotReportErrorsExport($publishers_failed_rows),
+                        "public/missing/$this->module_name/failed/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
+                    );
+                }
             },
         ];
     }
