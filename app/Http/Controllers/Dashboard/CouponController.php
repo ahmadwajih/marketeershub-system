@@ -164,6 +164,9 @@ class CouponController extends Controller
                 'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
                 'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
                 'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
+
+                'static_payout.*.from_date' => 'nullable|date|before:to_date',
+                'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
             ]);
         }
         $data['coupon'] = strtolower(trim(str_replace(' ', '', trim($request->coupon))));
@@ -297,6 +300,9 @@ class CouponController extends Controller
             'coupon'          => 'required|max:255',
             'offer_id'        => 'required|numeric|exists:offers,id',
             'user_id'        => 'nullable|numeric|exists:users,id',
+
+            'static_payout.*.from_date' => 'nullable|date|before:to_date',
+            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
             // Payout Validation
             // 'payout_cps_type' => 'required_if:have_custom_payout,on|in:static,new_old,slaps',
             // 'static_payout_type' => 'required_if:payout_cps_type,static|in:flat,percentage',
@@ -498,6 +504,10 @@ class CouponController extends Controller
 
     public function bulckUpdate(Request $request)
     {
+        $request->validate([
+            'static_payout.*.from_date' => 'nullable|date|before:to_date',
+            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
+        ]);
         if (count($request->item_check) > 0) {
             foreach ($request->item_check as $couponId) {
                 $coupon = Coupon::findOrFail($couponId);
