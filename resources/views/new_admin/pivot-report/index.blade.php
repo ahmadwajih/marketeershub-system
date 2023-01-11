@@ -48,6 +48,10 @@
             <!--end::Close-->
         </div>
         <!--end::Alert-->
+
+        @if(session('columnHaveIssue'))
+            <a class="btn btn-danger" href="{{ route('admin.reports.deonload.errore') }}">Download Errors</a>
+        @endif
     @endif
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->

@@ -110,7 +110,7 @@
                                         <a id="download_btn" href="javascript:void(0)" class="btn btn-primary mt-3 btn-block d-none" download>{{ __('Select Offer First') }}</a>
                                     </div>
                                     @if(session('columnHaveIssue'))
-                                        <a class="btn btn-danger" href="{{ route('admin.reports.deonload.errore') }}">Donlowad Errors</a>
+                                        <a class="btn btn-danger" href="{{ route('admin.reports.deonload.errore') }}">Download Errors</a>
                                     @endif
 
                                 </div>

@@ -28,9 +28,10 @@ class ResetPassword extends Mailable
      */
     public function build()
     {
-        return  $this   ->from('bd@marketeershub.com', 'Business Development - MarketeersHub')
+        return  $this->from(env("MAIL_FROM_ADDRESS"), 'Business Development - MarketeersHub')
                         ->subject('Reset Password')
                         ->view('mails.resetPassword')
-                        ->with(['code' =>$this->code]);
+                        ->with(['code' =>$this->code])
+            ;
     }
 }

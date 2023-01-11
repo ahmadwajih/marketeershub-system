@@ -21,6 +21,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PivotReportController extends Controller
 {
+    public string $module_name = "pivot_report";
+
     /**
      * Display a listing of the resource.
      *
@@ -64,6 +66,10 @@ class PivotReportController extends Controller
         $reports = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $offers = Offer::orderBy('id', 'desc')->get();
 
+        if (Storage::has($this->module_name.'_failed_rows.json')){
+            $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            session(['columnHaveIssue' => $publishers_failed_rows]);
+        }
         return view('new_admin.pivot-report.index', [
             'reports' => $reports,
             'offers' => $offers,
@@ -103,6 +109,12 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
+        $files = Storage::allFiles("public/missing/$this->module_name");
+        Storage::delete($files);
+        Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
+        Storage::delete($this->module_name.'_duplicated_rows.json');
+
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
         $id = now()->unix();
         session([ 'import' => $id ]);
@@ -137,12 +149,15 @@ class PivotReportController extends Controller
     }
     public function downloadErrors()
     {
-        if (session('columnHaveIssue')) {
-            $errors = session('columnHaveIssue');
-            session()->forget('columnHaveIssue');
-            return Excel::download(new PivotReportErrorsExport($errors), 'errors.csv', \Maatwebsite\Excel\Excel::CSV);
+        ob_end_clean();
+        $path = storage_path("app/public/missing/$this->module_name/failed");
+        $filesInFolder = file_exists($path)?\File::files($path):[];
+        $count = count($filesInFolder);
+        if (file_exists($path) and $count) {
+            $array = pathinfo($filesInFolder[$count - 1]);
+            return response()->download($path . "/" . $array['basename']);
         }
-        return redirect()->back();
+        return "not found";
     }
 
     /**
