@@ -169,6 +169,11 @@ class OfferController extends Controller
             'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
 
+            'static_revenue.*.from_date' => 'nullable|date|before:to_date',
+            'new_old_revenue.*.from_date' => 'nullable|date|before:to_date',
+            'static_payout.*.from_date' => 'nullable|date|before:to_date',
+            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
+
 
         ]);
 
@@ -340,7 +345,7 @@ class OfferController extends Controller
         }
 
 
-        // If this offer is with salla partener 
+        // If this offer is with salla partener
         if ($request->partener == 'salla') {
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
@@ -394,7 +399,7 @@ class OfferController extends Controller
 
             ->get();
 
-        // Get Coupons 
+        // Get Coupons
         $query = Coupon::query();
 
         // Filter
@@ -450,8 +455,9 @@ class OfferController extends Controller
      */
     public function update(Request $request, Offer $offer)
     {
-        // dd($request->all());
+        //  dd($request->all());
         $this->authorize('update_offers');
+
         $data = $request->validate([
             // Genral Info
             'name_en' => 'required|max:255',
@@ -499,6 +505,11 @@ class OfferController extends Controller
             'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
+
+            'static_revenue.*.from_date' => 'date|nullable|before:to_date',
+            'new_old_revenue.*.from_date' =>'date|nullable|before:to_date',
+            'static_payout.*.from_date' => 'date|nullable|before:to_date',
+            'new_old_payout.*.from_date' => 'date|nullable|before:to_date',
 
 
         ]);
@@ -659,7 +670,7 @@ class OfferController extends Controller
 
 
 
-        // If this offer is with salla partener 
+        // If this offer is with salla partener
         if ($request->partener == 'salla') {
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
