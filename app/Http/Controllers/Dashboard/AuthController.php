@@ -195,7 +195,7 @@ class AuthController extends Controller
         $code = rand(11111, 99999);
         Mail::to($request->email)->send(new ResetPassword($code));
         session(['reset_password_code' => $code, 'email' => $request->email]);
-        return response()->json(true, 200);
+        return response()->json(["success"], 200);
         // return redirect()->route('admin.reset.password.form');
     }
 
