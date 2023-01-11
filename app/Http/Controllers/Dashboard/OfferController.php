@@ -169,10 +169,10 @@ class OfferController extends Controller
             'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
 
-            'static_revenue.*.from_date' => 'nullable|date|before:to_date',
-            'new_old_revenue.*.from_date' => 'nullable|date|before:to_date',
-            'static_payout.*.from_date' => 'nullable|date|before:to_date',
-            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
+            // 'static_revenue.*.from_date' => 'nullable|date|before:to_date',
+            // 'new_old_revenue.*.from_date' => 'nullable|date|before:to_date',
+            // 'static_payout.*.from_date' => 'nullable|date|before:to_date',
+            // 'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
 
 
         ]);
@@ -506,10 +506,10 @@ class OfferController extends Controller
             'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
 
-            'static_revenue.*.from_date' => 'date|nullable|before:to_date',
-            'new_old_revenue.*.from_date' =>'date|nullable|before:to_date',
-            'static_payout.*.from_date' => 'date|nullable|before:to_date',
-            'new_old_payout.*.from_date' => 'date|nullable|before:to_date',
+            // 'static_revenue.*.from_date' => 'date|nullable|before:to_date',
+            // 'new_old_revenue.*.from_date' =>'date|nullable|before:to_date',
+            // 'static_payout.*.from_date' => 'date|nullable|before:to_date',
+            // 'new_old_payout.*.from_date' => 'date|nullable|before:to_date',
 
 
         ]);
