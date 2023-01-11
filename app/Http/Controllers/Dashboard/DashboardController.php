@@ -121,7 +121,7 @@ class DashboardController extends Controller
 
 
         // Totals 
-        Cache::remember('total_users', 60 * 60 * 60 * 24, function () {
+        Cache::remember('total_users', 60 * 60, function () {
             return User::select('team', 'position')->get();
         });
 
