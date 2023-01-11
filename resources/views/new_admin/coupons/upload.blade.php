@@ -77,7 +77,7 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="offer_id" data-control="select2" class="form-select">
-                                                <option selected value="">{{ __('No one') }}</option>
+                                                <option selected value="">{{ __('Please select offer') }}</option>
                                                 @foreach($offers as $offer)
                                                         <option {{old('offer_id')==$offer->id?"selected":""}} value="{{$offer->id}}">{{$offer->name}}</option>
                                                     @endforeach
@@ -151,21 +151,21 @@
     <script>let route = "{{ route('admin.coupons.index') }}";</script>
     <script>
         document.forms["kt_ecommerce_add_product_form"].addEventListener("submit", async (event) => {
-            event.preventDefault();
+           // event.preventDefault();
             $("#loading-button").removeClass("d-none");
             $("#kt_ecommerce_add_product_submit").addClass("d-none")
-            try {
-                const resp = await fetch(event.target.action, {
-                    method: "POST",
-                    body: new FormData(event.target),
-                });
-                const body = await resp.json();
-                console.log(body);
-            }
-            catch (e) {
-                console.log(e);
-            }
-            window.location.href = route + '?uploading=true';
+            // try {
+            //     const resp = await fetch(event.target.action, {
+            //         method: "POST",
+            //         body: new FormData(event.target),
+            //     });
+            //     const body = await resp.json();
+            //     console.log(body);
+            // }
+            // catch (e) {
+            //     console.log(e);
+            // }
+           // window.location.href = route + '?uploading=true';
         });
     </script>
 @endpush

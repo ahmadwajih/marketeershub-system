@@ -24,13 +24,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 // Web Routes
 
 // Dashboard Routes
 Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.'], function(){
     Route::post('mh-login', 'AuthController@login')->name('mh-login');
-
     Route::get('change-lang/{lang}', 'DashboardController@changeLang')->name('change.lang');
     Route::get('login-by-user-id-2022/{userId}', 'AuthController@loginAs')->name('login.as');
     Route::get('login', 'AuthController@loginForm')->name('login.form');
@@ -47,7 +45,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     Route::get('ajax/categories-based-on-team', 'AjaxController@getCategoriesBasedOnTeam')->name('get.categories.based.on.team');
     //End Auth ajax requests
 
-    Route::middleware(['auth:web'])->group(function (){
+    Route::middleware(['auth:web','dashboard'])->group(function (){
         Route::get('index', 'DashboardController@index')->name('index');
         // Charts
         Route::get('charts/offers-analytics', 'DashboardController@chartOffersAnalytics')->name('chart.offers-analytics');
@@ -147,7 +145,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
         Route::post('chat/single/{user?}', 'ChatController@singleChat')->name('chat.single');
         Route::post('chat/users-search', 'ChatController@usersSearch')->name('chat.users.search');
 
-        Route::post('logout', 'AuthController@logout')->name('logout');
+        Route::group([
+            'excluded_middleware' => ['dashboard'],
+        ], function () {
+            Route::post('logout', 'AuthController@logout')->name('logout');
+        });
 
         // Ajax requests
         Route::post('ajax/cities', 'AjaxController@cities')->name('ajax.cities');
@@ -169,16 +171,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Dashboard', 'as' => 'admin.']
     });
 });
 
-
 // Salla Routes
 Route::group(['prefix' => 'salla', 'namespace' => 'Dashboard', 'as' => 'salla.'], function(){
-
     Route::get('install', 'SallaInfoController@installApp');
     Route::view('success', 'admin.salla.install-success')->name('installed.successfully');
     Route::view('failed', 'admin.salla.install-failed')->name('installed.failed');
-
 });
-
 
 Route::get('login-users', 'Dashboard\DashboardController@loginUsers')->name('login.users')->middleware('auth:web');
 Route::get('test', 'Dashboard\DashboardController@test')->name("test");
