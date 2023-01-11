@@ -84,9 +84,5 @@ class Import implements WithEvents,OnEachRow
             function ($a) {return $a !== null;}
         ));
     }
-    protected function getCurrentCount()
-    {
-
-    }
 }
 

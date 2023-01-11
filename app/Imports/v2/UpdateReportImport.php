@@ -48,27 +48,31 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     public function collection(Collection $collection)
     {
         //unset($collection[0]);
-        $cpsType = $this->offer()->payout_cps_type;
-        if ($cpsType == 'static' || $cpsType == 'slaps') {
-            Validator::make($collection->toArray(), [
-                '*.0' => 'required',
-                '*.1' => 'required',
-                '*.2' => 'required|numeric',
-                '*.3' => 'required|numeric',
-            ])->validate();
-        }
-
-        if ($cpsType == 'new_old') {
-            Validator::make($collection->toArray(), [
-                '*.0' => 'required',
-                '*.1' => 'required',
-                '*.2' => 'required|numeric',
-                '*.3' => 'required|numeric',
-                '*.4' => 'required|numeric',
-                '*.5' => 'required|numeric',
-            ])->validate();
-        }
+//        $cpsType = $this->offer()->payout_cps_type;
+//        if ($cpsType == 'static' || $cpsType == 'slaps') {
+//            Validator::make($collection->toArray(), [
+//                '*.0' => 'required',
+//                '*.1' => 'required',
+//                '*.2' => 'required|numeric',
+//                '*.3' => 'required|numeric',
+//            ])->validate();
+//        }
+//
+//        if ($cpsType == 'new_old') {
+//            Validator::make($collection->toArray(), [
+//                '*.0' => 'required',
+//                '*.1' => 'required',
+//                '*.2' => 'required|numeric',
+//                '*.3' => 'required|numeric',
+//                '*.4' => 'required|numeric',
+//                '*.5' => 'required|numeric',
+//            ])->validate();
+//        }
         foreach ($collection as $index => $col) {
+            $col_array = $col->toArray();
+            // skip if contains null only
+            $row = array_slice($col_array, 0, 8, true);
+            if ($this->containsOnlyNull($row)) continue;
             try {
                 $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
                 Log::info(['date' =>  $col[0]]);
@@ -154,6 +158,8 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                     $this->columnHaveIssue[] = $col;
                 }
             } catch (\Throwable $th) {
+                $col_array[] = $th->getMessage();
+                $this->columnHaveIssue[] = $col_array;
                 session(['columnHaveIssue' => $this->columnHaveIssue]);
                 Log::debug( $th->getMessage());
                 Log::debug( implode(['status' => 'error', '$col' => $col]));
@@ -441,5 +447,13 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     public function startRow(): int
     {
         return 2;
+    }
+
+    function containsOnlyNull($input): bool
+    {
+        return empty(array_filter(
+            $input,
+            function ($a) {return $a !== null;}
+        ));
     }
 }
