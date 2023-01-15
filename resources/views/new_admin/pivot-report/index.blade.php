@@ -41,28 +41,14 @@
                 <p> {{ __('The report is Uploaded Successfully.') }}</p>
                 @if($import_file)
                     <ul>
-                        <li>Added : {{ $import_file->new  }}</li>
+                        <li>Organic : {{ $import_file->issues }}</li>
                         <li>Updated : {{ $import_file->updated }}</li>
-                        <li>Issues : {{ $import_file->issues }}
-                            @if($import_file->issues > 0)
-                                <a download href="{{ $fileUrl }}/issues" class="btn btn-danger btn-sm">Download</a>
-                            @endif
-                        </li>
                         @if($import_file->failed > 0)
                             <br/>
                         @endif
                         <li>Failed : {{ $import_file->failed }}
                             @if($import_file->failed > 0)
                                 <a download href="{{ $fileUrl }}/failed" class="btn btn-danger btn-sm">Download</a>
-                            @endif
-                        </li>
-                        @if($import_file->duplicated > 0)
-                            <br/>
-                        @endif
-                        <li>
-                            Duplicated : {{ $import_file->duplicated }}
-                            @if($import_file->duplicated > 0)
-                                <a download href="{{ $fileUrl }}/duplicated" class="btn btn-danger btn-sm">Download</a>
                             @endif
                         </li>
                     </ul>

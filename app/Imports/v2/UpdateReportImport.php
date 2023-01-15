@@ -95,7 +95,7 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
             }
             $this->importing_counts['rows_num']++;
 
-            $issues = false;
+            $organic = false;
             $issue = "";
             try {
                 $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
@@ -116,7 +116,10 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                             $coupon->user_id = marketersHubPublisherInfo()->id;
                             $coupon->update();
                             $issue .= 'Coupons Not assigned - ';
-                            $issues = true;
+                            $organic = true;
+                            $this->importing_counts['issues']++;
+                            $col[] = $issue;
+                            $this->columnHaveIssue[] = $col;
                         }
                         $this->coupon = $coupon;
                         //Check If exists
@@ -137,15 +140,8 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                                 // 'date' => $col[0]->format('Y-m-d'),
                                 'offer_id' => $this->offerId,
                             ]);
-                            if ($pivotReport->wasChanged() || $issues){
-                                $issue .= "Duplicate date for same coupon in same day - ";
-                                $col[] = "Updated:".$issue;
-                                $this->columnHaveIssue[] = $col;
-                                $this->importing_counts['issues']++;
-                            }else{
-                                // already updated
-                                $this->duplicated_rows[] = $col;
-                                $this->importing_counts['duplicated']++;
+                            if (!$organic) {
+                                $this->importing_counts['updated']++;
                             }
                         }
                         else {
@@ -163,12 +159,8 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                                     'date' => $col[0]->format('Y-m-d'),
                                     'offer_id' => $this->offerId,
                                 ]);
-                                if (!$issues){
-                                    $this->importing_counts['new']++;
-                                }else{
-                                    $this->importing_counts['issues']++;
-                                    $col[] = "New:".$issue;
-                                    $this->columnHaveIssue[] = $col;
+                                if (!$organic) {
+                                    $this->importing_counts['updated']++;
                                 }
                             } else {
                                 // 2- calculation is not correct
@@ -192,8 +184,6 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                     }
                 } catch (\Throwable $th) {
                     $col[] = $th->getMessage();
-                    $this->columnHaveIssue[] = $col;
-                    session(['columnHaveIssue' => $this->columnHaveIssue]);
                     Log::debug( $th->getMessage());
                     Log::debug( implode(['status' => 'error', '$col' => $col]));
                     $this->importing_counts['failed']++;
@@ -201,18 +191,14 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                 }
             } catch (\Throwable $th) {
                 $col[] = 'Please make sure the first column is valid date.';
-                $this->columnHaveIssue[] = $col;
                 $this->importing_counts['failed']++;
                 $this->failed_rows[] = $col;
-                session(['columnHaveIssue' => $this->columnHaveIssue]);
-                Log::info($this->columnHaveIssue);
             }
             Storage::put($this->module_name.'_issues_rows.json', json_encode($this->columnHaveIssue));
             Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
             Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
             Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
         }
-        session(['columnHaveIssue' => $this->columnHaveIssue]);
     }
 
     public function calcRevenue($col)
