@@ -3,6 +3,7 @@
 namespace App\Imports\v2;
 
 use App\Exports\PivotReportErrorsExport;
+use App\Imports\Import;
 use App\Models\Country;
 use Exception;
 use Illuminate\Support\Collection;
@@ -25,7 +26,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
 
-class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChunkReading, ShouldQueue, WithStartRow
+class UpdateReportImport extends Import implements OnEachRow, ToCollection, WithChunkReading, ShouldQueue, WithStartRow
 {
     public $offerId;
     public $coupon;
@@ -33,8 +34,9 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     public $revenue;
     public $payout;
     public $columnHaveIssue = [];
-    public $id;
-    private string $module_name = "pivot_report";
+    public string $module_name = "pivot_report";
+
+    public string $exportClass = 'PivotReportErrors';
 
     public function __construct($offerId, $type, int $id)
     {
@@ -73,15 +75,33 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
             $col = $col->toArray();
             $col = array_slice($col, 0, 8, true);
 
-            if (Storage::has($this->module_name.'_failed_rows.json')){
-                $this->columnHaveIssue = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
-            }
             // skip if contains null only
             if ($this->containsOnlyNull($col)) continue;
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_importing_counts.json')){
+                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_failed_rows.json')){
+                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_duplicated_rows.json')){
+                $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            if (Storage::has($this->module_name.'_issues_rows.json')){
+                $this->columnHaveIssue = json_decode(Storage::get($this->module_name.'_issues_rows.json'),true);
+            }
+            $this->importing_counts['rows_num']++;
+
+            $issues = false;
+            $issue = "";
             try {
                 $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
                 Log::info(implode(['date' =>  $col[0]]));
                 try {
+                    $coupon = null;
                     // 1- Fixed Model
                     if ($col[1]) {
                         $coupon  = Coupon::where([
@@ -89,22 +109,23 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                             ['offer_id', '=', $this->offerId]
                         ])->first();
                     }
-                    // Check if this coupons is belong to user in the same team
+                    // Check if these coupons belong to user in the same team
                     if ($coupon) {
+                        // 1- coupon_exist
                         if (!$coupon->user) {
                             $coupon->user_id = marketersHubPublisherInfo()->id;
                             $coupon->update();
-                            $col[] = 'Coupons Not assigned';
-                            $this->columnHaveIssue[] = $col;
+                            $issue .= 'Coupons Not assigned - ';
+                            $issues = true;
                         }
                         $this->coupon = $coupon;
-                        //Cheeck If exists
+                        //Check If exists
                         $pivotReport  = PivotReport::where([
                             ['coupon_id', '=', $coupon->id],
                             ['date', '=', $col[0]->format('Y-m-d')],
                         ])->first();
-
                         if ($pivotReport) {
+                            // 1- pivot exist
                             $pivotReport->update([
                                 'coupon_id' => $coupon->id,
                                 'user_id' => $coupon->user_id,
@@ -116,11 +137,21 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                                 // 'date' => $col[0]->format('Y-m-d'),
                                 'offer_id' => $this->offerId,
                             ]);
-                            $col[] = "Duplicate date for same coupon in same day";
-                            $this->columnHaveIssue[] = $col;
+                            if ($pivotReport->wasChanged() || $issues){
+                                $issue .= "Duplicate date for same coupon in same day - ";
+                                $col[] = $issue;
+                                $this->columnHaveIssue[] = $col;
+                                $this->importing_counts['issues']++;
+                            }else{
+                                // already updated
+                                $this->duplicated_rows[] = $col;
+                                $this->importing_counts['duplicated']++;
+                            }
                         }
                         else {
+                            // 2- pivot not exist
                             if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
+                                // 1- calculation is correct
                                 PivotReport::create([
                                     'coupon_id' => $coupon->id,
                                     'user_id' => $coupon->user_id,
@@ -132,28 +163,32 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                                     'date' => $col[0]->format('Y-m-d'),
                                     'offer_id' => $this->offerId,
                                 ]);
-                            } else {
-
-                                if (gettype($this->calcRevenue($col)) != 'int') {
-                                    $col[] = $this->calcRevenue($col);
+                                if (!$issues){
+                                    $this->importing_counts['new']++;
+                                }else{
+                                    $this->importing_counts['issues']++;
+                                    $col[] = $issue;
                                     $this->columnHaveIssue[] = $col;
+                                }
+                            } else {
+                                // 2- calculation is not correct
+                                if (gettype($this->calcRevenue($col)) != 'int') {
+                                    $issue .= $this->calcRevenue($col) . " - ";
                                 }
                                 if (gettype($this->calcPayout($col)) != 'int') {
-                                    $col[] = $this->calcPayout($col);
-                                    $this->columnHaveIssue[] = $col;
+                                    $issue .= $this->calcPayout($col) ." - ";
                                 }
+                                $col[] = $issue;
+                                $this->failed_rows[] = $col;
+                                $this->importing_counts['failed']++;
                             }
                         }
                     }
                     else {
-
-                        // $coupon = Coupon::create([
-                        //     'coupon' => $col[0],
-                        //     'offer_id' => $this->offerId,
-                        //     'user_id' => marketersHubPublisherInfo()->id // here add marketeers hub affiliate default publisher account
-                        // ]);
+                        // 2- coupon_exist
                         $col[] = "Coupons doesn't exists";
-                        $this->columnHaveIssue[] = $col;
+                        $this->importing_counts['failed']++;
+                        $this->failed_rows[] = $col;
                     }
                 } catch (\Throwable $th) {
                     $col[] = $th->getMessage();
@@ -161,15 +196,21 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
                     session(['columnHaveIssue' => $this->columnHaveIssue]);
                     Log::debug( $th->getMessage());
                     Log::debug( implode(['status' => 'error', '$col' => $col]));
+                    $this->importing_counts['failed']++;
+                    $this->failed_rows[] = $col;
                 }
             } catch (\Throwable $th) {
                 $col[] = 'Please make sure the first column is valid date.';
                 $this->columnHaveIssue[] = $col;
-
+                $this->importing_counts['failed']++;
+                $this->failed_rows[] = $col;
                 session(['columnHaveIssue' => $this->columnHaveIssue]);
                 Log::info($this->columnHaveIssue);
             }
-            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->columnHaveIssue));
+            Storage::put($this->module_name.'_issues_rows.json', json_encode($this->columnHaveIssue));
+            Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
+            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
+            Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
         }
         session(['columnHaveIssue' => $this->columnHaveIssue]);
     }
@@ -421,51 +462,8 @@ class UpdateReportImport implements OnEachRow, WithEvents, ToCollection, WithChu
     {
         return 20;
     }
-    /**
-     * @throws Exception
-     */
-    public function onRow(Row $row)
-    {
-        $rowIndex = $row->getIndex();
-        cache()->forever("current_row_{$this->id}", $rowIndex);
-        //sleep(0.5);
-    }
-    public function registerEvents(): array
-    {
-        return [
-            BeforeImport::class => function (BeforeImport $event) {
-                $totalRows = $event->getReader()->getTotalRows();
-                if (filled($totalRows)) {
-                    cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);
-                    cache()->forever("start_date_{$this->id}", now()->unix());
-                }
-            },
-            AfterImport::class => function () {
-                cache(["end_date_{$this->id}" => now()], now()->addMinute());
-                cache()->forget("total_rows_{$this->id}");
-                cache()->forget("start_date_{$this->id}");
-                cache()->forget("current_row_{$this->id}");
-                Storage::delete('pivot_report_import.txt');
-                $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
-                if(count($publishers_failed_rows)){
-                    Excel::store(new PivotReportErrorsExport($publishers_failed_rows),
-                        "public/missing/$this->module_name/failed/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
-                    );
-                }
-            },
-        ];
-    }
-
     public function startRow(): int
     {
         return 2;
-    }
-
-    function containsOnlyNull($input): bool
-    {
-        return empty(array_filter(
-            $input,
-            function ($a) {return $a !== null;}
-        ));
     }
 }
