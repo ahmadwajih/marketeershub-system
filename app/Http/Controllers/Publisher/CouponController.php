@@ -9,7 +9,6 @@ use App\Models\Coupon;
 use App\Models\CouponCps;
 use App\Models\Offer;
 use App\Models\User;
-use App\Notifications\CodeRecycled;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -36,8 +35,6 @@ class CouponController extends Controller
      */
     public function index(Request $request): View|Factory|RedirectResponse|Application
     {
-        $this->can_access_coupons();
-
         // Get Coupons
         $query = Coupon::query();
 
@@ -68,7 +65,7 @@ class CouponController extends Controller
         $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
         $offers = Offer::orderBy('id', 'desc')->get();
-        return view('new_admin.coupons.index', [
+        return view('publishers.coupons.index', [
             'countries' => $countries,
             'coupons' => $coupons,
             'offers' => $offers,
@@ -81,7 +78,7 @@ class CouponController extends Controller
         session()->forget('coupons_filter_offer_id');
         session()->forget('coupons_filter_user_id');
         session()->forget('coupons_filter_status');
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('publisher.coupons.index');
     }
 
     /**
@@ -557,7 +554,7 @@ class CouponController extends Controller
     {
         $coupon = Coupon::whereId($request->id)->first();
         if ($coupon) {
-            return view('new_admin.coupons.load-payout', ['coupon' => $coupon]);
+            return view('publishers.coupons.load-payout', ['coupon' => $coupon]);
         }
         return 'No Data';
     }

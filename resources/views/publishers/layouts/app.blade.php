@@ -75,7 +75,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
 
 <body data-kt-name="metronic" id="kt_body" class="header-fixed header-tablet-and-mobile-fixed">
     <!--begin::Theme mode setup on page load-->
- 
+
     <!--end::Theme mode setup on page load-->
     <!--begin::Main-->
     <!--begin::Root-->
@@ -84,9 +84,9 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
         <div class="page d-flex flex-row flex-column-fluid">
             <!--begin::Wrapper-->
             <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
-                @include('new_admin.layouts.header')
+                @include('publishers.layouts.header')
                 <div class="d-flex flex-column-fluid">
-                    @include('new_admin.layouts.aside')
+                    @include('publishers.layouts.aside')
                     <!--begin::Container-->
                     <div class="d-flex flex-column flex-column-fluid container-fluid">
                         <!--begin::Post-->
@@ -187,7 +187,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
     <script>
         var defaultThemeMode = "dark";
         var themeMode;
-        
+
         if ( document.documentElement ) {
             if ( document.documentElement.hasAttribute("data-theme-mode")) {
                 themeMode = document.documentElement.getAttribute("data-theme-mode");
@@ -198,11 +198,11 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
                     themeMode = defaultThemeMode;
                 }
             }
-        
+
             if (themeMode === "system") {
                 themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
             }
-        
+
             document.documentElement.setAttribute("data-theme", themeMode);
         }
         </script>
