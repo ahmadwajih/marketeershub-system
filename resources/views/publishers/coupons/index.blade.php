@@ -1,4 +1,4 @@
-@extends('new_admin.layouts.app')
+@extends('publishers.layouts.app')
 @section('title', 'Coupons')
 @section('subtitle', 'Index')
 @push('styles')
@@ -108,7 +108,7 @@
                 <div class="card-title">
                     <!--begin::Search-->
                     <div class="d-flex align-items-center position-relative my-1">
-                       <form action="{{ route('admin.coupons.index') }}">
+                       <form action="{{ route('publisher.coupons.index') }}">
                             <!--end::Svg Icon-->
                             <div class="input-group mb-5">
                                 <input type="text" class="form-control" name="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" value="{{ request()->search }}" disabled />
@@ -151,7 +151,7 @@
                             <div class="separator border-gray-200"></div>
                             <!--end::Menu separator-->
                             <!--begin::Form-->
-                            <form action="{{ route('admin.coupons.index') }}" method="GET">
+                            <form action="{{ route('publisher.coupons.index') }}" method="GET">
                                 <div class="px-7 py-5">
                                     <!--begin::Input group-->
                                     <div class="mb-10">
@@ -165,24 +165,6 @@
                                                 @foreach ($offers as $offer)
                                                     <option {{ session('coupons_filter_offer_id') == $offer->id ? 'selected' :''}} value="{{ $offer->id }}">{{ $offer->name }}</option>
                                                 @endforeach
-                                            </select>
-                                        </div>
-                                        <!--end::Input-->
-                                    </div>
-                                    <!--end::Input group-->
-                                    <!--begin::Input group-->
-                                    <div class="mb-10">
-                                        @include('new_admin.components.publishers_filter')
-                                        <!--begin::Label-->
-                                        <label class="form-label fw-semibold">Publisher:</label>
-                                        <!--end::Label-->
-                                        <!--begin::Input-->
-                                        <div>
-                                            <select class="form-select form-select-solid publishers_filter" name="user_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a">
-                                                <option value="">No One</option>
-                                                @if($publisherForFilter)
-                                                    <option value="{{$publisherForFilter->id}}" selected >{{$publisherForFilter->name}}</option>
-                                                @endif
                                             </select>
                                         </div>
                                         <!--end::Input-->
@@ -207,7 +189,7 @@
                                     <!--end::Input group-->
                                     <!--begin::Actions-->
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ route('admin.coupons.clear.sessions') }}" class="btn btn-sm btn-secondary w-100 mx-2">Clear Filter</a>
+                                        <a href="{{ route('publisher.coupons.clear.sessions') }}" class="btn btn-sm btn-secondary w-100 mx-2">Clear Filter</a>
                                         <button type="submit" class="btn btn-sm btn-primary w-100">Apply</button>
                                     </div>
                                     <!--end::Actions-->
@@ -284,12 +266,8 @@
                                 <th>#</th>
                                 <th>{{ __('Code') }}</th>
                                 <th>{{ __('Offer Name') }}</th>
-                                <th>{{ __('Publisher Name') }}</th>
-                                <th>{{ __('Publisher ID') }}</th>
-                                <th>{{ __('Team') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th>{{ __('Payout') }}</th>
-                                <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -305,9 +283,6 @@
                                     <td>{{ $coupon->id }}</td>
                                     <td>{{ $coupon->coupon }}</td>
                                     <td>{{ $coupon->offer ? $coupon->offer->name :'' }}</td>
-                                    <td>{{ $coupon->user ? $coupon->user->name : '' }}</td>
-                                    <td>{{ $coupon->user ? $coupon->user->id : '' }}</td>
-                                    <td>{{ $coupon->user ? $coupon->user->updated_team : '' }}</td>
                                     <td>
                                         <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button>
                                         <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'inactive' ?: 'd-none' }}">Inactive</button>

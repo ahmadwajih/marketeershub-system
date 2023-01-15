@@ -6,5 +6,9 @@ Route::group(['prefix' => 'publisher', 'namespace' => 'publisher', 'as' => 'publ
 
     Route::middleware(['auth:web'])->group(function (){
         Route::get('/', 'UserController@profile')->name('user.profile');
+
+        Route::resource('coupons', CouponController::class);
+        Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
+
     });
 });
