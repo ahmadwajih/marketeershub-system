@@ -139,7 +139,7 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                             ]);
                             if ($pivotReport->wasChanged() || $issues){
                                 $issue .= "Duplicate date for same coupon in same day - ";
-                                $col[] = $issue;
+                                $col[] = "Updated:".$issue;
                                 $this->columnHaveIssue[] = $col;
                                 $this->importing_counts['issues']++;
                             }else{
@@ -167,7 +167,7 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                                     $this->importing_counts['new']++;
                                 }else{
                                     $this->importing_counts['issues']++;
-                                    $col[] = $issue;
+                                    $col[] = "New:".$issue;
                                     $this->columnHaveIssue[] = $col;
                                 }
                             } else {
