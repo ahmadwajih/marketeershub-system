@@ -70,10 +70,24 @@ class PivotReportController extends Controller
             $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
             session(['columnHaveIssue' => $publishers_failed_rows]);
         }
+
+        //todo remove duplicated code
+        $import_file="";
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $import_file = Storage::get($this->module_name.'_importing_counts.json');
+        }
+        $fileUrl = null;
+        $directory = "public/missing/$this->module_name";
+        $files = Storage::allFiles($directory);
+        if($files){
+            $fileUrl = route('admin.reports.deonload.errore');
+        }
         return view('new_admin.pivot-report.index', [
             'reports' => $reports,
             'offers' => $offers,
-            'publisherForFilter' => $publisherForFilter
+            'publisherForFilter' => $publisherForFilter,
+            'import_file'=>json_decode($import_file),
+            'fileUrl' => $fileUrl,
         ]);
     }
     /**
@@ -114,6 +128,7 @@ class PivotReportController extends Controller
         Storage::delete($this->module_name.'_importing_counts.json');
         Storage::delete($this->module_name.'_failed_rows.json');
         Storage::delete($this->module_name.'_duplicated_rows.json');
+        Storage::delete($this->module_name.'_issues_rows.json');
 
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
         $id = now()->unix();
@@ -147,10 +162,10 @@ class PivotReportController extends Controller
             'total_rows' => (int) cache("total_rows_$id"),
         ]);
     }
-    public function downloadErrors()
+    public function downloadErrors($dir)
     {
         ob_end_clean();
-        $path = storage_path("app/public/missing/$this->module_name/failed");
+        $path = storage_path("app/public/missing/$this->module_name/$dir");
         $filesInFolder = file_exists($path)?\File::files($path):[];
         $count = count($filesInFolder);
         if (file_exists($path) and $count) {
