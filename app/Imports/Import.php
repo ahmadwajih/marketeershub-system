@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Exports\AffiliatesExport;
+use App\Exports\PivotReportErrorsExport;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +22,7 @@ class Import implements WithEvents,OnEachRow
         'updated'=>0,
         'failed'=>0,
         'duplicated'=>0,
+        'issues'=>0,
         'rows_num' =>0,
     ];
 
@@ -61,18 +62,29 @@ class Import implements WithEvents,OnEachRow
                 cache()->forget("current_row_{$this->id}");
                 //Storage::delete($this->module_name.'_import_file.json');
                 //todo check if it's a good practice to save all this data in the session or not
-                $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+                $failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
                 $className = 'App\Exports\\'.$this->exportClass.'Export';
-                if(count($publishers_failed_rows)){
-                    Excel::store(new $className($publishers_failed_rows),
+
+                if(count($failed_rows)){
+                    Excel::store(new $className($failed_rows),
                         "public/missing/$this->module_name/failed/failed_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
+
                 }
-                $publishers_duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
-                if(count($publishers_duplicated_rows)){
-                    Excel::store(new $className($publishers_duplicated_rows),
+                $duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+                if(count($duplicated_rows)){
+                    Excel::store(new $className($duplicated_rows),
                         "public/missing/$this->module_name/duplicated/duplicated_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
                     );
+                }
+
+                if (Storage::has($this->module_name.'_issues_rows.json')){
+                    $issues_rows = json_decode(Storage::get($this->module_name.'_issues_rows.json'),true);
+                    if(count($issues_rows)){
+                        Excel::store(new PivotReportErrorsExport($issues_rows),
+                            "public/missing/$this->module_name/issues/issues_{$this->module_name}_rows_".date('m-d-Y_hia').".xlsx"
+                        );
+                    }
                 }
             },
         ];
