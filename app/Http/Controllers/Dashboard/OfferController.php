@@ -721,8 +721,8 @@ class OfferController extends Controller
 
     public function offerRevenueAndPayoutDateValidation(Request $request)
     {
-        // Revenue 
-        // Validate Static Revenue 
+        // Revenue
+        // Validate Static Revenue
         if ($request->revenue_cps_type == 'static' && $request->static_revenue && count($request->static_revenue) > 0) {
             foreach ($request->static_revenue as $staticRevenue) {
                 if (isset($staticRevenue['date_range']) && $staticRevenue['date_range'][0]  == 'on') {
@@ -733,7 +733,7 @@ class OfferController extends Controller
             }
         }
 
-        // Validate new old revenue 
+        // Validate new old revenue
         if ($request->revenue_cps_type == 'new_old' && $request->new_old_revenue && count($request->new_old_revenue) > 0) {
             foreach ($request->new_old_revenue as $newOldRevenue) {
                 if (isset($newOldRevenue['date_range']) && $newOldRevenue['date_range'][0]  == 'on') {
@@ -744,7 +744,7 @@ class OfferController extends Controller
             }
         }
 
-        // Validate slaps revenue 
+        // Validate slaps revenue
         if ($request->revenue_cps_type == 'slaps' && $request->revenue_slaps && count($request->revenue_slaps) > 0) {
             foreach ($request->revenue_slaps as $slapsRevenue) {
                 if ($slapsRevenue['from'] > $slapsRevenue['to']) {
@@ -754,7 +754,7 @@ class OfferController extends Controller
         }
 
         // Payout
-        // Validate Static Payout 
+        // Validate Static Payout
         if ($request->payout_cps_type == 'static' && $request->static_payout && count($request->static_payout) > 0) {
             foreach ($request->static_payout as $staticPayout) {
                 if (isset($staticPayout['date_range']) && $staticPayout['date_range'][0]  == 'on') {
@@ -765,7 +765,7 @@ class OfferController extends Controller
             }
         }
 
-        // Validate new old Payout 
+        // Validate new old Payout
         if ($request->payout_cps_type == 'new_old' && $request->new_old_payout && count($request->new_old_payout) > 0) {
             foreach ($request->new_old_payout as $newOldPayout) {
                 if (isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0]  == 'on') {
@@ -776,7 +776,7 @@ class OfferController extends Controller
             }
         }
 
-        // Validate slaps Payout 
+        // Validate slaps Payout
         if ($request->payout_cps_type == 'slaps' && $request->payout_slaps && count($request->payout_slaps) > 0) {
             foreach ($request->payout_slaps as $slapsPayout) {
                 if ($slapsPayout['from'] > $slapsPayout['to']) {

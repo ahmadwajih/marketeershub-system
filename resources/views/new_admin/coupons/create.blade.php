@@ -136,7 +136,7 @@
                                     <div class="col-md-12">
                                         <div class="form-check form-switch form-check-custom form-check-solid mt-13">
                                             <input class="form-check-input switcher" type="checkbox" data-input="select" name="have_custom_payout"
-                                                onchange="switcherFunctionXpng('custom_payout', this)" value="off" />
+                                                onchange="switcherFunctionXpng('custom_payout', this)" value="{{ old('have_custom_payout') == 'on' ? old('have_custom_payout') : 'off'  }}" {{ old('have_custom_payout') == 'on' ? 'checked' : ''  }}/>
                                             <label class="form-check-label">
                                                 Custom Payout
                                             </label>
@@ -370,5 +370,5 @@
                 }
             });
     </script>
-    
+
 @endpush
