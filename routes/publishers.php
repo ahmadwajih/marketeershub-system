@@ -9,6 +9,7 @@ Route::group(['prefix' => 'publisher', 'namespace' => 'Publisher', 'as' => 'publ
 
         Route::resource('coupons', CouponController::class);
         Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
+        Route::get('coupons/load/payout', 'CouponController@loadPayout');
 
     });
 });

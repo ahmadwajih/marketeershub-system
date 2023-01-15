@@ -490,7 +490,7 @@
 @endsection
 @push('scripts')
     <script>
-        var route = "{{ route('admin.coupons.index') }}";
+        var route = "{{ route('publisher.coupons.index') }}";
         let search = "{{ request()->search }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/delete.js"></script>

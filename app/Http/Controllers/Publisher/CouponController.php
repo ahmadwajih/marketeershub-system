@@ -554,7 +554,7 @@ class CouponController extends Controller
     {
         $coupon = Coupon::whereId($request->id)->first();
         if ($coupon) {
-            return view('new_admin.coupons.load-payout', ['coupon' => $coupon]);
+            return view('publishers.coupons.load-payout', ['coupon' => $coupon]);
         }
         return 'No Data';
     }
