@@ -191,7 +191,7 @@
                   <!--begin:Menu item-->
                   <div class="menu-item">
                     <!--begin:Menu link-->
-                    <a class="menu-link {{ Request::segment(2)=='offers'?'active':'' }}" href="{{ route('admin.offers.index') }}">
+                    <a class="menu-link {{ Request::segment(2)=='offers'?'active':'' }}" href="{{ route('publisher.offers.index') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen014.svg-->
                             <span class="menu-icon">

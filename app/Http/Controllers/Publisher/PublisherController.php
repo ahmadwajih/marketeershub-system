@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Publisher;
 
 use App\Http\Controllers\Controller;
 use App\Imports\AffiliatesImport;
@@ -366,7 +366,7 @@ class PublisherController extends Controller
         }
         $data = $request->validate([
             'name'                      => 'required|max:255',
-            'email'                     => 'required|max:255|email:rfc,filter|unique:users,email,' . $id,
+            // 'email'                     => 'required|max:255|email:rfc,filter|unique:users,email,' . $id,
             'phone'                     => 'required|numeric|min:1|unique:users,phone,' . $id,
             'password'                  => ['nullable', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'country_id'                => 'nullable|exists:countries,id',
@@ -406,6 +406,7 @@ class PublisherController extends Controller
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
         }
+
         // dd($data);
         $publisher = User::findOrFail($id);
 
@@ -827,5 +828,30 @@ class PublisherController extends Controller
         session()->forget('publishers_filter_parent_id');
         session()->forget('publishers_filter_status');
         return redirect()->route('admin.publishers.index');
+    }
+
+    public function edit_profile()
+    {
+        $id = auth()->id();
+
+        if (auth()->user()->id != $id && !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())) {
+            $this->authorize('update_publishers');
+        }
+        $accountManagers = User::where('position', 'account_manager')->get();
+        $publisher = User::findOrFail($id);
+        if ($publisher->position != 'publisher') {
+            return redirect()->route('admin.users.edit', $id);
+        }
+        $publisher->traffic_sources = explode(',', $publisher->traffic_sources);
+        return view('publishers.publishers.edit', [
+            'publisher' => $publisher,
+            'countries' => Country::all(),
+            'cities' => City::whereCountryId($publisher->country_id)->get(),
+            'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'categories' => Category::whereType($publisher->team)->get(),
+            'roles' => Role::all(),
+            'currencies' => Currency::all(),
+            'accountManagers' => $accountManagers,
+        ]);
     }
 }
