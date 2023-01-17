@@ -1,4 +1,4 @@
-@extends('new_admin.layouts.app')
+@extends('publishers.layouts.app')
 @section('title', 'Publishers')
 @section('subtitle', 'Create')
 @section('content')

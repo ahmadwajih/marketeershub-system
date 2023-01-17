@@ -56,6 +56,7 @@ class PublishersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($id);
         if (auth()->user()->id != $id) {
             $this->authorize('update_publishers');
         }
