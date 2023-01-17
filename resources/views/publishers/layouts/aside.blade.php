@@ -75,8 +75,42 @@
                     </div>
                     <!--end:Menu sub-->
                 </div>
-               <!--end:Menu item-->
-                @can('view_coupons')
+                <!--end:Menu item-->
+                @if(Gate::check('view_users') || Gate::check('view_publishers'))
+                <!--begin:Menu item-->
+                <div class="menu-item pt-5">
+                    <!--begin:Menu content-->
+                    <div class="menu-content">
+                        <span class="menu-heading fw-bold text-uppercase fs-7">App Users</span>
+                    </div>
+                    <!--end:Menu content-->
+                </div>
+                <!--end:Menu item-->
+                @can('view_users')
+
+                 <!--begin:Menu item-->
+                 <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link {{ Request::segment(2)=='users'?'active':'' }}" href="{{ route('admin.users.index') }}">
+                        <span class="menu-icon">
+                             <!--begin::Svg Icon | path: icons/duotune/communication/com005.svg-->
+                             <span class="svg-icon svg-icon-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.28548 15.0861C7.34369 13.1814 9.35142 12 11.5304 12H12.4696C14.6486 12 16.6563 13.1814 17.7145 15.0861L19.3493 18.0287C20.0899 19.3618 19.1259 21 17.601 21H6.39903C4.87406 21 3.91012 19.3618 4.65071 18.0287L6.28548 15.0861Z" fill="currentColor" />
+                                    <rect opacity="0.3" x="8" y="3" width="8" height="8" rx="4" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title">Users</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+                @endcan
+                <!--end:Users-->
+                @endif
+                <!--end:Publishers-->
                    <!--begin:Menu item-->
                    <div class="menu-item">
                     <!--begin:Menu link-->
