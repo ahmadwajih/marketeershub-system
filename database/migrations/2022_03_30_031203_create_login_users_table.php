@@ -27,7 +27,7 @@ class CreateLoginUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('login_users');
     }
