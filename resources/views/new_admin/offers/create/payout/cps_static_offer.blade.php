@@ -1,4 +1,4 @@
-<div class="row mb-9" id="static_payout">
+<div class="row mb-9" id="static_payout" {!!  old('payout_cps_type') == null || old('payout_cps_type') == 'static' ?:  ' style="display: none" '!!}>
 
     <div class="col-md-11">
         <!--begin::Input group-->

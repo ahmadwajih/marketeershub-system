@@ -1,4 +1,4 @@
-<div class="row mb-9" id="static_revenue">
+<div class="row mb-9" id="static_revenue" {!!  old('revenue_cps_type') == null || old('revenue_cps_type') == 'static' ?:  ' style="display: none" '!!}>
 
     <div class="col-md-11">
         <!--begin::Input group-->

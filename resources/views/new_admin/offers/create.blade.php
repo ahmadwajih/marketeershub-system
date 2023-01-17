@@ -3,12 +3,9 @@
 @section('subtitle', 'Create')
 @push('styles')
     <style>
-        #new_old_payout,
-        #slaps_payout,
-        #new_old_revenue,
-        #slaps_revenue,
-        #percentage_discount{
-            display: none;
+        #percentage_discount,
+        .display-none{
+            display: none !important;
         }
     </style>
 @endpush
@@ -442,9 +439,9 @@
                                         <!--begin::Input-->
                                         <select name="payout_cps_type" data-control="select2" class="form-select"
                                             id="cps_type_payout">
-                                            <option {{ old('revenue_cps_type') == 'static' ? 'selected' : '' }} value="static"> {{ __('Fixed Model') }}</option>
-                                            <option {{ old('revenue_cps_type') == 'new_old' ? 'selected' : '' }} value="new_old"> {{ __('New-old Model') }}</option>
-                                            <option {{ old('revenue_cps_type') == 'slaps' ? 'selected' : '' }} value="slaps"> {{ __('Slabs Model') }}</option>
+                                            <option {{ old('payout_cps_type') == 'static' ? 'selected' : '' }} value="static"> {{ __('Fixed Model') }}</option>
+                                            <option {{ old('payout_cps_type') == 'new_old' ? 'selected' : '' }} value="new_old"> {{ __('New-old Model') }}</option>
+                                            <option {{ old('payout_cps_type') == 'slaps' ? 'selected' : '' }} value="slaps"> {{ __('Slabs Model') }}</option>
                                         </select>
                                         <!--end::Input-->
                                         @if ($errors->has('payout_cps_type'))
