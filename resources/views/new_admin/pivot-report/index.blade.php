@@ -28,9 +28,10 @@
         <!--begin::Alert-->
         <div class="alert alert-success d-flex align-items-center p-5">
             <!--begin::Icon-->
-            <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
+            <span class="svg-icon svg-icon-2hx svg-icon-success me-3">
+                <i class="fa-solid fa-check fa-2x"></i>
+            </span>
             <!--end::Icon-->
-
             <!--begin::Wrapper-->
             <div class="d-flex flex-column">
                 <!--begin::Title-->
@@ -38,12 +39,28 @@
                 <!--end::Title-->
                 <!--begin::Content-->
                 <p> {{ __('The report is Uploaded Successfully.') }}</p>
+                @if($import_file)
+                    <ul>
+                        <li>Organic : {{ $import_file->issues }}</li>
+                        <li>Updated : {{ $import_file->updated }}</li>
+                        @if($import_file->failed > 0)
+                            <br/>
+                        @endif
+                        <li>Failed : {{ $import_file->failed }}
+                            @if($import_file->failed > 0)
+                                <a download href="{{ $fileUrl }}/failed" class="btn btn-danger btn-sm">Download</a>
+                            @endif
+                        </li>
+                    </ul>
+                @endif
                 <!--end::Content-->
             </div>
             <!--end::Wrapper-->
             <!--begin::Close-->
             <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-                <span class="svg-icon svg-icon-2x svg-icon-light"><i class="fa-solid fa-xmark fa-2x"></i></span>
+                <span class="svg-icon svg-icon-2x svg-icon-light">
+                    <i class="fa-solid fa-xmark fa-2x"></i>
+                </span>
             </button>
             <!--end::Close-->
         </div>

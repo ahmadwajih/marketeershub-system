@@ -147,6 +147,8 @@ class CouponController extends Controller
             'offer_id'        => 'required|numeric|exists:offers,id',
             'user_id'        => 'nullable|numeric|exists:users,id',
         ]);
+
+
         if ($request->have_custom_payout == 'on') {
             $request->validate([
                 // Payout Validation
@@ -163,11 +165,13 @@ class CouponController extends Controller
                 'payout_slaps' => 'required_if:payout_cps_type,slaps|array',
                 'payout_slaps.*.from' => 'required_if:payout_cps_type,slaps',
                 'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
-                'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
+                'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps'
 
-                'static_payout.*.from_date' => 'nullable|date|before:to_date',
-                'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
             ]);
+
+            if (!$this->offerPayoutDateValidation($request)) {
+                return redirect()->back()->withErrors(['Error' => 'To date can not be after from date.'])->withInput($request->all());
+            }
         }
         $data['coupon'] = strtolower(trim(str_replace(' ', '', trim($request->coupon))));
         $data['have_custom_payout'] = isset($request->have_custom_payout) && $request->have_custom_payout == 'on' ? true : false;
@@ -301,8 +305,6 @@ class CouponController extends Controller
             'offer_id'        => 'required|numeric|exists:offers,id',
             'user_id'        => 'nullable|numeric|exists:users,id',
 
-            'static_payout.*.from_date' => 'nullable|date|before:to_date',
-            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
             // Payout Validation
             // 'payout_cps_type' => 'required_if:have_custom_payout,on|in:static,new_old,slaps',
             // 'static_payout_type' => 'required_if:payout_cps_type,static|in:flat,percentage',
@@ -319,6 +321,10 @@ class CouponController extends Controller
             // 'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             // 'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
         ]);
+
+        if (!$this->offerPayoutDateValidation($request)) {
+            return redirect()->back()->withErrors(['Error' => 'To date can not be after from date.'])->withInput($request->all());
+        }
         $data['coupon'] = strtolower(trim(str_replace(' ', '', trim($request->coupon))));
         $data['have_custom_payout'] = isset($request->have_custom_payout) && $request->have_custom_payout == 'on' ? true : false;
         $data['payout_cps_type'] = isset($request->payout_cps_type) ? $request->payout_cps_type : '';
@@ -504,10 +510,9 @@ class CouponController extends Controller
 
     public function bulckUpdate(Request $request)
     {
-        $request->validate([
-            'static_payout.*.from_date' => 'nullable|date|before:to_date',
-            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
-        ]);
+        if (!$this->offerPayoutDateValidation($request)) {
+            return redirect()->back()->withErrors(['Error' => 'To date can not be after from date.'])->withInput($request->all());
+        }
         if (count($request->item_check) > 0) {
             foreach ($request->item_check as $couponId) {
                 $coupon = Coupon::findOrFail($couponId);
@@ -604,5 +609,44 @@ class CouponController extends Controller
             return view('new_admin.coupons.load-payout', ['coupon' => $coupon]);
         }
         return 'No Data';
+    }
+
+
+    public function offerPayoutDateValidation(Request $request)
+    {
+
+
+        // Payout
+        // Validate Static Payout
+        if ($request->payout_cps_type == 'static' && $request->static_payout && count($request->static_payout) > 0) {
+            foreach ($request->static_payout as $staticPayout) {
+                if (isset($staticPayout['date_range']) && $staticPayout['date_range'][0]  == 'on') {
+                    if ($staticPayout['from_date'] > $staticPayout['to_date']) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Validate new old Payout
+        if ($request->payout_cps_type == 'new_old' && $request->new_old_payout && count($request->new_old_payout) > 0) {
+            foreach ($request->new_old_payout as $newOldPayout) {
+                if (isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0]  == 'on') {
+                    if ($newOldPayout['from_date'] > $newOldPayout['to_date']) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Validate slaps Payout
+        if ($request->payout_cps_type == 'slaps' && $request->payout_slaps && count($request->payout_slaps) > 0) {
+            foreach ($request->payout_slaps as $slapsPayout) {
+                if ($slapsPayout['from'] > $slapsPayout['to']) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -6,12 +6,10 @@ use App\Http\Controllers\Publisher\PublisherController;
 
 Route::group(['prefix' => 'publisher', 'namespace' => 'Publisher', 'as' => 'publisher.'], function(){
     Route::middleware(['auth:web'])->group(function (){
-        Route::get('/', [UserController::class, 'profile'])->name('user.profile');
+        Route::get('/', 'UserController@profile')->name('user.profile');
+        Route::resource('coupons', CouponController::class);
+        Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
+        Route::get('coupons/load/payout', 'CouponController@loadPayout');
 
-        Route::get('/profile', [PublisherController::class, 'edit_profile'])->name('profile.edit');
-
-        Route::resource('publishers',  'PublisherController');
-
-        Route::resource('offers', OfferController::class);
     });
 });

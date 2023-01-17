@@ -21,6 +21,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PivotReportController extends Controller
 {
+    public string $module_name = "pivot_report";
+
     /**
      * Display a listing of the resource.
      *
@@ -64,10 +66,28 @@ class PivotReportController extends Controller
         $reports = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $offers = Offer::orderBy('id', 'desc')->get();
 
+        if (Storage::has($this->module_name.'_failed_rows.json')){
+            $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            session(['columnHaveIssue' => $publishers_failed_rows]);
+        }
+
+        //todo remove duplicated code
+        $import_file="";
+        if (Storage::has($this->module_name.'_importing_counts.json')){
+            $import_file = Storage::get($this->module_name.'_importing_counts.json');
+        }
+        $fileUrl = null;
+        $directory = "public/missing/$this->module_name";
+        $files = Storage::allFiles($directory);
+        if($files){
+            $fileUrl = route('admin.reports.deonload.errore');
+        }
         return view('new_admin.pivot-report.index', [
             'reports' => $reports,
             'offers' => $offers,
-            'publisherForFilter' => $publisherForFilter
+            'publisherForFilter' => $publisherForFilter,
+            'import_file'=>json_decode($import_file),
+            'fileUrl' => $fileUrl,
         ]);
     }
     /**
@@ -103,6 +123,13 @@ class PivotReportController extends Controller
             'type' => 'required|in:update,validation',
             'report' => 'required|mimes:xlsx,csv',
         ]);
+        $files = Storage::allFiles("public/missing/$this->module_name");
+        Storage::delete($files);
+        Storage::delete($this->module_name.'_importing_counts.json');
+        Storage::delete($this->module_name.'_failed_rows.json');
+        Storage::delete($this->module_name.'_duplicated_rows.json');
+        Storage::delete($this->module_name.'_issues_rows.json');
+
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
         $id = now()->unix();
         session([ 'import' => $id ]);
@@ -135,14 +162,17 @@ class PivotReportController extends Controller
             'total_rows' => (int) cache("total_rows_$id"),
         ]);
     }
-    public function downloadErrors()
+    public function downloadErrors($dir)
     {
-        if (session('columnHaveIssue')) {
-            $errors = session('columnHaveIssue');
-            session()->forget('columnHaveIssue');
-            return Excel::download(new PivotReportErrorsExport($errors), 'errors.csv', \Maatwebsite\Excel\Excel::CSV);
+        ob_end_clean();
+        $path = storage_path("app/public/missing/$this->module_name/$dir");
+        $filesInFolder = file_exists($path)?\File::files($path):[];
+        $count = count($filesInFolder);
+        if (file_exists($path) and $count) {
+            $array = pathinfo($filesInFolder[$count - 1]);
+            return response()->download($path . "/" . $array['basename']);
         }
-        return redirect()->back();
+        return "not found";
     }
 
     /**

@@ -94,7 +94,7 @@
                             </a>
                             <a href="{{ route('admin.publishers.edit', $publisher->id) }}" class="btn btn-sm btn-primary me-2">Edit Profile</a>
                             <!--begin::Menu-->
-        
+
                         </div>
                         <!--end::Actions-->
                     </div>
@@ -571,7 +571,7 @@
                         <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ count($coupons) }} Coupon</span>
                     </h3>
                     <!--end::Title-->
-        
+
                 </div>
                 <!--end::Card header-->
                 <!--begin::Card body-->
@@ -620,8 +620,8 @@
         <!--end::Col-->
     </div>
     <!--End::Row-->
-    
-    
+
+
 @endsection
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>

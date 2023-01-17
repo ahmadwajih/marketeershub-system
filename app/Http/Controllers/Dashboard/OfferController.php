@@ -51,7 +51,7 @@ class OfferController extends Controller
             if ($status == 'active') {
                 $query->where('status', 'active');
             } else {
-                $query->where('status','!=', 'active');
+                $query->where('status', '!=', 'active');
             }
         }
 
@@ -169,13 +169,11 @@ class OfferController extends Controller
             'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
 
-            'static_revenue.*.from_date' => 'nullable|date|before:to_date',
-            'new_old_revenue.*.from_date' => 'nullable|date|before:to_date',
-            'static_payout.*.from_date' => 'nullable|date|before:to_date',
-            'new_old_payout.*.from_date' => 'nullable|date|before:to_date',
-
-
         ]);
+
+        if (!$this->offerRevenueAndPayoutDateValidation($request)) {
+            return redirect()->back()->withErrors(['Error' => 'To date can not be after from date.'])->withInput($request->all());
+        }
 
         $thumbnail = '';
         if ($request->has('thumbnail')) {
@@ -341,7 +339,6 @@ class OfferController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th);
         }
 
 
@@ -506,13 +503,11 @@ class OfferController extends Controller
             'payout_slaps.*.to' => 'required_if:payout_cps_type,slaps',
             'payout_slaps.*.payout' => 'required_if:payout_cps_type,slaps',
 
-            'static_revenue.*.from_date' => 'date|nullable|before:to_date',
-            'new_old_revenue.*.from_date' =>'date|nullable|before:to_date',
-            'static_payout.*.from_date' => 'date|nullable|before:to_date',
-            'new_old_payout.*.from_date' => 'date|nullable|before:to_date',
-
-
         ]);
+
+        if (!$this->offerRevenueAndPayoutDateValidation($request)) {
+            return redirect()->back()->withErrors(['Error' => 'To date can not be after from date.'])->withInput($request->all());
+        }
 
         $thumbnail = $offer->thumbnail;
         if ($request->has("thumbnail")) {
@@ -722,5 +717,73 @@ class OfferController extends Controller
         session()->forget('offers_filter_revenue_cps_type');
         session()->forget('offers_filter_payout_cps_type');
         return redirect()->route('admin.offers.index');
+    }
+
+    public function offerRevenueAndPayoutDateValidation(Request $request)
+    {
+        // Revenue
+        // Validate Static Revenue
+        if ($request->revenue_cps_type == 'static' && $request->static_revenue && count($request->static_revenue) > 0) {
+            foreach ($request->static_revenue as $staticRevenue) {
+                if (isset($staticRevenue['date_range']) && $staticRevenue['date_range'][0]  == 'on') {
+                    if ($staticRevenue['from_date'] > $staticRevenue['to_date']) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Validate new old revenue
+        if ($request->revenue_cps_type == 'new_old' && $request->new_old_revenue && count($request->new_old_revenue) > 0) {
+            foreach ($request->new_old_revenue as $newOldRevenue) {
+                if (isset($newOldRevenue['date_range']) && $newOldRevenue['date_range'][0]  == 'on') {
+                    if ($newOldRevenue['from_date'] > $newOldRevenue['to_date']) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Validate slaps revenue
+        if ($request->revenue_cps_type == 'slaps' && $request->revenue_slaps && count($request->revenue_slaps) > 0) {
+            foreach ($request->revenue_slaps as $slapsRevenue) {
+                if ($slapsRevenue['from'] > $slapsRevenue['to']) {
+                    return false;
+                }
+            }
+        }
+
+        // Payout
+        // Validate Static Payout
+        if ($request->payout_cps_type == 'static' && $request->static_payout && count($request->static_payout) > 0) {
+            foreach ($request->static_payout as $staticPayout) {
+                if (isset($staticPayout['date_range']) && $staticPayout['date_range'][0]  == 'on') {
+                    if ($staticPayout['from_date'] > $staticPayout['to_date']) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Validate new old Payout
+        if ($request->payout_cps_type == 'new_old' && $request->new_old_payout && count($request->new_old_payout) > 0) {
+            foreach ($request->new_old_payout as $newOldPayout) {
+                if (isset($newOldPayout['date_range']) && $newOldPayout['date_range'][0]  == 'on') {
+                    if ($newOldPayout['from_date'] > $newOldPayout['to_date']) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Validate slaps Payout
+        if ($request->payout_cps_type == 'slaps' && $request->payout_slaps && count($request->payout_slaps) > 0) {
+            foreach ($request->payout_slaps as $slapsPayout) {
+                if ($slapsPayout['from'] > $slapsPayout['to']) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

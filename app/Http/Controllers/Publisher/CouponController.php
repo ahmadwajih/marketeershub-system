@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Publisher;
 
 use App\Http\Controllers\Controller;
 use App\Imports\CouponImport;
@@ -9,7 +9,6 @@ use App\Models\Coupon;
 use App\Models\CouponCps;
 use App\Models\Offer;
 use App\Models\User;
-use App\Notifications\CodeRecycled;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -31,26 +30,17 @@ class CouponController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     * @return Application|Factory|View|RedirectResponse
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request): View|Factory|RedirectResponse|Application
     {
-        $this->authorize('view_coupons');
-        if(isset($request->success) && $request->success == 'true'){
-            $couponsCountBeforUploading = session('coupons_count_before_uploading');
-            $couponsCount = Coupon::count();
-            $totalUploadedCoupons = $couponsCount - $couponsCountBeforUploading;
-            $notification = [
-                'message' => $totalUploadedCoupons . ' Coupon Uploaded Successfully.',
-                'alert-type' => 'success'
-            ];
-            return redirect()->route('admin.coupons.index')->with($notification);
-        }
-
         // Get Coupons
         $query = Coupon::query();
 
-         $tableLength = session('table_length') ?? config('app.pagination_pages');
+        $tableLength = session('table_length') ?? config('app.pagination_pages');
+
+        $query->where('user_id', auth()->user()->id);
 
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
@@ -58,13 +48,6 @@ class CouponController extends Controller
             session()->put('coupons_filter_offer_id', $request->offer_id);
         } elseif (session('coupons_filter_offer_id')) {
             $query->where('offer_id', session('coupons_filter_offer_id'));
-        }
-
-        if (isset($request->user_id) && $request->user_id  != null || session('coupons_filter_user_id')) {
-            $query->where('user_id', $request->user_id);
-            session()->put('coupons_filter_user_id', $request->user_id);
-        } elseif (session('coupons_filter_user_id')) {
-            $query->where('user_id', session('coupons_filter_user_id'));
         }
 
         if (isset($request->status) && $request->status  != null) {
@@ -82,7 +65,7 @@ class CouponController extends Controller
         $coupons = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $countries = Country::all();
         $offers = Offer::orderBy('id', 'desc')->get();
-        return view('new_admin.coupons.index', [
+        return view('publishers.coupons.index', [
             'countries' => $countries,
             'coupons' => $coupons,
             'offers' => $offers,
@@ -95,7 +78,7 @@ class CouponController extends Controller
         session()->forget('coupons_filter_offer_id');
         session()->forget('coupons_filter_user_id');
         session()->forget('coupons_filter_status');
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('publisher.coupons.index');
     }
 
     /**
@@ -509,7 +492,7 @@ class CouponController extends Controller
                             }
                         }
                     }
-        
+
                     // If payout_cps_type is new_old
                     if ($request->payout_cps_type == 'new_old') {
                         if ($request->new_old_payout && count($request->new_old_payout) > 0) {
@@ -530,7 +513,7 @@ class CouponController extends Controller
                             }
                         }
                     }
-        
+
                     // If payout_cps_type is slaps
                     if ($request->payout_cps_type == 'slaps') {
                         if ($request->payout_slaps && count($request->payout_slaps) > 0) {
@@ -571,8 +554,16 @@ class CouponController extends Controller
     {
         $coupon = Coupon::whereId($request->id)->first();
         if ($coupon) {
-            return view('new_admin.coupons.load-payout', ['coupon' => $coupon]);
+            return view('publishers.coupons.load-payout', ['coupon' => $coupon]);
         }
         return 'No Data';
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    private function can_access_coupons()
+    {
+        $this->authorize('view_coupons');
     }
 }
