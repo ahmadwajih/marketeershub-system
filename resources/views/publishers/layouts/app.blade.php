@@ -141,7 +141,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
 
                             @yield('content')
                         </div>
-                        @include('new_admin.layouts.footer')
+                        @include('publishers.layouts.footer')
                     </div>
                 </div>
 
