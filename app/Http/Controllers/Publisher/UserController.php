@@ -97,4 +97,29 @@ class UserController extends Controller
             'coupons' => $coupons->unique(),
         ]);
     }
+
+    public function edit_profile()
+    {
+        $id = auth()->id();
+
+        if (auth()->user()->id != $id && !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())) {
+            $this->authorize('update_publishers');
+        }
+        $accountManagers = User::where('position', 'account_manager')->get();
+        $publisher = User::findOrFail($id);
+        if ($publisher->position != 'publisher') {
+            return redirect()->route('admin.users.edit', $id);
+        }
+        $publisher->traffic_sources = explode(',', $publisher->traffic_sources);
+        return view('publishers.publishers.edit', [
+            'publisher' => $publisher,
+            'countries' => Country::all(),
+            'cities' => City::whereCountryId($publisher->country_id)->get(),
+            'users' => User::where('position', 'account_manager')->whereStatus('active')->get(),
+            'categories' => Category::whereType($publisher->team)->get(),
+            'roles' => Role::all(),
+            'currencies' => Currency::all(),
+            'accountManagers' => $accountManagers,
+        ]);
+    }
 }

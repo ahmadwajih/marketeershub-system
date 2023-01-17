@@ -11,5 +11,7 @@ Route::group(['prefix' => 'publisher', 'namespace' => 'Publisher', 'as' => 'publ
         Route::get('coupons/clear/sessions', 'CouponController@clearFilterSeassoions')->name('coupons.clear.sessions');
         Route::get('coupons/load/payout', 'CouponController@loadPayout');
 
+        Route::get('publisher/{id}/edit', 'PublishersController@edit_profile')->name('publisher.edit_profile');
+        Route::put('publisher/{id}', 'PublishersController@update')->name('publisher.update');
     });
 });
