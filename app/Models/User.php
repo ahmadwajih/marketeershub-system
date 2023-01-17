@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Attribute;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -61,18 +59,14 @@ class User extends Authenticatable
     public function parent(){
         return $this->belongsTo(User::class, 'parent_id')->with('parent');
     }
-
     public function users()
     {
         return $this->hasMany(User::class, 'parent_id');
     }
-
     public function childrens(){
         // return $this->hasMany(User::class, 'parent_id');
         return $this->hasMany(User::class, 'parent_id')->with('childrens');
-
     }
-
     public function childrenss(){
         return DB::table('users as u')
         ->join('users as c', 'u.id', '=', 'c.parent_id')
