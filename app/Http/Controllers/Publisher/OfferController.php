@@ -76,7 +76,7 @@ class OfferController extends Controller
                 ->orWhere('name_en', 'like', "%{$request->search}%");
         }
 
-        $offers = $query->with(['advertiser', 'categories', 'countries'])->latest()->paginate($tableLength);
+        $offers = auth()->user()->offers()->latest()->paginate($tableLength);
         $update             = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
 
