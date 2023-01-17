@@ -1,4 +1,4 @@
-<div class="row mb-5" id="new_old_payout">
+<div class="row mb-5" id="new_old_payout" {!!  old('payout_cps_type') == 'new_old' ?:  ' style="display: none" '!!}>
 
 
     <div class="row">

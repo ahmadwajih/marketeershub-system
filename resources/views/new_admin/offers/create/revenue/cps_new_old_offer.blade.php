@@ -1,4 +1,4 @@
-<div class="row mb-5" id="new_old_revenue">
+<div class="row mb-5" id="new_old_revenue" {!!  old('revenue_cps_type') == 'new_old' ?:  ' style="display: none" '!!} >
 
     <div class="row">
         <div class="col-md-11">
