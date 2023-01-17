@@ -89,9 +89,7 @@
                     @if ($offer->discount)
                         <tr>
                             <td><strong>{{ __('Discount') }} : </strong></td>
-                            <td>{{ $offer->discount }}
-                                {{ $offer->discount_type == 'percentage' ? '%' : ($offer->currency ? $offer->currency->code : '') }}
-                            </td>
+                            <td>{{ $offer->discount }}</td>
                         </tr>
                     @endif
                     @if ($offer->expire_date)

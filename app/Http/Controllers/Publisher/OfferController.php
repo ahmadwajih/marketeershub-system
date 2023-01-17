@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Publisher;
+namespace App\Http\Controllers\Dashboard;
 
 use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
@@ -76,11 +76,11 @@ class OfferController extends Controller
                 ->orWhere('name_en', 'like', "%{$request->search}%");
         }
 
-        $offers = auth()->user()->offers()->latest()->paginate($tableLength);
+        $offers = $query->with(['advertiser', 'categories', 'countries'])->latest()->paginate($tableLength);
         $update             = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
 
-        return view('publishers.offers.index', compact('offers', 'offerRequestsArray'));
+        return view('new_admin.offers.index', compact('offers', 'offerRequestsArray'));
     }
 
     /**
@@ -340,7 +340,7 @@ class OfferController extends Controller
         }
 
 
-        // If this offer is with salla partener
+        // If this offer is with salla partener 
         if ($request->partener == 'salla') {
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }
@@ -394,7 +394,7 @@ class OfferController extends Controller
 
             ->get();
 
-        // Get Coupons
+        // Get Coupons 
         $query = Coupon::query();
 
         // Filter
@@ -659,7 +659,7 @@ class OfferController extends Controller
 
 
 
-        // If this offer is with salla partener
+        // If this offer is with salla partener 
         if ($request->partener == 'salla') {
             SallaFacade::assignSalaInfoToOffer($offer->salla_user_email, $offer->id);
         }

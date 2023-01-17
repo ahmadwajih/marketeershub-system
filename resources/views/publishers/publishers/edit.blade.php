@@ -74,45 +74,10 @@
                                             <label class="required form-label">Email</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" value="{{ old('email') ?? $publisher->email }}" disabled="true" />
+                                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" value="{{ old('email') ?? $publisher->email }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('email'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('email') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="form-label">Password</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="password" name="password" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
-                                            <p >{{ __('Password should have at least 1 lowercase and 1 uppercase and 1 number and 1 symbol min 8 chars') }}</p>
-
-                                            <!--end::Input-->
-                                            @if ($errors->has('password'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password') }}</div></div>
-                                            @endif
-                                        </div>
-                                        <!--end::Input group-->
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <!--begin::Input group-->
-                                        <div class="mb-10 fv-row">
-                                            <!--begin::Label-->
-                                            <label class="required form-label">Password Confirmation</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
-                                            <input type="password" name="password_confirmation" class="form-control mb-2" placeholder="Password" autocomplete="off"/>
-
-                                            <!--end::Input-->
-                                            @if ($errors->has('password_confirmation'))
-                                                <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('password_confirmation') }}</div></div>
                                             @endif
                                         </div>
                                         <!--end::Input group-->
@@ -180,7 +145,7 @@
                                             <label class="required form-label">Publisher Type</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select disabled="true" id="team" name="team" aria-label="Select a Publisher Type" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
+                                            <select id="team" name="team" aria-label="Select a Publisher Type" data-control="select2" data-placeholder="date_period" class="form-select form-select-sm">
                                                 <option {{ old('team') == 'affiliate' ? "selected" : ($publisher->team == 'affiliate' ? "selected" : '' )  }} value="affiliate">{{ __('Affiliate') }}</option>
                                                 <option {{ old('team') == 'influencer' ? "selected" : ($publisher->team == 'influencer' ? "selected" : '' )  }} value="influencer">{{ __('Influencer') }}</option>
                                             </select>
@@ -199,7 +164,7 @@
                                             <label class="required form-label">Account Manager</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select disabled="true" name="parent_id" data-control="select2" class="form-select form-select-sm" id="accountManagers">
+                                            <select name="parent_id" data-control="select2" class="form-select form-select-sm" id="accountManagers">
                                                 <option selected value="">{{ __('No one') }}</option>
                                                 @foreach ($users as $user)
                                                     <option {{ old('parent_id') == $user->id ? "selected" : ($publisher->parent_id == $user->id ? "selected" : '') }} value="{{ $user->id }}">{{  $user->name }}</option>
@@ -216,7 +181,7 @@
                                     <div class="separator separator-content my-14">
                                         <span class="w-125px fw-semibold fs-7">Additional Info</span>
                                     </div>
-
+                                   
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -229,7 +194,7 @@
                                                 @foreach ($categories as $category)
                                                     <option {{ old('categories') && in_array($category->id, old('categories')) ? 'selected' : (in_array($category->id, $publisher->categories->pluck('id')->toArray()) ? "selected" : '') }} value="{{ $category->id }}">{{ $category->title }}</option>
                                                 @endFOreach
-                                            </select>
+                                            </select>                                            
                                             @if ($errors->has('categories'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('categories') }}</div></div>
                                             @endif
@@ -257,7 +222,7 @@
                                             <!--end::Input group-->
                                         </div>
 
-
+                                        
                                         <div class="col-md-12">
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
@@ -294,7 +259,7 @@
                                                 <option {{ old('traffic_sources') !== null && in_array('coupon_app', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('coupon_app', $publisher->traffic_sources) ? 'selected' : '') }} value="coupon_app">{{ __('Coupon App') }}</option>
                                                 <option {{ old('traffic_sources') !== null && in_array('coupon_website', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('coupon_website', $publisher->traffic_sources) ? 'selected' : '') }} value="coupon_website">{{ __('Coupon Website') }}</option>
                                                 <option {{ old('traffic_sources') !== null && in_array('other', old('traffic_sources')) ? 'selected' : ( $publisher->traffic_sources !== null && in_array('other', $publisher->traffic_sources) ? 'selected' : '') }} value="other">{{ __('Other') }}</option>
-                                            </select>
+                                            </select>                                                
                                             <!--end::Input-->
                                                 @if ($errors->has('affiliate_networks'))
                                                     <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('affiliate_networks') }}</div></div>
@@ -415,7 +380,7 @@
                                                             </div>
                                                         </div>
                                                         <!--end::Form group-->
-
+    
                                                         <!--begin::Form group-->
                                                         <div class="form-group mt-5">
                                                             <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
@@ -552,7 +517,7 @@
                                                                                     <option {{ $link['followers'] == '> 1M' ? 'seleccted' : '' }} value="> 1M">> 1M</option>
                                                                                 </select>
                                                                             </div>
-
+            
                                                                             <div class="col-md-4">
                                                                                 <label class="form-label">Link:</label>
                                                                                 <input type="link" name="link" class="form-control mb-2 mb-md-0" placeholder="https://www.example.com" value="{{ $link['link'] }}" />
@@ -592,7 +557,7 @@
                                                                                     <option {{ $link->followers == '> 1M' ? 'seleccted' : '' }} value="> 1M">> 1M</option>
                                                                                 </select>
                                                                             </div>
-
+            
                                                                             <div class="col-md-4">
                                                                                 <label class="form-label">Link:</label>
                                                                                 <input type="link" name="link" class="form-control mb-2 mb-md-0" placeholder="https://www.example.com" value="{{ $link->link }}" />
@@ -631,7 +596,7 @@
                                                                                 <option value="> 1M">> 1M</option>
                                                                             </select>
                                                                         </div>
-
+        
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Link:</label>
                                                                             <input type="link" name="link" class="form-control mb-2 mb-md-0" placeholder="https://www.example.com" />
@@ -649,7 +614,7 @@
                                                         </div>
                                                     </div>
                                                     <!--end::Form group-->
-
+    
                                                     <!--begin::Form group-->
                                                     <div class="form-group mt-5">
                                                         <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
@@ -761,7 +726,7 @@
                                                 <option {{ old('currency') == 'AED' ? "selected" : ($publisher->currency == 'AED' ? "selected" : '') }} value="AED">AED</option>
                                                 <option {{ old('currency') == 'KWD' ? "selected" : ($publisher->currency == 'KWD' ? "selected" : '') }} value="KWD">KWD</option>
                                                 <option {{ old('currency') == 'EGP' ? "selected" : ($publisher->currency == 'EGP' ? "selected" : '') }} value="EGP">EGP</option>
-                                            </select>
+                                            </select>                                            
                                             <!--end::Input-->
                                             @if ($errors->has('currency'))
                                                 <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('currency') }}</div></div>
@@ -833,12 +798,12 @@
                 }
             });
 
-
+            
 
 
         });
 
-        // Get acount managers based on team
+        // Get acount managers based on team 
         $("#team").change(function() {
                 $.ajaxSetup({
                     headers: {
@@ -881,7 +846,7 @@
                     $('.affiliate').fadeOut('slow');
                 }else if($(this).val() == 'affiliate'){
                     $('.influencer').fadeOut('slow');
-                    $('.affiliate').fadeIn('slow');
+                    $('.affiliate').fadeIn('slow');  
                 }else{
                     $('.affiliate').fadeOut('slow');
                     $('.influencer').fadeOut('slow');
