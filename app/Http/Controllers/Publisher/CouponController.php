@@ -539,8 +539,6 @@ class CouponController extends Controller
         ];
         return redirect()->back()->with($notification);
     }
-
-
     public function bulkChangeRevenue(Request $request)
     {
         return $request->all();
