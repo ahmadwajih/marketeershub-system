@@ -125,7 +125,7 @@ class OfferController extends Controller
         $data = $request->validate([
             // Genral Info
             'name_en' => 'required|max:255',
-            'advertiser_id' => 'nullable|exists:advertisers,id',
+            'advertiser_id' => 'required|exists:advertisers,id',
             'description_en' => 'nullable',
             'website' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:1024',

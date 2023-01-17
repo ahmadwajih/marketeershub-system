@@ -1,20 +1,45 @@
 @extends('new_admin.layouts.app')
 @section('title', 'Offers')
-@section('subtitle', 'Create')
+@section('subtitle', 'Edit')
 @push('styles')
     <style>
-        #percentage_discount,
-        .display-none{
-            display: none !important;
+        #new_old_payout,
+        #slaps_payout,
+        #new_old_revenue,
+        #slaps_revenue,
+        #static_revenue,
+        #static_payout{
+            display: none;
         }
+        #{{ $offer->revenue_cps_type }}_revenue{
+            display: block;
+        }
+        #{{ $offer->revenue_cps_type }}_payout{
+            display: block;
+        }
+           
     </style>
+    
+    @if($offer->discount_type == 'flat')
+        <style>
+            #percentage_discount{
+                display: none;
+            }
+        </style>
+    @else
+        <style>
+           #currency_sellect {
+                display: none;
+           }
+        </style>
+    @endif
 @endpush
 @section('content')
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
         <!--begin::Page title-->
         <div class="page-title d-flex flex-column me-3">
             <!--begin::Title-->
-            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Add New Offer</h1>
+            <h1 class="d-flex text-dark fw-bold my-1 fs-3">Edit Offer</h1>
             <!--end::Title-->
             <!--begin::Breadcrumb-->
             <ul class="breadcrumb breadcrumb-dot fw-semibold text-gray-600 fs-7 my-1">
@@ -28,7 +53,7 @@
                 <li class="breadcrumb-item text-gray-600">Offer</li>
                 <!--end::Item-->
                 <!--begin::Item-->
-                <li class="breadcrumb-item text-gray-500">Add New</li>
+                <li class="breadcrumb-item text-gray-500">Edit</li>
                 <!--end::Item-->
             </ul>
             <!--end::Breadcrumb-->
@@ -38,8 +63,9 @@
 
     <!--begin::Form-->
     <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row"
-        action="{{ route('admin.offers.store') }}" method="POST" enctype="multipart/form-data">
+        action="{{ route('admin.offers.update', $offer->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <!--begin::Main column-->
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
 
@@ -70,7 +96,7 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="text" name="name_en" class="form-control mb-2"
-                                                placeholder="Offer name" value="{{ old('name_en') }}" />
+                                                placeholder="Offer name" value="{{ old('name_en') ?? $offer->name_en }}" />
                                             @if ($errors->has('name_en'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
                                                     <div data-field="text_input">{{ $errors->first('name_en') }}</div>
@@ -81,14 +107,14 @@
                                         <!--end::Input group-->
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
                                             <label class="form-label">Offer Thumbnail</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="file" name="thumbnail" class="form-control mb-2" accept="image/x-png,image/gif,image/jpeg,image/webp"/>
+                                            <input type="file" name="thumbnail" class="form-control mb-2"  accept="image/x-png,image/gif,image/jpeg,image/webp"/>
                                             @if ($errors->has('thumbnail'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
                                                     <div data-field="text_input">{{ $errors->first('thumbnail') }}</div>
@@ -97,6 +123,9 @@
                                             <!--end::Input-->
                                         </div>
                                         <!--end::Input group-->
+                                    </div>
+                                    <div class="col-md-6 text-center m-auto">
+                                        <img src="{{ getImagesPath('Offers', $offer->thumbnail) }}" width="100px" alt="">
                                     </div>
 
                                     {{-- <div class="col-md-12">
@@ -109,7 +138,7 @@
                                             <select name="partener" data-control="select2" class="form-select"
                                                 id="select_partener">
                                                 <option {{ old('partener') == 'none' ? 'selected' : '' }} value="none"">
-                                                    {{ __('None') }}</option>
+                                                    {{ __('No one') }}</option>
                                                 <option {{ old('partener') == 'salla' ? 'selected' : '' }} value="salla">
                                                     {{ __('Salla') }}</option>
                                             </select>
@@ -152,9 +181,9 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <select name="advertiser_id" data-control="select2" class="form-select">
-                                                <option selected disabled value="">{{ __('None') }}</option>
+                                                <option selected value="">{{ __('None') }}</option>
                                                 @foreach ($advertisers as $advertiser)
-                                                    <option {{ old('advertiser_id') == $advertiser->id ? 'selected' : '' }}
+                                                    <option {{ old('advertiser_id') == $advertiser->id ? 'selected' : ($offer->advertiser_id == $advertiser->id ? 'selected' : '') }}
                                                         value="{{ $advertiser->id }}">{{ $advertiser->company_name }}
                                                     </option>
                                                 @endforeach
@@ -169,7 +198,6 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -179,10 +207,9 @@
                                             <!--begin::Input-->
                                             <select name="categories[]" multiple data-control="select2"
                                                 class="form-select">
+                                                
                                                 @foreach ($categories as $category)
-                                                    <option
-                                                        {{ old('categories') ? (in_array($category->id, old('categories')) ? 'selected' : '') : '' }}
-                                                        value="{{ $category->id }}">{{ $category->title }}</option>
+                                                    <option {{ old('categories') ? (in_array($category->id, old('categories')) ? 'selected' : '') :  (in_array($category->id, $offer->categories->pluck('id')->toArray()) ? 'selected' :'') }} value="{{ $category->id }}">{{ $category->title }}</option>
                                                 @endforeach
                                             </select>
                                             <!--end::Input-->
@@ -202,7 +229,7 @@
                                             <label class="required form-label">Description</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <textarea name="description_en" class="form-control mb-2" cols="30" rows="10">{{ old('description_en') }}</textarea>
+                                            <textarea name="description_en" class="form-control mb-2" cols="30" rows="10">{{ old('description_en') ?? $offer->description_en }}</textarea>
                                             <!--end::Input-->
                                             @if ($errors->has('description_en'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
@@ -222,7 +249,7 @@
                                             <!--end::Label-->
                                             <!--begin::Input-->
                                             <input type="url" name="offer_url" class="form-control mb-2"
-                                                placeholder="Offer URL" value="{{ old('offer_url') }}" />
+                                                placeholder="Offer URL" value="{{ old('offer_url') ?? $offer->offer_url }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('offer_url'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
@@ -280,9 +307,9 @@
                                             @endif
                                         </div>
                                         <!--end::Input group-->
-                                    </div> --}}
+                                    </div> 
 
-                                    <div class="col-md-10" id="uploadCoupons"
+                                    <div class="col-md-12" id="uploadCoupons"
                                         @if (old('type') != null && old('type') != 'coupon_tracking') style="display: none" @endif>
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
@@ -290,7 +317,7 @@
                                             <label class="form-label">Coupon Codes</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="file" name="coupons" class="form-control mb-2"
+                                            <input type="file" name="email" class="form-control mb-2"
                                                 placeholder="Coupons" value="{{ old('coupons') }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('coupons'))
@@ -301,16 +328,14 @@
                                         </div>
                                         <!--end::Input group-->
                                     </div>
-                                    <div class="col-md-2">
-                                        <br>
-                                        <a href="{{ asset('dashboard/excel-sheets-examples/coupons.xlsx') }}" class="btn btn-primary mt-2" download>{{ __('Download Example') }}</a>
-                                    </div>
+
+                                    --}}
 
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
-                                            <label class="required form-label" style="margin-bottom: -20px; display: block;">Offer Discount</label>
+                                            <label class="form-label" style="margin-bottom: -20px; display: block;">Offer Discount</label>
                                             <!--end::Label-->
                                         </div>
                                         <!--end::Input group-->
@@ -319,10 +344,11 @@
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
                                         <div class="input-group mb-5">
-                                            <input type="text" class="form-control" name="discount" placeholder="Discount Amount" value="{{ old('discount') }}" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
+                                            <input type="text" class="form-control" name="discount" placeholder="Discount Amount" value="{{ old('discount') ?? $offer->discount }}" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
                                         </div>
                                         <!--end::Input group-->
                                     </div>
+
 
                                     <div class="col-md-12">
                                         <!--begin::Input group-->
@@ -331,7 +357,8 @@
                                             <label class="form-label">Expiry Date</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <input type="date" name="expire_date" class="form-control mb-2" value="{{ old('expire_date') }}" />
+                                            <input type="date" name="expire_date" class="form-control mb-2"
+                                                placeholder="Email" value="{{ old('expire_date') ?? $offer->expire_date }}" />
                                             <!--end::Input-->
                                             @if ($errors->has('expire_date'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
@@ -346,10 +373,31 @@
                                         <!--begin::Input group-->
                                         <div class="mb-10 fv-row">
                                             <!--begin::Label-->
+                                            <label class="form-label">Status</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <select name="status" data-control="select2" class="form-select">
+                                                <option {{ old('status') == 'active' ? 'selected' : ($offer->status == 'active' ? 'selected' :'') }} value="active">{{ __('Active') }}</option>
+                                                <option {{ old('status') == 'pending' ? 'selected' : ($offer->status == 'pending' ? 'selected' :'') }} value="pending">{{ __('Pending') }}</option>
+                                            </select>
+                                            <!--end::Input-->
+                                            @if ($errors->has('status'))
+                                                <div class="fv-plugins-message-container invalid-feedback">
+                                                    <div data-field="text_input">{{ $errors->first('status') }}</div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <!--begin::Input group-->
+                                        <div class="mb-10 fv-row">
+                                            <!--begin::Label-->
                                             <label class="form-label">Offer Restrictions</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <textarea name="terms_and_conditions_en" class="form-control mb-2">{{ old('terms_and_conditions_en') }}</textarea>
+                                            <textarea name="terms_and_conditions_en" class="form-control mb-2">{{ old('terms_and_conditions_en') ?? $offer->terms_and_conditions_en}}</textarea>
                                             <!--end::Input-->
                                             @if ($errors->has('terms_and_conditions_en'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
@@ -368,7 +416,7 @@
                                             <label class="form-label">Note</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <textarea name="note" class="form-control mb-2" id="">{{ old('note') }}</textarea>
+                                            <textarea name="note" class="form-control mb-2" id="">{{ old('note') ?? $offer->note }}</textarea>
                                             <!--end::Input-->
                                             @if ($errors->has('note'))
                                                 <div class="fv-plugins-message-container invalid-feedback">
@@ -402,9 +450,9 @@
                                         <!--begin::Input-->
                                         <select name="revenue_cps_type" data-control="select2" class="form-select"
                                             id="cps_type_revenue">
-                                            <option {{ old('revenue_cps_type') == 'static' ? 'selected' : '' }} value="static"> {{ __('Fixed Model') }}</option>
-                                            <option {{ old('revenue_cps_type') == 'new_old' ? 'selected' : '' }} value="new_old"> {{ __('New-old Model') }}</option>
-                                            <option {{ old('revenue_cps_type') == 'slaps' ? 'selected' : '' }} value="slaps"> {{ __('Slabs Model') }}</option>
+                                            <option {{ old('revenue_cps_type') == 'static' ? 'selected' :  ($offer->revenue_cps_type == 'static' ? 'selected' : '') }} value="static"> {{ __('Fixed Model') }}</option>
+                                            <option {{ old('revenue_cps_type') == 'new_old' ? 'selected' :  ($offer->revenue_cps_type == 'new_old' ? 'selected' : '') }} value="new_old"> {{ __('New-old Model') }}</option>
+                                            <option {{ old('revenue_cps_type') == 'slaps' ? 'selected' :  ($offer->revenue_cps_type == 'slaps' ? 'selected' : '') }} value="slaps"> {{ __('Slabs Model') }}</option>
                                         </select>
                                         <!--end::Input-->
                                         @if ($errors->has('revenue_cps_type'))
@@ -416,9 +464,9 @@
                                     <!--end::Input group-->
                                 </div>
 
-                                @include('new_admin.offers.create.revenue.cps_static_offer')
-                                @include('new_admin.offers.create.revenue.cps_new_old_offer')
-                                @include('new_admin.offers.create.revenue.cps_slaps_offer')
+                                @include('new_admin.offers.edit.revenue.cps_static_offer')
+                                @include('new_admin.offers.edit.revenue.cps_new_old_offer')
+                                @include('new_admin.offers.edit.revenue.cps_slaps_offer')
                             </div>
                         </div>
 
@@ -439,9 +487,9 @@
                                         <!--begin::Input-->
                                         <select name="payout_cps_type" data-control="select2" class="form-select"
                                             id="cps_type_payout">
-                                            <option {{ old('payout_cps_type') == 'static' ? 'selected' : '' }} value="static"> {{ __('Fixed Model') }}</option>
-                                            <option {{ old('payout_cps_type') == 'new_old' ? 'selected' : '' }} value="new_old"> {{ __('New-old Model') }}</option>
-                                            <option {{ old('payout_cps_type') == 'slaps' ? 'selected' : '' }} value="slaps"> {{ __('Slabs Model') }}</option>
+                                            <option {{ old('revenue_cps_type') == 'static' ? 'selected' :  ($offer->payout_cps_type == 'static' ? 'selected' : '') }} value="static"> {{ __('Fixed Model') }}</option>
+                                            <option {{ old('revenue_cps_type') == 'new_old' ? 'selected' :  ($offer->payout_cps_type == 'new_old' ? 'selected' : '') }} value="new_old"> {{ __('New-old Model') }}</option>
+                                            <option {{ old('revenue_cps_type') == 'slaps' ? 'selected' :  ($offer->payout_cps_type == 'slaps' ? 'selected' : '') }} value="slaps"> {{ __('Slabs Model') }}</option>
                                         </select>
                                         <!--end::Input-->
                                         @if ($errors->has('payout_cps_type'))
@@ -453,9 +501,9 @@
                                     <!--end::Input group-->
                                 </div>
 
-                                @include('new_admin.offers.create.payout.cps_static_offer')
-                                @include('new_admin.offers.create.payout.cps_new_old_offer')
-                                @include('new_admin.offers.create.payout.cps_slaps_offer')
+                                @include('new_admin.offers.edit.payout.cps_static_offer')
+                                @include('new_admin.offers.edit.payout.cps_new_old_offer')
+                                @include('new_admin.offers.edit.payout.cps_slaps_offer')
                             </div>
                         </div>
                     </div>
@@ -513,15 +561,6 @@
 
             });
 
-            $("#select_partener").change(function() {
-                if ($(this).val() == 'salla') {
-                    $('#sallaUserEmail').fadeIn();
-                } else {
-                    $('#sallaUserEmail').fadeOut();
-                }
-            });
-
-
             $("#discount_type").change(function() {
                 if ($(this).val() == 'percentage') {
                     $('#currency_sellect').fadeOut('fast');
@@ -529,6 +568,14 @@
                 } else {
                     $('#percentage_discount').fadeOut('fast');
                     $('#currency_sellect').fadeIn('slow');
+                }
+            });
+
+            $("#select_partener").change(function() {
+                if ($(this).val() == 'salla') {
+                    $('#sallaUserEmail').fadeIn();
+                } else {
+                    $('#sallaUserEmail').fadeOut();
                 }
             });
 
@@ -578,14 +625,9 @@
 
         })
     </script>
+    
     <script src="{{ asset('new_dashboard') }}/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/offers/formrepeater-caller.js"></script>
-    {{-- <script src="{{ asset('new_dashboard') }}/js/offers/revenu-static-switchers.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/offers/payout-static-switchers.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/offers/revenu-old-new-switchers.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/offers/payout-old-new-switchers.js"></script> --}}
-
-
 
     <script>
         $('#kt_docs_repeater_advanced_revenue').repeater({
@@ -737,6 +779,32 @@
     </script>
 
     <script>
+        // $('input[type="checkbox"]').on('change', function(){
+        //     var switcherParent = $(this).parent().parent().parent();
+
+        //     if ($(this).val() == 'on') {
+
+        //         $(this).val('off');
+        //         if ($(this).data('input') == 'text') {
+        //             switcherParent.find('input[type=text]').prop("disabled", true);
+
+        //         }
+        //         if ($(this).data('input') == 'select') {
+        //             switcherParent.find('select').prop("disabled", true);
+
+        //         }
+        //     }else{
+        //         $(this).val('on');
+        //         if ($(this).data('input') == 'text') {
+        //             switcherParent.find('input[type=text]').prop("disabled", false);
+
+        //         }
+        //         if ($(this).data('input') == 'select') {
+        //             switcherParent.find('select').prop("disabled", false);
+
+        //         }
+        //     }
+        // });
 
         function switcherFunction(switcher) {
 
