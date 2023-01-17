@@ -50,11 +50,11 @@
 				<div class="d-flex my-0">
 
 					<!--begin::Select-->
-					<select name="status" data-control="select2" data-hide-search="true" data-placeholder="Export" class="form-select form-select-sm border-body bg-body w-100px select2-hidden-accessible" data-select2-id="select2-data-13-50i3" tabindex="-1" aria-hidden="true" data-kt-initialized="1">
+					<!-- <select name="status" data-control="select2" data-hide-search="true" data-placeholder="Export" class="form-select form-select-sm border-body bg-body w-100px select2-hidden-accessible" data-select2-id="select2-data-13-50i3" tabindex="-1" aria-hidden="true" data-kt-initialized="1">
 						<option value="1" data-select2-id="select2-data-15-9qcx">Excel</option>
 						<option value="1">PDF</option>
 						<option value="2">Print</option>
-					</select><span class="select2 select2-container select2-container--bootstrap5" dir="ltr" data-select2-id="select2-data-14-h4hb" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single form-select form-select-sm border-body bg-body w-100px" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-status-wj-container" aria-controls="select2-status-wj-container"><span class="select2-selection__rendered" id="select2-status-wj-container" role="textbox" aria-readonly="true" title="Excel">Excel</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+					</select><span class="select2 select2-container select2-container--bootstrap5" dir="ltr" data-select2-id="select2-data-14-h4hb" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single form-select form-select-sm border-body bg-body w-100px" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-status-wj-container" aria-controls="select2-status-wj-container"><span class="select2-selection__rendered" id="select2-status-wj-container" role="textbox" aria-readonly="true" title="Excel">Excel</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span> -->
 					<!--end::Select-->
 				</div>
 				<!--end::Actions-->
