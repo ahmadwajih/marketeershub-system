@@ -9,7 +9,7 @@
 		<div class="d-flex flex-wrap flex-stack pb-7">
 			<!--begin::Title-->
 			<div class="d-flex flex-wrap align-items-center my-1">
-				<h3 class="fw-bold me-5 my-1">{{__('Offers')}} ({{ $offers->count() }})</h3>
+				<h3 class="fw-bold me-5 my-1">{{__('Offers')}} ({{ count($offers) }})</h3>
 			</div>
 			<!--end::Title-->
 			<!--begin::Controls-->
