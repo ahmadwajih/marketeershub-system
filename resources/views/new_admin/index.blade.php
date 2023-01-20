@@ -307,7 +307,7 @@
                             <!--end::Stat-->
                         </div>
                         <!--end::Stats-->
-                   
+                        <a class="btn btn-primary btn-block" href="{{ route('cache-clear') }}">Update cached data</a>
                     </div>
                     <!--end::Info-->
                 </div>

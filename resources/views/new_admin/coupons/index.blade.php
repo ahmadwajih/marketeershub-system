@@ -333,9 +333,9 @@
                                         <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'inactive' ?: 'd-none' }}">Inactive</button>
                                     </td>
                                     <td>
-                                        <button onclick="loadPayoutDetails('{{ $coupon->id }}')" data-bs-toggle="modal"
-                                            data-bs-target="#payout_details" class="btn btn-light-info btn-sm ">Show
-                                            Payout</button>
+                                        @if(count($coupon->cps) > 0)
+                                            <button onclick="loadPayoutDetails('{{ $coupon->id }}')" data-bs-toggle="modal" data-bs-target="#payout_details" class="btn btn-light-info btn-sm ">Show Payout</button>
+                                        @endif
                                     </td>
                                     <td>
                                         @can('update_coupons')

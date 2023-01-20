@@ -74,7 +74,7 @@ function delete_row(id, title){
 function delete_selected(){
 
     Swal.fire({
-        text: "Are you sure you want to delete selected coupons?",
+        text: "Are you sure you want to delete selected publishers?",
         icon: "warning",
         showCancelButton: true,
         buttonsStyling: false,

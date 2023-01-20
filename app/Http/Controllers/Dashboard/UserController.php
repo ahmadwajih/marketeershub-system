@@ -178,8 +178,8 @@ class UserController extends Controller
         if($request->password){
             $data['password'] = Hash::make($request->password);
         }
-            
         unset($data['roles']);
+        userActivity('User', $user->id, 'update', $data, $user);
         $user->update($data);
         if($request['roles']){
             $user->roles()->detach();
@@ -189,8 +189,6 @@ class UserController extends Controller
                 $user->assignRole($role);
             }
         }
-        userActivity('User', $user->id, 'update');
-
         $notification = [
             'message' => 'Updated successfully',
             'alert-type' => 'success'
