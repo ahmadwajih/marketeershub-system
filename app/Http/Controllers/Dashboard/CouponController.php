@@ -614,8 +614,6 @@ class CouponController extends Controller
 
     public function offerPayoutDateValidation(Request $request)
     {
-
-
         // Payout
         // Validate Static Payout
         if ($request->payout_cps_type == 'static' && $request->static_payout && count($request->static_payout) > 0) {

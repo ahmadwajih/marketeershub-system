@@ -22,7 +22,7 @@ class UserActivityController extends Controller
 
         $tableLength = session('table_length') ?? config('app.pagination_pages');
 
-        $activities = UserActivity::with('user')->paginate($tableLength);
+        $activities = UserActivity::with('user')->latest()->paginate($tableLength);
 
         return view('new_admin.activities.index', compact('activities'));
     }

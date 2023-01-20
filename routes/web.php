@@ -192,3 +192,13 @@ Route::get('/optimize', function () {
     return view('welcome');
 });
 
+
+Route::get('/clear-cached', function () {
+    Artisan::call('optimize:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+    Artisan::call('key:generate');
+    Artisan::call('cache:clear');
+    return redirect()->back();
+})->name('cache-clear');
+
