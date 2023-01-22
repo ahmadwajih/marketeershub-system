@@ -36,7 +36,7 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view_offers');
+        // $this->authorize('view_offers');
         $query = Offer::query();
         // Filter
         if (isset($request->status) && $request->status  != null) {
