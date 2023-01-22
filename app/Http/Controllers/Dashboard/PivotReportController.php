@@ -35,7 +35,7 @@ class PivotReportController extends Controller
 
         $query = PivotReport::query();
 
-         $tableLength = session('table_length') ?? config('app.pagination_pages');
+        $tableLength = session('table_length') ?? config('app.pagination_pages');
         // Filter
         if (isset($request->offer_id) && $request->offer_id  != null) {
             $query->where('offer_id', $request->offer_id);
@@ -52,41 +52,40 @@ class PivotReportController extends Controller
         }
 
         if (isset($request->search) && $request->search  != null) {
-            $query->whereHas('coupon', function($couponQuery)use($request){
+            $query->whereHas('coupon', function ($couponQuery) use ($request) {
                 return  $couponQuery->where('coupon', $request->search);
             });
-            $query->orWhereHas('offer', function($couponQuery)use($request){
+            $query->orWhereHas('offer', function ($couponQuery) use ($request) {
                 return $couponQuery
-                    ->where('name_en','like' ,"%$request->search%")
-                    ->orWhere('name_ar','like' ,"%$request->search%")
-                ;
+                    ->where('name_en', 'like', "%$request->search%")
+                    ->orWhere('name_ar', 'like', "%$request->search%");
             });
         }
         $publisherForFilter = User::whereId(session('pivot_report_filter_user_id'))->first();
         $reports = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $offers = Offer::orderBy('id', 'desc')->get();
 
-        if (Storage::has($this->module_name.'_failed_rows.json')){
-            $publishers_failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+        if (Storage::has($this->module_name . '_failed_rows.json')) {
+            $publishers_failed_rows = json_decode(Storage::get($this->module_name . '_failed_rows.json'), true);
             session(['columnHaveIssue' => $publishers_failed_rows]);
         }
 
         //todo remove duplicated code
-        $import_file="";
-        if (Storage::has($this->module_name.'_importing_counts.json')){
-            $import_file = Storage::get($this->module_name.'_importing_counts.json');
+        $import_file = "";
+        if (Storage::has($this->module_name . '_importing_counts.json')) {
+            $import_file = Storage::get($this->module_name . '_importing_counts.json');
         }
         $fileUrl = null;
         $directory = "public/missing/$this->module_name";
         $files = Storage::allFiles($directory);
-        if($files){
+        if ($files) {
             $fileUrl = route('admin.reports.deonload.errore');
         }
         return view('new_admin.pivot-report.index', [
             'reports' => $reports,
             'offers' => $offers,
             'publisherForFilter' => $publisherForFilter,
-            'import_file'=>json_decode($import_file),
+            'import_file' => json_decode($import_file),
             'fileUrl' => $fileUrl,
         ]);
     }
@@ -125,24 +124,24 @@ class PivotReportController extends Controller
         ]);
         $files = Storage::allFiles("public/missing/$this->module_name");
         Storage::delete($files);
-        Storage::delete($this->module_name.'_importing_counts.json');
-        Storage::delete($this->module_name.'_failed_rows.json');
-        Storage::delete($this->module_name.'_duplicated_rows.json');
-        Storage::delete($this->module_name.'_issues_rows.json');
+        Storage::delete($this->module_name . '_importing_counts.json');
+        Storage::delete($this->module_name . '_failed_rows.json');
+        Storage::delete($this->module_name . '_duplicated_rows.json');
+        Storage::delete($this->module_name . '_issues_rows.json');
 
         Storage::put('pivot_report_import.txt', $request->file('report')->store('files'));
         $id = now()->unix();
-        session([ 'import' => $id ]);
+        session(['import' => $id]);
         $data = [
             "id" => $id,
         ];
         Storage::put('import.json', json_encode($data));
         $import_file = Storage::get("pivot_report_import.txt");
         Excel::queueImport(
-            new UpdateReportImport($request->offer_id, $request->type,$id),
+            new UpdateReportImport($request->offer_id, $request->type, $id),
             $import_file
         );
-        return redirect()->route('admin.reports.index', ['uploading'=> 'true']);
+        return redirect()->route('admin.reports.index', ['uploading' => 'true']);
     }
     /**
      * @throws Exception
@@ -150,7 +149,7 @@ class PivotReportController extends Controller
     public function status()
     {
         $id = 0;
-        if (Storage::has('import.json')){
+        if (Storage::has('import.json')) {
             $import_file = Storage::get("import.json");
             $import_file = json_decode($import_file, true);
             $id = $import_file['id'];
@@ -166,7 +165,7 @@ class PivotReportController extends Controller
     {
         ob_end_clean();
         $path = storage_path("app/public/missing/$this->module_name/$dir");
-        $filesInFolder = file_exists($path)?\File::files($path):[];
+        $filesInFolder = file_exists($path) ? \File::files($path) : [];
         $count = count($filesInFolder);
         if (file_exists($path) and $count) {
             $array = pathinfo($filesInFolder[$count - 1]);
@@ -211,8 +210,8 @@ class PivotReportController extends Controller
         $link = asset('dashboard/excel-sheets-examples/update-report');
         $title = 'Download example';
 
-        if(count($revenue) == 0 && count($payout) == 0 ){
-            return response()->json(['data' =>false]);
+        if (count($revenue) == 0 && count($payout) == 0) {
+            return response()->json(['data' => false]);
         }
 
         if ($cpsType == 'static') {
@@ -241,23 +240,43 @@ class PivotReportController extends Controller
         if ($cpsType == 'new_old') {
             // If have date range and countries conditoin
             if ($haveDateRange && $haveCountryRange) {
-                $link .= '/new-old-with-date-range-and-countries-condition.xlsx';
-                $title = 'New-Old with date range and countries condition';
+                if (in_array('flat', $revenue->pluck('amount_type')->toArray())) {
+                    $link .= '/new-old-with-date-range-and-countries-condition-per-order.xlsx';
+                    $title = 'New-Old with date range and countries condition per order';
+                } else {
+                    $link .= '/new-old-with-date-range-and-countries-condition-percentage.xlsx';
+                    $title = 'New-Old with date range and countries condition percentage';
+                }
             }
             // If have date range conditoin
             if ($haveDateRange && !$haveCountryRange) {
-                $link .= '/new-old-with-date-range-condition.xlsx';
-                $title = 'New-Old with date range condition';
+                if (in_array('flat', $revenue->pluck('amount_type')->toArray())) {
+                    $link .= '/new-old-with-date-range-condition-per-order.xlsx';
+                    $title = 'New-Old with date range condition per order';
+                } else {
+                    $link .= '/new-old-with-date-range-condition-percentage.xlsx';
+                    $title = 'New-Old with date range condition percentage';
+                }
             }
             // If have countries conditoin
             if (!$haveDateRange && $haveCountryRange) {
-                $link .= '/new-old-with-countries-condition.xlsx';
-                $title = 'New-Old with countries condition';
+                if (in_array('flat', $revenue->pluck('amount_type')->toArray())) {
+                    $link .= '/new-old-with-countries-condition-per-order.xlsx';
+                    $title = 'New-Old with countries condition per order';
+                } else {
+                    $link .= '/new-old-with-countries-condition-percentage.xlsx';
+                    $title = 'New-Old with countries condition percentage';
+                }
             }
             // If dosnot have date range and dosner countries conditoin
             if (!$haveDateRange && !$haveCountryRange) {
-                $link .= '/new-old-without-date-range-and-without-countries-condition.xlsx';
-                $title = 'New-Old without date range and without countries condition';
+                if (in_array('flat', $revenue->pluck('amount_type')->toArray())) {
+                    $link .= '/new-old-without-date-range-and-without-countries-condition-per-order.xlsx';
+                    $title = 'New-Old without date range and without countries condition per order';
+                } else {
+                    $link .= '/new-old-without-date-range-and-without-countries-condition-percentage.xlsx';
+                    $title = 'New-Old without date range and without countries condition percentage';
+                }
             }
         }
 
@@ -265,7 +284,7 @@ class PivotReportController extends Controller
             $link .= '/slabs.xlsx';
             $title = 'Slabs';
         }
-        return response()->json(['link' => $link,'title' => $title]);
+        return response()->json(['link' => $link, 'title' => $title]);
     }
 
     /**
