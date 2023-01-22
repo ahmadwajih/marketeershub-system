@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers\Publisher;
 
-use App\Facades\SallaFacade;
-use App\Http\Controllers\Controller;
-use App\Imports\OfferCouponImport;
-use App\Models\Advertiser;
-use App\Models\Category;
-use App\Models\Country;
-use App\Models\Coupon;
-use App\Models\Currency;
-use App\Models\NewOldOffer;
-use App\Models\Offer;
-use App\Models\OfferCps;
-use App\Models\OfferRequest;
-use App\Models\OfferSlap;
 use App\Models\User;
-use App\Notifications\NewOffer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\DB;
+use App\Models\Offer;
 use Matrix\Exception;
+use App\Models\Coupon;
+use App\Models\Country;
+use App\Models\Category;
+use App\Models\Currency;
+use App\Models\OfferCps;
+use App\Models\OfferSlap;
+use App\Models\Advertiser;
+use App\Models\NewOldOffer;
+use App\Facades\SallaFacade;
+use App\Models\OfferRequest;
+use Illuminate\Http\Request;
+use App\Notifications\NewOffer;
 use Yajra\DataTables\DataTables;
+use App\Facades\PublisherProfile;
+use App\Imports\OfferCouponImport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Notification;
 
 class OfferController extends Controller
 {
@@ -76,7 +77,11 @@ class OfferController extends Controller
                 ->orWhere('name_en', 'like', "%{$request->search}%");
         }
 
-        $offers = auth()->user()->offers()->latest()->paginate($tableLength);
+        $userId = auth()->user()->id;
+        $children = userChildrens(auth()->user());
+        array_push($children, $userId);
+
+        $offers = PublisherProfile::offers_collection($children)->latest()->paginate($tableLength);
         $update             = in_array('update_offers', auth()->user()->permissions->pluck('name')->toArray());
         $offerRequestsArray = OfferRequest::where('user_id', auth()->user()->id)->pluck('offer_id')->toArray();
 
