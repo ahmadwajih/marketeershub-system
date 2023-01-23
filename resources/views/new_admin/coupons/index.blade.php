@@ -41,50 +41,43 @@
 
 @endpush
 @section('content')
-    @if((isset(request()->success) && request()->success == 'true') || session()->has('message'))
-         <!--begin::Alert-->
-         <div class="alert alert-success d-flex align-items-center p-5">
-            <!--begin::Icon-->
-            <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
-            <!--end::Icon-->
+    @if(session()->has('uploading'))
+        <!--begin::Alert-->
+        <div class="alert alert-success d-flex align-items-center p-5">
+             <!--begin::Icon-->
 
-            <!--begin::Wrapper-->
-            <div class="d-flex flex-column">
-                <!--begin::Title-->
-{{--                <h4 class="mb-1 text-dark">Success</h4>--}}
-                <!--end::Title-->
-                <!--begin::Content-->
-{{--                <p> {{ Session::get('uploaded_coupons') . ' ' . __('Coupon Uploaded Successfully.') }}</p>--}}
-                @if($import_file)
-                    <ul>
-                        <li>Added : {{ $import_file->new  }}</li>
-                        <li>Updated : {{ $import_file->updated }}</li>
-                        <li>Failed : {{ $import_file->failed }}
-                            @if($import_file->failed > 0)
-                                <a download href="{{ $fileUrl }}/failed" class="btn btn-danger btn-sm">Download</a>
-                            @endif
-                        </li>
-                        @if($import_file->duplicated > 0)
-                            <br/>
-                        @endif
-                        <li>
-                            Duplicated : {{ $import_file->duplicated }}
-                            @if($import_file->duplicated > 0)
-                                <a download href="{{ $fileUrl }}/duplicated" class="btn btn-danger btn-sm">Download</a>
-                            @endif
-                        </li>
-                    </ul>
-                @endif
-                <!--end::Content-->
-            </div>
-            <!--end::Wrapper-->
+             <span class="svg-icon svg-icon-2hx svg-icon-success me-3"><i class="fa-solid fa-check fa-2x"></i></span>
+             <!--end::Icon-->
+                 <!--begin::Wrapper-->
+                 <div class="d-flex flex-column">
+                     @if($import_file)
+                         <ul>
+                             <li>Added : {{ $import_file->new  }}</li>
+                             <li>Updated : {{ $import_file->updated }}</li>
+                             <li>Failed : {{ $import_file->failed }}
+                                 @if($import_file->failed > 0)
+                                     <a download href="{{ $fileUrl }}/failed" class="btn btn-danger btn-sm">Download</a>
+                                 @endif
+                             </li>
+                             @if($import_file->duplicated > 0)
+                                 <br/>
+                             @endif
+                             <li>
+                                 Duplicated : {{ $import_file->duplicated }}
+                                 @if($import_file->duplicated > 0)
+                                     <a download href="{{ $fileUrl }}/duplicated" class="btn btn-danger btn-sm">Download</a>
+                                 @endif
+                             </li>
+                         </ul>
+                     @endif
+                 </div>
+                 <!--end::Wrapper-->
             <!--begin::Close-->
                 <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
                     <span class="svg-icon svg-icon-2x svg-icon-light"><i class="fa-solid fa-xmark fa-2x"></i></span>
                 </button>
                 <!--end::Close-->
-        </div>
-        <!--end::Alert-->
+         </div><!--end::Alert-->
     @endif
     <div class="uploading-progress-bar d-none">
         <h3 class="text-center progress-title">Uploading...</h3>
