@@ -45,7 +45,8 @@ class CouponController extends Controller
             $totalUploadedCoupons = $couponsCount - $couponsCountBeforUploading;
             $notification = [
                 'message' => $totalUploadedCoupons . ' Coupon Uploaded Successfully.',
-                'alert-type' => 'success'
+                'alert-type' => 'success',
+                'uploading' =>true
             ];
             return redirect()->route('admin.coupons.index')->with($notification);
         }
@@ -108,6 +109,7 @@ class CouponController extends Controller
         }
         return "not found";
     }
+
     //todo fix func. name typo
     public function clearFilterSeassoions(): RedirectResponse
     {
@@ -471,7 +473,6 @@ class CouponController extends Controller
         Excel::queueImport(new CouponImport($offer_id,$id), $request->file('coupons')->store('files'));
         userActivity('Coupon', null, 'upload');
         return redirect()->route('admin.coupons.index', ['uploading'=> 'true']);
-
     }
     /**
      * @throws Exception
