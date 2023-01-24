@@ -33,7 +33,6 @@
 @section('content')
 
 <div id="main_dashboard">
-
     <!--begin::Navbar-->
     <div class="card mb-6 mb-xl-9 mb-5">
         <div class="card-body pt-9 pb-0">
@@ -176,7 +175,7 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers->where('position', 'publisher')->count() }}">0</div>
+                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers['publishers'] }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
@@ -196,7 +195,7 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers->where('position', 'publisher')->where('team', 'affiliate')->count() }}">0</div>
+                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers['affiliates'] }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
@@ -216,7 +215,7 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers->where('position', 'publisher')->where('team', 'influencer')->count() }}">0</div>
+                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers['influencers'] }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
@@ -237,7 +236,7 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers->where('position', 'account_manager')->count() }}">0</div>
+                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers['account_managers'] }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
@@ -257,7 +256,7 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers->where('position', 'head')->count() }}">0</div>
+                                    <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="{{ $totalUsers['heads'] }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->

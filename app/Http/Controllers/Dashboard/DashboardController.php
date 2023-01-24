@@ -121,10 +121,62 @@ class DashboardController extends Controller
 
 
         // Totals 
-        Cache::remember('total_users', 60 * 60, function () {
-            return User::select('team', 'position')->get();
-        });
+      
+        Cache::forget('total_users');
 
+
+        Cache::remember('total_users', 60*60*60*24, function () {
+            $data = [];
+            $allusers =  User::with('roles');
+
+            $data['heads'] = $allusers->whereHas('roles', function($query){
+                $query->where('label','head');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $allusers =  User::with('roles');
+
+            $data['publishers'] = $allusers->whereHas('roles', function($query){
+                $query->where('label','publisher');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['account_managers'] = $allusers->whereHas('roles', function($query){
+                $query->where('label','account_manager');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['affiliates'] = $allusers->where('team', 'affiliate')->whereHas('roles', function($query){
+                $query->where('label','publisher');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['influencers'] = $allusers->where('team', 'influencer')->whereHas('roles', function($query){
+                $query->where('label','publisher');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['affiliates_account_managers'] = $allusers->where('team', 'affiliate')->whereHas('roles', function($query){
+                $query->where('label','account_manager');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['influencers_account_managers'] = $allusers->where('team', 'influencer')->whereHas('roles', function($query){
+                $query->where('label','account_manager');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['affiliates_heads'] = $allusers->where('team', 'affiliate')->whereHas('roles', function($query){
+                $query->where('label','head');
+            })->count();
+            $allusers =  User::with('roles');
+
+            $data['influencers_heads'] = $allusers->where('team', 'influencer')->whereHas('roles', function($query){
+                $query->where('label','head');
+            })->count();
+
+            return $data;
+        });
 
         $totals = DB::table('pivot_reports')
             ->select(
