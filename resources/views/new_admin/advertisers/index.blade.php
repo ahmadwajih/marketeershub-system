@@ -132,6 +132,6 @@
     <script>
         var route = "{{ route('admin.advertisers.index') }}";
     </script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/advertisers/table.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/advertisers/change-status.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/partners/table.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/partners/change-status.js"></script>
 @endpush
