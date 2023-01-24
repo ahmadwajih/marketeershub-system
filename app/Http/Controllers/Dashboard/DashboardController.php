@@ -122,9 +122,6 @@ class DashboardController extends Controller
 
         // Totals 
       
-        Cache::forget('total_users');
-
-
         Cache::remember('total_users', 60*60*60*24, function () {
             $data = [];
             $allusers =  User::with('roles');
