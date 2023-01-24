@@ -63,7 +63,11 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
             $this->importing_counts['rows_num']++;
             $this->data['publisher_ho_id'] = $col[0];
             $this->data['publisher_email'] = $col[1];
-            if(!is_null($col[0]) && !is_null($col[1]) && $col[1] != 'info@marketeershub.com')
+            $valid_email = true;
+            if (!filter_var($col[1], FILTER_VALIDATE_EMAIL)) {
+                $valid_email = false;
+            }
+            if(!is_null($col[0]) && $col[1] != 'info@marketeershub.com' && $valid_email)
             {
                 try {
                     // Get Account Manager
@@ -105,7 +109,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     // Get Category ID
                     $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
                 }
-                catch (\Throwable $th) {
+                catch (\Throwable) {
                     $this->importing_counts['failed']++;
                     $this->failed_rows[] = $col_array;
                 }
