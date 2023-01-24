@@ -177,8 +177,9 @@
                                         <!--end::Label-->
                                         <!--begin::Input-->
                                         <div>
-                                            <select class="form-select form-select-solid" name="status" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
-                                                >
+                                            <select class="form-select form-select-solid" name="status" data-kt-select2="true" data-placeholder="Select option"
+                                                    data-dropdown-parent="#kt_menu_62cfb00b8671a"
+                                            >
                                                 <option value="">No One</option>
                                                 <option {{ session('coupons_filter_status') == 'active' ? 'selected' :''}} value="active">{{ __('Active') }}</option>
                                                 <option {{ session('coupons_filter_status') == 'inactive' ? 'selected' :''}} value="inactive">{{ __('Inactive') }}</option>
@@ -284,8 +285,8 @@
                                     <td>{{ $coupon->coupon }}</td>
                                     <td>{{ $coupon->offer ? $coupon->offer->name :'' }}</td>
                                     <td>
-                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'inactive')" class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button>
-                                        <button onclick="changeStatus('{{ $coupon->id }}','{{ $coupon->coupon }}', 'active')" class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'inactive' ?: 'd-none' }}">Inactive</button>
+                                        <button class="btn btn-light-success btn-sm  active-btn-{{ $coupon->id }} {{ $coupon->status == 'active' ?: 'd-none' }}">Active</button>
+                                        <button class="btn btn-light-danger btn-sm inactive-btn-{{ $coupon->id }} {{ $coupon->status == 'inactive' ?: 'd-none' }}">Inactive</button>
                                     </td>
                                     <td>
                                         <button onclick="loadPayoutDetails('{{ $coupon->id }}')" data-bs-toggle="modal"
@@ -495,7 +496,6 @@
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/delete.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/edit.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/change-status.js"></script>
     <script src="{{ asset('new_dashboard') }}/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
     <script>
         function switcherFunctionXpng(switcherId, switcher) {
