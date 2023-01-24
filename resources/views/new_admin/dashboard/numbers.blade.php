@@ -288,7 +288,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'publisher')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['publishers'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -326,7 +326,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'publisher')->where('team', 'affiliate')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['affiliates'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -364,7 +364,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'publisher')->where('team', 'influencer')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['influencers'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -402,7 +402,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'account_manager')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['account_managers'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -440,7 +440,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'account_manager')->where('team', 'affiliate')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['affiliates_account_managers'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -478,7 +478,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'account_manager')->where('team', 'influencer')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['influencers_account_managers'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -516,7 +516,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'head')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['heads'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -554,7 +554,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'head')->where('team', 'affiliate')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['affiliates_heads'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
@@ -592,7 +592,7 @@
                     <!--begin::Section-->
                     <div class="d-flex flex-column my-7">
                         <!--begin::Number-->
-                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers->where('position', 'head')->where('team', 'influencer')->count() }}</span>
+                        <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">{{ $totalUsers['influencers_heads'] }}</span>
                         <!--end::Number-->
                         <!--begin::Follower-->
                         <div class="m-0">
