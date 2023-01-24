@@ -127,24 +127,8 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                             ['coupon_id', '=', $coupon->id],
                             ['date', '=', $col[0]->format('Y-m-d')],
                         ])->first();
-                        if ($pivotReport) {
-                            // 1- pivot exist
-                            $pivotReport->update([
-                                'coupon_id' => $coupon->id,
-                                'user_id' => $coupon->user_id,
-                                'orders' => $col[2],
-                                'sales' => $col[3],
-                                'revenue' => $this->calcRevenue($col),
-                                'payout' => $this->calcPayout($col),
-                                'type' => $this->type,
-                                // 'date' => $col[0]->format('Y-m-d'),
-                                'offer_id' => $this->offerId,
-                            ]);
-                            if (!$organic) {
-                                $this->importing_counts['updated']++;
-                            }
-                        }
-                        else {
+                
+                
                             // 2- pivot not exist
                             if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
                                 // 1- calculation is correct
@@ -174,7 +158,6 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                                 $this->failed_rows[] = $col;
                                 $this->importing_counts['failed']++;
                             }
-                        }
                     }
                     else {
                         // 2- coupon_exist
