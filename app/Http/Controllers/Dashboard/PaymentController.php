@@ -234,7 +234,7 @@ class PaymentController extends Controller
         $this->authorize('delete_payments');
         if($request->ajax()){
             userActivity('Payment', $payment->id, 'delete');
-            $payment->delete();
+            $payment->forceDelete();
         }
     }
 

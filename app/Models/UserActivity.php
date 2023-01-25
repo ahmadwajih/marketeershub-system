@@ -29,7 +29,7 @@ class UserActivity extends Model
     {
         if($this->attributes['object_id']){
             $model = "App\Models\\".$this->attributes['object'];
-            $model::withTrashed()->find($this->attributes['object_id']);
+            $model::find($this->attributes['object_id']);
             $routeName = lcfirst(Str::plural($this->attributes['object']));
             return  route('admin.'.$routeName.'.show', $this->attributes['object_id']);
         }

@@ -424,11 +424,11 @@ class PublisherController extends Controller
         }
 
         if ($publisher->socialMediaLinks) {
-            $publisher->socialMediaLinks()->delete();
+            $publisher->socialMediaLinks()->forceDelete();
         }
 
         if ($publisher->digitalAssets) {
-            $publisher->digitalAssets()->delete();
+            $publisher->digitalAssets()->forceDelete();
         }
 
         if (auth()->user()->position == 'account_manager' || auth()->user()->position == 'publisher') {
@@ -563,7 +563,7 @@ class PublisherController extends Controller
         $this->authorize('delete_users');
         $publisher = User::findOrFail($id);
         if ($request->ajax()) {
-            $publisher->delete();
+            $publisher->forceDelete();
             userActivity('User', $publisher->id, 'delete');
         }
     }

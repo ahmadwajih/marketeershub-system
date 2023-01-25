@@ -112,7 +112,7 @@ class UserController extends Controller
         if(auth()->user()->id != $id || !in_array($id, auth()->user()->childrens()->pluck('id')->toArray())){
             $this->authorize('view_users');
         }
-        $user = User::withTrashed()->findOrFail($id);
+        $user = User::findOrFail($id);
         userActivity('User', $user->id, 'show');
         $activites = getActivity('User',$id );
         return view('admin.users.show', ['user' => $user, 'activites' => $activites]);
@@ -212,7 +212,7 @@ class UserController extends Controller
                 return response()->json(['message'=>  __('You can`t delete this user because he have ')  .  count($user->childrens()->pluck('id')->toArray()) . __(' child')], 422);
             }
             userActivity('User', $user->id, 'delete');
-            $user->delete();
+            $user->forceDelete();
             return true;
         }
     }

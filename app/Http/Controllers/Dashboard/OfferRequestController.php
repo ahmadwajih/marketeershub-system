@@ -256,7 +256,7 @@ class OfferRequestController extends Controller
         $this->authorize('delete_offer_requests');
         if ($request->ajax()) {
             userActivity('OfferRequest', $offerRequest->id, 'delete');
-            $offerRequest->delete();
+            $offerRequest->forceDelete();
         }
     }
 

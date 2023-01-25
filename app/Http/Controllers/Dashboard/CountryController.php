@@ -128,7 +128,7 @@ class CountryController extends Controller
         $this->authorize('delete_countries');
         if($request->ajax()){
             userActivity('Country', $country->id, 'delete');
-            $country->delete();
+            $country->forceDelete();
         }
     }
 }

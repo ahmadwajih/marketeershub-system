@@ -269,7 +269,7 @@ class CouponController extends Controller
     public function show($id)
     {
         $this->authorize('view_coupons');
-        $coupon = Coupon::withTrashed()->findOrFail($id);
+        $coupon = Coupon::findOrFail($id);
         userActivity('Coupon', $coupon->id, 'show');
         return view('new_admin.coupons.show', ['coupon' => $coupon]);
     }
@@ -342,7 +342,7 @@ class CouponController extends Controller
         //         Log::debug($th);
         //     }
         // }
-        $coupon->cps()->delete();
+        $coupon->cps()->forceDelete();
 
         if ($request->have_custom_payout == 'on') {
             // If payout_cps_type is static
@@ -427,7 +427,7 @@ class CouponController extends Controller
                 return response()->json(['message' => __('You cannot delete this coupon because it have transactions.')], 422);
             }
             userActivity('Coupon', $coupon->id, 'delete');
-            $coupon->delete();
+            $coupon->forceDelete();
         }
         return response()->json(['message' => __('Success.')]);
     }
@@ -522,7 +522,7 @@ class CouponController extends Controller
                     $coupon->save();
                 }
                 // dd($request->all());
-                $coupon->cps()->delete();
+                $coupon->cps()->forceDelete();
 
                 // If payout_cps_type is static
                 if ($request->have_custom_payout == 'on') {

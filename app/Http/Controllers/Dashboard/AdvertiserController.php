@@ -115,7 +115,7 @@ class AdvertiserController extends Controller
     public function show($id)
     {
         $this->authorize('view_advertisers');
-        $advertiser = Advertiser::withTrashed()->findOrFail($id);
+        $advertiser = Advertiser::findOrFail($id);
         userActivity('Advertiser', $advertiser->id, 'show');
         return view('new_admin.advertisers.show', ['advertiser' => $advertiser]);
     }
@@ -218,7 +218,7 @@ class AdvertiserController extends Controller
         $this->authorize('delete_advertisers');
         if($request->ajax()){
             userActivity('Advertiser', $advertiser->id, 'delete');
-            $advertiser->delete();
+            $advertiser->forceDelete();
         }
     }
 
