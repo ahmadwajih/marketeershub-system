@@ -59,7 +59,12 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
             }
             $this->importing_counts['rows_num']++;
-            if(isset($col[3]) && isset($col[1]) && $col[3] != 'info@marketeershub.com'){
+
+            $valid_email = true;
+            if (!filter_var($col[3], FILTER_VALIDATE_EMAIL)) {
+                $valid_email = false;
+            }
+            if(isset($col[1]) && $valid_email && $col[3] != 'info@marketeershub.com'){
                 // Get Account Manager
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
                 if($accountManager){
