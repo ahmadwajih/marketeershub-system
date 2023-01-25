@@ -44,9 +44,11 @@ use Illuminate\Support\Collection;
 class PublisherController extends Controller
 {
     public string $module_name = 'publishers';
+
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return Application|Factory|View
      * @throws AuthorizationException
      * @noinspection PhpUndefinedFieldInspection
@@ -137,6 +139,7 @@ class PublisherController extends Controller
     }
     public function download($dir): BinaryFileResponse|string
     {
+        //todo remove duplication
         ob_end_clean();
         $path = storage_path("app/public/missing/$this->module_name/$dir/");
         $filesInFolder = file_exists($path)?\File::files($path):[];
