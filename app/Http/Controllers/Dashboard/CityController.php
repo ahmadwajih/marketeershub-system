@@ -133,7 +133,7 @@ class CityController extends Controller
         $this->authorize('delete_cites');
         if($request->ajax()){
             userActivity('City', $city->id, 'delete');
-            $city->delete();
+            $city->forceDelete();
         }
     }
 }

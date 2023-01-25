@@ -101,7 +101,7 @@ class RoleController extends Controller
     {
         $this->authorize('view_roles');
 
-        $role = Role::withTrashed()->findOrFail($id);
+        $role = Role::findOrFail($id);
         return view('new_admin.roles.show',[
             'role' => $role,
             'models' => $this->models,

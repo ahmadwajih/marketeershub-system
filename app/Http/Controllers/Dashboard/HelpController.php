@@ -141,7 +141,7 @@ class HelpController extends Controller
         $this->authorize('delete_helps');
 
         if($request->ajax()){
-            $help->delete();
+            $help->forceDelete();
             return response()->json(true, 200);
         }
     }

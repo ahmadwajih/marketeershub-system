@@ -74,7 +74,7 @@ class CategoryController extends Controller
     {
         abort(404);
         $this->authorize('view_categories');
-        $category = Category::withTrashed()->findOrFail($id);
+        $category = Category::findOrFail($id);
         userActivity('Category', $category->id, 'show');
         return view('admin.categories.show', ['category' => $category]);
     }
@@ -130,7 +130,7 @@ class CategoryController extends Controller
         $this->authorize('delete_categories');
         if($request->ajax()){
             userActivity('Category', $category->id, 'delete');
-            $category->delete();
+            $category->forceDelete();
         }
     }
 }

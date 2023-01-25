@@ -367,7 +367,7 @@ class OfferController extends Controller
     public function show(Request $request, $id)
     {
         $this->authorize('view_offers');
-        $offer = Offer::withTrashed()->findOrFail($id);
+        $offer = Offer::findOrFail($id);
         $offerRequest = OfferRequest::where([
             ['user_id', '=', auth()->user()->id],
             ['offer_id', '=', $offer->id]
@@ -545,7 +545,7 @@ class OfferController extends Controller
             $offer->countries()->sync($request->countries);
         }
 
-        $offer->cps()->delete();
+        $offer->cps()->forceDelete();
         // If revenue_cps_type is static
         if ($request->revenue_cps_type == 'static') {
             if ($request->static_revenue && count($request->static_revenue) > 0) {
@@ -689,7 +689,7 @@ class OfferController extends Controller
         if ($request->ajax()) {
             userActivity('Offer', $offer->id, 'delete');
             Storage::disk('public')->delete('Images/Offers/' . $offer->thumbnail);
-            $offer->delete();
+            $offer->forceDelete();
         }
     }
 

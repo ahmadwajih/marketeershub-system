@@ -124,7 +124,7 @@ class TargetController extends Controller
         $this->authorize('delete_targets');
         if($request->ajax()){
             userActivity('Country', $country->id, 'delete');
-            $country->delete();
+            $country->forceDelete();
         }
     }
 }

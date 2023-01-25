@@ -188,7 +188,7 @@ class PivotReportController extends Controller
         if ($request->ajax()) {
             $pivotReport = PivotReport::findOrFail($id);
             userActivity('PivotReport', $pivotReport->id, 'delete');
-            $pivotReport->delete();
+            $pivotReport->forceDelete();
         }
     }
     public function defineExcelSheetColumns(Request $request): \Illuminate\Http\JsonResponse
