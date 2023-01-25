@@ -86,9 +86,19 @@ function delete_selected(){
             cancelButton: "btn fw-bold btn-active-light-primary",
         },
     }).then(function (result) {
+        //uploading-progress-bar
+        $('.progress-title').html('Deleting...');
+        $(".uploading-progress-bar").removeClass("d-none");
+        function handler(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        document.addEventListener("click", handler, true);
         if (result.value) {
-            $('.table-checkbox:checked').each(function (index) {
-                var elValue = this.value;
+            let i = 1;
+            let count = $(".table-checkbox:checked").length // will return count of checked checkboxes;
+            $('.table-checkbox:checked').each(function () {
+                let elValue = this.value;
                 $.ajax({
                     method: "POST",
                     headers: {
@@ -102,37 +112,50 @@ function delete_selected(){
                         _method: "DELETE",
                         id: this.value,
                     },
-                })
-                    .done(function (res) {
-                      // Remove header checked box
-                      $('.tr-'+elValue).remove();
-                    })
-                    .fail(function (res) {
+                }).
+                done(function (res) {
+                    // Remove header checked box
+                    $('.tr-'+elValue).remove();
+                    let percent = ((i /count) * 100 );
+                    i++;
+                    //progress-title
+                    $('#progress-bar-percentage').html(Math.round(percent) + '%');
+                    $("#progress-bar").width(Math.round(percent) +"%");
+                    if (percent === 100){
+                        $(".uploading-progress-bar").addClass("d-none");
+                        document.removeEventListener('click', handler, true);
                         Swal.fire({
-                            text: res.responseJSON.message,
-                            icon: "error",
+                            text: "You have deleted all selected coupons!.",
+                            icon: "success",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             },
+                        }).
+                        then(function () {
+                            // delete row data from server and re-draw datatable
+                            // datatable.draw();
                         });
+                        $('.table-checkbox').prop('checked', false);
+                        $('#delete_btn').addClass('d-none');
+                        $('#add_btn').removeClass('d-none');
+                    }
+                }).
+                fail(function (res) {
+                    Swal.fire({
+                        text: res.responseJSON.message,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn fw-bold btn-primary",
+                        },
                     });
-    
-                Swal.fire({
-                    text: "You have deleted all selected coupons!.",
-                    icon: "success",
-                    buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
-                    customClass: {
-                        confirmButton: "btn fw-bold btn-primary",
-                    },
-                }).then(function () {
-                    // delete row data from server and re-draw datatable
-                    datatable.draw();
                 });
             });
-        } else if (result.dismiss === "cancel") {
+        }
+        else if (result.dismiss === "cancel") {
             Swal.fire({
                 text: "Selected coupons was not deleted.",
                 icon: "error",
@@ -144,5 +167,4 @@ function delete_selected(){
             });
         }
     });
-    
 }
