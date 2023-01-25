@@ -399,7 +399,7 @@
         let search = "{{ request()->search }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/change-status.js"></script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/delete.js?v=124425012023"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/publishers/delete_v2.js?v=124425012023"></script>
     <script src="{{ asset('new_dashboard') }}/js/tables_btns.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/search.js?v=60112212022"></script>
     @if(isset(request()->uploading) && request()->uploading == 'true')
