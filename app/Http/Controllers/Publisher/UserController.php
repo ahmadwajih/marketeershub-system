@@ -45,13 +45,20 @@ class UserController extends Controller
         }
 
 
-        $startDate = Carbon::now(); //returns current day
-        $firstDay = $startDate->firstOfMonth()->format('Y-m-d');
-        $lastDay = $startDate->lastOfMonth()->format('Y-m-d');
+        if ($request->from_date && $request->to_date) {
+            session()->put('from_date', $request->from_date);
+            session()->put('to_date', $request->to_date);
+        }else{
+            session()->put('from_date', now()->firstOfMonth()->format('Y-m-d'));
+            session()->put('to_date', now()->lastOfMonth()->format('Y-m-d'));
+        }
+        
+        $from = session('from_date');
+        $to = session('to_date');
         // Date
         $where = [
-            ['pivot_reports.date', '>=', $firstDay],
-            ['pivot_reports.date', '<=', $lastDay]
+            ['pivot_reports.date', '>=', $from],
+            ['pivot_reports.date', '<=', $to]
         ];
 
         if (isset($request->from) && $request->from != null && isset($request->to) && $request->to != null) {

@@ -199,7 +199,7 @@
                                 </label>
                                 <!--end::Label-->
                                 <!--begin::Input-->
-                                <input type="date" class="form-control form-control-solid" placeholder="Enter From Date"  value="{{ request()->from }}"  name="from" />
+                                <input type="date" class="form-control form-control-solid" placeholder="Enter From Date"  value="{{ session('from_date') }}"  name="from" />
                                 <!--end::Input-->
                             </div>
                         </div>
@@ -212,7 +212,7 @@
                                 </label>
                                 <!--end::Label-->
                                 <!--begin::Input-->
-                                <input type="date" class="form-control form-control-solid" placeholder="Enter To Date"  value="{{ request()->to }}" name="to" />
+                                <input type="date" class="form-control form-control-solid" placeholder="Enter To Date"  value="{{ session('to_date') }}" name="to" />
                                 <!--end::Input-->
                             </div>
                         </div>
