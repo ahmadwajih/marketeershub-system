@@ -111,7 +111,7 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     // $publisher->swift_code = $publisher->swift_code ??  $col[14];
                     $publisher->currency_id = $publisher->currency_id ??  $this->currrencyId;
                     $publisher->team = $publisher->team ??  $this->team;
-                    $publisher->save();
+                    $publisher->update();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
                     }else{

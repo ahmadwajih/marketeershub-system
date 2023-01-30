@@ -142,7 +142,7 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                     $publisher->currency_id         = $currency ? $currency->id : null;
                     $publisher->team                = $this->team;
                     $publisher->parent_id           = $this->accouManagerId;
-                    $publisher->save();
+                    $publisher->update();
                     if ($publisher->wasChanged()){
                         $this->importing_counts['updated']++;
                     }else{
