@@ -125,7 +125,7 @@ function delete_selected(){
                         $(".uploading-progress-bar").addClass("d-none");
                         document.removeEventListener('click', handler, true);
                         Swal.fire({
-                            text: "You have deleted all selected coupons!.",
+                            text: "You have deleted all selected publishers!.",
                             icon: "success",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",

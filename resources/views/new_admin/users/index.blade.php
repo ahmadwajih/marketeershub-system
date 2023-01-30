@@ -1,6 +1,28 @@
 @extends('new_admin.layouts.app')
 @section('title', 'Users')
 @section('subtitle', 'View')
+@push('styles')
+    <style>
+        .uploading-progress-bar{
+            position: fixed;
+            z-index: 999;
+            background: #474761;
+            width: 37% !important;
+            height: 20% !important;
+            border-radius: 10px;
+            box-shadow: 8px 13px 33px 1px #171623;
+            margin: 151px;
+        }
+        .uploading-progress-bar .progress{
+            margin: 3% auto auto;
+            height: 26px;
+            width: 63%;
+        }
+        .progress-title{
+            margin-top: 10%;
+        }
+    </style>
+@endpush
 @section('content')
 
     <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
@@ -33,6 +55,18 @@
     <!--end::Toolbar-->
     <!--begin::Post-->
     <div class="content flex-column-fluid" id="kt_content">
+        <div class="uploading-progress-bar d-none">
+            <h3 class="text-center progress-title">Uploading...</h3>
+            <div class="progress">
+                <div id="progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                >
+                    <h5 id="progress-bar-percentage"><strong>0%</strong></h5>
+                </div>
+            </div>
+        </div>
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->

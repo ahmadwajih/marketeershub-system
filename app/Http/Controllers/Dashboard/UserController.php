@@ -37,7 +37,7 @@ class UserController extends Controller
         }
         return view('new_admin.users.index');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -117,7 +117,7 @@ class UserController extends Controller
         $activites = getActivity('User',$id );
         return view('admin.users.show', ['user' => $user, 'activites' => $activites]);
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -128,12 +128,12 @@ class UserController extends Controller
     {
         $childrens = userChildrens();
         $childrens[] =  auth()->user()->id;
-        
+
         if(!in_array($user->id, $childrens)){
             $this->authorize('update_users');
         }
-  
-        return view('new_admin.users.edit', [ 
+
+        return view('new_admin.users.edit', [
             'user' => $user,
             'countries' => Country::all(),
             'roles' => Role::all(),
@@ -154,7 +154,7 @@ class UserController extends Controller
     {
         $childrens = userChildrens();
         $childrens[] =  auth()->user()->id;
-        
+
         if(!in_array($user->id, $childrens)){
             $this->authorize('update_users');
         }
@@ -207,9 +207,8 @@ class UserController extends Controller
     {
         $this->authorize('delete_users');
         if($request->ajax()){
-
             if(count($user->childrens()->pluck('id')->toArray()) > 0){
-                return response()->json(['message'=>  __('You can`t delete this user because he have ')  .  count($user->childrens()->pluck('id')->toArray()) . __(' child')], 422);
+                return response()->json(['message'=>  __('You can`t delete the user '.$user->name.' because he have ')  .  count($user->childrens()->pluck('id')->toArray()) . __(' child')], 422);
             }
             userActivity('User', $user->id, 'delete');
             $user->forceDelete();
