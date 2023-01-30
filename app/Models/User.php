@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable;
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
     /**
