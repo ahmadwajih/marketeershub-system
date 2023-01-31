@@ -26,8 +26,8 @@ function delete_row(id, title){
                     _method: "DELETE",
                     id: id,
                 },
-            })
-                .done(function (res) {
+            }).
+            done(function (res) {
                     // Simulate delete request -- for demo purpose only
                     Swal.fire({
                         text: "You have deleted " + title + "!.",
@@ -87,6 +87,19 @@ function delete_selected(){
         },
     }).then(function (result) {
         if (result.value) {
+            // deleting progress bar
+            $('#progress-bar-percentage').html(Math.round(0) + '%');
+            $("#progress-bar").width(Math.round(0) +"%");
+            $('.progress-title').html('Deleting...');
+            $(".uploading-progress-bar").removeClass("d-none");
+            function handler(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            document.addEventListener("click", handler, true);
+            let i = 1;
+            let count = $(".table-checkbox:checked").length // will return count of checked checkboxes;
+            //end
             $('.table-checkbox:checked').each(function (index) {
                 var elValue = this.value;
                 $.ajax({
@@ -102,12 +115,38 @@ function delete_selected(){
                         _method: "DELETE",
                         id: this.value,
                     },
-                })
-                    .done(function (res) {
-                      // Remove header checked box
-                      $('.tr-'+elValue).remove();
-                    })
-                    .fail(function (res) {
+                }).
+                done(function (res) {
+                    // Remove header checked box
+                    $('.tr-'+elValue).remove();
+                    $('#delete_btn').addClass('d-none');
+                    $('#add_btn').removeClass('d-none');
+                    // deleting progress bar
+                    let percent = ((i /count) * 100 );
+                    i++;
+                    //progress-title
+                    $('#progress-bar-percentage').html(Math.round(percent) + '%');
+                    $("#progress-bar").width(Math.round(percent) +"%");
+                    if (percent === 100){
+                        $(".uploading-progress-bar").addClass("d-none");
+                        document.removeEventListener('click', handler, true);
+                        $('.table-checkbox').prop('checked', false);
+                        Swal.fire({
+                            text: "You have deleted all selected offers!.",
+                            icon: "success",
+                            buttonsStyling: false,
+                            confirmButtonText: "Ok, got it!",
+                            customClass: {
+                                confirmButton: "btn fw-bold btn-primary",
+                            },
+                        }).then(function () {
+                            // delete row data from server and re-draw datatable
+                            datatable.draw();
+                        });
+                    }
+                    //end
+                }).
+                fail(function (res) {
                         Swal.fire({
                             text: res.responseJSON.message,
                             icon: "error",
@@ -118,19 +157,6 @@ function delete_selected(){
                             },
                         });
                     });
-    
-                Swal.fire({
-                    text: "You have deleted all selected coupons!.",
-                    icon: "success",
-                    buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
-                    customClass: {
-                        confirmButton: "btn fw-bold btn-primary",
-                    },
-                }).then(function () {
-                    // delete row data from server and re-draw datatable
-                    datatable.draw();
-                });
             });
         } else if (result.dismiss === "cancel") {
             Swal.fire({
@@ -144,5 +170,5 @@ function delete_selected(){
             });
         }
     });
-    
+
 }

@@ -50,32 +50,33 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
         }
     </style>
     <style>
-            .uploading-progress-bar{
-                position: fixed;
-                z-index: 999;
-                background: #474761;
-                width: 75%;
-                height: 50%;
-                border-radius: 10px;
-                box-shadow: 8px 13px 33px 1px #171623;
-            }
-            .uploading-progress-bar .progress{
-                margin: auto;
-                margin-top: 3%;
-                height: 26px;
-                width: 96%;
-            }
-            .progress-title{
-                margin-top: 10%;
-            }
-        </style>
+        .uploading-progress-bar{
+            position: fixed;
+            z-index: 999;
+            background: #474761;
+            width: 37% !important;
+            height: 20% !important;
+            border-radius: 10px;
+            box-shadow: 8px 13px 33px 1px #171623;
+            margin: 151px;
+        }
+        .uploading-progress-bar .progress{
+            margin: 3% auto auto;
+            height: 26px;
+            width: 63%;
+        }
+        .progress-title{
+            margin-top: 10%;
+        }
+    </style>
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
 <body data-kt-name="metronic" id="kt_body" class="header-fixed header-tablet-and-mobile-fixed">
     <!--begin::Theme mode setup on page load-->
- 
+
     <!--end::Theme mode setup on page load-->
     <!--begin::Main-->
     <!--begin::Root-->
@@ -187,7 +188,7 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
     <script>
         var defaultThemeMode = "dark";
         var themeMode;
-        
+
         if ( document.documentElement ) {
             if ( document.documentElement.hasAttribute("data-theme-mode")) {
                 themeMode = document.documentElement.getAttribute("data-theme-mode");
@@ -198,11 +199,11 @@ LinkedIn: https://www.linkedin.com/in/ahmed-wagih-829bb4124/
                     themeMode = defaultThemeMode;
                 }
             }
-        
+
             if (themeMode === "system") {
                 themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
             }
-        
+
             document.documentElement.setAttribute("data-theme", themeMode);
         }
         </script>

@@ -1,6 +1,28 @@
 @extends('new_admin.layouts.app')
 @section('title', 'Offers')
 @section('subtitle', 'View')
+@push('styles')
+    <style>
+        .uploading-progress-bar{
+            position: fixed;
+            z-index: 999;
+            background: #474761;
+            width: 37% !important;
+            height: 20% !important;
+            border-radius: 10px;
+            box-shadow: 8px 13px 33px 1px #171623;
+            margin: 151px;
+        }
+        .uploading-progress-bar .progress{
+            margin: 3% auto auto;
+            height: 26px;
+            width: 63%;
+        }
+        .progress-title{
+            margin-top: 10%;
+        }
+    </style>
+@endpush
 @section('content')
     <!--begin::Toolbar-->
     <div class="d-flex flex-wrap flex-stack pb-7">
@@ -8,50 +30,24 @@
         <div class="d-flex flex-wrap align-items-center my-1">
             <h3 class="fw-bold me-5 my-1">Offers ({{ $offers->count() }})</h3>
         </div>
-        <!--end::Title-->
-        <!--begin::Controls-->
-        {{-- Disable grade --}}
-        {{-- <div class="d-flex flex-wrap my-1">
-            <!--begin::Tab nav-->
-            <ul class="nav nav-pills me-6 mb-2 mb-sm-0">
-                <li class="nav-item m-0">
-                    <a class="btn btn-sm btn-icon btn-light btn-color-muted btn-active-primary me-3 " data-bs-toggle="tab" href="#kt_project_users_card_pane">
-                        <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect x="5" y="5" width="5" height="5" rx="1" fill="currentColor" />
-                                    <rect x="14" y="5" width="5" height="5" rx="1" fill="currentColor" opacity="0.3" />
-                                    <rect x="5" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3" />
-                                    <rect x="14" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3" />
-                                </g>
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                    </a>
-                </li>
-                <li class="nav-item m-0">
-                    <a class="btn btn-sm btn-icon btn-light btn-color-muted btn-active-primary active" data-bs-toggle="tab" href="#kt_project_users_table_pane">
-                        <!--begin::Svg Icon | path: icons/duotune/abstract/abs015.svg-->
-                        <span class="svg-icon svg-icon-2">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21 7H3C2.4 7 2 6.6 2 6V4C2 3.4 2.4 3 3 3H21C21.6 3 22 3.4 22 4V6C22 6.6 21.6 7 21 7Z" fill="currentColor" />
-                                <path opacity="0.3" d="M21 14H3C2.4 14 2 13.6 2 13V11C2 10.4 2.4 10 3 10H21C21.6 10 22 10.4 22 11V13C22 13.6 21.6 14 21 14ZM22 20V18C22 17.4 21.6 17 21 17H3C2.4 17 2 17.4 2 18V20C2 20.6 2.4 21 3 21H21C21.6 21 22 20.6 22 20Z" fill="currentColor" />
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                    </a>
-                </li>
-            </ul>
-            <!--end::Tab nav-->
-
-        </div> --}}
-        <!--end::Controls-->
     </div>
     <!--end::Toolbar-->
 
     <!--begin::Tab Content-->
     <div class="tab-content">
+        <div class="uploading-progress-bar d-none">
+            <h3 class="text-center progress-title">Uploading...</h3>
+            <div class="progress">
+                <div id="progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                >
+                    <h5 id="progress-bar-percentage"><strong>0%</strong></h5>
+                </div>
+            </div>
+        </div>
+
         <!--begin::Tab pane-->
         <div id="kt_project_users_card_pane" class="tab-pane fade">
             <!--begin::Row-->
