@@ -86,7 +86,7 @@ function delete_selected(){
             cancelButton: "btn fw-bold btn-active-light-primary",
         },
     }).then(function (result) {
-        //uploading-progress-bar
+        // deleting progress bar
         $('.progress-title').html('Deleting...');
         $(".uploading-progress-bar").removeClass("d-none");
         function handler(e) {
@@ -94,6 +94,7 @@ function delete_selected(){
             e.preventDefault();
         }
         document.addEventListener("click", handler, true);
+        //end
         if (result.value) {
             let i = 1;
             let count = $(".table-checkbox:checked").length // will return count of checked checkboxes;
@@ -116,6 +117,7 @@ function delete_selected(){
                 done(function (res) {
                     // Remove header checked box
                     $('.tr-'+elValue).remove();
+                    // deleting progress bar
                     let percent = ((i /count) * 100 );
                     i++;
                     //progress-title
@@ -125,22 +127,19 @@ function delete_selected(){
                         $(".uploading-progress-bar").addClass("d-none");
                         document.removeEventListener('click', handler, true);
                         Swal.fire({
-                            text: "You have deleted all selected coupons!.",
+                            text: "You have deleted all selected publishers!.",
                             icon: "success",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             },
-                        }).
-                        then(function () {
-                            // delete row data from server and re-draw datatable
-                            // datatable.draw();
                         });
                         $('.table-checkbox').prop('checked', false);
                         $('#delete_btn').addClass('d-none');
                         $('#add_btn').removeClass('d-none');
                     }
+                    //end
                 }).
                 fail(function (res) {
                     Swal.fire({
