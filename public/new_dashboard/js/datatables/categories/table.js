@@ -75,7 +75,7 @@ var KTUsersList = function () {
                             </div>
                             <!--end::Menu item-->
                         </div>
-                            </div>                           
+                            </div>
                         <!--end::Menu-->
                         `;
                     },
@@ -280,7 +280,7 @@ var KTUsersList = function () {
         if (deleteSelected) {
             // Deleted selected rows
             deleteSelected.addEventListener("click", function () {
-                
+
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
                     text: "Are you sure you want to delete selected customers?",
@@ -296,7 +296,21 @@ var KTUsersList = function () {
                     },
                 }).then(function (result) {
                     if (result.value) {
-                        $('input[name="item_check"]:checked').each(function (index) {
+                        // deleting progress bar #1
+                        $('#progress-bar-percentage').html(Math.round(0) + '%');
+                        $("#progress-bar").width(Math.round(0) +"%");
+                        $('.progress-title').html('Deleting...');
+                        $(".uploading-progress-bar").removeClass("d-none");
+                        function handler(e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }
+                        document.addEventListener("click", handler, true);
+                        let i = 1;
+                        let item_checked = $('input[name="item_check"]:checked');
+                        let count = item_checked.length // will return count of checked checkboxes;
+                        //end
+                        item_checked.each(function (index) {
                             $.ajax({
                                 method: "POST",
                                 headers: {
@@ -310,46 +324,54 @@ var KTUsersList = function () {
                                     _method: "DELETE",
                                     id: this.value,
                                 },
-                            })
-                                .done(function (res) {
+                            }).
+                            done(function (res) {
+                                // Swal.fire({
+                                //     text: "Deleting " + customerName,
+                                //     icon: "info",
+                                //     buttonsStyling: false,
+                                //     showConfirmButton: false,
+                                //     timer: 1,
+                                // });
+                                // Remove header checked box
+                                //const headerCheckbox = container.querySelectorAll('[type="checkbox"]')[0];
+                                //headerCheckbox.checked = false;
+                                // deleting progress bar #2
+                                let percent = ((i /count) * 100 );
+                                i++;
+                                //progress-title
+                                $('#progress-bar-percentage').html(Math.round(percent) + '%');
+                                $("#progress-bar").width(Math.round(percent) +"%");
+                                if (percent === 100){
+                                    $(".uploading-progress-bar").addClass("d-none");
+                                    document.removeEventListener('click', handler, true);
+                                    $('.table-checkbox').prop('checked', false);
                                     Swal.fire({
-                                        text: "Deleting " + customerName,
-                                        icon: "info",
-                                        buttonsStyling: false,
-                                        showConfirmButton: false,
-                                        timer: 1,
-                                    });
-                                    // Remove header checked box
-                                    const headerCheckbox =
-                                        container.querySelectorAll(
-                                            '[type="checkbox"]'
-                                        )[0];
-                                    headerCheckbox.checked = false;
-                                })
-                                .fail(function (res) {
-                                    Swal.fire({
-                                        text: res.responseJSON.message,
-                                        icon: "error",
+                                        text: "You have deleted all selected categories!.",
+                                        icon: "success",
                                         buttonsStyling: false,
                                         confirmButtonText: "Ok, got it!",
                                         customClass: {
-                                            confirmButton:
-                                                "btn fw-bold btn-primary",
+                                            confirmButton: "btn fw-bold btn-primary",
+                                        },
+                                    }).then(function () {
+                                        // delete row data from server and re-draw datatable
+                                        datatable.draw();
+                                    });
+                                }
+                                //end
+                            }).
+                            fail(function (res) {
+                                Swal.fire({
+                                    text: res.responseJSON.message,
+                                    icon: "error",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton:
+                                            "btn fw-bold btn-primary",
                                         },
                                     });
-                                });
-
-                            Swal.fire({
-                                text: "You have deleted all selected customers!.",
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn fw-bold btn-primary",
-                                },
-                            }).then(function () {
-                                // delete row data from server and re-draw datatable
-                                datatable.draw();
                             });
                         });
                     } else if (result.dismiss === "cancel") {
@@ -370,7 +392,7 @@ var KTUsersList = function () {
 
     // Toggle toolbars
     const toggleToolbars = () => {
-        // Select refreshed checkbox DOM elements 
+        // Select refreshed checkbox DOM elements
         const allCheckboxes = table.querySelectorAll('tbody [type="checkbox"]');
 
         // Detect checkboxes state & count
@@ -397,7 +419,7 @@ var KTUsersList = function () {
     }
 
     return {
-        // Public functions  
+        // Public functions
         init: function () {
             if (!table) {
                 return;

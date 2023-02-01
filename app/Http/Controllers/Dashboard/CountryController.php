@@ -25,7 +25,7 @@ class CountryController extends Controller
         }
         return view('new_admin.countries.index');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -76,7 +76,7 @@ class CountryController extends Controller
         userActivity('Country', $country->id, 'show');
         return view('admin.countries.show', ['country' => $country]);
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -103,11 +103,11 @@ class CountryController extends Controller
         $this->authorize('update_countries');
         $data = $request->validate([
             'name_ar' => 'required|max:255|unique:countries,name_ar,'.$country->id,
-            'name_en' => 'required|max:255|unique:countries,name_en,'.$country->id,    
+            'name_en' => 'required|max:255|unique:countries,name_en,'.$country->id,
             'code'    => 'required|max:20'
         ]);
         userActivity('Country', $country->id, 'update', $data, $country);
-       
+
         $country->update($data);
 
         $notification = [

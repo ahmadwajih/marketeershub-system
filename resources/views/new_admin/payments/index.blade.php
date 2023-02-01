@@ -33,6 +33,19 @@
     <!--end::Toolbar-->
     <!--begin::Post-->
     <div class="content flex-column-fluid" id="kt_content">
+        {{--deleting progress bar #3--}}
+        <div class="uploading-progress-bar d-none">
+            <h3 class="text-center progress-title">Uploading...</h3>
+            <div class="progress">
+                <div id="progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: 2%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                >
+                    <h5 id="progress-bar-percentage"><strong>2%</strong></h5>
+                </div>
+            </div>
+        </div>
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->
@@ -48,9 +61,9 @@
                                 <button class="input-group-text" id="basic-addon2">Go</button> --}}
                                 <span class="mx-3 mt-3"> {{ $payments->total() }} Requests</span>
                             </div>
-                            
-                        </form> 
-                       
+
+                        </form>
+
                     </div>
                     <!--end::Search-->
                 </div>
@@ -87,9 +100,9 @@
                             <!--begin::Form-->
                             <form action="{{ route('admin.payments.index') }}" method="GET">
                                 <div class="px-7 py-5">
-     
+
                                     <!--end::Input group-->
-                                    @include('new_admin.components.publishers_filter') 
+                                    @include('new_admin.components.publishers_filter')
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <!--begin::Label-->

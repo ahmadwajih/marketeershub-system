@@ -30,6 +30,19 @@
     <!--end::Toolbar-->
     <!--begin::Post-->
     <div class="content flex-column-fluid" id="kt_content">
+        {{--deleting progress bar #3--}}
+        <div class="uploading-progress-bar d-none">
+            <h3 class="text-center progress-title">Uploading...</h3>
+            <div class="progress">
+                <div id="progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: 2%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                >
+                    <h5 id="progress-bar-percentage"><strong>2%</strong></h5>
+                </div>
+            </div>
+        </div>
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->
@@ -43,10 +56,12 @@
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
-                                    rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                    rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor"
+                                />
                                 <path
                                     d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
-                                    fill="currentColor" />
+                                    fill="currentColor"
+                                />
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
@@ -130,7 +145,7 @@
 @endsection
 @push('scripts')
     <script>
-        var route = "{{ route('admin.advertisers.index') }}";
+        let route = "{{ route('admin.advertisers.index') }}";
     </script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/partners/table.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/partners/change-status.js"></script>

@@ -87,8 +87,22 @@ function delete_selected(){
         },
     }).then(function (result) {
         if (result.value) {
-            $('.table-checkbox:checked').each(function (index) {
-                var elValue = this.value;
+            // deleting progress bar #1
+            $('#progress-bar-percentage').html(Math.round(0) + '%');
+            $("#progress-bar").width(Math.round(0) +"%");
+            $('.progress-title').html('Deleting...');
+            $(".uploading-progress-bar").removeClass("d-none");
+            function handler(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            document.addEventListener("click", handler, true);
+            let i = 1;
+            let item_checked = $('.table-checkbox:checked');
+            let count = item_checked.length // will return count of checked checkboxes;
+            //end
+            item_checked.each(function () {
+                let elValue = this.value;
                 $.ajax({
                     method: "POST",
                     headers: {
@@ -102,12 +116,35 @@ function delete_selected(){
                         _method: "DELETE",
                         id: this.value,
                     },
-                })
-                    .done(function (res) {
-                      // Remove header checked box
-                      $('.tr-'+elValue).remove();
-                    })
-                    .fail(function (res) {
+                }).
+                done(function (res) {
+                    // Remove header checked box
+                    // $('.tr-'+elValue).remove();
+                    // deleting progress bar #2
+                    let percent = ((i /count) * 100 );
+                    i++;
+                    $('#progress-bar-percentage').html(Math.round(percent) + '%');
+                    $("#progress-bar").width(Math.round(percent) +"%");
+                    if (percent === 100){
+                        $(".uploading-progress-bar").addClass("d-none");
+                        document.removeEventListener('click', handler, true);
+                        $('.table-checkbox').prop('checked', false);
+                        Swal.fire({
+                            text: "You have deleted all selected payments!.",
+                            icon: "success",
+                            buttonsStyling: false,
+                            confirmButtonText: "Ok, got it!",
+                            customClass: {
+                                confirmButton: "btn fw-bold btn-primary",
+                            },
+                        }).then(function () {
+                            // delete row data from server and re-draw datatable
+                            datatable.draw();
+                        });
+                    }
+                    //end
+                }).
+                fail(function (res) {
                         Swal.fire({
                             text: res.responseJSON.message,
                             icon: "error",
@@ -118,19 +155,7 @@ function delete_selected(){
                             },
                         });
                     });
-    
-                Swal.fire({
-                    text: "You have deleted all selected payments!.",
-                    icon: "success",
-                    buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
-                    customClass: {
-                        confirmButton: "btn fw-bold btn-primary",
-                    },
-                }).then(function () {
-                    // delete row data from server and re-draw datatable
-                    datatable.draw();
-                });
+
             });
         } else if (result.dismiss === "cancel") {
             Swal.fire({
@@ -144,5 +169,5 @@ function delete_selected(){
             });
         }
     });
-    
+
 }
