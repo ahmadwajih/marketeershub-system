@@ -84,7 +84,7 @@ function delete_selected(){
         },
     }).then(function (result) {
         if (result.value) {
-            // deleting progress bar
+            // deleting progress bar #1
             $('#progress-bar-percentage').html(Math.round(0) + '%');
             $("#progress-bar").width(Math.round(0) +"%");
             $('.progress-title').html('Deleting...');
@@ -116,7 +116,7 @@ function delete_selected(){
                 done(function (res) {
                     // Remove header checked box
                     $('.tr-'+elValue).remove();
-                    // deleting progress bar
+                    // deleting progress bar #2
                     let percent = ((i /count) * 100 );
                     i++;
                     //progress-title
@@ -134,10 +134,7 @@ function delete_selected(){
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             },
-                        }).then(function () {
-                            // delete row data from server and re-draw datatable
-                            datatable.draw();
-                        });
+                        })
                     }
                     //end
                 }).

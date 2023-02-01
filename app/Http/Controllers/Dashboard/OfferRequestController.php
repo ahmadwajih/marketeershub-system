@@ -6,11 +6,13 @@ use App\Facades\SallaFacade;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Offer;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Models\OfferRequest;
 use App\Models\SallaAffiliate;
 use App\Models\User;
 use App\Notifications\NewAssigenCoupon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,7 +28,7 @@ class OfferRequestController extends Controller
         $this->authorize('view_offer_requests');
 
         $query = OfferRequest::query();
-  
+
          $tableLength = session('table_length') ?? config('app.pagination_pages');
 
         // Filter
@@ -56,8 +58,8 @@ class OfferRequestController extends Controller
         }
         if (!in_array('super_admin', auth()->user()->roles->pluck('label')->toArray())) {
             $query->whereIn('user_id', userChildrens());
-        } 
- 
+        }
+
         $offerRequests = $query->with(['offer', 'user'])->orderBy('id', 'desc')->paginate($tableLength);
         $publisherForFilter = User::whereId(session('offer_requests_filter_user_id'))->first();
         return view('new_admin.offerRequests.index', [
@@ -107,7 +109,7 @@ class OfferRequestController extends Controller
         ])->pluck('id')->toArray();
 
         if ($request->coupons) {
-            // For loop to unassign un exists coupons 
+            // For loop to unassign un exists coupons
             foreach ($userCoupons as $userCoupon) {
                 if (!in_array($userCoupon, $request->coupons)) {
                     $existsCoupon = Coupon::findOrFail($userCoupon);
@@ -183,7 +185,7 @@ class OfferRequestController extends Controller
     public function update(Request $request, OfferRequest $offerRequest)
     {
 
-        // If offer partener is Salla 
+        // If offer partener is Salla
         if ($offerRequest->offer->partener == 'salla') {
             $offer = $offerRequest->offer;
             $sallaInfo = $offer->sallaInfo;
@@ -196,7 +198,7 @@ class OfferRequestController extends Controller
             'offer_id' => 'required|integer|exists:offers,id',
         ]);
 
-        // Check if request has coupons 
+        // Check if request has coupons
         if ($request->coupons) {
             // Get user coupons
             $userCoupons = Coupon::where([
@@ -204,7 +206,7 @@ class OfferRequestController extends Controller
                 ['offer_id', '=', $offerRequest->offer_id],
             ])->pluck('id')->toArray();
 
-            // For loop to unassign un exists coupons 
+            // For loop to unassign un exists coupons
             foreach ($userCoupons as $userCoupon) {
                 if (!in_array($userCoupon, $request->coupons)) {
                     $existsCoupon = Coupon::findOrFail($userCoupon);
@@ -223,7 +225,7 @@ class OfferRequestController extends Controller
             // Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));
         }
 
-        // Check status 
+        // Check status
         // if ($request->status == 'approved') {
             if (!$offerRequest->user->offers->contains($offerRequest->offer_id)) {
                 $offerRequest->user->assignOffer($offerRequest->offer);
@@ -234,7 +236,7 @@ class OfferRequestController extends Controller
         // } else {
         //     $offerRequest->user->unAssignOffer($offerRequest->offer_id);
         // }
-        // Update offer status 
+        // Update offer status
         $offerRequest->update($data);
         $notification = [
             'message' => 'Updated successfully',
@@ -248,8 +250,10 @@ class OfferRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param OfferRequest $offerRequest
+     * @return Response
+     * @throws AuthorizationException
      */
     public function destroy(Request $request, OfferRequest $offerRequest)
     {

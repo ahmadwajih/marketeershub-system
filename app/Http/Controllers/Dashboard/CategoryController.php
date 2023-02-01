@@ -27,7 +27,7 @@ class CategoryController extends Controller
         }
         return view('new_admin.categories.index');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -78,7 +78,7 @@ class CategoryController extends Controller
         userActivity('Category', $category->id, 'show');
         return view('admin.categories.show', ['category' => $category]);
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -105,11 +105,11 @@ class CategoryController extends Controller
         $this->authorize('update_categories');
         $data = $request->validate([
             'title_ar' => 'required|max:255',
-            'title_en' => 'required|max:255',    
+            'title_en' => 'required|max:255',
             'type'     => 'required|in:affiliate,influencer,advertisers,offers,other'
         ]);
         userActivity('Category', $category->id, 'update', $data, $category);
-       
+
         $category->update($data);
 
         $notification = [
