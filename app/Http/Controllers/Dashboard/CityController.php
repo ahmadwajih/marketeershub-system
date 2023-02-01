@@ -24,7 +24,7 @@ class CityController extends Controller
         }
         return view('new_admin.cities.index');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -78,7 +78,7 @@ class CityController extends Controller
         userActivity('City', $city->id, 'show');
         return view('admin.cities.show', ['city' => $city]);
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -106,13 +106,13 @@ class CityController extends Controller
         $this->authorize('update_cites');
         $data = $request->validate([
             'name_ar'       => 'required|max:255|unique:cities,name_ar,'.$city->id,
-            'name_en'       => 'required|max:255|unique:cities,name_en,'.$city->id,    
+            'name_en'       => 'required|max:255|unique:cities,name_en,'.$city->id,
             'code'          => 'required|max:20',
             'country_id'    => 'required|exists:countries,id',
 
         ]);
         userActivity('City', $city->id, 'update', $data, $city);
-       
+
         $city->update($data);
 
         $notification = [

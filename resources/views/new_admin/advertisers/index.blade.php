@@ -30,6 +30,7 @@
     <!--end::Toolbar-->
     <!--begin::Post-->
     <div class="content flex-column-fluid" id="kt_content">
+        {{--deleting progress bar #3--}}
         <div class="uploading-progress-bar d-none">
             <h3 class="text-center progress-title">Uploading...</h3>
             <div class="progress">

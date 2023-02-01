@@ -30,6 +30,19 @@
     <!--end::Toolbar-->
     <!--begin::Post-->
     <div class="content flex-column-fluid" id="kt_content">
+        {{--deleting progress bar #3--}}
+        <div class="uploading-progress-bar d-none">
+            <h3 class="text-center progress-title">Uploading...</h3>
+            <div class="progress">
+                <div id="progress-bar"
+                     class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: 2%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                >
+                    <h5 id="progress-bar-percentage"><strong>0%</strong></h5>
+                </div>
+            </div>
+        </div>
         <!--begin::Card-->
         <div class="card">
             <!--begin::Card header-->

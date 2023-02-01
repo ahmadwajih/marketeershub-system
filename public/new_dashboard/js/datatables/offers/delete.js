@@ -121,7 +121,7 @@ function delete_selected(){
                     $('.tr-'+elValue).remove();
                     $('#delete_btn').addClass('d-none');
                     $('#add_btn').removeClass('d-none');
-                    // deleting progress bar
+                    // deleting progress bar #2
                     let percent = ((i /count) * 100 );
                     i++;
                     //progress-title

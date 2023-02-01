@@ -24,7 +24,7 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
-        // $payments = Payment::all(); 
+        // $payments = Payment::all();
         // $arr = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
         // foreach($payments as $index => $payment){
         //     $month = $arr[rand(1,11)];
@@ -36,7 +36,7 @@ class PaymentController extends Controller
         // dd($arr);
         $this->authorize('view_payments');
         $query = Payment::query();
-     
+
          $tableLength = session('table_length') ?? config('app.pagination_pages');
 
         // Filter
@@ -75,14 +75,14 @@ class PaymentController extends Controller
 
         $publisherForFilter = User::whereId(session('payments_filter_publisher_id'))->first();
         $payments = $query->select(
-            'id', 
-            'slip', 
-            'amount_paid', 
-            'publisher_id', 
-            'from', 
-            'to', 
-            'note', 
-            'type', 
+            'id',
+            'slip',
+            'amount_paid',
+            'publisher_id',
+            'from',
+            'to',
+            'note',
+            'type',
             'user_id'
             )
             ->orderBy('id', 'desc')
@@ -107,7 +107,7 @@ class PaymentController extends Controller
         }
         return view('admin.payments.index');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -143,13 +143,13 @@ class PaymentController extends Controller
         if($request->hasFile('slip')){
             $data['slip'] = uploadImage($request->file('slip'), "Payments");
         }
-        
+
         $data['user_id'] = auth()->user()->id;
         $payment = Payment::create($data);
         userActivity('Payment', $payment->id, 'create');
         // $publisher = User::findOrFail($request->publisher_id);
         // Notification::send($publisher, new NewPaymentPaid($payment));
-        
+
         $notification = [
             'message' => 'Created successfully',
             'alert-type' => 'success'
@@ -171,7 +171,7 @@ class PaymentController extends Controller
         userActivity('Payment', $payment->id, 'show');
         return view('admin.payments.show', ['payment' => $payment]);
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -206,7 +206,7 @@ class PaymentController extends Controller
             'note'          => 'nullable|max:255'
         ]);
 
-       
+
         $data['slip'] = $payment->slip;
         if($request->hasFile('slip')){
             deleteImage($payment->slip, 'Payments');
@@ -256,7 +256,7 @@ class PaymentController extends Controller
         $request->validate([
             'payments'    => 'required|mimes:xlsx,csv',
         ]);
-     
+
         Excel::import(new PaymenrImport(),request()->file('payments'));
 
         if($request->hasFile('slips')){
@@ -266,7 +266,7 @@ class PaymentController extends Controller
         }
 
         userActivity('Payment',null , 'upload');
-        
+
         $notification = [
             'message' => 'Uploaded successfully',
             'alert-type' => 'success'
