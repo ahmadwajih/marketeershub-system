@@ -201,4 +201,3 @@ Route::get('/clear-cached', function () {
     Artisan::call('cache:clear');
     return redirect()->back();
 })->name('cache-clear');
-
