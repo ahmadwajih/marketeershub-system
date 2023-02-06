@@ -199,7 +199,7 @@ class PublisherController extends Controller
             'categories' => Category::whereType('affiliate')->get(),
             'users' => User::whereStatus('active')->whereHas('roles', function($query){
                 return $query->where('label', 'account_manager');
-            })->get(),
+            })->where('team','affiliate')->get(),
             'currencies' => Currency::all(),
         ]);
     }
@@ -227,7 +227,6 @@ class PublisherController extends Controller
             'category'                  => 'nullable|max:255',
             'years_of_experience'       => 'nullable|numeric',
             // 'traffic_sources'           => 'required_if:team,affiliate|max:255',
-            'affiliate_networks'        => 'required_if:team,affiliate|max:255',
             // 'digital_asset'            => 'required_if:team,affiliate|array',
             'referral_account_manager'  => 'nullable|max:255',
             'account_title'             => 'required|max:255',
@@ -384,7 +383,6 @@ class PublisherController extends Controller
             'address'                   => 'nullable|max:255',
             'category'                  => 'nullable|max:255',
             'years_of_experience'       => 'nullable|numeric',
-            'affiliate_networks'        => 'nullable|max:255',
             'referral_account_manager'  => 'nullable|exists:users,id',
             'account_title'             => 'required|required_if:position,publisher|max:255',
             'bank_name'                 => 'required|required_if:position,publisher|max:255',

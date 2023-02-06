@@ -205,24 +205,6 @@
 
                                 <div class="affiliate">
                                      <div class="row">
-
-                                        <div class="col-md-12">
-                                            <!--begin::Input group-->
-                                            <div class="mb-10 fv-row">
-                                                <!--begin::Label-->
-                                                <label class="form-label">Affiliate Networks</label>
-                                                <!--end::Label-->
-                                                <!--begin::Input-->
-                                                <input type="text" name="affiliate_networks" class="form-control mb-2" placeholder="Affiliate Networks " value="{{ old('affiliate_networks') ?? $publisher->affiliate_networks }}" />
-                                                <!--end::Input-->
-                                                @if ($errors->has('affiliate_networks'))
-                                                    <div class="fv-plugins-message-container invalid-feedback"><div data-field="text_input" >{{ $errors->first('affiliate_networks') }}</div></div>
-                                                @endif
-                                            </div>
-                                            <!--end::Input group-->
-                                        </div>
-
-                                        
                                         <div class="col-md-12">
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
@@ -479,7 +461,7 @@
                                             <!--begin::Card header-->
                                             <div class="card-header">
                                                 <div class="card-title">
-                                                    <h2>Socia Media Accounts</h2>
+                                                    <h2>Social Media Accounts</h2>
                                                 </div>
                                             </div>
                                             <!--end::Card header-->
@@ -507,14 +489,13 @@
                                                                                 </select>
                                                                             </div>
                                                                             <div class="col-md-3">
-                                                                                <label class="form-label">Number Of Followers:</label>
+                                                                                <label class="form-label">Followers Rating::</label>
                                                                                 <select  class="form-select" name="followers">
-                                                                                    <option {{ $link['followers'] == 'lethThan10k' ? 'seleccted' : '' }} value="lethThan10k">< 10K</option>
-                                                                                    <option {{ $link['followers'] == '10K : 50K' ? 'seleccted' : '' }} value="10K : 50K">10K : 50K</option>
-                                                                                    <option {{ $link['followers'] == '50K : 100K' ? 'seleccted' : '' }} value="50K : 100K">50K : 100K</option>
-                                                                                    <option {{ $link['followers'] == '100K : 500K' ? 'seleccted' : '' }} value="100K : 500K">100K : 500K</option>
-                                                                                    <option {{ $link['followers'] == '500K : 1M' ? 'seleccted' : '' }} value="500K : 1M">500K : 1M</option>
-                                                                                    <option {{ $link['followers'] == '> 1M' ? 'seleccted' : '' }} value="> 1M">> 1M</option>
+                                                                                    <option {{ $link['followers'] == 'Nano' ? 'seleccted' : '' }} value="Nano">Nano</option>
+                                                                                    <option {{ $link['followers'] == 'Micro' ? 'seleccted' : '' }} value="Micro">Micro</option>
+                                                                                    <option {{ $link['followers'] == 'Macro' ? 'seleccted' : '' }} value="Macro">Macro</option>
+                                                                                    <option {{ $link['followers'] == 'Mage' ? 'seleccted' : '' }} value="Mage">Mage</option>
+                                                                                    <option {{ $link['followers'] == 'Celebrity' ? 'seleccted' : '' }} value="Celebrity">Celebrity</option>
                                                                                 </select>
                                                                             </div>
             
@@ -547,14 +528,13 @@
                                                                                 </select>
                                                                             </div>
                                                                             <div class="col-md-3">
-                                                                                <label class="form-label">Number Of Followers:</label>
+                                                                                <label class="form-label">Followers Rating::</label>
                                                                                 <select  class="form-select" name="followers">
-                                                                                    <option {{ $link->followers == 'lethThan10k' ? 'seleccted' : '' }} value="lethThan10k">< 10K</option>
-                                                                                    <option {{ $link->followers == '10K : 50K' ? 'seleccted' : '' }} value="10K : 50K">10K : 50K</option>
-                                                                                    <option {{ $link->followers == '50K : 100K' ? 'seleccted' : '' }} value="50K : 100K">50K : 100K</option>
-                                                                                    <option {{ $link->followers == '100K : 500K' ? 'seleccted' : '' }} value="100K : 500K">100K : 500K</option>
-                                                                                    <option {{ $link->followers == '500K : 1M' ? 'seleccted' : '' }} value="500K : 1M">500K : 1M</option>
-                                                                                    <option {{ $link->followers == '> 1M' ? 'seleccted' : '' }} value="> 1M">> 1M</option>
+                                                                                    <option {{ $link->followers == 'Nano' ? 'seleccted' : '' }} value="Nano">Nano</option>
+                                                                                    <option {{ $link->followers == 'Micro' ? 'seleccted' : '' }} value="Micro">Micro</option>
+                                                                                    <option {{ $link->followers == 'Macro' ? 'seleccted' : '' }} value="Macro">Macro</option>
+                                                                                    <option {{ $link->followers == 'Mage' ? 'seleccted' : '' }} value="Mage">Mage</option>
+                                                                                    <option {{ $link->followers == 'Celebrity' ? 'seleccted' : '' }} value="Celebrity">Celebrity</option>
                                                                                 </select>
                                                                             </div>
             
@@ -586,14 +566,13 @@
                                                                             </select>
                                                                         </div>
                                                                         <div class="col-md-3">
-                                                                            <label class="form-label">Number Of Followers:</label>
+                                                                            <label class="form-label">Followers Rating::</label>
                                                                             <select  class="form-select" name="followers">
-                                                                                <option selected="selected" value="lethThan10k">< 10K</option>
-                                                                                <option value="10K : 50K">10K : 50K</option>
-                                                                                <option value="50K : 100K">50K : 100K</option>
-                                                                                <option value="100K : 500K">100K : 500K</option>
-                                                                                <option value="500K : 1M">500K : 1M</option>
-                                                                                <option value="> 1M">> 1M</option>
+                                                                                <option selected="selected" value="Nano">Nano</option>
+                                                                                <option value="Micro">Micro</option>
+                                                                                <option value="Macro">Macro</option>
+                                                                                <option value="Mage">Mage</option>
+                                                                                <option value="Celebrity">Celebrity</option>
                                                                             </select>
                                                                         </div>
         
