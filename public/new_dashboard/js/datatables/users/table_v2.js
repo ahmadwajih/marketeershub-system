@@ -328,13 +328,13 @@ var KTUsersList = function () {
                     },
                 }).
                 then(function (result) {
-                    $(".uploading-progress-bar").removeClass("d-none");
-                    function handler(e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }
-                    document.addEventListener("click", handler, true);
                     if (result.value) {
+                        $(".uploading-progress-bar").removeClass("d-none");
+                        function handler(e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }
+                        document.addEventListener("click", handler, true);
                         let percent = 0;
                         let i = 0;
                         let count = $('input[name="item_check"]:checked').length // will return count of checked checkboxes;
