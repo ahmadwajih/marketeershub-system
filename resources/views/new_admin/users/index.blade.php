@@ -296,7 +296,7 @@
 var route = "{{route('admin.users.index')}}";
 var publishersRoute = "{{route('admin.publisher.profile')}}";
 </script>
-<script src="{{ asset('new_dashboard') }}/js/datatables/users/table_v2.js"></script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/users/table_v3.js"></script>
 <script src="{{ asset('new_dashboard') }}/js/datatables/users/change-status.js"></script>
 
 @endpush
