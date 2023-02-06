@@ -26,8 +26,8 @@ function delete_row(id, title){
                     _method: "DELETE",
                     id: id,
                 },
-            })
-                .done(function (res) {
+            }).
+            done(function (res) {
                     // Simulate delete request -- for demo purpose only
                     Swal.fire({
                         text: "You have deleted " + title + "!.",
@@ -86,16 +86,16 @@ function delete_selected(){
             cancelButton: "btn fw-bold btn-active-light-primary",
         },
     }).then(function (result) {
-        // deleting progress bar
-        $('.progress-title').html('Deleting...');
-        $(".uploading-progress-bar").removeClass("d-none");
-        function handler(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-        document.addEventListener("click", handler, true);
-        //end
         if (result.value) {
+            // deleting progress bar
+            $('.progress-title').html('Deleting...');
+            $(".uploading-progress-bar").removeClass("d-none");
+            function handler(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            document.addEventListener("click", handler, true);
+            //end
             let i = 1;
             let count = $(".table-checkbox:checked").length // will return count of checked checkboxes;
             $('.table-checkbox:checked').each(function () {
