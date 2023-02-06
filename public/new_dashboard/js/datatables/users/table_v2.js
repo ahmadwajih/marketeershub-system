@@ -120,7 +120,6 @@ var KTUsersList = function () {
             createdRow: function (row, data, dataIndex) {
                 $(row).find('td:eq(2)').attr('data-filter', data.image);
             }
-
         });
 
         // Re-init functions on every table re-draw -- more info: https://datatables.net/reference/event/draw
@@ -203,7 +202,6 @@ var KTUsersList = function () {
                     e.preventDefault();
                     // Select parent row
                     const parent = e.target.closest("tr");
-
                     // Get customer name
                     const customerName =
                         parent.querySelectorAll("td")[2].innerText;
@@ -412,9 +410,9 @@ var KTUsersList = function () {
 
     function remove_in_progress_bar(percent,handler){
         if (percent === 100){
-             console.log("test");
             $(".uploading-progress-bar").addClass("d-none");
             document.removeEventListener('click', handler, true);
+            datatable.draw();
         }
     }
     // Toggle toolbars

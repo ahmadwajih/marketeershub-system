@@ -26,8 +26,8 @@ function delete_row(id, title){
                     _method: "DELETE",
                     id: id,
                 },
-            })
-                .done(function (res) {
+            }).
+            done(function (res) {
                     // Simulate delete request -- for demo purpose only
                     Swal.fire({
                         text: "You have deleted " + title + "!.",
@@ -68,11 +68,9 @@ function delete_row(id, title){
     });
 }
 
-
 // Delete Multi
-
-function delete_selected(){
-
+function delete_selected()
+{
     Swal.fire({
         text: "Are you sure you want to delete selected publishers?",
         icon: "warning",
