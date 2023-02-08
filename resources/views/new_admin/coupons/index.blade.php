@@ -546,7 +546,6 @@
                 $('#' + switcherId).fadeIn('slow');
             }
         }
-
     </script>
     <script>
         function switcherFunction(switcher) {

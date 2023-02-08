@@ -123,7 +123,7 @@ function delete_selected(){
                     $('#progress-bar-percentage').html(Math.round(percent) + '%');
                     $("#progress-bar").width(Math.round(percent) +"%");
                     if (percent === 100){
-                        $(".uploading-progress-bar").addClass("d-none");
+                        //$(".uploading-progress-bar").addClass("d-none");
                         document.removeEventListener('click', handler, true);
                         $('.table-checkbox').prop('checked', false);
                         Swal.fire({
@@ -134,7 +134,8 @@ function delete_selected(){
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             },
-                        })
+                        });
+                        location.reload();
                     }
                     //end
                 }).
