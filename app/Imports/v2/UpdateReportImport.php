@@ -25,6 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Row;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class UpdateReportImport extends Import implements OnEachRow, ToCollection, WithChunkReading, ShouldQueue, WithStartRow
 {
@@ -98,7 +99,12 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
             $organic = false;
             $issue = "";
             try {
-                $col[0] = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($col[0]));
+                if (is_int($col[0])) {
+                    $col[0] = Carbon::instance(Date::excelToDateTimeObject($col[0]));
+                } else {
+                    $col[0] = str_replace("\\", "/", $col[0]);
+                    $col[0] = date('Y-m-d', strtotime($col[0]));
+                }
                 Log::info(implode(['date' =>  $col[0]]));
                 try {
                     $coupon = null;
