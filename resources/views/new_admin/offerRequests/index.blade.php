@@ -320,7 +320,7 @@
     <script>
         let route = "{{ route('admin.offerRequests.index') }}";
     </script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/delete.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/delete_v1.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/offerRequests/change-status.js"></script>
     <script>
         $(document).ready(function() {

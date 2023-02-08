@@ -135,10 +135,10 @@ function delete_selected(){
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             },
-                        })
+                        });
+                        location.reload();
                     }
                     //end
-
                 }).
                 fail(function (res) {
                         Swal.fire({
