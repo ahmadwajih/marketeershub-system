@@ -151,7 +151,8 @@ function delete_selected(){
                             },
                         }).then(function () {
                             // delete row data from server and re-draw datatable
-                            datatable.draw();
+                            //datatable.draw();
+                            location.reload();
                         });
                     }
                     //end

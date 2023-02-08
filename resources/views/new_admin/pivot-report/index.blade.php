@@ -354,7 +354,7 @@
         let route = "{{ route('admin.reports.index') }}";
         let search = "{{ request()->search }}";
     </script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete_v2.js?v=60112212022"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/pivot-report/delete_v3.js?v=60112212022"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/search.js?v=60112212022"></script>
     <script>
         $(document).ready(function() {

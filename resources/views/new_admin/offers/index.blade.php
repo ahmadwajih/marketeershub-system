@@ -376,7 +376,7 @@
     let search = "{{ request()->search }}";
 </script>
 {{-- <script src="{{ asset('new_dashboard') }}/js/datatables/offers/table.js"></script> --}}
-<script src="{{ asset('new_dashboard') }}/js/datatables/offers/delete.js"></script>
+<script src="{{ asset('new_dashboard') }}/js/datatables/offers/delete_v1.js"></script>
 
 <script src="{{ asset('new_dashboard') }}/js/datatables/offers/change-status.js"></script>
 
