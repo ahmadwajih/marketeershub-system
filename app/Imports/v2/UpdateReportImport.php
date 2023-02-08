@@ -172,11 +172,13 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                 } catch (\Throwable $th) {
                     $col[] = $th->getMessage();
                     Log::debug( $th->getMessage());
+                    Log::debug( $th->getTraceAsString());
                     Log::debug( implode(['status' => 'error', '$col' => $col]));
                     $this->importing_counts['failed']++;
                     $this->failed_rows[] = $col;
                 }
             } catch (\Throwable $th) {
+                Log::debug( $th->getTraceAsString());
                 $col[] = $th->getMessage();
                 $this->importing_counts['failed']++;
                 $this->failed_rows[] = $col;
