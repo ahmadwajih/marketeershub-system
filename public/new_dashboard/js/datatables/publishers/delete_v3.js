@@ -138,6 +138,7 @@ function delete_selected(){
                         $('.table-checkbox').prop('checked', false);
                         $('#delete_btn').addClass('d-none');
                         $('#add_btn').removeClass('d-none');
+                        location.reload();
                     }
                     //end
                 }).
