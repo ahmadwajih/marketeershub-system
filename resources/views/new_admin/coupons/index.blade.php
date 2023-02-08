@@ -531,7 +531,7 @@
         var route = "{{ route('admin.coupons.index') }}";
         let search = "{{ request()->search }}";
     </script>
-    <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/delete.js"></script>
+    <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/delete.js?version=1.001"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/edit.js"></script>
     <script src="{{ asset('new_dashboard') }}/js/datatables/coupons/change-status.js"></script>
     <script src="{{ asset('new_dashboard') }}/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
