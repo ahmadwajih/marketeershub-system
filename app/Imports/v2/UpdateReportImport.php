@@ -133,10 +133,8 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                             ['coupon_id', '=', $coupon->id],
                             ['date', '=', $col[0]->format('Y-m-d')],
                         ])->first();
-                
-                
-                            // 2- pivot not exist
-                            if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
+                        // 2- pivot not exist
+                        if (gettype($this->calcRevenue($col)) != 'string' && gettype($this->calcPayout($col)) != 'string') {
                                 // 1- calculation is correct
                                 PivotReport::create([
                                     'coupon_id' => $coupon->id,
@@ -179,7 +177,7 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
                     $this->failed_rows[] = $col;
                 }
             } catch (\Throwable $th) {
-                $col[] = 'Please make sure the first column is valid date.';
+                $col[] = $th->getMessage();
                 $this->importing_counts['failed']++;
                 $this->failed_rows[] = $col;
             }
