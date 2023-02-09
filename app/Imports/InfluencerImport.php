@@ -24,8 +24,8 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     public $status;
     public $countryId = null;
     public $cityId = null;
-    public $accouManagerId = null;
-    public $currrencyId = null;
+    public int|null $accouManagerId = null;
+    public int|null $currrencyId = null;
     public string $module_name = 'publishers';
     private int $columns_count = 28;
 
@@ -61,17 +61,17 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
             $this->importing_counts['rows_num']++;
 
             $valid_email = true;
-            if (!filter_var($col[3], FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($col[1], FILTER_VALIDATE_EMAIL)) {
                 $valid_email = false;
             }
-            if(isset($col[1]) && $valid_email && $col[3] != 'info@marketeershub.com'){
+            if(isset($col[0]) && $valid_email && $col[1] != 'info@marketeershub.com'){
                 // Get Account Manager
                 $accountManager = User::select('id')->where('email',trim($col[4]))->first();
                 if($accountManager){
                     $this->accouManagerId = $accountManager->id;
                 }
                 // Get Country ID
-                $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();
+                $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[4]).'%')->orWhere('name_ar', 'like', '%'.trim($col[4]).'%')->first();
                 if($country){$this->countryId = $country->id;}
                 // Get City ID
                 $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
@@ -80,26 +80,22 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 }
                 // Get Status
                 $this->status = 'pending';
-                $col[6] = strtolower($col[6]);
-                if ($col[6]){$this->status=$col[6];}
-                if( $col[6] == 'live'){
+                $col[5] = strtolower($col[5]);
+                if ($col[5]){$this->status=$col[5];}
+                if( $col[5] == 'live'){
                     $this->status = 'active';
-                }elseif($col[6] == 'paused'){
+                }elseif($col[5] == 'paused'){
                     $this->status = 'pending';
                 }
                 // Get Category ID
-                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
-                $publisher = User::whereEmail($col[3])->first();
+                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[7]).'%')->orWhere('title_en', 'like', '%'.trim($col[7]).'%')->first();
+                $publisher = User::whereEmail($col[1])->first();
                 if($publisher){
-                    // Count Updated
-                    if ($publisher->ho_id !=  'aff-'.$col[0]){
-                        $publisher->ho_id = $col[0] ? 'aff-'.$col[0] : null;
-                    }
-                    $publisher->name = $publisher->name ??  $col[1];
+                    $publisher->name = $publisher->name ??  $col[0];
                     $publisher->phone = $publisher->phone ??  $col[2];
                     $publisher->password = $publisher->password ??  Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->parent_id = $publisher->parent_id ??  $this->accouManagerId;
-                    $publisher->gender = $publisher->gender ??  $col[5] ?? 'male';
+                    $publisher->gender = $publisher->gender ??  $col[3] ?? 'male';
                     if ($this->status != $publisher->status){$publisher->status = $this->status;}
                     $publisher->country_id = $publisher->country_id ??  $this->countryId;
                     $publisher->city_id = $publisher->city_id ??  $this->cityId;
@@ -124,13 +120,12 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                     // count added
                     $publisher = User::create(
                         [
-                            'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
-                            'name' => $col[1],
+                            'name' => $col[0],
                             'phone' => $col[2],
-                            'email' => $col[3],
+                            'email' => $col[1],
                             'password' => Hash::make('hhgEDfvgbhKmJhMjnBNKM'),
                             'parent_id' => $this->accouManagerId,
-                            'gender' => $col[5] ?? 'male',
+                            'gender' => $col[3] ?? 'male',
                             'status' => $this->status,
                             'country_id' => $this->countryId,
                             'city_id' => $this->cityId,
@@ -151,71 +146,21 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 $publisher->roles()->sync($role);
                 $category ? $publisher->categories()->sync($category->id) : '';
 
-                // Facebook
-                if(isset($col[17])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'facebook',
-                        'user_id' => $publisher->id
-                    ],
-                    [
-                        'link' => $col[17],
-                        'followers' => $col[18] ?? 0,
-                    ]);
-                }
-                 // Instagram
-                 if(isset($col[19])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'instagram',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[19],
-                        'followers' => $col[20] ?? 0,
-                    ]);
+                //importing social links
+                if(isset($col[12])){
+                    $social_links = explode(";",$col[12],"");
+                    foreach ($social_links as $social_link){
+                        $data = explode("=",$social_link);
+                        SocialMediaLink::updateOrCreate(
+                            ['platform' => $data[0], 'user_id' => $publisher->id],
+                            ['link' => $data[1], 'followers' => 0]
+                        );
+                    }
                 }
 
-                // Twitter
-                if(isset($col[21])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'twitter',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[21],
-                        'followers' => $col[22] ?? 0,
-                    ]);
-                }
-                // Snapchat
-                if(isset($col[23])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'snapchat',
-                        'user_id' => $publisher->id,
-                    ],
-                    [
-                        'link' => $col[23],
-                        'followers' => $col[24] ?? 0,
-                    ]);
-                }
-                // Tiktok
-                if(isset($col[25])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'tiktok',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[25],
-                        'followers' => $col[26] ?? 0,
-                    ]);
-                }
-                // Youtube
-                if(isset($col[27])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'youtube',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[27],
-                        'followers' => $col[28] ?? 0,
-                    ]);
-                }
                 $this->countryId = null;
                 $this->cityId = null;
+
                 // $this->accouManagerId = null;
                 $this->currrencyId = null;
             }
