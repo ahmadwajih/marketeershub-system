@@ -29,7 +29,7 @@ class InfluencerImportWithNoQueue extends Import implements ToCollection, WithCh
     public $accouManagerId = null;
     public $currrencyId = null;
     public string $module_name = 'publishers';
-    private array $failed_rows = [];
+    protected array $failed_rows = [];
     public function __construct($team,$id)
     {
         $this->team = $team;
