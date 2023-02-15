@@ -50,27 +50,7 @@ class UpdateReportImport extends Import implements OnEachRow, ToCollection, With
      */
     public function collection(Collection $collection)
     {
-        //unset($collection[0]);
-//        $cpsType = $this->offer()->payout_cps_type;
-//        if ($cpsType == 'static' || $cpsType == 'slaps') {
-//            Validator::make($collection->toArray(), [
-//                '*.0' => 'required',
-//                '*.1' => 'required',
-//                '*.2' => 'required|numeric',
-//                '*.3' => 'required|numeric',
-//            ])->validate();
-//        }
-//
-//        if ($cpsType == 'new_old') {
-//            Validator::make($collection->toArray(), [
-//                '*.0' => 'required',
-//                '*.1' => 'required',
-//                '*.2' => 'required|numeric',
-//                '*.3' => 'required|numeric',
-//                '*.4' => 'required|numeric',
-//                '*.5' => 'required|numeric',
-//            ])->validate();
-//        }
+
         foreach ($collection as  $col) {
             $col = $col->toArray();
             $col = array_slice($col, 0, 8, true);

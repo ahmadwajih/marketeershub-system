@@ -48,8 +48,8 @@ class DashboardController extends Controller
             session()->put('from_date', $request->from_date);
             session()->put('to_date', $request->to_date);
         }else{
-            session()->put('from_date', now()->firstOfMonth()->format('Y-m-d'));
-            session()->put('to_date', now()->lastOfMonth()->format('Y-m-d'));
+            session()->put('from_date', now()->startOfYear()->format('Y-m-d'));
+            session()->put('to_date', now()->endOfYear()->format('Y-m-d'));
         }
         $from = session('from_date');
         $to = session('to_date');

@@ -394,8 +394,8 @@
             <!--begin::Followers toolbar-->
             <div class="d-flex flex-wrap flex-stack">
                 <!--begin::Title-->
-                <h3 class="fw-bold my-2">My Offers
-                <span class="fs-6 text-gray-400 fw-semibold ms-1">({{ count($offers) }})</span></h3>
+                <h3 class="fw-bold my-2">My Active Offers
+                <span class="fs-6 text-gray-400 fw-semibold ms-1">({{ count($activeOffers) }})</span></h3>
                 <!--end::Title-->
                 <!--begin::Controls-->
                 <div class="d-flex my-2">

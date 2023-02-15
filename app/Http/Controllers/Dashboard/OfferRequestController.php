@@ -125,7 +125,7 @@ class OfferRequestController extends Controller
                     $existsCoupon->save();
                 }
             }
-            Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));
+            // Notification::send($offerRequest->user, new NewAssigenCoupon($offerRequest->offer));  dissabled becasue there is ann isue in AWS Email 
         }
 
         userActivity('OfferRequest', $offerRequest->id, 'create');
