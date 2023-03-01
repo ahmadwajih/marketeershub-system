@@ -227,7 +227,7 @@ class CouponController extends Controller
                             'to_date' => $newOldPayout['to_date'] ?? null,
                             'countries' => isset($newOldPayout['countries']) && $newOldPayout['countries'][0] == 'on' ? true : false,
                             'countries_ids' => isset($newOldPayout['countries_ids']) ? json_encode($newOldPayout['countries_ids'], JSON_NUMERIC_CHECK) : null,
-                            'coupon_id' => $coupon->id,
+                            'coupon_id' => $coupon->id,  
                         ]);
                     }
                 }

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class InfluencerImport extends Import implements ToCollection, WithChunkReading,WithEvents,WithStartRow,ShouldQueue
+class InfluencerImport extends Import implements ToCollection, WithChunkReading, WithEvents, WithStartRow, ShouldQueue
 {
     public string $team;
     public $status;
@@ -29,119 +29,169 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
     public string $module_name = 'publishers';
     private int $columns_count = 28;
 
+    private $colName;
+    private $colEmail;
+    private $colPhone;
+    private $colAccountManager;
+    private $colGender;
+    private $colStatus;
+    private $colCountry;
+    private $colCity;
+    private $colAddress;
+    private $colCategory;
+    private $colBankAccountTitle;
+    private $colBankName;
+    private $colBankBranchCode;
+    private $colSwiftCode;
+    private $colIBAN;
+    private $colCurrency;
+    private $colInfluencerType;
+    private $colInfluencerRating;
+    private $colSocialMediaLinks;
+
     public string $exportClass = 'Influencers';
 
-    public function __construct($team,$id)
+    public function __construct($team, $id)
     {
         $this->team = $team;
         $this->id = $id;
     }
     /**
-    * @param Collection $collection
-    */
+     * @param Collection $collection
+     */
     public function collection(Collection $collection)
     {
         //unset($collection[0]);
-        foreach ($collection as $col)
-        {
+        foreach ($collection as $col) {
+
+            $this->colName = $col[0];
+            $this->colEmail = $col[1];
+            $this->colPhone = $col[2];
+            $this->colGender = $col[3];
+            $this->colCountry = $col[4];
+            $this->colStatus = $col[5];
+            $this->colAccountManager = $col[6];
+            $this->colCategory = $col[7];
+            $this->colCity = $col[8];
+            $this->colAddress = $col[9];
+            $this->colInfluencerType = $col[10];
+            $this->colInfluencerRating = $col[11];
+            $this->colSocialMediaLinks = $col[12];
+            $this->colIBAN = $col[13];
+            $this->colSwiftCode = $col[14];
+            $this->colBankAccountTitle = $col[15];
+            $this->colBankName = $col[16];
+            $this->colBankBranchCode = $col[17];
+            $this->colCurrency = $col[18];
+
             // todo: refactor - remove the duplicated code
             // todo fix method not found
             $col_array = $col->toArray();
             $row = array_slice($col_array, 0, $this->columns_count, true);
-            if ($this->containsOnlyNull($row)){continue;}
-            if (Storage::has($this->module_name.'_importing_counts.json')){
-                $this->importing_counts = json_decode(Storage::get($this->module_name.'_importing_counts.json'),true);
+            if ($this->containsOnlyNull($row)) {
+                continue;
             }
-            if (Storage::has($this->module_name.'_failed_rows.json')){
-                $this->failed_rows = json_decode(Storage::get($this->module_name.'_failed_rows.json'),true);
+            if (Storage::has($this->module_name . '_importing_counts.json')) {
+                $this->importing_counts = json_decode(Storage::get($this->module_name . '_importing_counts.json'), true);
             }
-            if (Storage::has($this->module_name.'_duplicated_rows.json')){
-                $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
+            if (Storage::has($this->module_name . '_failed_rows.json')) {
+                $this->failed_rows = json_decode(Storage::get($this->module_name . '_failed_rows.json'), true);
+            }
+            if (Storage::has($this->module_name . '_duplicated_rows.json')) {
+                $this->duplicated_rows = json_decode(Storage::get($this->module_name . '_duplicated_rows.json'), true);
             }
             $this->importing_counts['rows_num']++;
 
             $valid_email = true;
-            if (!filter_var($col[3], FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($this->colEmail, FILTER_VALIDATE_EMAIL)) {
                 $valid_email = false;
             }
-            if(isset($col[1]) && $valid_email && $col[3] != 'info@marketeershub.com'){
+            if (isset($this->colEmail) && $valid_email && $this->colEmail != 'info@marketeershub.com') {
                 // Get Account Manager
-                $accountManager = User::select('id')->where('email',trim($col[4]))->first();
-                if($accountManager){
+                $accountManager = User::select('id')->where('email', trim($this->colAccountManager))->first();
+                if ($accountManager) {
                     $this->accouManagerId = $accountManager->id;
                 }
                 // Get Country ID
-                $country = Country::select('id')->where('name_en', 'like', '%'.trim($col[7]).'%')->orWhere('name_ar', 'like', '%'.trim($col[7]).'%')->first();
-                if($country){$this->countryId = $country->id;}
+                $country = Country::select('id')->where('name_en', 'like', '%' . trim($this->colCountry) . '%')->orWhere('name_ar', 'like', '%' . trim($this->colCountry) . '%')->first();
+                if ($country) {
+                    $this->countryId = $country->id;
+                }
                 // Get City ID
-                $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
-                if($city){
+                $city = City::select('id')->where('name_en', 'like', '%' . trim($this->colCity) . '%')->orWhere('name_ar', 'like', '%' . trim($this->colCity) . '%')->first();
+                if ($city) {
                     $this->cityId = $city->id;
                 }
                 // Get Status
-                $this->status = 'pending';
-                $col[6] = strtolower($col[6]);
-                if ($col[6]){$this->status=$col[6];}
-                if( $col[6] == 'live'){
+                $this->status = 'active';
+                $this->colStatus = strtolower($this->colStatus);
+                if ($this->colStatus) {
+                    $this->status = $this->colStatus;
+                }
+                if ($this->colStatus == 'live') {
                     $this->status = 'active';
-                }elseif($col[6] == 'paused'){
+                } elseif ($this->colStatus == 'paused') {
                     $this->status = 'pending';
                 }
                 // Get Category ID
-                $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[10]).'%')->orWhere('title_en', 'like', '%'.trim($col[10]).'%')->first();
-                $publisher = User::whereEmail($col[3])->first();
-                if($publisher){
+                $category = Category::select('id')->where('title_ar', 'like', '%' . trim($this->colCategory) . '%')->orWhere('title_en', 'like', '%' . trim($this->colCategory) . '%')->first();
+                $publisher = User::whereEmail($this->colEmail)->first();
+                if ($publisher) {
                     // Count Updated
-                    if ($publisher->ho_id !=  'aff-'.$col[0]){
-                        $publisher->ho_id = $col[0] ? 'aff-'.$col[0] : null;
-                    }
-                    $publisher->name = $publisher->name ??  $col[1];
-                    $publisher->phone = $publisher->phone ??  $col[2];
-                    $publisher->password = $publisher->password ??  Hash::make('hhgEDfvgbhKmJhMjnBNKM');
+                    $publisher->name = $publisher->name ??  $this->colName;
+                    $publisher->phone = $publisher->phone ??  $this->colPhone;
+                    // $publisher->password = $publisher->password ??  Hash::make('hhgEDfvgbhKmJhMjnBNKM');
                     $publisher->parent_id = $publisher->parent_id ??  $this->accouManagerId;
-                    $publisher->gender = $publisher->gender ??  $col[5] ?? 'male';
-                    if ($this->status != $publisher->status){$publisher->status = $this->status;}
+                    $publisher->gender = $publisher->gender ??  $this->colGender ?? 'male';
+                    if ($this->status != $publisher->status) {
+                        $publisher->status = $this->status;
+                    }
                     $publisher->country_id = $publisher->country_id ??  $this->countryId;
                     $publisher->city_id = $publisher->city_id ??  $this->cityId;
-                    $publisher->address = $publisher->address ??  $col[9] ?? null;
-                    // $publisher->account_title = $publisher->account_title ??  $col[11];
-                    // $publisher->bank_name = $publisher->bank_name ??  $col[12];
-                    // $publisher->iban = $publisher->iban ??  $col[15];
-                    // $publisher->bank_branch_code = $publisher->bank_branch_code ??  $col[13];
-                    // $publisher->swift_code = $publisher->swift_code ??  $col[14];
+                    $publisher->address = $publisher->address ??  $this->colAddress ?? null;
+                    $publisher->account_title = $publisher->account_title ??  $this->colBankAccountTitle;
+                    $publisher->bank_name = $publisher->bank_name ??  $this->colBankName;
+                    $publisher->iban = $publisher->iban ??  $this->colIBAN;
+                    $publisher->bank_branch_code = $publisher->bank_branch_code ??  $this->colBankBranchCode;
+                    $publisher->swift_code = $publisher->swift_code ??  $this->colSwiftCode;
                     $publisher->currency_id = $publisher->currency_id ??  $this->currrencyId;
                     $publisher->team = $publisher->team ??  $this->team;
+                    $publisher->influencer_type = $publisher->influencer_type ??  $this->colInfluencerType;
+                    $publisher->influencer_rating = $publisher->influencer_rating ??  $this->colInfluencerRating;
+                    $publisher->currency = $publisher->currency ??  $this->colCurrency;
                     $publisher->update();
-                    if ($publisher->wasChanged()){
+                    if ($publisher->wasChanged()) {
                         $this->importing_counts['updated']++;
-                    }else{
+                    } else {
                         // already updated
                         $this->importing_counts['duplicated']++;
                         $this->duplicated_rows[] = $col_array;
                     }
-                    Log::debug( json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
-                }else{
+                    Log::debug(json_encode(['status' => 'Yes_Exists', 'publisher' => $publisher]));
+                } else {
                     // count added
                     $publisher = User::create(
                         [
-                            'ho_id' => $col[0] ? 'inf-' . $col[0] : null,
-                            'name' => $col[1],
-                            'phone' => $col[2],
-                            'email' => $col[3],
+                            'name' => $this->colName,
+                            'phone' => $this->colPhone,
+                            'email' => $this->colEmail,
                             'password' => Hash::make('hhgEDfvgbhKmJhMjnBNKM'),
                             'parent_id' => $this->accouManagerId,
-                            'gender' => $col[5] ?? 'male',
+                            'gender' => $this->colGender ?? 'male',
                             'status' => $this->status,
                             'country_id' => $this->countryId,
                             'city_id' => $this->cityId,
-                            'address' => $col[9] ?? null,
-                            // 'account_title' => $col[11],
-                            // 'bank_name' => $col[12],
-                            // 'iban' => $col[15],
-                            // 'bank_branch_code' => $col[13],
-                            // 'swift_code'  => $col[14],
+                            'address' => $this->colAddress ?? null,
+                            'account_title' => $this->colBankAccountTitle,
+                            'bank_name' => $this->colBankName,
+                            'iban' => $this->colIBAN,
+                            'bank_branch_code' => $this->colBankBranchCode,
+                            'swift_code'  => $this->colSwiftCode,
                             'currency_id' => $this->currrencyId,
                             'team' => $this->team,
+                            'influencer_type' => $this->colInfluencerType,
+                            'influencer_rating' => $this->colInfluencerRating,
+                            'currency' => $this->colCurrency,
                         ]
                     );
                     $this->importing_counts['new']++;
@@ -151,81 +201,40 @@ class InfluencerImport extends Import implements ToCollection, WithChunkReading,
                 $publisher->roles()->sync($role);
                 $category ? $publisher->categories()->sync($category->id) : '';
 
-                // Facebook
-                if(isset($col[17])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'facebook',
-                        'user_id' => $publisher->id
-                    ],
-                    [
-                        'link' => $col[17],
-                        'followers' => $col[18] ?? 0,
-                    ]);
-                }
-                 // Instagram
-                 if(isset($col[19])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'instagram',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[19],
-                        'followers' => $col[20] ?? 0,
-                    ]);
+                if (isset($this->colSocialMediaLinks)) {
+
+                    $trim = trim($this->colSocialMediaLinks);
+                    $removesemicolumn = str_replace(';', '', $trim);
+                    $removeSpaces = str_replace('  ', ' ', $removesemicolumn);
+                    $links = explode(' ', $removeSpaces);
+                    $links = array_filter($links);
+                    foreach ($links as $link) {
+                        $fullLink = explode('=', $link);
+                        SocialMediaLink::updateOrCreate(
+                            [
+                                'platform' => strtolower($fullLink[0]),
+                                'user_id' => $publisher->id
+                            ],
+                            [
+                                'link' => $fullLink[1],
+                                'followers' => $this->colInfluencerRating ?? 0,
+                            ]
+                        );
+                    }
+
                 }
 
-                // Twitter
-                if(isset($col[21])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'twitter',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[21],
-                        'followers' => $col[22] ?? 0,
-                    ]);
-                }
-                // Snapchat
-                if(isset($col[23])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'snapchat',
-                        'user_id' => $publisher->id,
-                    ],
-                    [
-                        'link' => $col[23],
-                        'followers' => $col[24] ?? 0,
-                    ]);
-                }
-                // Tiktok
-                if(isset($col[25])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'tiktok',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[25],
-                        'followers' => $col[26] ?? 0,
-                    ]);
-                }
-                // Youtube
-                if(isset($col[27])){
-                    SocialMediaLink::updateOrCreate([
-                        'platform' => 'youtube',
-                        'user_id' => $publisher->id
-                    ],[
-                        'link' => $col[27],
-                        'followers' => $col[28] ?? 0,
-                    ]);
-                }
                 $this->countryId = null;
                 $this->cityId = null;
                 // $this->accouManagerId = null;
                 $this->currrencyId = null;
-            }
-            else{
+            } else {
                 $this->importing_counts['failed']++;
                 $this->failed_rows[] = $col_array;
             }
-            Storage::put($this->module_name.'_importing_counts.json', json_encode($this->importing_counts));
-            Storage::put($this->module_name.'_failed_rows.json', json_encode($this->failed_rows));
-            Storage::put($this->module_name.'_duplicated_rows.json', json_encode($this->duplicated_rows));
+            Storage::put($this->module_name . '_importing_counts.json', json_encode($this->importing_counts));
+            Storage::put($this->module_name . '_failed_rows.json', json_encode($this->failed_rows));
+            Storage::put($this->module_name . '_duplicated_rows.json', json_encode($this->duplicated_rows));
         }
     }
     public function chunkSize(): int

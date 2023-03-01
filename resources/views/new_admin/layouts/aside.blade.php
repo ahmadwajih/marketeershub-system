@@ -393,7 +393,7 @@
                 @endcan
                 @can('view_user_activities')
                  <!--begin:Menu item-->
-                 <div class="menu-item">
+                 {{-- <div class="menu-item">
                     <!--begin:Menu link-->
                     <a class="menu-link {{ Request::segment(2)=='user-activities'?'active':'' }}" href="{{ route('admin.user.activities.index') }}">
                         <span class="menu-icon">
@@ -410,7 +410,7 @@
                         <span class="menu-title">User Activities</span>
                     </a>
                     <!--end:Menu link-->
-                </div>
+                </div> --}}
                 <!--end:Menu item-->
                 @endcan
 

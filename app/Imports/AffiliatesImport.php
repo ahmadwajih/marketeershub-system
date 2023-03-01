@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\DigitalAsset;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -28,8 +29,27 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
     public array $data = [];
     public string $module_name = 'publishers';
     public string $exportClass = 'Affiliates';
-
     private int $columns_count = 21;
+
+    private $colName;
+    private $colEmail;
+    private $colPhone;
+    private $colGender;
+    private $colCountry;
+    private $colStatus;
+    private $colAccountManager;
+    private $colCity;
+    private $colCategory;
+    private $colYearsOfExperience;
+    private $colTrafficSources;
+    private $colDigitalAssets;
+    private $colIBAN;
+    private $colSwiftCode;
+    private $colBankAccountTitle;
+    private $colBankName;
+    private $colBankBranchCode;
+    private $colCurrency;
+
 
     public function __construct($team,$id)
     {
@@ -44,6 +64,24 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
         $category = null;
         foreach ($collection as $col)
         {
+            $this->colName = $col[0];
+            $this->colEmail = $col[1];
+            $this->colPhone = $col[2];
+            $this->colGender = $col[3];
+            $this->colCountry = $col[4];
+            $this->colStatus = $col[5];
+            $this->colAccountManager = $col[6];
+            $this->colCategory = $col[7];
+            $this->colYearsOfExperience = $col[8];
+            $this->colTrafficSources = $col[9];
+            $this->colDigitalAssets = $col[10];
+            $this->colIBAN = $col[11];
+            $this->colSwiftCode = $col[12];
+            $this->colBankAccountTitle = $col[13];
+            $this->colBankName = $col[14];
+            $this->colBankBranchCode = $col[15];
+            $this->colCurrency = $col[16];
+
             // todo remove duplicated code
             $col_array = $col->toArray();
             $row = array_slice($col_array, 0, $this->columns_count, true);
@@ -61,53 +99,40 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $this->duplicated_rows = json_decode(Storage::get($this->module_name.'_duplicated_rows.json'),true);
             }
             $this->importing_counts['rows_num']++;
-            $this->data['publisher_ho_id'] = $col[0];
-            $this->data['publisher_email'] = $col[1];
+            $this->data['publisher_email'] = $this->colEmail;
             $valid_email = true;
-            if (!filter_var($col[1], FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($this->colEmail, FILTER_VALIDATE_EMAIL)) {
                 $valid_email = false;
             }
-            if(!is_null($col[0]) && $col[1] != 'info@marketeershub.com' && $valid_email)
+            if(!is_null($col[0]) && $this->colEmail != 'info@marketeershub.com' && $valid_email)
             {
                 try {
                     // Get Account Manager
-                    $accountManager = User::select('id')->where('email',trim($col[20]))->first();
+                    $accountManager = User::select('id')->where('email',trim($this->colAccountManager))->first();
                     if($accountManager){
                         $this->accouManagerId = $accountManager->id;
                         $this->data['accountManager'] = $accountManager->id;
                     }
-                    if(trim($col[20]) == 'MarketeersHub'){
+                    if(trim($this->colAccountManager) == 'MarketeersHub'){
                         $this->accouManagerId = User::whereEmail('info@marketeershub.com')->orWhere('name', 'MarketeersHub')->first()->id;
                     }
                     // Get Country ID
-                    $countryName = $col[6] ?? $col[7];
-                    $country = Country::select('id')->where('name_en', 'like', '%'.trim($countryName).'%')->orWhere('name_ar', 'like', '%'.trim($countryName).'%')->first();
+                    $country = Country::select('id')->where('name_en', 'like', '%'.trim($this->colCountry).'%')->orWhere('name_ar', 'like', '%'.trim($this->colCountry).'%')->first();
                     if($country){$this->countryId = $country->id;}
-                    // Get City ID
-                    $city = City::select('id')->where('name_en', 'like', '%'.trim($col[8]).'%')->orWhere('name_ar', 'like', '%'.trim($col[8]).'%')->first();
-                    if($city){
-                        $this->cityId = $city->id;
-                    }
+                    
                     // Get Status
                     $this->status = 'pending';
-                    $col[4] = strtolower($col[4]);
-                    if ($col[4]){$this->status=$col[4];}
-                    if($col[4] == 'live'){
+                    $this->colStatus = strtolower($this->colStatus);
+                    if ($this->colStatus){$this->status=$this->colStatus;}
+                    if($this->colStatus == 'live'){
                         $this->status = 'active';
-                    }elseif($col[4] == 'paused'){
+                    }elseif($this->colStatus == 'paused'){
                         $this->status = 'pending';
-                    }elseif($col[4] == 'closed'){
+                    }elseif($this->colStatus == 'closed'){
                         $this->status = 'closed';
                     }
-                    // Get Currency
-                    $currency = Currency::where('name_en', 'like', '%'.$col[11].'%')
-                        ->orWhere('name_ar', 'like', '%'.$col[11].'%')
-                        ->orWhere('code', $col[14])
-                        ->orWhere('sign', $col[14])
-                        ->first()
-                    ;
                     // Get Category ID
-                    $category = Category::select('id')->where('title_ar', 'like', '%'.trim($col[11]).'%')->orWhere('title_en', 'like', '%'.trim($col[11]).'%')->first();
+                    $category = Category::select('id')->where('title_ar', 'like', '%'.trim($this->colCategory).'%')->orWhere('title_en', 'like', '%'.trim($this->colCategory).'%')->first();
                 }
                 catch (\Throwable) {
                     $this->importing_counts['failed']++;
@@ -115,31 +140,27 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 }
                 $this->data['accouManagerId'] = $this->accouManagerId;
                 // Log::debug( $this->data);
-                $publisher = User::whereEmail($col[1])->first();
+                $publisher = User::whereEmail($this->colEmail)->first();
                 if($publisher){
-                    if ($publisher->ho_id !=  'aff-'.$col[0]){
-                        $publisher->ho_id           = $col[0] ? 'aff-'.$col[0] : null;
-                    }
                     $publisher->password        = $publisher->password ?? Hash::make('hhgEDfvgbhKmJhMjnBNKM');
-                    $publisher->email           = $col[1];
-                    $publisher->name            = $publisher->name ?? $col[2];
-                    $publisher->gender          = strtolower($col[3]) ?? 'male';
+                    $publisher->email           = $this->colEmail;
+                    $publisher->name            = $publisher->name ?? $this->colName;
+                    $publisher->gender          = strtolower($this->colGender) ?? 'male';
                     if ($this->status != $publisher->status){
                         $publisher->status = $this->status;
                     }
-                    $publisher->account_title   = $publisher->account_title ?? $col[5];
+                    $publisher->account_title   = $publisher->account_title ?? $this->colBankAccountTitle;
                     $publisher->country_id      = $publisher->country_id ?? $this->countryId;
                     $publisher->city_id         = $publisher->city_id ?? $this->cityId;
-                    $publisher->owened_digital_assets   = $publisher->owened_digital_assets ?? $col[9];
-                    $publisher->affiliate_networks      = $publisher->affiliate_networks ?? $col[10];
-                    $publisher->bank_branch_code        = $publisher->bank_branch_code ?? $col[12];
-                    $publisher->bank_name               = $publisher->bank_name ?? $col[13];
-                    $publisher->years_of_experience     = $publisher->years_of_experience ?? $col[15];
-                    $publisher->iban                    = $publisher->iban ?? $col[16];
-                    $publisher->swift_code              = $publisher->swift_code ?? $col[17];
-                    $publisher->phone               = $publisher->phone ?? $col[18];
-                    $publisher->traffic_sources     = $publisher->traffic_sources ?? $col[19];
-                    $publisher->currency_id         = $currency ? $currency->id : null;
+                    $publisher->owened_digital_assets   = $publisher->owened_digital_assets ?? $this->colDigitalAssets;
+                    $publisher->bank_branch_code        = $publisher->bank_branch_code ?? $this->colBankBranchCode;
+                    $publisher->bank_name               = $publisher->bank_name ?? $this->colBankName;
+                    $publisher->years_of_experience     = $publisher->years_of_experience ?? $this->colYearsOfExperience;
+                    $publisher->iban                    = $publisher->iban ?? $this->colIBAN;
+                    $publisher->swift_code              = $publisher->swift_code ?? $this->colSwiftCode;
+                    $publisher->phone               = $publisher->phone ?? $this->colPhone;
+                    $publisher->traffic_sources     = $publisher->traffic_sources ?? $this->colTrafficSources;
+                    $publisher->currency         = $this->colCurrency;
                     $publisher->team                = $this->team;
                     $publisher->parent_id           = $this->accouManagerId;
                     $publisher->update();
@@ -154,25 +175,23 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 }
                 else{
                     $publisher = User::create([
-                        'ho_id' => $col[0] ? 'aff-'.$col[0] : null,
                         'password' => Hash::make('00000000'),
-                        'email' => $col[1],
-                        'name' => $col[2],
-                        'gender' => $col[3] ?? 'male',
+                        'email' => $this->colEmail,
+                        'name' => $this->colName,
+                        'gender' => $this->colGender ?? 'male',
                         'status' => $this->status,
-                        'account_title' => $col[5],
+                        'account_title' => $this->colBankAccountTitle,
                         'country_id' => $this->countryId,
                         'city_id' => $this->cityId,
-                        'owened_digital_assets' => $col[9],
-                        'affiliate_networks' => $col[10],
-                        'bank_branch_code' => $col[12],
-                        'bank_name' => $col[13],
-                        'years_of_experience' => $col[15],
-                        'iban' => $col[16],
-                        'swift_code' => $col[17],
-                        'phone' => $col[18],
-                        'traffic_sources' => $col[19],
-                        'currency_id' => $currency ? $currency->id : null,
+                        'owened_digital_assets' => $this->colDigitalAssets,
+                        'bank_branch_code' => $this->colBankBranchCode,
+                        'bank_name' => $this->colBankName,
+                        'years_of_experience' => $this->colYearsOfExperience,
+                        'iban' => $this->colIBAN,
+                        'swift_code' => $this->colSwiftCode,
+                        'phone' => $this->colPhone,
+                        'traffic_sources' => $this->colTrafficSources,
+                        'currency' => $this->colCurrency,
                         'team' => $this->team,
                         'parent_id' => $this->accouManagerId
                     ]);
@@ -182,6 +201,29 @@ class AffiliatesImport extends Import implements ToCollection, WithChunkReading,
                 $role = Role::whereLabel('publisher')->first();
                 $publisher->roles()->sync($role);
                 $category ? $publisher->categories()->sync($category->id):"";
+
+                if (isset($this->colDigitalAssets)) {
+
+                    $trim = trim($this->colDigitalAssets);
+                    $removesemicolumn = str_replace(';', '', $trim);
+                    $removeSpaces = str_replace('  ', ' ', $removesemicolumn);
+                    $links = explode(' ', $removeSpaces);
+                    $links = array_filter($links);
+                    foreach ($links as $link) {
+                        $fullLink = explode('=', $link);
+                        DigitalAsset::updateOrCreate(
+                            [
+                                'platform' => strtolower($fullLink[0]),
+                                'user_id' => $publisher->id
+                            ],
+                            [
+                                'link' => $fullLink[1],
+                            ]
+                        );
+                    }
+
+                }
+
                 $this->countryId = null;
                 $this->cityId = null;
                 $this->accouManagerId = null;
