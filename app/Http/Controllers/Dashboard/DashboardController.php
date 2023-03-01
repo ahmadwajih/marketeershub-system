@@ -431,49 +431,22 @@ class DashboardController extends Controller
 
     public function test(Request $request)
     {
+            $str = "  Facebook=https://facebook.com/pagename  ;     Twitter=https://twitter.com/accountname  ;  ";
+            $trim = trim($str);
+            $removesemicolumn = str_replace(';', '', $trim);
+            $removeSpaces = str_replace('  ', ' ', $removesemicolumn);
+            //    dd($removeSpaces);
+            $links = explode(' ', $removeSpaces);
+            $links = array_filter($links);
+            foreach($links as $link){
+                $fullLink = explode('=', $link);
+                dd($fullLink);
+                if(strtolower($fullLink[0]) == strtolower('facebook')){
+                    dd('true');
+                }
+                dd('false');
 
-        $jobs = DB::table('jobs')->get();
-        if($jobs){
-
-        }
-
-        
-        foreach($jobs as $job){
-            dd($job);
-        }
-
-        
-        $data = [
-            'old_coupons_count' =>  session('upload_coupon_report')['total_coupons'],
-            'upload_coupons_count' =>  session('upload_coupon_report')['total_uploaded_coupons'],
-            'current_coupons_count' => Coupon::count(),
-        ];
-        dd($data);
-
-        abort(404);
-        //Marketeers Hub
-        // $user = User::create([
-        //     'name'                  => 'Marketeers Hub',
-        //     'password'              => Hash::make('JGKJSK#@#@#dsfsdfFFSFsgd4545'),
-        //     'ho_id'   => '1000',
-        //     'years_of_experience'   => '5',
-        //     'gender'                => 'male',
-        //     'team'                  => 'media_buying',
-        //     'position'              => 'publisher',
-        //     'email'                 => 'info@marketeershub.com',
-        //     'phone'                 => '123456789',
-        //     'traffic_sources'       => 'traffic sources',
-        //     'affiliate_networks'    => 'media buying networks',
-        //     'owened_digital_assets' => 'owened digital assets',
-        //     'account_title'         => 'account_title',
-        //     'bank_name'             => 'bank_name',
-        //     'bank_branch_code'      => 'bank_branch_code',
-        //     'swift_code'            => 'swift_code',
-        //     'iban'                  => 'iban',
-        //     'currency_id'           => 1,
-        //     'status'                => 'active'
-        // ]);
-        // $user->assignRole(Role::whereLabel('publisher')->first());
-        // dd($user);
+            }
+            //    dd($expolad);
     }
 }
