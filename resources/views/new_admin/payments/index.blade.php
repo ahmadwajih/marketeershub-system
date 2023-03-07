@@ -110,7 +110,7 @@
                                         <!--end::Label-->
                                         <!--begin::Input-->
                                         <div>
-                                            <select class="form-select form-select-solid publishers_filter" name="publisher_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
+                                            <select id="publishers_filter" class="form-select form-select-solid publishers_filter" name="publisher_id" data-kt-select2="true" data-placeholder="Select option" data-dropdown-parent="#kt_menu_62cfb00b8671a"
                                                 >
                                                 <option value="">No One</option>
                                                 @if($publisherForFilter)
