@@ -453,15 +453,18 @@
 
                             <!--begin::Input group-->
                             <div class="mb-10 fv-row">
-                                @include('new_admin.components.publishers_filter')
+                                {{-- @include('new_admin.components.publishers_filter') --}}
 
                                 <!--begin::Label-->
                                 <label class="form-label">Publisher</label>
                                 <!--end::Label-->
                                 <!--begin::Input-->
-                                <select name="user_id" id="mySelect2" data-control="select2"
+                                <select name="user_id" id="publishers_filter" data-control="select2"
                                     class="form-select publisher-select-2 publishers_filter" data-placeholder="Select an option">
                                     <option selected value=""> {{ __('No One') }}</option>
+                                    @foreach ($publishers as $publisher)
+                                        <option value="{{ $publisher->id }}">{{ $publisher->name }}</option>
+                                    @endforeach
                                 </select>
                                 <!--end::Input-->
                                 @if ($errors->has('user_id'))
@@ -757,7 +760,7 @@
     </script>
     <script>
         $(document).ready(function() {
-            $("#mySelect2").select2({
+            $("#publishers_filter").select2({
                 dropdownParent: $("#kt_modal_scrollable_1")
             });
         });

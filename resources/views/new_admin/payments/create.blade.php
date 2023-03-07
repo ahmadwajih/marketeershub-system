@@ -65,7 +65,7 @@
                                             <label class="form-label">Publisher</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <select  name="publisher_id" data-control="select2" class="form-select publishers_filter">
+                                            <select id="publishers_filter"  name="publisher_id" data-control="select2" class="form-select publishers_filter">
                                                 <option selected value="">{{ __('No one') }}</option>
                                             </select>
                                             <!--end::Input-->

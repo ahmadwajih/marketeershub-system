@@ -88,6 +88,7 @@ class CouponController extends Controller
         $offers = Offer::orderBy('id', 'desc')->get();
         $import_file="";
         $fileUrl = $this->bulk_import_result($import_file);
+        $publishers = User::select('id', 'name')->wherePosition('publisher')->get();
         return view('new_admin.coupons.index', [
             'countries' => $countries,
             'coupons' => $coupons,
@@ -95,6 +96,7 @@ class CouponController extends Controller
             'publisherForFilter' => $publisherForFilter,
             'import_file'=>json_decode($import_file),
             'fileUrl' => $fileUrl,
+            'publishers' => $publishers
         ]);
     }
     public function download($dir): BinaryFileResponse|string

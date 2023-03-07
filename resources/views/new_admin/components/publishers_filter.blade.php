@@ -24,7 +24,7 @@
                         $('#loading').show()
                     },
                     success: function(data) {
-                        $('#publishers_filter').find('option').remove().end();
+                        $('.publishers_filter').find('option').remove().end();
                         let select = document.getElementById('publishers_filter');
                         for (const key in data.items) {
                             let opt = document.createElement('option');
